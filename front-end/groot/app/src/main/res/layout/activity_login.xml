@@ -5,11 +5,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity">
-    
-<!--    <Button-->
-<!--        android:id="@+id/emailLoginBtn"-->
-<!--        android:text="login"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="match_parent"/>-->
+
+
+    <EditText
+        android:id="@+id/loginIdInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="280dp"
+        android:ems="10"
+        android:hint="아이디"
+
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/loginPwInput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:ems="10"
+
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="@+id/loginIdInput"
+        app:layout_constraintTop_toBottomOf="@+id/loginIdInput" />
+
+    <Button
+        android:id="@+id/basicLoginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
+        android:text="login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginPwInput" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,8 +7,6 @@ pluginManagement {
 }
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-
-//    firebase
     repositories {
         google()
         mavenCentral()
