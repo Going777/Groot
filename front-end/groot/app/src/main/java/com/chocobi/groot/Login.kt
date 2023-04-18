@@ -1,22 +1,19 @@
 package com.chocobi.groot
 
-// output을 만든다
-//data class Login(
-//    var result : String,
-//    var msg: String
-//)
+// output을 만든다 : response
 
-//test output : response
 data class Login(
-    var access_token : String,
-    var refresh_token : String,
-    var user: User
+    var accessToken : String,
+    var result : String,
+    var msg : String,
+//    var refreshToken : String,
+//    var user: User
 )
 
-data class User (
-    var pk :Number,
-    var username:String,
-    var email:String,
-    var first_name:String,
-    var last_name:String
-)
+//data class User (
+//    var pk :Number,
+//    var username:String,
+//    var email:String,
+//    var first_name:String,
+//    var last_name:String
+//)

@@ -1,12 +1,15 @@
 package com.chocobi.groot
 
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -44,19 +47,15 @@ class LoginActivity : AppCompatActivity() {
         var loginIdInput = findViewById<EditText>(R.id.loginIdInput)
         var loginPwInput = findViewById<EditText>(R.id.loginPwInput)
         val basicLoginBtn = findViewById<Button>(R.id.basicLoginBtn)
+        val toSignupText = findViewById<TextView>(R.id.toSignupText)
+
+//        로그인 버튼 클릭시
         basicLoginBtn.setOnClickListener {
             var textId = loginIdInput.text.toString()
             var textPw = loginPwInput.text.toString()
 
+//            로그인 요청 보내기
             loginService.requestLogin(textId, textPw).enqueue(object:Callback<Login>{
-
-                override fun onFailure(call: Call<Login>, t: Throwable) {
-//                    통신 실패시 실행되는 코드
-                    var dialog = AlertDialog.Builder(this@LoginActivity)
-                    dialog.setTitle("실패!")
-                    dialog.setMessage(t.message)
-                    dialog.show()
-                }
 
                 override fun onResponse(call: Call<Login>, response: Response<Login>) {
 //                    통신 성공시 실행되는 코드
@@ -66,8 +65,8 @@ class LoginActivity : AppCompatActivity() {
                     dialog.setTitle("알림!")
 
 //                    토큰 저장
-                    editor.putString("access_token", login?.access_token)
-                    editor.putString("refresh_token", login?.access_token)
+                    editor.putString("access_token", login?.accessToken)
+//                    editor.putString("refresh_token", login?.refreshToken)
                     editor.commit()
 
 //                    토큰 확인
@@ -75,10 +74,25 @@ class LoginActivity : AppCompatActivity() {
                     dialog.setMessage(access_token)
                     dialog.show()
                 }
+
+                override fun onFailure(call: Call<Login>, t: Throwable) {
+//                    통신 실패시 실행되는 코드
+                    var dialog = AlertDialog.Builder(this@LoginActivity)
+                    dialog.setTitle("실패!")
+                    dialog.setMessage(t.message)
+                    dialog.show()
+                }
+
             })
 
 
 
+        }
+
+//        회원가입 안내 텍스트 클릭시
+        toSignupText.setOnClickListener {
+            var intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
         }
 
 

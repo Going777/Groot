@@ -8,10 +8,10 @@ import retrofit2.http.POST
 interface LoginService {
 
     @FormUrlEncoded
-    @POST("/accounts/login/") // 요청 url
+    @POST("/users/login/") // 요청 url
     fun requestLogin(
 //        input 정의
-        @Field("username") userId:String,
-        @Field("password") userPw:String,
+        @Field("id") textId:String,
+        @Field("password") textPw:String,
     ) : Call<Login> // output 정의
 }
