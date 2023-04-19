@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/homeFragment">
+
+    <fragment
+        android:id="@+id/plantFragment"
+        android:name="com.chocobi.groot.PlantFragment"
+        android:label="PlantFragment"
+        tools:layout="@layout/fragment_plant" />
+
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.chocobi.groot.SearchFragment"
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/communityFragment"
+        android:name="com.chocobi.groot.CommunityFragment"
+        android:label="CommunityFragment"
+        tools:layout="@layout/fragment_community" />
+
+    <fragment
+        android:id="@+id/userFragment"
+        android:name="com.chocobi.groot.UserFragment"
+        android:label="UserFragment"
+        tools:layout="@layout/fragment_user" />
+
+
+
+</navigation>
