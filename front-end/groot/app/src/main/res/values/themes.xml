@@ -5,7 +5,6 @@
          <item name="colorPrimary">@color/main</item>
         <item name="colorOnSecondaryContainer">@color/white</item>
         <item name="colorOnSurfaceVariant">@color/grey</item>
-
     </style>
 
     <style name="Theme.Groot" parent="Base.Theme.Groot" />
