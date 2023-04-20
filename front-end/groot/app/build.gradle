@@ -70,4 +70,9 @@ dependencies {
 
 //    bottom navigation
     implementation 'com.google.android.material:material:<1.5.0>'
+
+
+//    lottie
+    def lottieVersion = "6.0.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
 }
