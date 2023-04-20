@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/item_1"
+        android:id="@+id/plantFragment"
         android:enabled="true"
         android:icon="@drawable/ic_plant"
         android:title="" />
     <item
-        android:id="@+id/item_2"
+        android:id="@+id/searchFragment"
         android:enabled="true"
         android:icon="@drawable/ic_search"
         android:title=""/>
 
     <item
-        android:id="@+id/item_3"
+        android:id="@+id/communityFragment"
         android:enabled="true"
         android:icon="@drawable/ic_community"
         android:title=""/>
 
     <item
-        android:id="@+id/item_4"
+        android:id="@+id/userFragment"
         android:enabled="true"
         android:icon="@drawable/ic_user"
         android:title=""/>
