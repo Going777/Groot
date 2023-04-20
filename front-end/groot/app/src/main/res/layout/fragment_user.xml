@@ -18,17 +18,6 @@
 
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
-
-            <fragment
-                android:id="@+id/userTabFragment"
-                android:layout_width="match_parent"
-                android:layout_height="300dp" />
-
-    </FrameLayout>
 
 
 
