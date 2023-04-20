@@ -49,12 +49,11 @@ class UserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragmentButton = view.findViewById<Button>(R.id.toLoginbtn)
-        fragmentButton.setOnClickListener {
-            // 버튼 클릭 시 실행할 코드
-//            로그인 페이지로 이동하도록 만들어야함
-
-        }
+//        val fragmentButton = view.findViewById<Button>(R.id.toLoginbtn)
+//        fragmentButton.setOnClickListener {
+//            // 버튼 클릭 시 실행할 코드
+//
+//        }
     }
 
     companion object {

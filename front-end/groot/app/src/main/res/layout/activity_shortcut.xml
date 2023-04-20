@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ShortcutActivity">
+
+    <Button
+        android:id="@+id/shortcutLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="로그인"
+        tools:layout_editor_absoluteX="166dp"
+        tools:layout_editor_absoluteY="77dp" />
+
+    <Button
+        android:id="@+id/shortcutSignup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="회원가입"
+        tools:layout_editor_absoluteX="166dp"
+        tools:layout_editor_absoluteY="163dp" />
+
+    <Button
+        android:id="@+id/shortcutMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="메인"
+        tools:layout_editor_absoluteX="199dp"
+        tools:layout_editor_absoluteY="340dp" />
+
+</LinearLayout>
