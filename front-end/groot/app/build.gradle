@@ -90,6 +90,12 @@ dependencies {
 
 //    bottom navigation
     implementation 'com.google.android.material:material:<1.5.0>'
+
+
+//    lottie
+    def lottieVersion = "6.0.0"
+    implementation "com.airbnb.android:lottie:$lottieVersion"
+
     implementation("androidx.navigation:navigation-fragment-ktx:2.4.0")
     implementation("androidx.navigation:navigation-ui-ktx:2.4.0")
 
