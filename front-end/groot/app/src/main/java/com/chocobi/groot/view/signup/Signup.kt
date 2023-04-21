@@ -1,4 +1,4 @@
-package com.chocobi.groot
+package com.chocobi.groot.view.signup
 
 // output을 만든다 : response
 

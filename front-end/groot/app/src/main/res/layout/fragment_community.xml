@@ -4,13 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".CommunityFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="community" />
+    tools:context=".view.community.CommunityFragment">
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/layout_tab"
@@ -18,13 +12,14 @@
         android:layout_height="wrap_content"
         app:tabGravity="center"
         app:tabMode="scrollable"
-        app:tabTextColor="#000000"
-        app:tabSelectedTextColor="#FF0000"
-        app:tabIndicatorColor="#00FF00" />
+        app:tabTextColor="@color/grey"
+        app:tabSelectedTextColor="@color/main"
+        app:tabIndicatorColor="@color/main" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/pager_content"
+        android:id="@+id/community_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="683dp"
+        android:layout_gravity="bottom"/>
 
 </FrameLayout>

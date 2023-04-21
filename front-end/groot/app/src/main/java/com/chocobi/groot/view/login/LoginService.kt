@@ -1,4 +1,4 @@
-package com.chocobi.groot
+package com.chocobi.groot.view.login
 
 import retrofit2.Call
 import retrofit2.http.Field

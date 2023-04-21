@@ -1,12 +1,13 @@
 package com.chocobi.groot
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.chocobi.groot.databinding.ActivityMainBinding
+import com.chocobi.groot.view.community.CommunityFragment
+import com.chocobi.groot.view.plant.PlantFragment
+import com.chocobi.groot.view.search.SearchFragment
+import com.chocobi.groot.view.user.SettingFragment
+import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
