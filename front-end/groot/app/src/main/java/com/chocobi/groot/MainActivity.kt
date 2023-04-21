@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
+import com.chocobi.groot.view.plant.PlantDiaryFragment
 import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchFragment
 import com.chocobi.groot.view.user.SettingFragment
@@ -16,6 +17,14 @@ class MainActivity : AppCompatActivity() {
     //        fragment 조작
     fun changeFragment(index: String) {
         when (index) {
+            "plant_diary" -> {
+                val plantDiaryFragment = PlantDiaryFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, plantDiaryFragment)
+                    .commit()
+            }
+
             "setting" -> {
                 val settingFragment = SettingFragment()
                 supportFragmentManager

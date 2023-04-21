@@ -5,6 +5,9 @@
          <item name="colorPrimary">@color/main</item>
         <item name="colorOnSecondaryContainer">@color/white</item>
         <item name="colorOnSurfaceVariant">@color/grey</item>
+
+        <item name="extendedFloatingActionButtonStyle">@style/Widget.App.ExtendedFloatingActionButton</item>
+        <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton</item>
     </style>
 
     <style name="Theme.Groot" parent="Base.Theme.Groot" />
@@ -14,4 +17,18 @@
         <item name="android:color">@color/main</item>
     </style>
 
+
+<!--FAB-->
+    <style name="Widget.App.ExtendedFloatingActionButton" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
+    </style>
+    <style name="Widget.App.FloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
+    </style>
+    <style name="ThemeOverlay.App.FloatingActionButton" parent="">
+<!--        FAB 버튼 배경색-->
+        <item name="colorContainer">@color/white</item>
+<!--        FAB 버튼 아이콘색-->
+        <item name="colorOnContainer">@color/main</item>
+    </style>
 </resources>
