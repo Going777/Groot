@@ -3,13 +3,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".view.user.UserFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+
+    <ImageButton
+        android:id="@+id/settingBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_setting"
+        android:layout_gravity="right"/>
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/layout_tab"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="user" />
+        android:layout_height="wrap_content"
+        app:tabGravity="center"
+        app:tabMode="scrollable"
+        app:tabTextColor="@color/grey"
+        app:tabSelectedTextColor="@color/main"
+        app:tabIndicatorColor="@color/main"
+        android:layout_marginTop="50dp"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/user_pager"
+        android:layout_width="match_parent"
+        android:layout_height="636dp"
+        android:layout_gravity="bottom" />
 
 
 

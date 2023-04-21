@@ -1,15 +1,16 @@
-package com.chocobi.groot
+package com.chocobi.groot.view.login
 
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import org.w3c.dom.Text
+import com.chocobi.groot.MainActivity
+import com.chocobi.groot.R
+import com.chocobi.groot.view.signup.SignupActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
