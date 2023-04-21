@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
@@ -23,14 +26,14 @@ private const val ARG_PARAM2 = "param2"
  */
 class CommunityFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
+    private var tab1: Int = 0
     private var param2: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
+
             param2 = it.getString(ARG_PARAM2)
         }
     }
@@ -39,8 +42,20 @@ class CommunityFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val rootView = inflater.inflate(R.layout.fragment_community, container, false)
+
+//        Fragment 이동 조작
+        val mActivity = activity as MainActivity
+
+//        Community Post 페이지로 이동
+        val communityPostFab = rootView.findViewById<FloatingActionButton>(R.id.communityPostFab)
+        communityPostFab.setOnClickListener {
+            mActivity.changeFragment("community_post")
+        }
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_community, container, false)
+        return rootView
     }
 
 
@@ -56,7 +71,11 @@ class CommunityFragment : Fragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.layout_tab)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabList[position]
+            tab1 = position
         }.attach()
+
+
+
     }
 
     private inner class CommunityTabAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

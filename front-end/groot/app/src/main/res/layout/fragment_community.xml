@@ -22,4 +22,13 @@
         android:layout_height="683dp"
         android:layout_gravity="bottom"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/communityPostFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:contentDescription="+"
+        app:srcCompat="@drawable/ic_post" />
+
 </FrameLayout>
