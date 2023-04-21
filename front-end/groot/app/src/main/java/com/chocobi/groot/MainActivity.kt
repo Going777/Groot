@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
+import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
 import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchFragment
@@ -22,6 +23,14 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, plantDiaryFragment)
+                    .commit()
+            }
+
+            "community_post" -> {
+                val communityPostFragment = CommunityPostFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, communityPostFragment)
                     .commit()
             }
 
