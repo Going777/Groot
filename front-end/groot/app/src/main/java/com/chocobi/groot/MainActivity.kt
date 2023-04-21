@@ -17,6 +17,7 @@ import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
 import com.chocobi.groot.view.plant.PlantFragment
+import com.chocobi.groot.view.search.SearchCameraActivity
 import com.chocobi.groot.view.search.SearchFragment
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
@@ -70,6 +71,7 @@ class MainActivity : AppCompatActivity() {
      * @param permissions 권한 처리를 할 권한 목록
      * @param requestCode 권한을 요청한 주체가 어떤 것인지 구분하기 위함.
      * */
+    private var realUri: Uri? = null
     fun requirePermissions(permissions: Array<String>, requestCode: Int) {
         Log.d("MainActivity", "권한 요청")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -131,10 +133,11 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         createImageUri(newFileName(), "image/jpg")?.let { uri:Uri ->
-            var realUri = uri
+            realUri = uri
             // MediaStore.EXTRA_OUTPUT을 Key로 하여 Uri를 넘겨주면
             // 일반적인 Camera App은 이를 받아 내가 지정한 경로에 사진을 찍어서 저장시킨다.
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
+            Log.d("MainActivity", realUri.toString())
             startActivityForResult(intent, REQUEST_CAMERA)
         }
     }
@@ -154,19 +157,22 @@ class MainActivity : AppCompatActivity() {
 
     /** 카메라 및 앨범 Intent 결과
      * */
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//
-//        if (resultCode == RESULT_OK) {
-//            when (requestCode) {
-//                REQUEST_CAMERA -> {
-//                    realUri?.let { uri ->
-//                        imageView.setImageURI(uri)
-//                    }
-//                }
-//            }
-//        }
-//    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode == RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CAMERA -> {
+                    realUri?.let { uri ->
+                        val intent = Intent(this, SearchCameraActivity::class.java)
+                        intent.putExtra("imageUri", uri.toString())
+                        Log.d("MainActivity", uri.toString())
+                        startActivity(intent)
+                    }
+                }
+            }
+        }
+    }
 
 //    ============================================================
 
