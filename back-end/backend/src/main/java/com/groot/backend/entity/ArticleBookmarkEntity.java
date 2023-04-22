@@ -20,7 +20,6 @@ public class ArticleBookmarkEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-
     @Column(name = "article_id", insertable = false, updatable = false)
     private long articleId;
     @Id

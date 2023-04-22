@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,12 +24,16 @@ public class ArticleEntity extends BaseEntity{
     private Long userPK;
 
     @Column(name = "category", nullable = false)
+    private String category;
+
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
     private String content;
 
     @Column(nullable = false)
+    @ColumnDefault(value = "0")
     private Long views;
 
     @Column(name = "share_status")

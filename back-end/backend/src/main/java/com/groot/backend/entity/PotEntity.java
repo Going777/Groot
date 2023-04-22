@@ -34,14 +34,14 @@ public class PotEntity extends BaseEntity{
     @Column(name = "img_path", nullable = false)
     private String imgPath;
 
-    @Column(name = "sale_date")
+    @Column(name = "sale_date", nullable = false)
     private Date saleDate;
-
-    @Column
-    private Double temperature;
 
     @Column(name = "character_id")
     private Long characterId;
+
+    @Column
+    private Double temperature;
 
     @Column
     private Double humidity;
@@ -55,11 +55,14 @@ public class PotEntity extends BaseEntity{
     @Column(name = "nutrients_date")
     private Date nutrientsDate;
 
-    @Column
+    @Column(nullable = false)
     private Boolean share;
 
-    @Column
+    @Column(nullable = false)
     private Boolean survival;
+
+    @Column(name = "plant_kr_name", nullable = false)
+    private String plantKrName;
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
