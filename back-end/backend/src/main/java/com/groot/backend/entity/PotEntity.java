@@ -1,0 +1,74 @@
+package com.groot.backend.entity;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+
+import javax.persistence.*;
+import java.sql.Date;
+import java.util.List;
+
+@Entity
+@Table(name = "pot")
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PotEntity extends BaseEntity{
+
+    @Id
+    @Column(nullable = false)
+    private Long id;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private Long userId;
+
+    @Column(name = "plant_id", insertable = false, updatable = false)
+    private Long plantId;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(name = "img_path", nullable = false)
+    private String imgPath;
+
+    @Column(name = "sale_date")
+    private Date saleDate;
+
+    @Column
+    private Double temperature;
+
+    @Column(name = "character_id")
+    private Long characterId;
+
+    @Column
+    private Double humidity;
+
+    @Column(name = "water_date")
+    private Date waterDate;
+
+    @Column(name = "pruning_date")
+    private Date pruningDate;
+
+    @Column(name = "nutrients_date")
+    private Date nutrientsDate;
+
+    @Column
+    private Boolean share;
+
+    @Column
+    private Boolean survival;
+
+    @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
+
+    @OneToMany(mappedBy = "potEntity", cascade = CascadeType.REMOVE)
+    private List<DiaryEntity> diaryEntities;
+
+    @ManyToOne(targetEntity = PlantEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "plant_id")
+    private PlantEntity plantEntity;
+}
