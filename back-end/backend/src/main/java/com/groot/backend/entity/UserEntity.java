@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class UserEntity extends BaseEntity{
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -42,7 +42,7 @@ public class UserEntity extends BaseEntity{
     private List<DiaryEntity> diaryEntities;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
-    private List<ArticleEntity> articleEntites;
+    private List<ArticleEntity> articleEntities;
 
 
 }
