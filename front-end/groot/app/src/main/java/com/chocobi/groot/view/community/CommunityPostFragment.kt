@@ -5,56 +5,56 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import androidx.databinding.DataBindingUtil.setContentView
 import com.chocobi.groot.R
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CommunityPostFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CommunityPostFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+//    Fragment에서 findViewById를 사용하려면 view 객체를 먼저 선언해야함
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_community_post, container, false)
+        val toPostListBtn = view.findViewById<Button>(R.id.toPostListBtn)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_community_post, container, false)
-    }
+        //        retrofit 객체 만들기
+        var retrofit = Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8000")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CommunityPostFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommunityPostFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        var communityPostService = retrofit.create(CommunityPostService::class.java)
+
+
+    // 등록 버튼 클릭 시 제목과 내용 입력값
+        toPostListBtn.setOnClickListener(View.OnClickListener{
+            val titleInput = view.findViewById<EditText>(R.id.titleInput).toString()
+            val contentInput = view.findViewById<EditText>(R.id.contentInput).toString()
+
+            // 요청 보내기
+            communityPostService.requestLogin(titleInput, contentInput).enqueue(object:
+                Callback<CommunityPost>{
+                // 통신 성공 시 실행되는 코드
+                override fun onResponse(
+                    call: Call<CommunityPost>,
+                    response: Response<CommunityPost>
+                ) {
+                    TODO("Not yet implemented")
                 }
-            }
+
+                // 통신 실패 시 실행되는 코드
+                override fun onFailure(call: Call<CommunityPost>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+                })
+        })
+
+
+        return view
     }
 }
