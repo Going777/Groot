@@ -109,6 +109,7 @@ dependencies {
 
 //    ar
     implementation 'com.google.ar:core:1.33.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
 
 }
