@@ -133,11 +133,11 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
         createImageUri(newFileName(), "image/jpg")?.let { uri:Uri ->
+            Log.d("MainActivity", uri.toString())
             realUri = uri
             // MediaStore.EXTRA_OUTPUT을 Key로 하여 Uri를 넘겨주면
             // 일반적인 Camera App은 이를 받아 내가 지정한 경로에 사진을 찍어서 저장시킨다.
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
-            Log.d("MainActivity", realUri.toString())
             startActivityForResult(intent, REQUEST_CAMERA)
         }
     }
@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity() {
     private fun newFileName(): String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
         val filename = sdf.format(System.currentTimeMillis())
+        Log.d("MainActivity", "newFileName")
         return "$filename.jpg"
     }
 
@@ -152,6 +153,8 @@ class MainActivity : AppCompatActivity() {
         var values = ContentValues()
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
         values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+
+        Log.d("MainActivity", "createImageUri")
         return this.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 
@@ -161,12 +164,13 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
+            Log.d("MainActivity", "onActivityResult")
             when (requestCode) {
                 REQUEST_CAMERA -> {
                     realUri?.let { uri ->
                         val intent = Intent(this, SearchCameraActivity::class.java)
                         intent.putExtra("imageUri", uri.toString())
-                        Log.d("MainActivity", uri.toString())
+                        Log.d("MainActivity", "uri:" + uri.toString())
                         startActivity(intent)
                     }
                 }

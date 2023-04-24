@@ -1,8 +1,13 @@
 package com.chocobi.groot.view.search
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 
 
@@ -12,7 +17,18 @@ class SearchCameraActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search_camera)
 
 //        imageUrl 전달받기
-        var imageUrl = intent.getStringExtra("ImageUrl")
-        Log.d("SearchCameraActivity", imageUrl.toString())
+        var imageUri = intent.getStringExtra("imageUri")?.toUri()
+        Log.d("SearchCameraActivity", imageUri.toString())
+
+//        image 띄우기
+        var resultImgView = findViewById<ImageView>(R.id.resultImgView)
+        resultImgView.setImageURI(imageUri)
+
+//        디테일 버튼 조작
+        val button = findViewById<Button>(R.id.button)
+        button.setOnClickListener {
+            var intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
