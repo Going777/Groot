@@ -10,6 +10,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+
+<!--    ar-->
+    <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
+    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -45,6 +50,10 @@
         <activity
             android:name=".view.signup.SignupActivity"
             android:exported="false"></activity>
+
+
+<!--        ar-->
+        <meta-data android:name="com.google.ar.core" android:value="optional" />
     </application>
 
 </manifest>
