@@ -1,12 +1,13 @@
 package com.chocobi.groot.view.search
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.ImageButton
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,6 +24,9 @@ class SearchFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private val PERMISSION_CAMERA = 0
+
+
 
     private lateinit var searchView: SearchView
     private lateinit var recyclerView: RecyclerView
@@ -33,6 +37,8 @@ class SearchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -43,10 +49,20 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        val rootView = inflater.inflate(R.layout.fragment_search, container, false)
+
+//        Fragment 이동 조작
+        val mActivity = activity as MainActivity
+
+//        Camera 버튼 클릭
+        val cameraBtn = rootView.findViewById<ImageButton>(R.id.cameraBtn)
+        cameraBtn.setOnClickListener {
+            mActivity.requirePermissions(arrayOf(android.Manifest.permission.CAMERA),  PERMISSION_CAMERA)
+        }
+
         // Inflate the layout for this fragment
-
-
-        return inflater.inflate(R.layout.fragment_search, container, false)
+        return rootView
     }
 
     companion object {
