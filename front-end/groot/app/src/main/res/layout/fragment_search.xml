@@ -1,14 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.search.SearchFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+<!--    <TextView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:text="search" />-->
+
+
+
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:layout_marginHorizontal="10dp"
+
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:title="식물 이름을 입력해주세요"
+        app:titleTextColor="#6E6E6E"
+        android:outlineAmbientShadowColor="#000"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        app:menu="@menu/search_menu"
+        app:layout_scrollFlags="scroll|enterAlways"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="search" />
+        app:layoutManager="LinearLayoutManager"/>
 
 </FrameLayout>
