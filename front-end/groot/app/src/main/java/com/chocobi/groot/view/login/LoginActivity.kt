@@ -49,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
         var loginPwInput = findViewById<EditText>(R.id.loginPwInput)
         val basicLoginBtn = findViewById<Button>(R.id.basicLoginBtn)
         val toSignupText = findViewById<TextView>(R.id.toSignupText)
-        val toMainBtn = findViewById<Button>(R.id.toMainBtn)
+
 
 //        로그인 버튼 클릭시
         basicLoginBtn.setOnClickListener {
@@ -99,11 +99,7 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        //        회원가입 안내 텍스트 클릭시
-        toMainBtn.setOnClickListener {
-            var intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
+
 
     }
 }
