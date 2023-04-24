@@ -28,6 +28,13 @@ class SearchFragment : Fragment() {
 
 
 
+    private lateinit var searchView: SearchView
+    private lateinit var recyclerView: RecyclerView
+
+    private fun setupRecyclerView() {
+        // RecyclerView 설정
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
