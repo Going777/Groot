@@ -18,6 +18,7 @@ import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
 import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchCameraActivity
+import com.chocobi.groot.view.search.SearchDetailFragment
 import com.chocobi.groot.view.search.SearchFragment
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
@@ -25,7 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 
 class MainActivity : AppCompatActivity() {
-//    private lateinit var binding: ActivityMainBinding
+    //    private lateinit var binding: ActivityMainBinding
     private val PERMISSION_CAMERA = 0
     private val REQUEST_CAMERA = 1
 
@@ -37,6 +38,15 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, plantDiaryFragment)
+                    .commit()
+            }
+
+            "search_detail" -> {
+                Log.d("MainActivity", "search detail 호출")
+                val searchDetailFragment = SearchDetailFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, searchDetailFragment)
                     .commit()
             }
 
@@ -91,9 +101,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
-
     /** 사용자가 권한을 승인하거나 거부한 다음에 호출되는 메서드
      * @param requestCode 요청한 주체를 확인하는 코드
      * @param permissions 요청한 권한 목록
@@ -132,7 +139,7 @@ class MainActivity : AppCompatActivity() {
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-        createImageUri(newFileName(), "image/jpg")?.let { uri:Uri ->
+        createImageUri(newFileName(), "image/jpg")?.let { uri: Uri ->
             Log.d("MainActivity", uri.toString())
             realUri = uri
             // MediaStore.EXTRA_OUTPUT을 Key로 하여 Uri를 넘겨주면
@@ -184,6 +191,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
 //        네비게이션 바 조작
         // 하단 탭이 눌렸을 때 화면을 전환하기 위해선 이벤트 처리하기 위해 BottomNavigationView 객체 생성
         var bnv_main = findViewById(R.id.bottom_navigation) as BottomNavigationView
@@ -221,6 +229,15 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             selectedItemId = R.id.plantFragment
+        }
+
+        //        특정 프레그먼트로 이동
+        var toPage = intent.getStringExtra("toPage")
+        Log.d("MainActivity", "onCreate")
+        if (toPage == "search_detail") {
+            Log.d("MainActivity", "toPage" + toPage)
+            bnv_main.run { selectedItemId = R.id.searchFragment }
+            changeFragment(toPage)
         }
 
 

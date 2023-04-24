@@ -28,6 +28,7 @@ class SearchCameraActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
         button.setOnClickListener {
             var intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("toPage", "search_detail")
             startActivity(intent)
         }
     }

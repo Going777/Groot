@@ -84,11 +84,7 @@ class LoginActivity : AppCompatActivity() {
                     dialog.setMessage(t.message)
                     dialog.show()
                 }
-
             })
-
-
-
         }
 
 //        회원가입 안내 텍스트 클릭시
