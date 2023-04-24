@@ -107,5 +107,9 @@ dependencies {
 //    tab
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
+//    ar
+    implementation 'com.google.ar:core:1.33.0'
+
+
 }
 
