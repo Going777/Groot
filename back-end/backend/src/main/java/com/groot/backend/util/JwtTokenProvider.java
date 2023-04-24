@@ -21,18 +21,24 @@ import java.util.Date;
 @Slf4j
 public class JwtTokenProvider {
     private static Key KEY;
+    private static Long ACCESSTOKEN_EXPIRED_PERIOD;
+    private static Long REFRESHTOKEN_EXPIRED_PERIOD;
 
     @Autowired
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey){
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
+                            @Value("${jwt.access_time}") Long accessTime,
+                            @Value("${jwt.refresh_time}") Long refreshTime) {
+        ACCESSTOKEN_EXPIRED_PERIOD = accessTime;
+        REFRESHTOKEN_EXPIRED_PERIOD = refreshTime;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.KEY = Keys.hmacShaKeyFor(keyBytes);
+        KEY = Keys.hmacShaKeyFor(keyBytes);
     }
 
     // accessToken 생성
     public String createAccessToken(UserEntity userEntity){
         long now = (new Date()).getTime();
         // 1시간
-        Date accessTokenExpiresIn = new Date(now + 3600000);
+        Date accessTokenExpiresIn = new Date(now + ACCESSTOKEN_EXPIRED_PERIOD);
         String accessToken = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setExpiration(accessTokenExpiresIn)
@@ -47,7 +53,7 @@ public class JwtTokenProvider {
     public String createRefreshToken(Long id){
         long now = (new Date()).getTime();
         // 3일
-        Date accessTokenExpiresIn = new Date(now + 259200000);
+        Date accessTokenExpiresIn = new Date(now + REFRESHTOKEN_EXPIRED_PERIOD);
         String refreshToken = Jwts.builder()
                 .setHeaderParam(Header.TYPE, Header.JWT_TYPE)
                 .setExpiration(accessTokenExpiresIn)

@@ -200,7 +200,32 @@ public class UserController {
         return ResponseEntity.ok().body(resultMap);
     }
 
-    // 토큰 갱신
+    // accessToken 재발급
+    @PutMapping("/refresh")
+    public ResponseEntity refreshAccessToken(HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        // accessToken에서 id 뽑아오기
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        if(!userService.isExistedId(id)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // accessToken 재발급
+        TokenDTO tokenDTO = userService.refreshAccessToken(id);
+        if(tokenDTO == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "refresh 토큰이 만료되었습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
+
+        resultMap.put("accessToken", tokenDTO.getAccessToken());
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "토큰 재발급 완료");
+        return ResponseEntity.ok().body(resultMap);
+
+    }
 
     // 유저 작성글 조회
 

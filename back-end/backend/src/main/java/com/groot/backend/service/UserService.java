@@ -17,4 +17,6 @@ public interface UserService {
     boolean deleteUser(Long id);
     boolean logout(Long id);
     boolean updatePassword(UserPasswordDTO userPasswordDTO);
+    TokenDTO refreshAccessToken(Long id);
+
 }
