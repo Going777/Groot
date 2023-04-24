@@ -104,4 +104,24 @@ public class UserServiceImpl implements UserService{
         userRepository.deleteById(id);
         return true;
     }
+
+    @Override
+    public boolean logout(Long id) {
+        if(!userRepository.existsById(id)) return false;
+        UserEntity userEntity = userRepository.findById(id).orElseThrow();
+
+        UserEntity newEntity = UserEntity.builder()
+                .id(userEntity.getId())
+                .userId(userEntity.getUserId())
+                .nickName(userEntity.getNickName())
+                .password(userEntity.getPassword())
+                .profile(userEntity.getProfile())
+                .token(null)
+                .build();
+
+        userRepository.save(newEntity);
+        return true;
+    }
+
+
 }

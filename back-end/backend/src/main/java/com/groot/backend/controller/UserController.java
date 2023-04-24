@@ -136,7 +136,7 @@ public class UserController {
     }
 
     // 로그인
-    @PostMapping("login")
+    @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginDTO loginDTO){
         Map<String, Object> resultMap = new HashMap<>();
 
@@ -162,6 +162,20 @@ public class UserController {
     }
 
     // 로그아웃
+    @GetMapping("/logout")
+    public ResponseEntity logout(HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        if(!userService.logout(id)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "로그아웃 완료");
+        return ResponseEntity.ok().body(resultMap);
+    }
 
     // 토큰 갱신
 

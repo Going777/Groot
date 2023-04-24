@@ -13,4 +13,5 @@ public interface UserService {
     UserEntity readUser(Long id);
     TokenDTO login(LoginDTO loginDTO);
     boolean deleteUser(Long id);
+    boolean logout(Long id);
 }
