@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.ar.core.examples.kotlin.ml.render
+package com.chocobi.groot.mlkit.kotlin.ml.render
 
 import com.google.ar.core.PointCloud
 import com.chocobi.groot.mlkit.java.common.samplerender.Mesh

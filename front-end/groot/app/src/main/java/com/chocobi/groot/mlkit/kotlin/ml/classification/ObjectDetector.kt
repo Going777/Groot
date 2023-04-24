@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.google.ar.core.examples.kotlin.ml.classification
+package com.chocobi.groot.mlkit.kotlin.ml.classification
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.media.Image
+import com.chocobi.groot.mlkit.kotlin.ml.third_party.YuvToRgbConverter
 import com.google.ar.core.Frame
-import com.google.ar.core.examples.kotlin.ml.third_party.YuvToRgbConverter
 
 /**
  * Describes a common interface for [GoogleCloudVisionDetector] and [MLKitObjectDetector] that can

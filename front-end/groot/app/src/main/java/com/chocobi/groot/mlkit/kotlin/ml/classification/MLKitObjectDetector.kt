@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package com.google.ar.core.examples.kotlin.ml.classification
+package com.chocobi.groot.mlkit.kotlin.ml.classification
 
 import android.app.Activity
 import android.graphics.Point
 import android.media.Image
-import com.google.ar.core.examples.kotlin.ml.classification.utils.ImageUtils
-import com.google.ar.core.examples.kotlin.ml.classification.utils.VertexUtils.rotateCoordinates
+import com.chocobi.groot.mlkit.kotlin.ml.classification.utils.ImageUtils
+import com.chocobi.groot.mlkit.kotlin.ml.classification.utils.VertexUtils.rotateCoordinates
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.custom.CustomObjectDetectorOptions

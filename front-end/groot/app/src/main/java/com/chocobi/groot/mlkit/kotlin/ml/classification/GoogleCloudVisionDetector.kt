@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package com.google.ar.core.examples.kotlin.ml.classification
+package com.chocobi.groot.mlkit.kotlin.ml.classification
 
 import android.graphics.PointF
 import android.media.Image
 import android.util.Base64
 import android.util.Log
-import com.google.ar.core.examples.kotlin.ml.ArActivity
-import com.google.ar.core.examples.kotlin.ml.classification.utils.ImageUtils
-import com.google.ar.core.examples.kotlin.ml.classification.utils.ImageUtils.toByteArray
-import com.google.ar.core.examples.kotlin.ml.classification.utils.VertexUtils
-import com.google.ar.core.examples.kotlin.ml.classification.utils.VertexUtils.rotateCoordinates
-import com.google.ar.core.examples.kotlin.ml.classification.utils.VertexUtils.toAbsoluteCoordinates
+import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
+import com.chocobi.groot.mlkit.kotlin.ml.classification.utils.ImageUtils
+import com.chocobi.groot.mlkit.kotlin.ml.classification.utils.ImageUtils.toByteArray
+import com.chocobi.groot.mlkit.kotlin.ml.classification.utils.VertexUtils
+import com.chocobi.groot.mlkit.kotlin.ml.classification.utils.VertexUtils.rotateCoordinates
+import com.chocobi.groot.mlkit.kotlin.ml.classification.utils.VertexUtils.toAbsoluteCoordinates
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -61,13 +62,13 @@ class GoogleCloudVisionDetector(val activity: ArActivity, val apiKey: String) :
       httpClient.newCall(
         Request.Builder()
           .url("https://vision.googleapis.com/v1/images:annotate?key=$apiKey")
-          .post(RequestBody.create(MediaType.parse("text/json"), body.toString()))
+          .post(RequestBody.create("text/json".toMediaTypeOrNull(), body.toString()))
           .build()
       )
 
     // Execute Google Cloud Vision request and parse response body.
     req.execute().use { response ->
-      val responseBody = response.body()?.string()
+      val responseBody = response.body?.string()
       if (responseBody == null) {
         Log.e(TAG, "Failed to parse result body.")
         return emptyList()

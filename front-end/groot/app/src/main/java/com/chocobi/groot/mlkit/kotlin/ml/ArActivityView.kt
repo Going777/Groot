@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.ar.core.examples.kotlin.ml
+package com.chocobi.groot.mlkit.kotlin.ml
 
 import android.opengl.GLSurfaceView
 import android.view.View
@@ -29,7 +29,7 @@ import com.chocobi.groot.mlkit.java.common.samplerender.SampleRender
 /** Wraps [R.layout.activity_main] and controls lifecycle operations for [GLSurfaceView]. */
 class ArActivityView(val activity: ArActivity, renderer: AppRenderer) :
   DefaultLifecycleObserver {
-  val root = View.inflate(activity, R.layout.activity_main, null)
+  val root = View.inflate(activity, R.layout.activity_ar, null)
   val surfaceView =
     root.findViewById<GLSurfaceView>(R.id.surfaceview).apply {
       SampleRender(this, renderer, activity.assets)

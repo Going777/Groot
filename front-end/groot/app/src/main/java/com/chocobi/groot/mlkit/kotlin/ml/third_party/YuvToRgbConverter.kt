@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.ar.core.examples.kotlin.ml.third_party
+package com.chocobi.groot.mlkit.kotlin.ml.third_party
 
 import android.content.Context
 import android.graphics.Bitmap

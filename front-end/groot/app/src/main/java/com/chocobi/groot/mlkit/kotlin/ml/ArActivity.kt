@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.ar.core.examples.kotlin.ml
+package com.chocobi.groot.mlkit.kotlin.ml
 
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +24,7 @@ import com.google.ar.core.CameraConfig
 import com.google.ar.core.CameraConfigFilter
 import com.google.ar.core.Config
 import com.chocobi.groot.mlkit.java.common.helpers.FullScreenHelper
-import com.google.ar.core.examples.kotlin.common.helpers.ARCoreSessionLifecycleHelper
+import com.chocobi.groot.mlkit.kotlin.common.helpers.ARCoreSessionLifecycleHelper
 import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.UnavailableApkTooOldException
 import com.google.ar.core.exceptions.UnavailableArcoreNotInstalledException
@@ -34,7 +34,7 @@ import com.google.ar.core.exceptions.UnavailableUserDeclinedInstallationExceptio
 
 /** Main activity for the ML sample. */
 class ArActivity : AppCompatActivity() {
-  val TAG = "MainActivity"
+  val TAG = "ArActivity"
   lateinit var arCoreSessionHelper: ARCoreSessionLifecycleHelper
 
   lateinit var renderer: AppRenderer

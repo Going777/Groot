@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.ar.core.examples.kotlin.ml
+package com.chocobi.groot.mlkit.kotlin.ml
 
 import android.content.pm.PackageManager
 import android.opengl.Matrix
@@ -27,12 +27,12 @@ import com.google.ar.core.TrackingState
 import com.chocobi.groot.mlkit.java.common.helpers.DisplayRotationHelper
 import com.chocobi.groot.mlkit.java.common.samplerender.SampleRender
 import com.chocobi.groot.mlkit.java.common.samplerender.arcore.BackgroundRenderer
-import com.google.ar.core.examples.kotlin.ml.classification.DetectedObjectResult
-import com.google.ar.core.examples.kotlin.ml.classification.GoogleCloudVisionDetector
-import com.google.ar.core.examples.kotlin.ml.classification.MLKitObjectDetector
-import com.google.ar.core.examples.kotlin.ml.classification.ObjectDetector
-import com.google.ar.core.examples.kotlin.ml.render.LabelRender
-import com.google.ar.core.examples.kotlin.ml.render.PointCloudRender
+import com.chocobi.groot.mlkit.kotlin.ml.classification.DetectedObjectResult
+import com.chocobi.groot.mlkit.kotlin.ml.classification.GoogleCloudVisionDetector
+import com.chocobi.groot.mlkit.kotlin.ml.classification.MLKitObjectDetector
+import com.chocobi.groot.mlkit.kotlin.ml.classification.ObjectDetector
+import com.chocobi.groot.mlkit.kotlin.ml.render.LabelRender
+import com.chocobi.groot.mlkit.kotlin.ml.render.PointCloudRender
 import com.google.ar.core.exceptions.CameraNotAvailableException
 import com.google.ar.core.exceptions.NotYetAvailableException
 import java.util.Collections
@@ -70,7 +70,7 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
     // obtain a valid API key.
     val applicationInfo =
       activity.packageManager.getApplicationInfo(activity.packageName, PackageManager.GET_META_DATA)
-    val apiKey = applicationInfo.metaData.getString("com.google.ar.core.examples.kotlin.ml.API_KEY")
+    val apiKey = applicationInfo.metaData.getString("com.chocobi.groot.mlkit.kotlin.ml.API_KEY")
     if (apiKey == null) null else GoogleCloudVisionDetector(activity, apiKey)
   }
 

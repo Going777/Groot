@@ -53,6 +53,9 @@
 
 
 <!--        ar-->
+        <activity
+            android:name=".mlkit.kotlin.ml.ArActivity"
+            android:exported="false"></activity>
         <meta-data android:name="com.google.ar.core" android:value="optional" />
     </application>
 

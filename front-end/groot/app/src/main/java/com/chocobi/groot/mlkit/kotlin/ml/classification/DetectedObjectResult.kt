@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.ar.core.examples.kotlin.ml.classification
+package com.chocobi.groot.mlkit.kotlin.ml.classification
 
 import android.graphics.Point
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.ar.core.examples.kotlin.common.helpers
+package com.chocobi.groot.mlkit.kotlin.common.helpers
 
 import android.app.Activity
 import android.widget.Toast
@@ -21,7 +21,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.ar.core.ArCoreApk
 import com.google.ar.core.Session
-import com.google.ar.core.examples.java.common.helpers.CameraPermissionHelper
+import com.chocobi.groot.mlkit.java.common.helpers.CameraPermissionHelper
 import com.google.ar.core.exceptions.CameraNotAvailableException
 
 /**
