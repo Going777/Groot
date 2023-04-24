@@ -1,12 +1,21 @@
 package com.groot.backend.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "diary")
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class DiaryEntity extends BaseEntity{
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "pot_id", insertable = false, updatable = false)

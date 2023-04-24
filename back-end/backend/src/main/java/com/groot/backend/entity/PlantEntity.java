@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PlantEntity extends BaseEntity{
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "kr_name", nullable = false)
