@@ -61,7 +61,6 @@ class UserFragment : Fragment() {
 //        Setting 페이지로 이동
         val settingBtn = rootView.findViewById<ImageButton>(R.id.settingBtn)
         settingBtn.setOnClickListener {
-            Log.d("wow", "클릭클릭")
             mActivity.changeFragment("setting")
         }
 

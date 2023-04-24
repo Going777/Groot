@@ -15,6 +15,7 @@ class ShortcutActivity : AppCompatActivity() {
         val shortcutLogin = findViewById<Button>(R.id.shortcutLogin)
         val shortcutSignup = findViewById<Button>(R.id.shortcutSignup)
         val shortcutMain = findViewById<Button>(R.id.shortcutMain)
+        val shortcutIntro = findViewById<Button>(R.id.shortcutIntro)
 
         shortcutLogin.setOnClickListener {
             var intent = Intent(this, LoginActivity::class.java)
@@ -28,6 +29,11 @@ class ShortcutActivity : AppCompatActivity() {
 
         shortcutMain.setOnClickListener {
             var intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
+
+        shortcutIntro.setOnClickListener {
+            var intent = Intent(this, IntroActivity::class.java)
             startActivity(intent)
         }
     }

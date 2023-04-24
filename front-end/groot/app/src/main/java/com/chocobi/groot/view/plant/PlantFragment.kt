@@ -50,7 +50,6 @@ class PlantFragment : Fragment() {
             mActivity.changeFragment("plant_diary")
         }
 
-
         // Inflate the layout for this fragment
         return rootView
     }
