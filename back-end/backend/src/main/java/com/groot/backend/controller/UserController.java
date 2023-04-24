@@ -2,6 +2,7 @@ package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.LoginDTO;
 import com.groot.backend.dto.request.RegisterDTO;
+import com.groot.backend.dto.request.UserPasswordDTO;
 import com.groot.backend.dto.response.UserDTO;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
@@ -33,7 +34,7 @@ public class UserController {
     public ResponseEntity signup(@RequestBody RegisterDTO registerDTO){
         Map<String, Object> resultMap = new HashMap<>();
         // 아이디 중복 체크
-        if(userService.isExistedId(registerDTO.getUserId())){
+        if(userService.isExistedUserId(registerDTO.getUserId())){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "이미 존재하는 아이디입니다.");
             return ResponseEntity.badRequest().body(resultMap);
@@ -67,7 +68,7 @@ public class UserController {
     @GetMapping("/userId/{userId}")
     public ResponseEntity IdDuplicateCheck(@PathVariable String userId){
         Map<String, Object> resultMap = new HashMap<>();
-        if(userService.isExistedId(userId)){
+        if(userService.isExistedUserId(userId)){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "이미 존재하는 아이디입니다.");
            return ResponseEntity.badRequest().body(resultMap);
@@ -117,6 +118,28 @@ public class UserController {
     // 프로필 변경 (닉네임, 프로필 사진 변경)
 
     // 비밀번호 변경
+    @PutMapping("/password")
+    public ResponseEntity updatePassword(@RequestBody UserPasswordDTO userPasswordDTO){
+        Map<String, Object> resultMap = new HashMap<>();
+        // 유저 존재 여부
+        if(!userService.isExistedId(userPasswordDTO.getId())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 비밀번호 일치 확인
+        if(!userService.updatePassword(userPasswordDTO)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "비밀번호 불일치");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 비밀번호 변경 성공
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "비밀번호를 변경하였습니다.");
+        return ResponseEntity.ok().body(resultMap);
+    }
 
     // 회원탈퇴
     @DeleteMapping()
@@ -141,7 +164,7 @@ public class UserController {
         Map<String, Object> resultMap = new HashMap<>();
 
         // 사용자 존재 여부 확인
-        if(!userService.isExistedId(loginDTO.getUserId())){
+        if(!userService.isExistedUserId(loginDTO.getUserId())){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "존재하지 않는 사용자입니다.");
             return ResponseEntity.badRequest().body(resultMap);

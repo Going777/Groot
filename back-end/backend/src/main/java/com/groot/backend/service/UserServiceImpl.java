@@ -2,6 +2,7 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.LoginDTO;
 import com.groot.backend.dto.request.RegisterDTO;
+import com.groot.backend.dto.request.UserPasswordDTO;
 import com.groot.backend.dto.response.UserDTO;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
@@ -22,8 +23,14 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Override
-    public boolean isExistedId(String userId) {
+    public boolean isExistedId(Long id) {
+        return userRepository.existsById(id);
+    }
+
+    @Override
+    public boolean isExistedUserId(String userId) {
         return userRepository.existsByUserId(userId);
     }
 
@@ -120,6 +127,29 @@ public class UserServiceImpl implements UserService{
                 .build();
 
         userRepository.save(newEntity);
+        return true;
+    }
+
+    @Override
+    public boolean updatePassword(UserPasswordDTO userPasswordDTO) {
+        // userEntity find
+        UserEntity userEntity = userRepository.findById(userPasswordDTO.getId()).orElseThrow();
+
+        // 비밀번호 일치 확인
+        if(!passwordEncoder.matches(userPasswordDTO.getPassword(), userEntity.getPassword())){
+            return false;
+        }
+
+        // 비밀번호 변경
+        UserEntity newUserEntity = UserEntity.builder()
+                .id(userEntity.getId())
+                .userId(userEntity.getUserId())
+                .nickName(userEntity.getNickName())
+                .password(passwordEncoder.encode(userPasswordDTO.getNewPassword()))
+                .profile(userEntity.getProfile())
+                .token(userEntity.getToken())
+                .build();
+        userRepository.save(newUserEntity);
         return true;
     }
 
