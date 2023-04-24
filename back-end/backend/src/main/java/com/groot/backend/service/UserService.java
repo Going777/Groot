@@ -12,4 +12,5 @@ public interface UserService {
     TokenDTO createUser(RegisterDTO registerDTO);
     UserEntity readUser(Long id);
     TokenDTO login(LoginDTO loginDTO);
+    boolean deleteUser(Long id);
 }

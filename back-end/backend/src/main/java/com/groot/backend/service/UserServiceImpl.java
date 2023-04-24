@@ -97,4 +97,11 @@ public class UserServiceImpl implements UserService{
                 .accessToken(accessToken)
                 .build();
     }
+
+    @Override
+    public boolean deleteUser(Long id) {
+        if(!userRepository.existsById(id)) return false;
+        userRepository.deleteById(id);
+        return true;
+    }
 }

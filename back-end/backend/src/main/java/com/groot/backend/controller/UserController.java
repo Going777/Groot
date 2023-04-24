@@ -114,11 +114,26 @@ public class UserController {
     }
 
 
-    // 프로필 변경
+    // 프로필 변경 (닉네임, 프로필 사진 변경)
 
     // 비밀번호 변경
 
     // 회원탈퇴
+    @DeleteMapping()
+    public ResponseEntity deleteUser(HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        if(!userService.deleteUser(id)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 아이디입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "회원탈퇴 되었습니다.");
+        return ResponseEntity.ok().body(resultMap);
+
+    }
 
     // 로그인
     @PostMapping("login")
