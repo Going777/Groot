@@ -27,10 +27,6 @@ class SearchFragment : Fragment() {
     private val PERMISSION_CAMERA = 0
 
 
-
-    private lateinit var searchView: SearchView
-    private lateinit var recyclerView: RecyclerView
-
     private fun setupRecyclerView() {
         // RecyclerView 설정
     }
