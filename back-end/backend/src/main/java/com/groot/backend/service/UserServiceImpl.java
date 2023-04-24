@@ -1,15 +1,14 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.LoginDTO;
-import com.groot.backend.dto.request.UserDTO;
+import com.groot.backend.dto.request.RegisterDTO;
+import com.groot.backend.dto.response.UserDTO;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.UserRepository;
-import com.groot.backend.util.CustomException;
 import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,19 +33,38 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserEntity createUser(UserDTO userDTO) {
+    public TokenDTO createUser(RegisterDTO registerDTO) {
         UserEntity userEntity = UserEntity.builder()
-                .userId(userDTO.getUserId())
-                .nickName(userDTO.getNickname())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
+                .userId(registerDTO.getUserId())
+                .nickName(registerDTO.getNickName())
+                .password(passwordEncoder.encode(registerDTO.getPassword()))
                 .build();
 
-        return userRepository.save(userEntity);
+        userRepository.save(userEntity);
+
+        // token 생성
+        String accessToken = jwtTokenProvider.createAccessToken(userEntity);
+        String refreshToken = jwtTokenProvider.createRefreshToken(userEntity.getId());
+
+        UserEntity newUserEntity = userEntity.builder()
+                .id(userEntity.getId())
+                .userId(userEntity.getUserId())
+                .nickName(userEntity.getNickName())
+                .password(userEntity.getPassword())
+                .profile(userEntity.getProfile())
+                .token(refreshToken)
+                .build();
+
+        userRepository.save(newUserEntity);
+        return TokenDTO.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .build();
     }
 
     @Override
-    public UserEntity readUser(String userId) {
-        return userRepository.findByUserId(userId);
+    public UserEntity readUser(Long id) {
+        return userRepository.findById(id).orElseThrow();
     }
 
 
@@ -57,7 +75,7 @@ public class UserServiceImpl implements UserService{
 
         // 일치 확인
         if(!passwordEncoder.matches(loginDTO.getPassword(), userEntity.getPassword())){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"fail","잘못된 비밀번호입니다.");
+            return null;
         }
 
         // token 생성

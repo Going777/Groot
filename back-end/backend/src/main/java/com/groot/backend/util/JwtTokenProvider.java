@@ -1,5 +1,6 @@
 package com.groot.backend.util;
 
+import com.groot.backend.dto.response.UserDTO;
 import com.groot.backend.entity.UserEntity;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +20,7 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    private final Key KEY;
+    private static Key KEY;
 
     @Autowired
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey){
@@ -63,13 +65,14 @@ public class JwtTokenProvider {
         if(claims.get("id") == null){
             throw new RuntimeException("정보가 없는 토큰입니다.");
         }
-
+        Integer i = (Integer) claims.get("id");
+        Long id = new Long(i);
         // 정보 담아서 Authentication 리턴
-        UserEntity userEntity = UserEntity.builder()
-                .id((Long)claims.get("id"))
+        UserDTO userDTO = UserDTO.builder()
+                .id(id)
                 .nickName((String)claims.get("nickName"))
                 .build();
-        return new UsernamePasswordAuthenticationToken(userEntity,"",new ArrayList<>());
+        return new UsernamePasswordAuthenticationToken(userDTO,"",new ArrayList<>());
     }
 
     // 토큰 정보 검증
@@ -89,8 +92,15 @@ public class JwtTokenProvider {
         return false;
     }
 
+    public static Long getIdByAccessToken(HttpServletRequest request){
+        String accessToken = request.getHeader("Authorization").substring(7);
+        Integer i = (Integer) parseClaims(accessToken).get("id");
+        Long id = new Long(i);
+        return id;
+    }
+
     // 클레임에서 정보 가져오기
-    private Claims parseClaims(String accessToken){
+    public static Claims parseClaims(String accessToken){
         try {
             return Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e){
