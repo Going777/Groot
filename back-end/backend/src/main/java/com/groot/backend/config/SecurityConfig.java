@@ -31,9 +31,10 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 사용 하지않음
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/users/login").permitAll()
-//                .antMatchers("/users/userId").permitAll()
-//                .antMatchers("/users/nickname").permitAll()
+//                .antMatchers("/api/users/login").permitAll()
+//                .antMatchers("/api/users/signup").permitAll()
+//                .antMatchers("/api/users/userId/**").permitAll()
+//                .antMatchers("/api/users/nickname/**").permitAll()
 //                .anyRequest().authenticated()
                 .anyRequest().permitAll()
                 .and()

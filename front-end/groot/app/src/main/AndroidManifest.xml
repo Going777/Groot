@@ -10,6 +10,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+
+<!--    ar-->
+    <uses-feature android:name="android.hardware.camera.ar" android:required="true"/>
+    <uses-feature android:glEsVersion="0x00020000" android:required="true" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -22,6 +27,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".view.search.SearchCameraActivity"
+            android:exported="false" />
+        <activity
             android:name=".ShortcutActivity"
             android:exported="true">
             <intent-filter>
@@ -30,25 +38,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".view.login.LoginActivity"
             android:exported="false" />
-
         <activity
             android:name=".IntroActivity"
             android:exported="false" />
-            
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
-
+            android:exported="false" />
         <activity
             android:name=".view.signup.SignupActivity"
-            android:exported="false">
+            android:exported="false"></activity>
 
-        </activity>
 
+<!--        ar-->
+        <activity
+            android:name=".mlkit.kotlin.ml.ArActivity"
+            android:exported="false"></activity>
+        <meta-data android:name="com.google.ar.core" android:value="optional" />
     </application>
 
 </manifest>
