@@ -38,6 +38,22 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/sample_character" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="100dp"
+        android:progress="60"
+        android:progressBackgroundTint="@color/grey"
+        android:progressTint="@color/point"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -112,8 +128,16 @@
             android:tag="info_sub" />
     </FrameLayout>
 
+
     <Button
-        android:layout_width="wrap_content"
+        android:drawableLeft="@drawable/ic_diary"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="다이어리 보러 갈래요" />
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/point"
+        android:text="다이어리 보러 갈래요"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
 </LinearLayout>
