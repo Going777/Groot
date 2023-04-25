@@ -13,5 +13,22 @@ pipeline {
         sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
       }
     }
+    stage('build') {
+      steps {
+        echo 'move directory'
+        sh 'cd ./back-end/backend/'
+        echo 'start build'
+        sh 'chmod +x ./gradlew'
+        sh './gradlew clean buiild'
+      }
+    }
+    stage('deploy') {
+      steps {
+        echo 'build docker image'
+        sh 'docker build'
+        echo 'run docker image'
+        sh 'docker run -name spring -d -p 8080:8080'
+      }
+    }
   }
 }
