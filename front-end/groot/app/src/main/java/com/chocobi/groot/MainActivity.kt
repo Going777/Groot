@@ -15,6 +15,7 @@ import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
+import com.chocobi.groot.view.plant.PlantDetailFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
 import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchCameraActivity
@@ -38,6 +39,14 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, plantDiaryFragment)
+                    .commit()
+            }
+
+            "plant_detail" -> {
+                val plantDetailFragment = PlantDetailFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, plantDetailFragment)
                     .commit()
             }
 
