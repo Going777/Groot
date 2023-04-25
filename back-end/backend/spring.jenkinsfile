@@ -9,7 +9,7 @@ pipeline {
     stage('cofing') {
       steps {
         echo 'copy configuration files'
-        pwd
+        cp /jenkins/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources
       }
     }
   }
