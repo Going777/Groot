@@ -3,7 +3,7 @@ package com.groot.backend.controller;
 import com.groot.backend.dto.request.LoginDTO;
 import com.groot.backend.dto.request.RegisterDTO;
 import com.groot.backend.dto.request.UserPasswordDTO;
-import com.groot.backend.dto.response.UserDTO;
+import com.groot.backend.dto.request.UserProfileDTO;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.service.UserService;
@@ -116,6 +116,25 @@ public class UserController {
 
 
     // 프로필 변경 (닉네임, 프로필 사진 변경)
+    @PutMapping()
+    public ResponseEntity updateProfile(@RequestBody UserProfileDTO userProfileDTO){
+        Map<String, Object> resultMap = new HashMap<>();
+        if(!userService.isExistedId(userProfileDTO.getId())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        if(!userService.updateProfile(userProfileDTO)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "업데이트 실패");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "회원정보 수정 완료");
+        return ResponseEntity.ok().body(resultMap);
+    }
 
     // 비밀번호 변경
     @PutMapping("/password")
