@@ -17,6 +17,8 @@ pipeline {
       steps {
         echo 'move directory'
         sh 'cd ./back-end/backend/'
+        sh 'pwd'
+        sh 'ls -l'
         echo 'start build'
         sh 'chmod +x ./gradlew'
         sh './gradlew clean buiild'
