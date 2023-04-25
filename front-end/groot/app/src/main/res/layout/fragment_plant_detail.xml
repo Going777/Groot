@@ -64,51 +64,57 @@
             <ImageButton
                 android:id="@+id/tabBtn2"
                 style="@style/WHITE_CIRCLE_BTN"
-                android:tint="@color/pot"
                 android:layout_margin="5dp"
                 android:src="@drawable/ic_pot"
-                app:layout_constraintEnd_toStartOf="@+id/tabBtn3"
+                android:tint="@color/pot"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tabBtn3"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/tabBtn3"
                 style="@style/WHITE_CIRCLE_BTN"
-                android:tint="@color/bug"
                 android:layout_margin="5dp"
                 android:src="@drawable/ic_bug"
-                app:layout_constraintEnd_toStartOf="@+id/tabBtn4"
+                android:tint="@color/bug"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintEnd_toStartOf="@+id/tabBtn4"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/tabBtn4"
                 style="@style/WHITE_CIRCLE_BTN"
-                android:tint="@color/sun"
                 android:layout_margin="5dp"
                 android:src="@drawable/ic_sunny"
-                app:layout_constraintEnd_toStartOf="@+id/tabBtn5"
+                android:tint="@color/sun"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintEnd_toStartOf="@+id/tabBtn5"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/tabBtn5"
                 style="@style/WHITE_CIRCLE_BTN"
                 android:layout_margin="5dp"
                 android:src="@drawable/ic_pill"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <fragment
-        android:id="@+id/frame"
-        android:name="com.chocobi.groot.view.plant.PlantDetailTab1Fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:tag="info_sub"/>
+    <FrameLayout
+        android:id="@+id/tab_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <fragment
+            android:id="@+id/frame"
+            android:name="com.chocobi.groot.view.plant.PlantDetailTab1Fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:tag="info_sub" />
+    </FrameLayout>
 
     <Button
         android:layout_width="wrap_content"

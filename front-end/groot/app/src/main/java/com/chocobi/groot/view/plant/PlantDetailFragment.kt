@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import com.chocobi.groot.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -34,8 +36,42 @@ class PlantDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        var rootView = inflater.inflate(R.layout.fragment_plant_detail, container, false)
+
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_plant_detail, container, false)
+        return rootView  }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val tab1 = PlantDetailTab1Fragment()
+        val tab2 = PlantDetailTab2Fragment()
+        val tab3 = PlantDetailTab3Fragment()
+        val tab4 = PlantDetailTab4Fragment()
+        val tab5 = PlantDetailTab5Fragment()
+
+        var tabBtn1 = view.findViewById<ImageButton>(R.id.tabBtn1)
+        var tabBtn2 = view.findViewById<ImageButton>(R.id.tabBtn2)
+        var tabBtn3 = view.findViewById<ImageButton>(R.id.tabBtn3)
+        var tabBtn4 = view.findViewById<ImageButton>(R.id.tabBtn4)
+        var tabBtn5 = view.findViewById<ImageButton>(R.id.tabBtn5)
+        tabBtn1.setOnClickListener {
+            childFragmentManager.beginTransaction().replace(R.id.tab_container, tab1).commit()
+        }
+        tabBtn2.setOnClickListener {
+            childFragmentManager.beginTransaction().replace(R.id.tab_container, tab2).commit()
+        }
+        tabBtn3.setOnClickListener {
+            childFragmentManager.beginTransaction().replace(R.id.tab_container, tab3).commit()
+        }
+        tabBtn4.setOnClickListener {
+            childFragmentManager.beginTransaction().replace(R.id.tab_container, tab4).commit()
+        }
+        tabBtn5.setOnClickListener {
+            childFragmentManager.beginTransaction().replace(R.id.tab_container, tab5).commit()
+        }
+
+
     }
 
     companion object {
