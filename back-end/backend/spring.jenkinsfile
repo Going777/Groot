@@ -21,7 +21,7 @@ pipeline {
           sh 'ls -l'
           echo 'start build'
           sh 'chmod +x ./gradlew'
-          sh './gradlew clean buiid'
+          sh './gradlew clean build'
         }
       }
     }
