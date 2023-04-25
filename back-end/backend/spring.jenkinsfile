@@ -1,0 +1,16 @@
+pipeline {
+  agent any
+  stages {
+    stage('init') {
+      steps {
+        echo 'init pipeline'
+      }
+    }
+    stage('cofing') {
+      steps {
+        echo 'copy configuration files'
+        pwd
+      }
+    }
+  }
+}
