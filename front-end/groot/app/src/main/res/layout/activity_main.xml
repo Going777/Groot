@@ -43,7 +43,8 @@
         app:menu="@menu/bottom_navigation"
         app:backgroundTint="@color/white"
         app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
-        app:labelVisibilityMode="unlabeled"/>
+        app:labelVisibilityMode="unlabeled"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

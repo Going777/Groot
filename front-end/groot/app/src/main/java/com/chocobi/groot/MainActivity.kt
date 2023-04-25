@@ -41,6 +41,14 @@ class MainActivity : AppCompatActivity() {
                     .commit()
             }
 
+            "search" -> {
+                val searchFragment = SearchFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, searchFragment)
+                    .commit()
+            }
+
             "search_detail" -> {
                 Log.d("MainActivity", "search detail 호출")
                 val searchDetailFragment = SearchDetailFragment()
@@ -192,6 +200,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
+
 //        네비게이션 바 조작
         // 하단 탭이 눌렸을 때 화면을 전환하기 위해선 이벤트 처리하기 위해 BottomNavigationView 객체 생성
         var bnv_main = findViewById(R.id.bottom_navigation) as BottomNavigationView
@@ -228,7 +237,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
-            selectedItemId = R.id.plantFragment
+//            selectedItemId = R.id.plantFragment
+//            1차 릴리즈 : search를 메인으로
+            selectedItemId = R.id.searchFragment
         }
 
         //        특정 프레그먼트로 이동
@@ -239,8 +250,6 @@ class MainActivity : AppCompatActivity() {
             bnv_main.run { selectedItemId = R.id.searchFragment }
             changeFragment(toPage)
         }
-
-
     }
 
 
