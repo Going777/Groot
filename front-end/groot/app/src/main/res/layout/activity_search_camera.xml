@@ -54,7 +54,7 @@
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="축전"
+                    android:text="산세베리아"
                     android:textColor="@color/white"
                     android:textSize="30dp"
                     android:textStyle="bold"
@@ -65,7 +65,7 @@
                     android:id="@+id/textView3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Conophytum"
+                    android:text="Sansevieria trifasciata"
                     android:textColor="@color/white"
                     tools:layout_editor_absoluteX="141dp"
                     tools:layout_editor_absoluteY="344dp" />
@@ -80,10 +80,10 @@
 
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/percentText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="96%"
+                    android:text="%"
                     android:textColor="@color/white"
                     android:textSize="35dp"
                     android:textStyle="bold"
