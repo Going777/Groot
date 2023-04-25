@@ -31,4 +31,14 @@
 <!--        FAB 버튼 아이콘색-->
         <item name="colorOnContainer">@color/main</item>
     </style>
+
+
+<!--    button-->
+
+        <style name = "WHITE_CIRCLE_BTN">
+            <item name = "android:layout_width">50dp</item>
+            <item name = "android:layout_height">50dp</item>
+            <item name = "android:background">@drawable/circle_button_white</item>
+        </style>
+
 </resources>
