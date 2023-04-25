@@ -2,43 +2,108 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Groot" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-         <item name="colorPrimary">@color/main</item>
+        <item name="colorPrimary">@color/main</item>
         <item name="colorOnSecondaryContainer">@color/white</item>
         <item name="colorOnSurfaceVariant">@color/grey</item>
 
-        <item name="extendedFloatingActionButtonStyle">@style/Widget.App.ExtendedFloatingActionButton</item>
+        <item name="extendedFloatingActionButtonStyle">
+            @style/Widget.App.ExtendedFloatingActionButton
+        </item>
         <item name="floatingActionButtonStyle">@style/Widget.App.FloatingActionButton</item>
     </style>
 
     <style name="Theme.Groot" parent="Base.Theme.Groot" />
 
-<!--    bottom navigation bar active indicator-->
+    <!--    bottom navigation bar active indicator-->
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/main</item>
     </style>
 
 
-<!--FAB-->
+    <!--FAB-->
     <style name="Widget.App.ExtendedFloatingActionButton" parent="Widget.Material3.ExtendedFloatingActionButton.Icon.Primary">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
     </style>
+
     <style name="Widget.App.FloatingActionButton" parent="Widget.Material3.FloatingActionButton.Primary">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
     </style>
+
     <style name="ThemeOverlay.App.FloatingActionButton" parent="">
-<!--        FAB 버튼 배경색-->
+        <!--        FAB 버튼 배경색-->
         <item name="colorContainer">@color/white</item>
-<!--        FAB 버튼 아이콘색-->
+        <!--        FAB 버튼 아이콘색-->
         <item name="colorOnContainer">@color/main</item>
     </style>
 
 
-<!--    button-->
+    <!--    button-->
 
-        <style name = "WHITE_CIRCLE_BTN">
-            <item name = "android:layout_width">50dp</item>
-            <item name = "android:layout_height">50dp</item>
-            <item name = "android:background">@drawable/circle_button_white</item>
-        </style>
+
+    <style name="BASIC_ICON_BTN">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <style name="BASIC_ICON_BTN_SELECTED" parent="BASIC_ICON_BTN">
+        <item name="android:tint">@color/white</item>
+    </style>
+
+    <style name="WHITE_CIRCLE_BTN" parent="BASIC_ICON_BTN">
+        <item name="android:background">@drawable/circle_button_white</item>
+
+    </style>
+
+    <style name="TAB_BTN_WATER_SELECTED" parent="BASIC_ICON_BTN_SELECTED">
+        <item name="android:background">@drawable/circle_button_water</item>
+        <item name="android:src">@drawable/ic_water</item>
+    </style>
+
+    <style name="TAB_BTN_WATER" parent="WHITE_CIRCLE_BTN">
+        <item name="android:tint">@color/water</item>
+        <item name="android:src">@drawable/ic_water</item>
+    </style>
+
+
+    <style name="TAB_BTN_POT_SELECTED" parent="BASIC_ICON_BTN_SELECTED">
+        <item name="android:background">@drawable/circle_button_pot</item>
+        <item name="android:src">@drawable/ic_pot</item>
+    </style>
+
+    <style name="TAB_BTN_POT" parent="WHITE_CIRCLE_BTN">
+        <item name="android:tint">@color/pot</item>
+        <item name="android:src">@drawable/ic_pot</item>
+    </style>
+
+    <style name="TAB_BTN_BUG_SELECTED" parent="BASIC_ICON_BTN_SELECTED">
+        <item name="android:background">@drawable/circle_button_bug</item>
+        <item name="android:src">@drawable/ic_bug</item>
+    </style>
+
+    <style name="TAB_BTN_BUG" parent="WHITE_CIRCLE_BTN">
+        <item name="android:tint">@color/bug</item>
+        <item name="android:src">@drawable/ic_bug</item>
+    </style>
+
+    <style name="TAB_BTN_SUN_SELECTED" parent="BASIC_ICON_BTN_SELECTED">
+        <item name="android:background">@drawable/circle_button_sun</item>
+        <item name="android:src">@drawable/ic_sunny</item>
+    </style>
+
+    <style name="TAB_BTN_SUN" parent="WHITE_CIRCLE_BTN">
+        <item name="android:tint">@color/sun</item>
+        <item name="android:src">@drawable/ic_sunny</item>
+    </style>
+
+    <style name="TAB_BTN_PILL_SELECTED" parent="BASIC_ICON_BTN_SELECTED">
+        <item name="android:background">@drawable/circle_button_pill</item>
+        <item name="android:src">@drawable/ic_pill</item>
+    </style>
+
+    <style name="TAB_BTN_PILL" parent="WHITE_CIRCLE_BTN">
+        <item name="android:tint">@color/pill</item>
+        <item name="android:src">@drawable/ic_pill</item>
+    </style>
 
 </resources>

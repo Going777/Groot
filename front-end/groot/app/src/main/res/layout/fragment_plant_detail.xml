@@ -53,49 +53,41 @@
 
             <ImageButton
                 android:id="@+id/tabBtn1"
-                style="@style/WHITE_CIRCLE_BTN"
-                android:layout_margin="5dp"
-                android:src="@drawable/ic_water"
-                android:tint="@color/water"
+                style="@style/TAB_BTN_WATER"
+                android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tabBtn2"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/tabBtn2"
-                style="@style/WHITE_CIRCLE_BTN"
-                android:layout_margin="5dp"
-                android:src="@drawable/ic_pot"
-                android:tint="@color/pot"
+                style="@style/TAB_BTN_POT"
+                android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tabBtn3"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/tabBtn3"
-                style="@style/WHITE_CIRCLE_BTN"
-                android:layout_margin="5dp"
-                android:src="@drawable/ic_bug"
-                android:tint="@color/bug"
+                style="@style/TAB_BTN_BUG"
+                android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tabBtn4"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/tabBtn4"
-                style="@style/WHITE_CIRCLE_BTN"
-                android:layout_margin="5dp"
-                android:src="@drawable/ic_sunny"
-                android:tint="@color/sun"
+                style="@style/TAB_BTN_SUN"
+                android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/tabBtn5"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
                 android:id="@+id/tabBtn5"
-                style="@style/WHITE_CIRCLE_BTN"
-                android:layout_margin="5dp"
-                android:src="@drawable/ic_pill"
+                style="@style/TAB_BTN_PILL"
+                android:layout_margin="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -104,8 +96,12 @@
 
     <FrameLayout
         android:id="@+id/tab_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/round_rectangle"
+        android:elevation="4dp"
+        android:padding="20dp">
 
         <fragment
             android:id="@+id/frame"
