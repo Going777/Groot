@@ -16,12 +16,13 @@ pipeline {
     stage('build') {
       steps {
         echo 'move directory'
-        sh 'cd ./back-end/backend/'
-        sh 'pwd'
-        sh 'ls -l'
-        echo 'start build'
-        sh 'chmod +x ./gradlew'
-        sh './gradlew clean buiild'
+        dir('./back-end/backend/') {
+          sh 'pwd'
+          sh 'ls -l'
+          echo 'start build'
+          sh 'chmod +x ./gradlew'
+          sh './gradlew clean buiild'
+        }
       }
     }
     stage('deploy') {
