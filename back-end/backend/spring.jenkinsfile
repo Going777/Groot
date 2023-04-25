@@ -10,7 +10,7 @@ pipeline {
       steps {
         echo 'copy configuration files'
         sh 'pwd'
-        sh 'cp /jenkins/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
       }
     }
   }
