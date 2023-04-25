@@ -32,7 +32,7 @@ pipeline {
           echo 'build docker image'
           sh 'docker build .'
           echo 'run docker image'
-          sh 'docker run -name spring -d -p 8080:8080'
+          sh 'docker run --name spring -d -p 8080:8080'
         }
       }
     }
