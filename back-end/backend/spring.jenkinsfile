@@ -28,10 +28,12 @@ pipeline {
     stage('deploy') {
       steps {
         sh 'pwd'
-        echo 'build docker image'
-        sh 'docker build .'
-        echo 'run docker image'
-        sh 'docker run -name spring -d -p 8080:8080'
+        dir('./back-end/backend/') {
+          echo 'build docker image'
+          sh 'docker build .'
+          echo 'run docker image'
+          sh 'docker run -name spring -d -p 8080:8080'
+        }
       }
     }
   }
