@@ -237,9 +237,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
-//            selectedItemId = R.id.plantFragment
+            selectedItemId = R.id.plantFragment
 //            1차 릴리즈 : search를 메인으로
-            selectedItemId = R.id.searchFragment
+//            selectedItemId = R.id.searchFragment
         }
 
         //        특정 프레그먼트로 이동
