@@ -30,7 +30,7 @@ pipeline {
         CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{$1\'}'
       }
       steps {
-        echo '$CONTAINER_ID'
+        echo '${CONTAINER_ID}'
         sh 'pwd'
         dir('./back-end/backend/') {
           echo 'build docker image'
