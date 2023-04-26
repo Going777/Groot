@@ -30,9 +30,9 @@ pipeline {
         sh 'pwd'
         dir('./back-end/backend/') {
           echo 'build docker image'
-          sh 'docker build .'
+          sh 'docker build -t springboot .'
           echo 'run docker image'
-          sh 'docker run --name spring -d -p 8080:8080'
+          sh 'docker run --name spring -d -p 8080:8080 springboot'
         }
       }
     }
