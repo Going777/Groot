@@ -27,11 +27,12 @@ pipeline {
     // }
     stage('deploy') {
       environment {
-        CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+        // CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+        CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}')
       }
       steps {
         script {
-          def output = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+          def output = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}')
           withEnv(['CONTAINER_I=' +  output.trim()]) {
             echo "${env.CONTAINER_I}"
           }
