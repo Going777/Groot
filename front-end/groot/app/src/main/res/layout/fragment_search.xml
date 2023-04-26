@@ -36,12 +36,160 @@
 
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="20dp">
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="난이도"
+                android:textStyle="bold" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip7"
+                    style="@style/BASIC_CHIP"
+                    android:text="쉬움" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip8"
+                    style="@style/BASIC_CHIP"
+                    android:text="보통" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip9"
+                    style="@style/BASIC_CHIP"
+                    android:text="어려움" />
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:text="빛 요구도"
+                android:layout_width="70dp"
+                android:textStyle="bold"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip10"
+                    style="@style/BASIC_CHIP"
+                    android:text="낮음"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip11"
+                    style="@style/BASIC_CHIP"
+                    android:text="중간"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip12"
+                    style="@style/BASIC_CHIP"
+                    android:text="높음"/>
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="70dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:text="생육 형태" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip13"
+                    style="@style/BASIC_CHIP"
+                    android:text="직립형"
+                    app:chipStartPadding="3dp"
+                    app:chipEndPadding="3dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip14"
+                    style="@style/BASIC_CHIP"
+                    android:text="관목형"
+                    app:chipStartPadding="3dp"
+                    app:chipEndPadding="3dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip15"
+                    style="@style/BASIC_CHIP"
+                    android:text="덩굴형"
+                    app:chipStartPadding="3dp"
+                    app:chipEndPadding="3dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip16"
+                    style="@style/BASIC_CHIP"
+                    android:text="다육형"
+                    app:chipStartPadding="3dp"
+                    app:chipEndPadding="3dp"/>
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="70dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:text="크기" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip17"
+                    style="@style/BASIC_CHIP"
+                    android:text="소형"
+                    />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip18"
+                    style="@style/BASIC_CHIP"
+                    android:text="중형"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip19"
+                    style="@style/BASIC_CHIP"
+                    android:text="대형"/>
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dictRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+        android:layout_height="wrap_content" />
 
 
     <ImageButton
