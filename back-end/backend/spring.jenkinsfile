@@ -31,15 +31,15 @@ pipeline {
         CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}')
       }
       steps {
-        script {
-          def output = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}')
-          withEnv(['CONTAINER_I=' +  output.trim()]) {
-            echo "${env.CONTAINER_I}"
-          }
-        }
+        // script {
+        //   def output = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}')
+        //   withEnv(['CONTAINER_I=' +  output.trim()]) {
+        //     echo "${env.CONTAINER_I}"
+        //   }
+        // }
         withEnv(['CONTAINER_ID']) {
           echo "${env.CONTAINER_ID}"
-          echo "$env.CONTAINER_ID"
+          // echo "$env.CONTAINER_ID"
         }
         sh 'pwd'
         dir('./back-end/backend/') {
