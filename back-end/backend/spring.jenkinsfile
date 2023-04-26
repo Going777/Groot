@@ -26,13 +26,20 @@ pipeline {
     //   }
     // }
     stage('deploy') {
-      // environment {
-      //   CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
-      // }
+      environment {
+        CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+      }
       steps {
-        def CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
-        echo "${CONTAINER_ID}"
-        echo "$CONTAINER_ID"
+        script {
+          def output = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+          withEnv(['CONTAINER_I=' +  output.trim()]) {
+            echo "${env.CONTAINER_I}"
+          }
+        }
+        withEnv(['CONTAINER_ID']) {
+          echo "${env.CONTAINER_ID}"
+          echo "$env.CONTAINER_ID"
+        }
         sh 'pwd'
         dir('./back-end/backend/') {
           echo 'build docker image'
