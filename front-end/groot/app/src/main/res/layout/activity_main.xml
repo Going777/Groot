@@ -10,14 +10,6 @@
         android:layout_height="match_parent"
         tools:context=".MainActivity">
 
-        <fragment
-            android:id="@+id/weather_framgent"
-            android:name="com.chocobi.groot.view.weather.WeatherFragment"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            />
 
         <FrameLayout
             android:id="@+id/fl_container"
@@ -28,7 +20,7 @@
             app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weather_framgent">
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <fragment

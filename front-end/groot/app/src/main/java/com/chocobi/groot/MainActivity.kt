@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.chocobi.groot.databinding.ActivityMainBinding
@@ -200,6 +202,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
+//      main에서만 날씨 fragment 보여주기
+        var frameLayout = findViewById<FrameLayout>(R.id.fl_container)
+
 
 //        네비게이션 바 조작
         // 하단 탭이 눌렸을 때 화면을 전환하기 위해선 이벤트 처리하기 위해 BottomNavigationView 객체 생성
@@ -215,24 +220,45 @@ class MainActivity : AppCompatActivity() {
                         val homeFragment = PlantFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, homeFragment).commit()
+                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
+                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+                        params.leftMargin = 0
+                        params.rightMargin = 0
+                        params.topMargin = 0
+                        frameLayout.layoutParams = params
                     }
 
                     R.id.searchFragment -> {
                         val boardFragment = SearchFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
+                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+                        params.leftMargin = 20
+                        params.rightMargin = 20
+                        params.topMargin = 20
+                        frameLayout.layoutParams = params
                     }
 
                     R.id.communityFragment -> {
                         val boardFragment = CommunityFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
+                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+                        params.leftMargin = 20
+                        params.rightMargin = 20
+                        params.topMargin = 20
+                        frameLayout.layoutParams = params
                     }
 
                     R.id.userFragment -> {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
+                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+                        params.leftMargin = 20
+                        params.rightMargin = 20
+                        params.topMargin = 20
+                        frameLayout.layoutParams = params
                     }
                 }
                 true
