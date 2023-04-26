@@ -213,5 +213,13 @@
         android:src="@drawable/ic_camera"
         android:tint="@color/main" />
 
+    <ImageButton
+        android:id="@+id/galleryBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_camera"
+        android:layout_gravity="center|right"/>
+
+
 
 </LinearLayout>

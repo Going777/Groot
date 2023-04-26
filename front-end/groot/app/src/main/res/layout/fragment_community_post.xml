@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:id="@+id/community_post_container"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,8 +9,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context=".view.community.CommunityPostFragment"
     android:orientation="vertical">
-
-    <LinearLayout
+`   <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="40dp">
 
@@ -16,19 +17,21 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             app:cardBackgroundColor="@color/main"
-            app:cardCornerRadius="40dp">
+            app:cardCornerRadius="40dp"
+            tools:ignore="MissingConstraints">
 
             <ImageButton
+                android:id="@+id/backBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/main"
                 android:src="@drawable/ic_back"/>
         </androidx.cardview.widget.CardView>
-
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:gravity="center">
+            android:gravity="center"
+            tools:ignore="MissingConstraints">
 
             <ImageView
                 android:layout_width="25dp"
@@ -44,7 +47,7 @@
                 android:textSize="20dp" />
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -57,7 +60,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="0">
 
         <androidx.cardview.widget.CardView
             android:layout_width="fill_parent"
@@ -86,11 +90,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|right"
-                android:layout_margin="8dp"
-                android:hint=" / 30" />
+                android:layout_margin="6dp"
+                android:hint="0 / 30" />
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/imageInput"
             android:layout_width="65dp"
             android:layout_height="65dp"
             android:layout_weight="0"
@@ -99,17 +104,16 @@
             card_view:cardElevation="0dp"
             card_view:cardCornerRadius="7dp">
             <ImageButton
-                android:id="@+id/imageInput"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_camera"
                 android:background="#E9F3ED"/>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:layout_weight="0"
         android:layout_marginTop="12dp"
         card_view:cardBackgroundColor="#E9F3ED"
         card_view:cardElevation="0dp"
@@ -122,10 +126,12 @@
             android:paddingHorizontal="20dp"
             android:layout_marginVertical="10dp"
             android:paddingVertical="12dp"
-            android:inputType="text"
+            android:inputType="textMultiLine"
+            android:scrollbars="vertical"
             android:maxLength="1500"
             android:gravity="top"
-            android:background="#E9F3ED"/>
+            android:background="#E9F3ED"
+            android:scrollHorizontally="false"/>
         <!--        app:layout_constraintEnd_toEndOf="parent"-->
         <!--        app:layout_constraintStart_toStartOf="parent"-->
         <!--        app:layout_constraintTop_toTopOf="parent" />-->
@@ -134,8 +140,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:layout_margin="8dp"
-            android:hint=" / 1500" />
+            android:layout_margin="6dp"
+            android:hint="0 / 1500" />
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
@@ -157,16 +163,16 @@
                 android:layout_weight="0"
                 android:src="@drawable/ic_hashtag" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <EditText
                 android:id="@+id/tagInput"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_marginHorizontal="10dp"
                 android:layout_weight="1"
                 android:background="@color/white"
                 android:gravity="left|center_vertical"
                 android:outlineProvider="none"
-                android:text="태그 입력" />
+                android:hint="태그 입력" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
