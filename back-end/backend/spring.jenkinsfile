@@ -37,10 +37,7 @@ pipeline {
         //     echo "${env.CONTAINER_I}"
         //   }
         // }
-        withEnv() {
-          echo "${env.CONTAINER_ID}"
-          // echo "$env.CONTAINER_ID"
-        }
+        echo "${env.CONTAINER_ID}"
         sh 'pwd'
         dir('./back-end/backend/') {
           echo 'build docker image'
