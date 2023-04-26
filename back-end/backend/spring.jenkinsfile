@@ -55,5 +55,12 @@ pipeline {
         }
       }
     }
+    // will be integrated with python server clean
+    stage('clean') {
+      steps {
+        echo 'clean unused image'
+        sh 'docker image prune'
+      }
+    }
   }
 }
