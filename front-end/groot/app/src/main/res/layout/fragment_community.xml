@@ -20,7 +20,7 @@
         android:id="@+id/community_pager"
         android:layout_width="match_parent"
         android:layout_height="683dp"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/communityPostFab"

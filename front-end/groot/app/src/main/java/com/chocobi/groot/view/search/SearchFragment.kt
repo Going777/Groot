@@ -25,6 +25,7 @@ class SearchFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private val PERMISSION_CAMERA = 0
+    private val PERMISSON_GALLERY = 1
 
 
     private fun setupRecyclerView() {
@@ -55,6 +56,12 @@ class SearchFragment : Fragment() {
         val cameraBtn = rootView.findViewById<ImageButton>(R.id.cameraBtn)
         cameraBtn.setOnClickListener {
             mActivity.requirePermissions(arrayOf(android.Manifest.permission.CAMERA),  PERMISSION_CAMERA)
+        }
+//        Gallery 버튼 클릭
+        val galleryBtn = rootView.findViewById<ImageButton>(R.id.galleryBtn)
+        galleryBtn.setOnClickListener {
+            Log.d("SearchFragment", "////////////////////////////////////////////////////////")
+            mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSON_GALLERY)
         }
 
         // Inflate the layout for this fragment
