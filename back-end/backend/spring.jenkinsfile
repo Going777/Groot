@@ -59,7 +59,7 @@ pipeline {
     stage('clean') {
       steps {
         echo 'clean unused image'
-        sh 'docker image prune'
+        sh 'docker image prune --force'
       }
     }
   }
