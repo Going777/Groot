@@ -1,0 +1,40 @@
+pipeline {
+  agent any
+  stages {
+    stage('init') {
+      steps {
+        echo 'init pipeline'
+      }
+    }
+    stage('cofing') {
+      steps {
+        echo 'copy configuration files'
+        sh 'pwd'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
+      }
+    }
+    stage('build') {
+      steps {
+        echo 'move directory'
+        dir('./back-end/backend/') {
+          sh 'pwd'
+          sh 'ls -l'
+          echo 'start build'
+          sh 'chmod +x ./gradlew'
+          sh './gradlew clean build'
+        }
+      }
+    }
+    stage('deploy') {
+      steps {
+        sh 'pwd'
+        dir('./back-end/backend/') {
+          echo 'build docker image'
+          sh 'docker build -t springboot .'
+          echo 'run docker image'
+          sh 'docker run --name spring -d -p 8080:8080 springboot'
+        }
+      }
+    }
+  }
+}
