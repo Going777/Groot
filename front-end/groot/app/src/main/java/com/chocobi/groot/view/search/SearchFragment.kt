@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -87,10 +88,16 @@ class SearchFragment : Fragment() {
 
 
         val rv = rootView.findViewById<RecyclerView>(R.id.dictRecyclerView)
-Log.d("SearchFragment", dictItems.toString())
+
         val rvAdapter = DictRVAdapter(dictItems)
         rv.layoutManager = GridLayoutManager(activity, 3)
         rv.adapter = rvAdapter
+
+        rvAdapter.itemClick = object : DictRVAdapter.ItemClick {
+            override fun onClick(view: View, position: Int) {
+                mActivity.changeFragment("search_detail")
+            }
+        }
 
         // Inflate the layout for this fragment
         return rootView
