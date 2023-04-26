@@ -6,30 +6,31 @@ pipeline {
         echo 'init pipeline'
       }
     }
-    stage('cofing') {
-      steps {
-        echo 'copy configuration files'
-        sh 'pwd'
-        sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
-      }
-    }
-    stage('build') {
-      steps {
-        echo 'move directory'
-        dir('./back-end/backend/') {
-          sh 'pwd'
-          sh 'ls -l'
-          echo 'start build'
-          sh 'chmod +x ./gradlew'
-          sh './gradlew clean build'
-        }
-      }
-    }
+    // stage('cofing') {
+    //   steps {
+    //     echo 'copy configuration files'
+    //     sh 'pwd'
+    //     sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
+    //   }
+    // }
+    // stage('build') {
+    //   steps {
+    //     echo 'move directory'
+    //     dir('./back-end/backend/') {
+    //       sh 'pwd'
+    //       sh 'ls -l'
+    //       echo 'start build'
+    //       sh 'chmod +x ./gradlew'
+    //       sh './gradlew clean build'
+    //     }
+    //   }
+    // }
     stage('deploy') {
-      environment {
-        CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
-      }
+      // environment {
+      //   CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+      // }
       steps {
+        def CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
         echo "${CONTAINER_ID}"
         echo "$CONTAINER_ID"
         sh 'pwd'
