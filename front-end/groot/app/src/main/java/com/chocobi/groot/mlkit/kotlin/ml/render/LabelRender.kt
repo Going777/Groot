@@ -16,11 +16,13 @@
 
 package com.chocobi.groot.mlkit.kotlin.ml.render
 
+import com.chocobi.groot.mlkit.java.common.samplerender.Framebuffer
 import com.google.ar.core.Pose
 import com.chocobi.groot.mlkit.java.common.samplerender.Mesh
 import com.chocobi.groot.mlkit.java.common.samplerender.SampleRender
 import com.chocobi.groot.mlkit.java.common.samplerender.Shader
 import com.chocobi.groot.mlkit.java.common.samplerender.VertexBuffer
+
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
@@ -80,7 +82,10 @@ class LabelRender {
   lateinit var mesh: Mesh
   lateinit var shader: Shader
 
+
   fun onSurfaceCreated(render: SampleRender) {
+
+
     shader =
       Shader.createFromAssets(render, "shaders/label.vert", "shaders/label.frag", null)
         .setBlend(
@@ -96,6 +101,7 @@ class LabelRender {
         VertexBuffer(render, 2, SQUARE_TEX_COORDS_BUFFER),
       )
     mesh = Mesh(render, Mesh.PrimitiveMode.TRIANGLE_STRIP, null, vertexBuffers)
+
   }
 
   val labelOrigin = FloatArray(3)
@@ -119,6 +125,11 @@ class LabelRender {
       .setVec3("u_LabelOrigin", labelOrigin)
       .setVec3("u_CameraPos", cameraPose.translation)
       .setTexture("uTexture", cache.get(render, label))
+
+
     render.draw(mesh, shader)
+
   }
+
 }
+
