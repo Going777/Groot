@@ -1,5 +1,6 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class DiaryEntity extends BaseEntity{
     private Long potId;
 
     @Column(name = "user_id", insertable = false, updatable = false)
-    private Long userPK;
+    private Long userId;
 
     @Column(name = "img_path")
     private String imgPath;
@@ -47,9 +48,11 @@ public class DiaryEntity extends BaseEntity{
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private UserEntity userEntity;
 
     @ManyToOne(targetEntity = PotEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "pot_id")
+    @JsonBackReference
     private PotEntity potEntity;
 }

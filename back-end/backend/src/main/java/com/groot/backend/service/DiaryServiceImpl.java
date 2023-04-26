@@ -5,15 +5,24 @@ import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.entity.DiaryEntity;
 import com.groot.backend.repository.DiaryRepository;
 //import com.groot.backend.util.S3Uploader;
+import com.groot.backend.repository.PotRepository;
+import com.groot.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +31,10 @@ import java.io.IOException;
 public class DiaryServiceImpl implements DiaryService{
     private final DiaryRepository diaryRepository;
 
+    private final UserRepository userRepository;
+
+    private final PotRepository potRepository;
+
 //    @Autowired
 //    private S3Uploader s3Uploader;
 
@@ -29,13 +42,14 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public DiaryEntity saveDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException {
         String storedFileName = null;
-        if(!image.isEmpty()){
+        if(image==null){
 //            storedFileName = s3Uploader.upload(image, "images");
         }
+        log.info("PK"+userId);
         DiaryEntity diary = DiaryEntity.builder()
                 .bug(diaryDTO.getBug()?true:false)
-                .potId(diaryDTO.getPotId())
-                .userPK(diaryDTO.getUserPK())
+//                .potEntity(potRepository.findById(diaryDTO.getPotId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 화분을 찾을 수 없습니다.")))
+                .userEntity(userRepository.findById(userId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다.")))
                 .sun(diaryDTO.getSun()?true:false)
                 .content(diaryDTO.getContent())
                 .imgPath(storedFileName)
@@ -48,16 +62,16 @@ public class DiaryServiceImpl implements DiaryService{
 
     @Override
     public DiaryEntity updateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException {
-//        DiaryEntity diaryEntity = diaryRepository.findById(diaryDTO.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
-        DiaryEntity diaryEntity = null;
+        DiaryEntity diaryEntity = diaryRepository.findById(diaryDTO.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
+//        DiaryEntity diaryEntity = null;
         String storedFileName = null;
-        if(!image.isEmpty()){
+        if(image==null){
 //            storedFileName = s3Uploader.upload(image, "images");
         }
         DiaryEntity newDiary = DiaryEntity.builder()
                 .id(diaryEntity.getId())
-                .userPK(diaryEntity.getUserPK())
-                .potId(diaryEntity.getPotId())
+                .userEntity(diaryEntity.getUserEntity())
+                .potEntity(diaryEntity.getPotEntity())
                 .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():diaryEntity.getBug())
                 .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():diaryEntity.getSun())
                 .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():diaryEntity.getPruning())
@@ -70,7 +84,7 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public Boolean deleteDiary(Long userId, Long diaryId) {
+    public Boolean deleteDiary(Long diaryId) {
         if(diaryRepository.existsById(diaryId)){
             diaryRepository.deleteById(diaryId);
             return true;
@@ -82,4 +96,30 @@ public class DiaryServiceImpl implements DiaryService{
     public DiaryEntity detailDiary(Long diaryId) {
         return diaryRepository.findById(diaryId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
     }
+
+    @Override
+    public Page<DiaryEntity> diaryListByPotId(Long potId, long page, long size) {
+        PageRequest pageRequest = PageRequest.of((int)page, (int)size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<DiaryEntity> result = diaryRepository.findAllByPotId(potId, pageRequest);
+
+        return result;
+    }
+
+    @Override
+    public List<DiaryEntity> weeklyDiaries() {
+        Calendar cal = Calendar.getInstance();
+        Date now = new Date();
+        cal.setTime(now);
+        cal.add(Calendar.DATE, -7);
+        SimpleDateFormat sDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String nowFormat = sDate.format(now);
+        String pastFormat = sDate.format(cal.getTime());
+
+        log.info(nowFormat);
+
+        List<DiaryEntity> result = diaryRepository.findAllByDate(nowFormat);
+        return result;
+    }
+
+
 }

@@ -1,5 +1,7 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -66,12 +68,15 @@ public class PotEntity extends BaseEntity{
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private UserEntity userEntity;
 
     @OneToMany(mappedBy = "potEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<DiaryEntity> diaryEntities;
 
     @ManyToOne(targetEntity = PlantEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "plant_id")
+    @JsonBackReference
     private PlantEntity plantEntity;
 }
