@@ -11,10 +11,10 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
+import com.chocobi.groot.view.plant.PlantDetailFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
 import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchCameraActivity
@@ -25,10 +25,14 @@ import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
     //    private lateinit var binding: ActivityMainBinding
     private val PERMISSION_CAMERA = 0
     private val REQUEST_CAMERA = 1
+    private val PERMISSON_GALLERY = 2
+    private val REQUEST_STORAGE = 3
+
 
     //        fragment 조작
     fun changeFragment(index: String) {
@@ -38,6 +42,14 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, plantDiaryFragment)
+                    .commit()
+            }
+
+            "plant_detail" -> {
+                val plantDetailFragment = PlantDetailFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, plantDetailFragment)
                     .commit()
             }
 
@@ -131,6 +143,7 @@ class MainActivity : AppCompatActivity() {
 
         when (requestCode) {
             PERMISSION_CAMERA -> openCamera()
+            PERMISSON_GALLERY -> openGallery()
         }
     }
 
@@ -139,6 +152,12 @@ class MainActivity : AppCompatActivity() {
             PERMISSION_CAMERA -> Toast.makeText(
                 this,
                 "카메라 권한을 승인해야 카메라를 사용할 수 있습니다.",
+                Toast.LENGTH_LONG
+            ).show()
+
+            PERMISSON_GALLERY -> Toast.makeText(
+                this,
+                "저장소 권한을 승인해야 앨범에서 이미지를 불러올 수 있습니다.",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -155,6 +174,18 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
+    }
+//    private fun openGallery() {
+//        val intent = Intent(Intent.ACTION_PICK)
+//        intent.type = MediaStore.Images.Media.CONTENT_TYPE
+//        startActivityForResult(intent, REQUEST_STORAGE)
+//    }
+    private fun openGallery() {
+    val maxNumPhotosAndVideos = 3
+    val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+    intent.type="images/*"
+    intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxNumPhotosAndVideos)
+    startActivityForResult(intent, REQUEST_STORAGE)
     }
 
     private fun newFileName(): String {
@@ -175,7 +206,7 @@ class MainActivity : AppCompatActivity() {
 
     /** 카메라 및 앨범 Intent 결과
      * */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Unit {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
@@ -189,8 +220,23 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
+                REQUEST_STORAGE -> {
+//                    data?.data?.let { uri ->
+//                        val intent = Intent( this, SearchGalleryActivity::class.java)
+//                        intent.putExtra("imageUri", uri.toString())
+//                        startActivity(intent)
+//                    }
+                    var i = 0
+                    while (i < data?.clipData!!.itemCount) {
+                        Log.d("MainActivity", "test")
+                    }
+                }
             }
         }
+
+//        // Fragment에서 onActivityResult() 함수를 호출
+//        val fragment = supportFragmentManager.findFragmentById(R.id.imageInput)
+//        fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
 //    ============================================================
@@ -198,6 +244,14 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .add(R.id.imageInput, CommunityPostFragment())
+//                .commit()
+//        }
+
+
 
 
 
@@ -251,8 +305,6 @@ class MainActivity : AppCompatActivity() {
             changeFragment(toPage)
         }
     }
-
-
 }
 
 
