@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 
@@ -39,6 +42,8 @@ class SearchFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+
     }
 
     override fun onCreateView(
@@ -56,6 +61,36 @@ class SearchFragment : Fragment() {
         cameraBtn.setOnClickListener {
             mActivity.requirePermissions(arrayOf(android.Manifest.permission.CAMERA),  PERMISSION_CAMERA)
         }
+
+
+//        검색 결과 나타내기
+        val dictItems = mutableListOf<String>()
+
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+        dictItems.add("산세베리아")
+
+
+        val rv = rootView.findViewById<RecyclerView>(R.id.dictRecyclerView)
+Log.d("SearchFragment", dictItems.toString())
+        val rvAdapter = DictRVAdapter(dictItems)
+        rv.layoutManager = GridLayoutManager(activity, 3)
+        rv.adapter = rvAdapter
 
         // Inflate the layout for this fragment
         return rootView
