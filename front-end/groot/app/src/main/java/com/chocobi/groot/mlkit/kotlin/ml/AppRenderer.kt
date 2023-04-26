@@ -48,6 +48,7 @@ import com.chocobi.groot.mlkit.java.common.samplerender.Texture
 import com.chocobi.groot.mlkit.java.common.samplerender.arcore.SpecularCubemapFilter
 import com.chocobi.groot.mlkit.kotlin.ml.render.PawnRender
 import com.google.ar.core.Trackable
+import java.io.IOException
 import kotlin.math.log
 
 /** Renders the ML application into using our sample Renderer. */
@@ -255,6 +256,20 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
             return
         }
 
+
+//        depth 설정
+        try {
+            backgroundRenderer.setUseDepthVisualization(
+                render,
+                activity.depthSettings.depthColorVisualizationEnabled()
+            )
+            backgroundRenderer.setUseOcclusion(render, activity.depthSettings.useDepthForOcclusion())
+        } catch (e: IOException) {
+            Log.e(TAG, "Failed to read a required asset file", e)
+//            showError("Failed to read a required asset file: $e")
+            return
+        }
+
         // Draw point cloud.
         frame.acquirePointCloud().use { pointCloud ->
             pointCloudRender.drawPointCloud(render, pointCloud, viewProjectionMatrix)
@@ -332,6 +347,7 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
             }
         }
 
+        render.clear(virtualSceneFramebuffer, 0f, 0f, 0f, 0f)
         // Draw labels at their anchor position.
         synchronized(arLabeledAnchors) {
             for (arDetectedObject in arLabeledAnchors) {
@@ -369,7 +385,8 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
                     render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
 
                 }
-//                pawnRenderer.draw(render, viewMatrix)
+                backgroundRenderer.drawVirtualScene(render, virtualSceneFramebuffer, 0.01f, 100f)
+
             }
         }
     }
