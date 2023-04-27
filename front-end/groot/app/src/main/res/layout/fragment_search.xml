@@ -13,7 +13,12 @@
     <!--        android:layout_height="match_parent"-->
     <!--        android:text="search" />-->
 
-
+    <ImageButton
+        android:id="@+id/cameraBtn"
+        style="@style/WHITE_CIRCLE_BTN"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_camera"
+        android:tint="@color/main" />
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
 
@@ -205,13 +210,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <ImageButton
-        android:id="@+id/cameraBtn"
-        style="@style/WHITE_CIRCLE_BTN"
-        android:layout_gravity="bottom"
-        android:layout_margin="10dp"
-        android:src="@drawable/ic_camera"
-        android:tint="@color/main" />
+
 
 
 </LinearLayout>

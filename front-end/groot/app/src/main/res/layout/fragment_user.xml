@@ -11,10 +11,11 @@
 
     <ImageButton
         android:id="@+id/settingBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/WHITE_CIRCLE_BTN"
+        android:layout_margin="10dp"
         android:src="@drawable/ic_setting"
-        android:layout_gravity="right"/>
+        android:layout_gravity="right"
+        android:tint="@color/main" />
 
 
     <com.google.android.material.tabs.TabLayout
