@@ -7,7 +7,7 @@ public interface ArticleService {
     boolean existedArticleId(Long articleId);
     boolean createArticle(ArticleDTO articleDTO);
     ArticleResponseDTO readArticle(Long articleId);
-
     boolean updateArticle(ArticleDTO articleDTO);
+    void deleteArticle(Long articleId);
 
 }

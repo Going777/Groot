@@ -92,6 +92,20 @@ public class ArticleController {
     }
 
     // 게시글 삭제
+    @DeleteMapping("/{articleId}")
+    public ResponseEntity deleteArticle(@PathVariable Long articleId){
+        resultMap = new HashMap<>();
+        if(!articleService.existedArticleId(articleId)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","게시글이 존재하지 않습니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        articleService.deleteArticle(articleId);
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg","게시글이 삭제되었습니다.");
+        return ResponseEntity.ok().body(resultMap);
+    }
 
     // 개별 게시글 북마크 등록/해제
 

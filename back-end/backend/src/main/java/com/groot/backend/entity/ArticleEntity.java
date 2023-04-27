@@ -48,4 +48,7 @@ public class ArticleEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "articleEntity", cascade = CascadeType.REMOVE)
     private List<ArticleImageEntity> articleImageEntityList;
+
+    @OneToMany(mappedBy = "articleEntity", cascade = CascadeType.REMOVE)
+    private List<ArticleTagEntity> articleTagEntityList;
 }

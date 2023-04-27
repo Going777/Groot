@@ -65,7 +65,6 @@ public class ArticleServiceImpl implements ArticleService{
         ArticleEntity savedArticleEntity = articleRepository.save(articleEntity);
 
         // 태크-게시물 테이블에 insert
-
         for(String tag : articleDTO.getTags()){
             ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
                     .articleEntity(articleRepository.findById(savedArticleEntity.getId()).orElseThrow())
@@ -214,7 +213,6 @@ public class ArticleServiceImpl implements ArticleService{
 
         // 태크-게시물 테이블에 insert
         for(String tag : articleDTO.getTags()){
-
             ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
                     .articleEntity(articleRepository.findById(savedArticleEntity.getId()).orElseThrow())
                     .tagEntity(tagRepository.findByName(tag))
@@ -224,6 +222,11 @@ public class ArticleServiceImpl implements ArticleService{
         }
 
         return true;
+    }
+
+    @Override
+    public void deleteArticle(Long articleId) {
+        articleRepository.deleteById(articleId);
     }
 
 
