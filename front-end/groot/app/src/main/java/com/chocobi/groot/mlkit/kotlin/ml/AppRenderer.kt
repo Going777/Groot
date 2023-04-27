@@ -175,7 +175,8 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
         virtualObjectAlbedoTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_albedo.png",
+                "models/T_Devil Tree_03.png",
+//                "models/pawn_albedo.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.SRGB
             )
@@ -183,7 +184,8 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
         virtualObjectAlbedoInstantPlacementTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_albedo_instant_placement.png",
+                "models/T_Devil Tree_03.png",
+//                "models/pawn_albedo_instant_placement.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.SRGB
             )
@@ -191,16 +193,20 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
         val virtualObjectPbrTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_roughness_metallic_ao.png",
+                "models/T_Devil Tree_03.png",
+//                "models/pawn_roughness_metallic_ao.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.LINEAR
             )
         virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
+//        virtualObjectMesh = Mesh.createFromAsset(render, "models/Devil_Tree_Candy.obj")
         virtualObjectShader =
             Shader.createFromAssets(
                 render,
-                "shaders/environmental_hdr.vert",
-                "shaders/environmental_hdr.frag",
+                "shaders/devil_tree.vert",
+//                "shaders/environmental_hdr.vert",
+                "shaders/devil_tree.frag",
+//                "shaders/environmental_hdr.frag",
                 mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
             )
                 .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)

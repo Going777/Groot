@@ -120,6 +120,10 @@ dependencies {
 //    implementation 'com.google.ar.sceneform:core:1.15.0'
 //    implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
 //    implementation 'com.google.ar.sceneform:plugin:1.15.0'
+    implementation ('com.google.ar.sceneform.ux:sceneform-ux:1.15.0') {
+        exclude group: 'com.google.ar.sceneform', module: 'core'
+        exclude group: 'com.android.support', module: 'support-compat'
+    }
 
 //    날씨 api에서 필요
     implementation 'com.loopj.android:android-async-http:1.4.11'
