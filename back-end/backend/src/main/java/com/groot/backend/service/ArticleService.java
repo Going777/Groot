@@ -8,4 +8,6 @@ public interface ArticleService {
     boolean createArticle(ArticleDTO articleDTO);
     ArticleResponseDTO readArticle(Long articleId);
 
+    boolean updateArticle(ArticleDTO articleDTO);
+
 }

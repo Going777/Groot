@@ -13,6 +13,7 @@ import javax.persistence.Column;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArticleDTO {
+    private Long articleId;
     private Long userPK;
 
     private String category;

@@ -47,6 +47,25 @@ public class ArticleController {
     // 카테고리별 게시글 리스트 조회
 
     // 게시글 수정
+    @PutMapping()
+    public ResponseEntity updateArticle(@RequestBody ArticleDTO articleDTO){
+        resultMap = new HashMap<>();
+        // 게시글 존재 여부 확인
+        if(!articleService.existedArticleId(articleDTO.getArticleId())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 게시글입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        if(!articleService.updateArticle(articleDTO)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","게시글 수정 실패");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg","게시글이 수정되었습니다.");
+        return ResponseEntity.ok().body(resultMap);
+    }
 
     // 개별 게시글 조회
     @GetMapping("/{articleId}")

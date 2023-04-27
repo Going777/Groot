@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,15 +39,16 @@ public class ArticleServiceImpl implements ArticleService{
         // redis에 존재하는지 탐색
 
         // redis에 태그 insert
+        // redis에 새로 insert된 태그 리스트
+        String[] newTags = articleDTO.getTags();
 
         // 태그테이블에 태그 insert
-        List<TagEntity> savedTagEntities = new ArrayList<>();
-        for(String tag : articleDTO.getTags()){
+        for(String tag : newTags){
             TagEntity tagEntity = TagEntity.builder()
                     .name(tag)
                     .build();
 
-            savedTagEntities.add(tagRepository.save(tagEntity));
+            tagRepository.save(tagEntity);
         }
 
         // article 테이블에 insert
@@ -64,10 +66,10 @@ public class ArticleServiceImpl implements ArticleService{
 
         // 태크-게시물 테이블에 insert
 
-        for(TagEntity savedTagEntity : savedTagEntities){
+        for(String tag : articleDTO.getTags()){
             ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
                     .articleEntity(articleRepository.findById(savedArticleEntity.getId()).orElseThrow())
-                    .tagEntity(tagRepository.findById(savedTagEntity.getId()).orElseThrow())
+                    .tagEntity(tagRepository.findByName(tag))
                     .build();
 
             articleTagRepository.save(articleTagEntity);
@@ -111,9 +113,6 @@ public class ArticleServiceImpl implements ArticleService{
             commentCnt = comments.size();
         }
 
-
-
-
         // bookmark 여부 조회
         // 복합키 사용을 위한 id 등록
         ArticleBookmarkEntityPK articleBookmarkEntityPK = new ArticleBookmarkEntityPK();
@@ -140,13 +139,76 @@ public class ArticleServiceImpl implements ArticleService{
                 .content(articleEntity.getContent())
                 .shareStatus(articleEntity.getShareStatus())
                 .createTime(articleEntity.getCreatedDate())
-                .updateTime(articleEntity.getLastModifiedDate())
+                .updateTime(LocalDateTime.now())
                 .comments(comments)
                 .build();
 
         // image 조회
 
         return articleResponseDTO;
+    }
+
+    @Override
+    public boolean updateArticle(ArticleDTO articleDTO) {
+        // 이미지 테이블에 게시글PK + 이미지주소 insert
+
+        // redis에 존재하는지 탐색
+
+        // redis에 태그 insert
+        // redis에 새로 insert된 태그 리스트
+        String[] tags = articleDTO.getTags();
+        List<String> newTags = new ArrayList<>();
+        for(String tag : tags){
+            if(tagRepository.findByName(tag) == null){
+                newTags.add(tag);
+            }
+        }
+
+        // 태그테이블에 태그 insert
+        if(newTags != null){
+            for(String tag : newTags){
+                TagEntity tagEntity = TagEntity.builder()
+                        .name(tag)
+                        .build();
+
+                tagRepository.save(tagEntity);
+            }
+        }
+
+
+        // article 테이블에 insert
+        ArticleEntity articleEntity = ArticleEntity.builder()
+                .id(articleDTO.getArticleId())
+                .category(articleDTO.getCategory())
+                .userEntity(userRepository.findById(articleDTO.getUserPK()).orElseThrow())
+                .title(articleDTO.getTitle())
+                .content(articleDTO.getContent())
+                .views(articleDTO.getViews())
+                .shareStatus(articleDTO.getShareStatus())
+                .shareRegion(articleDTO.getShareRegion())
+                .build();
+
+        ArticleEntity savedArticleEntity = articleRepository.save(articleEntity);
+        if(savedArticleEntity == null) return false;
+
+        // 태크-게시물 테이블에 기존 태그 delete
+        List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleDTO.getArticleId());
+        for(ArticleTagEntity articleTagEntity : articleTagEntityList){
+            articleTagRepository.delete(articleTagEntity);
+        }
+
+        // 태크-게시물 테이블에 insert
+        for(String tag : articleDTO.getTags()){
+
+            ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
+                    .articleEntity(articleRepository.findById(savedArticleEntity.getId()).orElseThrow())
+                    .tagEntity(tagRepository.findByName(tag))
+                    .build();
+
+            articleTagRepository.save(articleTagEntity);
+        }
+
+        return true;
     }
 
 
