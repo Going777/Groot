@@ -15,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class ArticleImageEntity extends BaseEntity{
     @Id
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "article_id", insertable = false, updatable = false)
