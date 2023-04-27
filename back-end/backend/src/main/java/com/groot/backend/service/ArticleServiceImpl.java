@@ -139,9 +139,23 @@ public class ArticleServiceImpl implements ArticleService{
                 .content(articleEntity.getContent())
                 .shareStatus(articleEntity.getShareStatus())
                 .createTime(articleEntity.getCreatedDate())
-                .updateTime(LocalDateTime.now())
+                .updateTime(articleEntity.getLastModifiedDate())
                 .comments(comments)
                 .build();
+
+        // 조회수 업데이트
+        ArticleEntity newArticleEntity = ArticleEntity.builder()
+                .id(articleEntity.getId())
+                .category(articleEntity.getCategory())
+                .userEntity(userRepository.findById(articleEntity.getUserPK()).orElseThrow())
+                .title(articleEntity.getTitle())
+                .content(articleEntity.getContent())
+                .views(articleEntity.getViews()+1)
+                .shareStatus(articleEntity.getShareStatus())
+                .shareRegion(articleEntity.getShareRegion())
+                .build();
+
+        articleRepository.save(newArticleEntity);
 
         // image 조회
 
@@ -176,19 +190,20 @@ public class ArticleServiceImpl implements ArticleService{
         }
 
 
-        // article 테이블에 insert
-        ArticleEntity articleEntity = ArticleEntity.builder()
+        // article 테이블에 update
+        ArticleEntity articleEntity = articleRepository.findById(articleDTO.getArticleId()).orElseThrow();
+        ArticleEntity newArticleEntity = ArticleEntity.builder()
                 .id(articleDTO.getArticleId())
                 .category(articleDTO.getCategory())
                 .userEntity(userRepository.findById(articleDTO.getUserPK()).orElseThrow())
                 .title(articleDTO.getTitle())
                 .content(articleDTO.getContent())
-                .views(articleDTO.getViews())
+                .views(articleEntity.getViews())
                 .shareStatus(articleDTO.getShareStatus())
                 .shareRegion(articleDTO.getShareRegion())
                 .build();
 
-        ArticleEntity savedArticleEntity = articleRepository.save(articleEntity);
+        ArticleEntity savedArticleEntity = articleRepository.save(newArticleEntity);
         if(savedArticleEntity == null) return false;
 
         // 태크-게시물 테이블에 기존 태그 delete
