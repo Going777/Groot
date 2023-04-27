@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,11 +43,13 @@ public class ArticleServiceImpl implements ArticleService{
 
         // 태그테이블에 태그 insert
         for(String tag : newTags){
-            TagEntity tagEntity = TagEntity.builder()
-                    .name(tag)
-                    .build();
+            if(tagRepository.findByName(tag) == null){
+                TagEntity tagEntity = TagEntity.builder()
+                        .name(tag)
+                        .build();
 
-            tagRepository.save(tagEntity);
+                tagRepository.save(tagEntity);
+            }
         }
 
         // article 테이블에 insert
