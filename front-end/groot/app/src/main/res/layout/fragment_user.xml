@@ -21,38 +21,28 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp">
+        android:layout_marginRight="30dp"
+        android:layout_marginLeft="20dp">
 
-        <androidx.cardview.widget.CardView
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profile_image"
             android:layout_width="120dp"
             android:layout_height="120dp"
-            android:translationZ="2dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="70dp"
+            android:src="@drawable/basic_profile"
+            app:civ_border_color="#fff"
+            app:civ_border_width="10dp"
+            app:civ_circle_background_color="@color/background"
+            android:layout_marginTop="-10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                app:cardBackgroundColor="@color/background"
-                app:cardCornerRadius="60dp"
-                >
-
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/basic_profile" />
-            </androidx.cardview.widget.CardView>
-        </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
             android:layout_width="250dp"
-            android:layout_height="140dp"
+            android:layout_height="110dp"
+            android:translationZ="-5dp"
             app:cardBackgroundColor="@color/background"
             app:cardCornerRadius="30dp"
             app:layout_constraintEnd_toEndOf="parent">
@@ -60,16 +50,16 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp">
+                android:layout_marginLeft="20dp">
 
                 <TextView
                     android:id="@+id/nickname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginVertical="10dp"
                     android:text="ssafy1234"
                     android:textColor="@color/main"
-                    android:textSize="30dp"
+                    android:textSize="24dp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +68,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
+                    android:layout_marginVertical="10dp"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +77,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
+                        android:layout_marginHorizontal="20dp"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -97,7 +87,7 @@
                             android:layout_height="wrap_content"
                             android:text="249"
                             android:textColor="@color/main"
-                            android:textSize="20dp"
+                            android:textSize="16dp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -109,7 +99,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
+                        android:layout_marginHorizontal="20dp"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -119,7 +109,7 @@
                             android:layout_height="wrap_content"
                             android:text="10"
                             android:textColor="@color/main"
-                            android:textSize="20dp"
+                            android:textSize="16dp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -131,7 +121,7 @@
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
+                        android:layout_marginHorizontal="20dp"
                         android:gravity="center"
                         android:orientation="vertical">
 
@@ -141,7 +131,7 @@
                             android:layout_height="wrap_content"
                             android:text="5"
                             android:textColor="@color/main"
-                            android:textSize="20dp"
+                            android:textSize="16dp"
                             android:textStyle="bold" />
 
                         <TextView
@@ -164,13 +154,16 @@
         app:tabIndicatorColor="@color/main"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/main"
-        app:tabTextColor="@color/grey" />
+        app:tabTextColor="@color/grey"
+        android:layout_margin="20dp"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/user_pager"
         android:layout_width="match_parent"
-        android:layout_height="636dp"
-        android:layout_gravity="bottom">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="14dp">
 
     </androidx.viewpager2.widget.ViewPager2>
 

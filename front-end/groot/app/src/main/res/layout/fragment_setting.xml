@@ -39,6 +39,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:id="@+id/editProfileText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="프로필 변경"
@@ -48,6 +49,7 @@
         style="@style/BASIC_LINE"
         android:layout_marginLeft="44dp"/>
     <TextView
+        android:id="@+id/editPasswordText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="비밀번호 변경"
