@@ -1,4 +1,4 @@
-package com.chocobi.groot.view.search
+package com.chocobi.groot.view.user
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,9 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 
-class DictRVAdapter(val items:MutableList<String>) : RecyclerView.Adapter<DictRVAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DictRVAdapter.ViewHolder {
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_search_result_item, parent, false)
+class UserTab1RVAdapter(val items:MutableList<String>) : RecyclerView.Adapter<UserTab1RVAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserTab1RVAdapter.ViewHolder {
+        var view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_user_tab1_item, parent, false)
 
         return ViewHolder(view)
     }
@@ -19,7 +19,7 @@ class DictRVAdapter(val items:MutableList<String>) : RecyclerView.Adapter<DictRV
     }
     var itemClick : ItemClick? = null
 
-    override fun onBindViewHolder(holder: DictRVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: UserTab1RVAdapter.ViewHolder, position: Int) {
         if ( itemClick != null) {
 holder.itemView.setOnClickListener {
     v ->
@@ -37,8 +37,8 @@ holder.itemView.setOnClickListener {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(item:String) {
-            val rv_text = itemView.findViewById<TextView>(R.id.dictRvItem)
-            rv_text.text = item
+            val plantName = itemView.findViewById<TextView>(R.id.plantName)
+            plantName.text = item
 
         }
     }
