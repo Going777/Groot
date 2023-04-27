@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.weather
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.LocationListener
@@ -13,26 +14,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 
 import com.chocobi.groot.R
-import com.google.gson.JsonObject
-import com.google.gson.annotations.SerializedName
-import com.loopj.android.http.AsyncHttpClient
-import com.loopj.android.http.JsonHttpResponseHandler
 import com.loopj.android.http.RequestParams
-import cz.msebera.android.httpclient.Header
-import org.json.JSONObject
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.Math.ceil
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -74,36 +66,42 @@ class WeatherFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        Log.d(TAG, "WeatherFragment, onCreateView()")
         val rootView = inflater.inflate(R.layout.fragment_weather, container, false)
 
-//        현재 시간 가져오기
+//        현재 시간 받아오기
         val current = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("MM월 dd일")
         val formattedDate = current.format(formatter)
 
-//        현재 위치 받아오기
-
-
-        val textView = rootView.findViewById<TextView>(R.id.textView)
+//        레이아웃에 현재 시간 적용
         val dateText = rootView.findViewById<TextView>(R.id.date_text)
-        val thermometerText = rootView.findViewById<TextView>(R.id.thermomete_text)
-        val humidityText = rootView.findViewById<TextView>(R.id.humidity_text)
-        // Inflate the layout for this fragment
-
         dateText.text = formattedDate
 
-        getWeatherInCurrentLocation(thermometerText, humidityText)
+        val thermometerText = rootView.findViewById<TextView>(R.id.thermomete_text)
+        val humidityText = rootView.findViewById<TextView>(R.id.humidity_text)
+        val weatherBgView = rootView.findViewById<ImageView>(R.id.weather_bg)
+        val weatherIcon = rootView.findViewById<ImageView>(R.id.weather_icon)
+
+        val layoutParams = LayoutParams(
+            thermometerText,
+            humidityText,
+            weatherBgView,
+            weatherIcon
+        )
+
+
+//      현재 위치 날씨 받아오기
+        getWeatherInCurrentLocation(layoutParams)
 
         return rootView
     }
 
-    private fun getWeatherInCurrentLocation(thermometerText: TextView, humidityText: TextView) {
+    private fun getWeatherInCurrentLocation(layoutParams: LayoutParams) {
 //        현재 위치 받아오기
         var current_lat: String = "37.5"
         var current_lon: String = "127.0"
@@ -114,7 +112,7 @@ class WeatherFragment : Fragment() {
             val params: RequestParams = RequestParams()
             current_lat = p0.latitude.toString()
             current_lon = p0.longitude.toString()
-            doNetworking(current_lat, current_lon, thermometerText, humidityText)
+            doNetworking(current_lat, current_lon, layoutParams)
         }
 
 //      권한 확인
@@ -149,7 +147,7 @@ class WeatherFragment : Fragment() {
 
     }
 
-    private fun doNetworking(lat: String, lon: String, thermometerText: TextView, humidityText: TextView) {
+    private fun doNetworking(lat: String, lon: String, layoutParams: LayoutParams) {
         Log.d(TAG, "WeatherFragment $lat, $lon")
 
 //        retrofit 객체 만들기
@@ -171,20 +169,11 @@ class WeatherFragment : Fragment() {
             ) {
                 if (response.code() == 200) {
                     val weatherResponse = response.body()
-                    var cTemp = ceil(weatherResponse!!.main!!.temp - 273.15).toInt()  //켈빈을 섭씨로 변환
-                    var hum = weatherResponse!!.main!!.humidity.toInt()
-//                    val stringBuilder =
-//                        "지역: " + weatherResponse!!.sys!!.country + "\n" +
-//                                "현재기온: " + cTemp + "\n" +
-//                                "최저기온: " + minTemp + "\n" +
-//                                "최고기온: " + maxTemp + "\n" +
-//                                "풍속: " + weatherResponse!!.wind!!.speed + "\n" +
-//                                "일출시간: " + weatherResponse!!.sys!!.sunrise + "\n" +
-//                                "일몰시간: " + weatherResponse!!.sys!!.sunset + "\n" +
-//                                "아이콘: " + weatherResponse!!.weather!!.get(0).icon + "\n"
-//                    Log.d(TAG, "WeatherFragment, $stringBuilder")
-                    thermometerText.text = cTemp.toString() + "℃"
-                    humidityText.text = hum.toString() + "%"
+                    val target = weatherCondition(weatherResponse!!.weather.get(0).id)
+                    val cTemp = ceil(weatherResponse!!.main!!.temp - 273.15).toInt()  //켈빈을 섭씨로 변환
+                    val hum = weatherResponse!!.main!!.humidity.toInt()
+
+                    updateWeatherImageView(target, layoutParams, cTemp, hum)
                 }
             }
 
@@ -205,7 +194,7 @@ class WeatherFragment : Fragment() {
 //    }
 
 
-//    companion object {
+    //    companion object {
 //        /**
 //         * Use this factory method to create a new instance of
 //         * this fragment using the provided parameters.
@@ -224,5 +213,51 @@ class WeatherFragment : Fragment() {
 //                }
 //            }
 //    }
+    private fun weatherCondition(condition: Int): String {
+        if (condition in 200..299) {
+            return "rain_thunder"
+        } else if (condition in 300..599) {
+            return "rain"
+        } else if (condition in 600..700) {
+            return "snow"
+        } else if (condition in 701..799) {
+            return "cloudy"
+        } else if (condition == 800) {
+            return "sun"
+        } else if (condition in 801..804) {
+            return "cloudy"
+        } else if (condition in 900..902) {
+            return "rain_thunder"
+        }
+        return "sun"
+    }
+
+    private fun updateWeatherImageView(target:String, layoutParams:LayoutParams, cTemp: Int, hum: Int) {
+        layoutParams.thermometerText.text = cTemp.toString() + "℃"
+        layoutParams.humidityText.text = hum.toString() + "%"
+        when (target) {
+            "sun" -> {
+                layoutParams.weatherBgView.setImageResource(R.drawable.sun_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.sun)
+            }
+            "cloudy" -> {
+                layoutParams.weatherBgView.setImageResource(R.drawable.cloudy_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.cloudy)
+            }
+            "snow" -> {
+                layoutParams.weatherBgView.setImageResource(R.drawable.snow_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.snow)
+            }
+            "rain" -> {
+                layoutParams.weatherBgView.setImageResource(R.drawable.rain_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.rain)
+            }
+            "rain_thunder" -> {
+                layoutParams.weatherBgView.setImageResource(R.drawable.rain_thunder_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.rain_thunder)
+            }
+        }
+    }
 }
+
 

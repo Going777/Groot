@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <View
+        <ImageView
+            android:id="@+id/weather_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/sun_gradient_bg"/>
@@ -30,7 +31,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:text="4월 13일"
                 android:textSize="24sp"
-                android:textColor="#fff"
+                android:textColor="#000"
                 android:textStyle="bold"/>
 
             <ImageView
@@ -77,6 +78,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
         <ImageView
+            android:id="@+id/weather_icon"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_alignParentBottom="true"
