@@ -3,18 +3,18 @@ package com.groot.backend.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
-
+@Data
 @Entity
 @Table(name="article_tag")
 @IdClass(ArticleTagEntityPK.class)
 @Getter
 @Setter
-@EqualsAndHashCode
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleTagEntity {
+public class ArticleTagEntity implements Serializable {
     @Id
     @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id",insertable = false, updatable = false)

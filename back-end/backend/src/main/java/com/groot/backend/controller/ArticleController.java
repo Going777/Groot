@@ -1,15 +1,13 @@
 package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.ArticleDTO;
+import com.groot.backend.dto.response.ArticleResponseDTO;
 import com.groot.backend.service.ArticleService;
 import com.groot.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -51,6 +49,28 @@ public class ArticleController {
     // 게시글 수정
 
     // 개별 게시글 조회
+    @GetMapping("/{articleId}")
+    public ResponseEntity readArticle(@PathVariable Long articleId){
+        resultMap = new HashMap<>();
+        if(!articleService.existedArticleId(articleId)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","게시글이 존재하지 않습니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        ArticleResponseDTO articleResponseDTO = articleService.readArticle(articleId);
+
+        if(articleResponseDTO == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","게시글 조회 실패");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg","게시물이 조회되었습니다.");
+        resultMap.put("article",articleResponseDTO);
+        return ResponseEntity.ok().body(resultMap);
+    }
 
     // 게시글 삭제
 
