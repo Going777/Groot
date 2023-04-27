@@ -1,12 +1,17 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.ArticleDTO;
+import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
 import com.groot.backend.dto.response.CommentDTO;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -228,6 +233,63 @@ public class ArticleServiceImpl implements ArticleService{
     @Override
     public void deleteArticle(Long articleId) {
         articleRepository.deleteById(articleId);
+    }
+
+    @Override
+    public Page<ArticleListDTO> readArticleList(String category, Integer page, Integer size) {
+        List<ArticleEntity> articleEntities = articleRepository.findAllByCategory(category);
+        List<ArticleListDTO> articleListDTOList = new ArrayList<>();
+        for(ArticleEntity articleEntity : articleEntities){
+            // 이미지 조회
+            // 유저 조회
+            UserEntity userEntity = userRepository.findById(articleEntity.getId()).orElseThrow();
+            // 태그 조회
+            List<String> tags = new ArrayList<>();
+            List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleEntity.getId());
+            for(ArticleTagEntity entity : articleTagEntityList){
+                tags.add(tagRepository.findById(entity.getTagId()).orElseThrow().getName());
+            }
+            // 댓글 조회
+            List<CommentEntity> commentEntityList = (List<CommentEntity>) commentRepository.findByArticleId(articleEntity.getId());
+            // bookmark 여부 조회
+            // 복합키 사용을 위한 id 등록
+            ArticleBookmarkEntityPK articleBookmarkEntityPK = new ArticleBookmarkEntityPK();
+            articleBookmarkEntityPK.setUserEntity(userEntity.getId());
+            articleBookmarkEntityPK.setArticleEntity(articleEntity.getId());
+            boolean bookmark;
+            if(articleBookmarkRepository.findById(articleBookmarkEntityPK).isPresent()){
+                bookmark = false;
+            }else bookmark = true;
+            ArticleListDTO articleListDTO = ArticleListDTO.builder()
+                    .articleId(articleEntity.getId())
+                    .category(articleEntity.getCategory())
+                    .imgs(null)
+                    .userPK(articleEntity.getUserPK())
+                    .nickName(userEntity.getNickName())
+                    .profile(userEntity.getProfile())
+                    .title(articleEntity.getTitle())
+                    .tags(tags)
+                    .views(articleEntity.getViews())
+                    .commentCnt(commentEntityList.size())
+                    .bookmark(bookmark)
+                    .shareRegion(articleEntity.getShareRegion())
+                    .shareStatus(articleEntity.getShareStatus())
+                    .createTime(articleEntity.getCreatedDate())
+                    .updateTime(articleEntity.getLastModifiedDate())
+                    .build();
+
+            articleListDTOList.add(articleListDTO);
+        }
+
+
+
+
+//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
+//        //Page<ArticleListDTO> result = articleRepository.findAllByCategory(category, pageRequest);
+//        int start = (int) pageRequest.getOffset();
+//        int end = Math.min((start+pageRequest.getPageSize()), articleListDTOList.size());
+//        Page<ArticleListDTO> articleListDTOPage = new PageImpl<>(articleListDTOList.subList(start, end), pageRequest, articleListDTOList);
+        return null;
     }
 
 

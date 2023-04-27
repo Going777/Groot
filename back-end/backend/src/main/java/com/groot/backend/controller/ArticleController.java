@@ -45,6 +45,12 @@ public class ArticleController {
 
 
     // 카테고리별 게시글 리스트 조회
+    @GetMapping("/{category}")
+    public ResponseEntity readArticleList(@PathVariable String category, @RequestParam Integer page, Integer size){
+        resultMap = new HashMap<>();
+        articleService.readArticleList(category, page, size);
+        return null;
+    }
 
     // 게시글 수정
     @PutMapping()
