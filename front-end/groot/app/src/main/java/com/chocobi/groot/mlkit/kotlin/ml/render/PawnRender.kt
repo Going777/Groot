@@ -64,7 +64,7 @@ class PawnRender {
         virtualObjectAlbedoTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_albedo.png",
+                "models/devil_tree_03.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.SRGB
             )
@@ -72,7 +72,7 @@ class PawnRender {
         virtualObjectAlbedoInstantPlacementTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_albedo_instant_placement.png",
+                "models/devil_tree_03.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.SRGB
             )
@@ -80,11 +80,11 @@ class PawnRender {
         val virtualObjectPbrTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_roughness_metallic_ao.png",
+                "models/devil_tree_03.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.LINEAR
             )
-        virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
+        virtualObjectMesh = Mesh.createFromAsset(render, "models/devil_tree_candy.obj")
         virtualObjectShader =
             Shader.createFromAssets(
                 render,
