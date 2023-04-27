@@ -9,7 +9,7 @@ import com.chocobi.groot.R
 
 class DictRVAdapter(val items:MutableList<String>) : RecyclerView.Adapter<DictRVAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DictRVAdapter.ViewHolder {
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.dict_rv_item, parent, false)
+        var view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_search_result_item, parent, false)
 
         return ViewHolder(view)
     }
