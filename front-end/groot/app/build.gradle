@@ -137,5 +137,8 @@ dependencies {
     implementation "io.github.sceneview:arsceneview:0.9.8"
 //    debugImplementation project(":arsceneview")
 
+//    circle image
+    implementation 'de.hdodenhof:circleimageview:3.1.0'
+
 }
 
