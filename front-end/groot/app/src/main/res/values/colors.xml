@@ -6,6 +6,11 @@
     <color name="main">#5F9363</color>
     <color name="sub">#B5CDA3</color>
     <color name="point">#60D9A7</color>
+    <color name="water">#6461FF</color>
+    <color name="pot">#BE8181</color>
+    <color name="bug">#FF2727</color>
+    <color name="sun">#FB8700</color>
+    <color name="pill">#FFD600</color>
 
 
 </resources>
