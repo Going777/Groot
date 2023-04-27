@@ -1,0 +1,66 @@
+pipeline {
+  agent any
+  stages {
+    stage('init') {
+      steps {
+        echo 'init pipeline'
+      }
+    }
+    stage('cofing') {
+      steps {
+        echo 'copy configuration files'
+        sh 'pwd'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
+      }
+    }
+    stage('build') {
+      steps {
+        echo 'move directory'
+        dir('./back-end/backend/') {
+          sh 'pwd'
+          sh 'ls -l'
+          echo 'start build'
+          sh 'chmod +x ./gradlew'
+          sh './gradlew clean build'
+        }
+      }
+    }
+    stage('unload') {
+      environment {
+        // CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+        CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}').trim()
+      }
+      steps {
+        // script {
+        //   def output = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}')
+        //   withEnv(['CONTAINER_I=' +  output.trim()]) {
+        //     echo "${env.CONTAINER_I}"
+        //   }
+        // }
+        echo 'unload docker container'
+        echo "${env.CONTAINER_ID}"
+        sh "docker stop ${env.CONTAINER_ID}"
+        echo 'remove docker container'
+        sh "docker rm ${env.CONTAINER_ID}"
+      }
+    }
+    stage('deploy') {
+      steps {
+        sh 'pwd'
+        dir('./back-end/backend/') {
+          echo 'build docker image'
+          sh 'docker build --no-cache -t springboot .'
+          echo 'run docker image'
+          sh 'docker run --name spring -d -p 8080:8080 springboot'
+        }
+      }
+    }
+    // will be integrated with python server clean
+    stage('clean') {
+      steps {
+        echo 'clean unused image'
+        sh 'docker image prune --force'
+      }
+    }
+  }
+}

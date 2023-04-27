@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
-        tools:src="@tools:sample/backgrounds/scenic" />
+        android:src="@drawable/sample_plant_image"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -66,15 +66,82 @@
 
     </LinearLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <ImageButton
+                android:id="@+id/tabBtn1"
+                style="@style/WHITE_CIRCLE_BTN"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_water"
+                android:tint="@color/water"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tabBtn2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/tabBtn2"
+                style="@style/WHITE_CIRCLE_BTN"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_pot"
+                android:tint="@color/pot"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tabBtn3"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/tabBtn3"
+                style="@style/WHITE_CIRCLE_BTN"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_bug"
+                android:tint="@color/bug"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tabBtn4"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/tabBtn4"
+                style="@style/WHITE_CIRCLE_BTN"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_sunny"
+                android:tint="@color/sun"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tabBtn5"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/tabBtn5"
+                style="@style/WHITE_CIRCLE_BTN"
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_pill"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/ic_doc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_doc"
-            android:layout_margin="14dp"/>
+            android:layout_margin="14dp"
+            android:src="@drawable/ic_doc" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,12 +152,13 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/ic_leaf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_leaf"
-            android:layout_margin="14dp"/>
+            android:layout_margin="14dp"
+            android:src="@drawable/ic_leaf" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -102,12 +170,13 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/ic_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_temp"
-            android:layout_margin="14dp"/>
+            android:layout_margin="14dp"
+            android:src="@drawable/ic_temp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -119,12 +188,13 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/ic_care"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_care"
-            android:layout_margin="14dp"/>
+            android:layout_margin="14dp"
+            android:src="@drawable/ic_care" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -142,8 +212,8 @@
             android:id="@+id/ic_sunny"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_sunny"
-            android:layout_margin="14dp"/>
+            android:layout_margin="14dp"
+            android:src="@drawable/ic_sunny" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -184,8 +254,8 @@
             android:id="@+id/ic_bug"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_bug"
-            android:layout_margin="14dp"/>
+            android:layout_margin="14dp"
+            android:src="@drawable/ic_bug" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -52,6 +52,12 @@ class PlantFragment : Fragment() {
             mActivity.changeFragment("plant_diary")
         }
 
+//        Plant Detail 페이지로 이동
+        val toDtlBtn = rootView.findViewById<Button>(R.id.toDtlBtn)
+        toDtlBtn.setOnClickListener {
+            mActivity.changeFragment("plant_detail")
+        }
+
         // Inflate the layout for this fragment
         return rootView
     }

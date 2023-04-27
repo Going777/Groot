@@ -1,5 +1,6 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.groot.backend.dto.response.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,12 +39,15 @@ public class UserEntity extends BaseEntity{
     private String token;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<PotEntity> potEntities;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<DiaryEntity> diaryEntities;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<ArticleEntity> articleEntities;
 
     public UserDTO toUserDTO(){
