@@ -6,7 +6,6 @@ import com.groot.backend.service.DiaryService;
 import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.engine.spi.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/diaries")
@@ -112,7 +110,12 @@ public class DiaryController {
     @GetMapping("/weekly")
     public ResponseEntity weeklyDiary(){
         Map resultMap = new HashMap();
-        resultMap.put("diary", diaryService.weeklyDiaries());
+        List<DiaryEntity> result = diaryService.weeklyDiaries();
+        if(result.isEmpty()){
+            resultMap.put("msg", "다이어리 리스트를 가져올 수 없습니다.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
+        }
+        resultMap.put("diary", result);
         return ResponseEntity.ok().body(resultMap);
     }
 }
