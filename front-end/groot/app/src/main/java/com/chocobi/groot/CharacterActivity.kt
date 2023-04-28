@@ -77,10 +77,10 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     var modelIndex = 0
     var modelNode: ArModelNode? = null
 
-    var isLoading = false
+//    var isLoading = false
         set(value) {
             field = value
-            loadingView.isGone = !value
+//            loadingView.isGone = !value
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,7 +136,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     }
 
     fun newModelNode() {
-        isLoading = true
+//        isLoading = true
         modelNode?.takeIf { !it.isAnchored }?.let {
             sceneView.removeChild(it)
             it.destroy()
@@ -153,7 +153,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
                 centerOrigin = Position(y = -1.0f)
             ) {
                 sceneView.planeRenderer.isVisible = true
-                isLoading = false
+//                isLoading = false
             }
             onAnchorChanged = { anchor ->
                 placeModelButton.isGone = anchor != null
