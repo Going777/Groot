@@ -24,7 +24,7 @@ public class ArticleImageEntity extends BaseEntity{
     @Column(nullable = false)
     private String img;
 
-    @ManyToOne(targetEntity = ArticleImageEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private ArticleEntity articleEntity;
 }

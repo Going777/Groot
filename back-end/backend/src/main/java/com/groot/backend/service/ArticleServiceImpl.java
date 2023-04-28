@@ -143,8 +143,7 @@ public class ArticleServiceImpl implements ArticleService{
 
         // image 조회
         List<String> imgPaths = new ArrayList<>();
-        List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllById(articleId);
-        System.out.println(articleImageEntityList.toString());
+        List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleId);
         if(articleImageEntityList != null){
             for(ArticleImageEntity entity : articleImageEntityList){
                 imgPaths.add(entity.getImg());
