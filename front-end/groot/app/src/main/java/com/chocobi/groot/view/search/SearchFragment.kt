@@ -63,12 +63,6 @@ class SearchFragment : Fragment() {
         cameraBtn.setOnClickListener {
             mActivity.requirePermissions(arrayOf(android.Manifest.permission.CAMERA),  PERMISSION_CAMERA)
         }
-//        Gallery 버튼 클릭
-        val galleryBtn = rootView.findViewById<ImageButton>(R.id.galleryBtn)
-        galleryBtn.setOnClickListener {
-            Log.d("SearchFragment", "////////////////////////////////////////////////////////")
-            mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSON_GALLERY)
-        }
 
 
 //        검색 결과 나타내기
