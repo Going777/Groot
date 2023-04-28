@@ -130,7 +130,7 @@
 
 
     <Button
-        android:drawableLeft="@drawable/ic_diary"
+        android:drawableLeft="@drawable/ic_diary_plant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
