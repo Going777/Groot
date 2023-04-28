@@ -13,7 +13,7 @@ public interface ArticleService {
     boolean existedArticleId(Long articleId);
     boolean createArticle(ArticleDTO articleDTO, String[] imgPaths);
     ArticleResponseDTO readArticle(Long articleId);
-    boolean updateArticle(ArticleDTO articleDTO);
+    boolean updateArticle(ArticleDTO articleDTO, String[] imgPaths);
     void deleteArticle(Long articleId);
     Page<ArticleListDTO> readArticleList(String category, Integer page, Integer size);
 

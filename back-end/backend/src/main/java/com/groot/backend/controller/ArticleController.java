@@ -69,7 +69,8 @@ public class ArticleController {
 
     // 게시글 수정
     @PutMapping()
-    public ResponseEntity updateArticle(@RequestBody ArticleDTO articleDTO){
+    public ResponseEntity updateArticle(@RequestPart(value = "images", required = false) MultipartFile[] images,
+                                        @RequestPart(value = "articleDTO") ArticleDTO articleDTO) throws IOException {
         resultMap = new HashMap<>();
         // 게시글 존재 여부 확인
         if(!articleService.existedArticleId(articleDTO.getArticleId())){
@@ -78,7 +79,10 @@ public class ArticleController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
-        if(!articleService.updateArticle(articleDTO)){
+        // 새 이미지 업로드
+        String[] imgPaths = s3Service.upload(images, "article");
+
+        if(!articleService.updateArticle(articleDTO, imgPaths)){
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시글 수정 실패");
             return ResponseEntity.badRequest().body(resultMap);

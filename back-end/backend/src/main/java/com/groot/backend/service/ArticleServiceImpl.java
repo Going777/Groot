@@ -190,8 +190,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public boolean updateArticle(ArticleDTO articleDTO) {
-        // 이미지 테이블에 게시글PK + 이미지주소 insert
+    public boolean updateArticle(ArticleDTO articleDTO, String[] imgPaths) {
 
         // redis에 존재하는지 탐색
 
@@ -215,7 +214,6 @@ public class ArticleServiceImpl implements ArticleService{
                 tagRepository.save(tagEntity);
             }
         }
-
 
         // article 테이블에 update
         ArticleEntity articleEntity = articleRepository.findById(articleDTO.getArticleId()).orElseThrow();
@@ -247,6 +245,24 @@ public class ArticleServiceImpl implements ArticleService{
                     .build();
 
             articleTagRepository.save(articleTagEntity);
+        }
+
+        // 이미지 테이블의 기존 정보 delete
+        List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleDTO.getArticleId());
+        for(ArticleImageEntity articleImageEntity : articleImageEntityList){
+            articleImageRepository.delete(articleImageEntity);
+        }
+
+        // 이미지 테이블에 insert
+        if(imgPaths.length >0){
+            for(String imgPath : imgPaths){
+                ArticleImageEntity articleImageEntity = ArticleImageEntity.builder()
+                        .articleEntity(savedArticleEntity)
+                        .img(imgPath)
+                        .build();
+
+                articleImageRepository.save(articleImageEntity);
+            }
         }
 
         return true;
