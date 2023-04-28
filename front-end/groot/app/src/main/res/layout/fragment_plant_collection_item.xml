@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,13 +12,40 @@
         android:backgroundTint="#E9F3ED"
         >
 
-        <ImageView
+            <ImageView
+                android:id="@+id/plant_image"
             android:layout_width="47dp"
             android:layout_height="47dp"
+            android:scaleType="centerCrop"
             android:src="@drawable/sample_plant_image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+        <TextView
+            android:id="@+id/plant_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="산세산세"
+            app:layout_constraintTop_toBottomOf="@+id/plant_image"
+            tools:ignore="MissingConstraints" />
+
+        <TextView
+            android:id="@+id/plant_species"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="산세베리아"
+            app:layout_constraintTop_toBottomOf="@+id/plant_name"
+            tools:ignore="MissingConstraints"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="만난지 249일"
+            app:layout_constraintTop_toBottomOf="@+id/plant_species"
+            tools:ignore="MissingConstraints"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
