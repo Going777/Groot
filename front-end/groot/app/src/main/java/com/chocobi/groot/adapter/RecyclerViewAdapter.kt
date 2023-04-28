@@ -3,10 +3,15 @@ package com.chocobi.groot.adapter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.adapter.item.ItemBean
 import com.chocobi.groot.adapter.item.ItemViewHolder
+import com.chocobi.groot.view.community.CommunityDetailFragment
+
 
 class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
 
@@ -34,8 +39,18 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
         holder.delegate = object : ItemViewHolder.ItemViewHolderDelegate {
             override fun onItemViewClick(itemBean: ItemBean) {
                 Log.d("??", "I click ${itemBean.title}")
+                val context = holder.itemView.context
+                if (context is FragmentActivity) {
+                    val fragmentManager = context.supportFragmentManager
+                    val communityDetailFragment = CommunityDetailFragment()
+                    fragmentManager.beginTransaction()
+                        .replace(R.id.fl_container, communityDetailFragment)
+                        .addToBackStack(null)
+                        .commit()
+                }
             }
         }
+
         holder.updateView()
 
         if (position == mutableList.size - 1) {
@@ -53,4 +68,5 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
         this.mutableList.addAll(mutableList)
         notifyItemRangeChanged(this.mutableList.size - mutableList.size + 1, mutableList.size)
     }
+
 }
