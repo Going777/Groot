@@ -1,11 +1,13 @@
 package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.ArticleDTO;
+import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
 import com.groot.backend.service.ArticleService;
 import com.groot.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,11 +47,14 @@ public class ArticleController {
 
 
     // 카테고리별 게시글 리스트 조회
-    @GetMapping("/{category}")
+    @GetMapping("/category/{category}")
     public ResponseEntity readArticleList(@PathVariable String category, @RequestParam Integer page, Integer size){
         resultMap = new HashMap<>();
-        articleService.readArticleList(category, page, size);
-        return null;
+        Page<ArticleListDTO> result = articleService.readArticleList(category, page, size);
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg","게시글 목록 조회 완료");
+        resultMap.put("articles", result);
+        return ResponseEntity.ok().body(resultMap);
     }
 
     // 게시글 수정

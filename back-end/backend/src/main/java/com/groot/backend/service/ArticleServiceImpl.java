@@ -242,15 +242,19 @@ public class ArticleServiceImpl implements ArticleService{
         for(ArticleEntity articleEntity : articleEntities){
             // 이미지 조회
             // 유저 조회
-            UserEntity userEntity = userRepository.findById(articleEntity.getId()).orElseThrow();
+            UserEntity userEntity = userRepository.findById(articleEntity.getUserPK()).orElseThrow();
             // 태그 조회
             List<String> tags = new ArrayList<>();
             List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleEntity.getId());
             for(ArticleTagEntity entity : articleTagEntityList){
                 tags.add(tagRepository.findById(entity.getTagId()).orElseThrow().getName());
             }
-            // 댓글 조회
+            // 댓글수 조회
+            int commentCnt;
             List<CommentEntity> commentEntityList = (List<CommentEntity>) commentRepository.findByArticleId(articleEntity.getId());
+            if(commentEntityList == null){
+                commentCnt = 0;
+            }else commentCnt = commentEntityList.size();
             // bookmark 여부 조회
             // 복합키 사용을 위한 id 등록
             ArticleBookmarkEntityPK articleBookmarkEntityPK = new ArticleBookmarkEntityPK();
@@ -270,7 +274,7 @@ public class ArticleServiceImpl implements ArticleService{
                     .title(articleEntity.getTitle())
                     .tags(tags)
                     .views(articleEntity.getViews())
-                    .commentCnt(commentEntityList.size())
+                    .commentCnt(commentCnt)
                     .bookmark(bookmark)
                     .shareRegion(articleEntity.getShareRegion())
                     .shareStatus(articleEntity.getShareStatus())
@@ -281,15 +285,11 @@ public class ArticleServiceImpl implements ArticleService{
             articleListDTOList.add(articleListDTO);
         }
 
-
-
-
-//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
-//        //Page<ArticleListDTO> result = articleRepository.findAllByCategory(category, pageRequest);
-//        int start = (int) pageRequest.getOffset();
-//        int end = Math.min((start+pageRequest.getPageSize()), articleListDTOList.size());
-//        Page<ArticleListDTO> articleListDTOPage = new PageImpl<>(articleListDTOList.subList(start, end), pageRequest, articleListDTOList);
-        return null;
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start+pageRequest.getPageSize()), articleListDTOList.size());
+        Page<ArticleListDTO> articleListDTOPage = new PageImpl<>(articleListDTOList.subList(start, end), pageRequest, articleListDTOList.size());
+        return articleListDTOPage;
     }
 
 
