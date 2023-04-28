@@ -1,5 +1,22 @@
 pipeline {
   agent any
+	post {
+    failure {
+      updateGitlabCommitStatus name: 'result', state: 'failed'
+    }
+    success {
+      updateGitlabCommitStatus name: 'result', state: 'success'
+    }
+    aborted {
+      updateGitlabCommitStatus name: 'result', state: 'canceled'
+    }
+  }
+  options {
+    gitLabConnection('Groot')
+  }
+  triggers {
+    gitlab(triggerOnPush: true, triggerOnMergeRequest: true, branchFilterType: 'All')
+  }
   stages {
     stage('init') {
       steps {
@@ -11,10 +28,12 @@ pipeline {
         echo 'copy configuration files'
         sh 'pwd'
         sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application-keys.properties ./back-end/backend/src/main/resources'
       }
     }
     stage('build') {
       steps {
+        updateGitlabCommitStatus name: 'build', state: 'pending'
         echo 'move directory'
         dir('./back-end/backend/') {
           sh 'pwd'
@@ -23,6 +42,7 @@ pipeline {
           sh 'chmod +x ./gradlew'
           sh './gradlew clean build'
         }
+        updateGitlabCommitStatus name: 'build', state: 'success'
       }
     }
     stage('unload') {
@@ -37,15 +57,18 @@ pipeline {
         //     echo "${env.CONTAINER_I}"
         //   }
         // }
+        updateGitlabCommitStatus name: 'unload', state: 'pending'
         echo 'unload docker container'
         echo "${env.CONTAINER_ID}"
         sh "docker stop ${env.CONTAINER_ID}"
         echo 'remove docker container'
         sh "docker rm ${env.CONTAINER_ID}"
+        updateGitlabCommitStatus name: 'unload', state: 'success'
       }
     }
     stage('deploy') {
       steps {
+        updateGitlabCommitStatus name: 'deploy', state: 'pending'
         sh 'pwd'
         dir('./back-end/backend/') {
           echo 'build docker image'
@@ -53,6 +76,7 @@ pipeline {
           echo 'run docker image'
           sh 'docker run --name spring -d -p 8080:8080 springboot'
         }
+        updateGitlabCommitStatus name: 'deploy', state: 'success'
       }
     }
     // will be integrated with python server clean

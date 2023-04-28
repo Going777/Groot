@@ -37,13 +37,21 @@
     </style>
 
 
+    <!--    baseline-->
+    <style name="BASIC_LINE">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:background">@color/grey</item>
+    </style>
+
+
     <!--    chip-->
     <style name="BASIC_CHIP">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/grey</item>
 
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
 
@@ -62,7 +70,6 @@
 
     <style name="WHITE_CIRCLE_BTN" parent="BASIC_ICON_BTN">
         <item name="android:background">@drawable/circle_button_white</item>
-
     </style>
 
     <style name="TAB_BTN_WATER_SELECTED" parent="BASIC_ICON_BTN_SELECTED">

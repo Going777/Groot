@@ -175,7 +175,8 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
         virtualObjectAlbedoTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_albedo.png",
+                "models/T_Devil Tree_03.png",
+//                "models/pawn_albedo.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.SRGB
             )
@@ -183,7 +184,8 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
         virtualObjectAlbedoInstantPlacementTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_albedo_instant_placement.png",
+                "models/T_Devil Tree_03.png",
+//                "models/pawn_albedo_instant_placement.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.SRGB
             )
@@ -191,16 +193,20 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
         val virtualObjectPbrTexture =
             Texture.createFromAsset(
                 render,
-                "models/pawn_roughness_metallic_ao.png",
+                "models/T_Devil Tree_03.png",
+//                "models/pawn_roughness_metallic_ao.png",
                 Texture.WrapMode.CLAMP_TO_EDGE,
                 Texture.ColorFormat.LINEAR
             )
         virtualObjectMesh = Mesh.createFromAsset(render, "models/pawn.obj")
+//        virtualObjectMesh = Mesh.createFromAsset(render, "models/Devil_Tree_Candy.obj")
         virtualObjectShader =
             Shader.createFromAssets(
                 render,
-                "shaders/environmental_hdr.vert",
-                "shaders/environmental_hdr.frag",
+                "shaders/devil_tree.vert",
+//                "shaders/environmental_hdr.vert",
+                "shaders/devil_tree.frag",
+//                "shaders/environmental_hdr.frag",
                 mapOf("NUMBER_OF_MIPMAP_LEVELS" to cubemapFilter.numberOfMipmapLevels.toString())
             )
                 .setTexture("u_AlbedoTexture", virtualObjectAlbedoTexture)
@@ -272,7 +278,8 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
 
         // Draw point cloud.
         frame.acquirePointCloud().use { pointCloud ->
-            pointCloudRender.drawPointCloud(render, pointCloud, viewProjectionMatrix)
+//            포인트 클라우드 지움
+//            pointCloudRender.drawPointCloud(render, pointCloud, viewProjectionMatrix)
 
 //            추가사항
             Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
@@ -353,16 +360,30 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
             for (arDetectedObject in arLabeledAnchors) {
                 val anchor = arDetectedObject.anchor
                 if (anchor.trackingState != TrackingState.TRACKING) continue
-                labelRenderer.draw(
-                    render,
-                    viewProjectionMatrix,
-                    anchor.pose,
-                    camera.pose,
-                    arDetectedObject.label
-                )
+//                labelRenderer.draw(
+//                    render,
+//                    viewProjectionMatrix,
+//                    anchor.pose,
+//                    camera.pose,
+//                    arDetectedObject.label
+//                )
 
                 if (arDetectedObject.label == "Plant") {
+                    labelRenderer.draw(
+                        render,
+                        viewProjectionMatrix,
+                        anchor.pose,
+                        camera.pose,
+                        arDetectedObject.label
+                    )
+
+
+
                     Log.d(TAG, "plant 인지")
+
+//                    캐릭터 띄우기
+                    activity.goCharacter()
+
 
                     anchor.pose.toMatrix(modelMatrix, 0)
                     Log.d(TAG, modelMatrix.toString())
@@ -382,7 +403,7 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
 //                        }
                     val texture = virtualObjectAlbedoInstantPlacementTexture
                     virtualObjectShader.setTexture("u_AlbedoTexture", texture)
-                    render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
+//                    render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
 
                 }
                 backgroundRenderer.drawVirtualScene(render, virtualSceneFramebuffer, 0.01f, 100f)

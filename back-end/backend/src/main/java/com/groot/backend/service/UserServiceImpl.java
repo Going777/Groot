@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService{
         return TokenDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -102,6 +103,7 @@ public class UserServiceImpl implements UserService{
         return TokenDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .build();
     }
 
@@ -154,13 +156,13 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public TokenDTO refreshAccessToken(Long id) {
+    public TokenDTO refreshAccessToken(String refreshToken, Long id) {
         // id로 refreshToken 가져오기
         UserEntity userEntity = userRepository.findById(id).orElseThrow();
-        String refreshToken = userEntity.getToken();
+        String userRefreshToken = userEntity.getToken();
 
-        // refreshToken 유효성 확인
-        if(!jwtTokenProvider.validateToken(refreshToken)){
+        // refreshToken 일치 여부 확인
+        if(!userRefreshToken.equals(refreshToken)){
             return null;
         }
 
