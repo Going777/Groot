@@ -14,6 +14,9 @@
 
     <style name="Theme.Groot" parent="Base.Theme.Groot" />
 
+<!--    calendar-->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
     <!--    bottom navigation bar active indicator-->
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/main</item>

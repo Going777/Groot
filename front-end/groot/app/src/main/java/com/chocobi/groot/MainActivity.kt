@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -29,7 +30,7 @@ import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
-    //    private lateinit var binding: ActivityMainBinding
+        private lateinit var binding: ActivityMainBinding
     private val PERMISSION_CAMERA = 0
     private val REQUEST_CAMERA = 1
     private val PERMISSON_GALLERY = 2

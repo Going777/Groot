@@ -23,6 +23,7 @@
     <!--        app:layout_constraintTop_toTopOf="parent"-->
 
         <LinearLayout
+            android:id="@+id/collectionContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/weather_framgent"
@@ -54,6 +55,32 @@
                 android:layout_marginTop="15dp"
                 />
 
+        </LinearLayout>
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/activityToolbar"
+                android:layout_width="match_parent"
+                app:title="@string/activity_title_view"
+                android:layout_height="?attr/actionBarSize"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/collectionContainer">
+            <fragment
+                android:id="@+id/plantDiaryFragment"
+                android:name="com.chocobi.groot.view.plant.PlantCalendarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                />
         </LinearLayout>
 
 
