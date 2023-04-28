@@ -1,12 +1,13 @@
-package com.chocobi.groot.view.user
+package com.chocobi.groot.view.plant
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import com.chocobi.groot.MainActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -16,10 +17,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [SettingFragment.newInstance] factory method to
+ * Use the [PlantCollectionFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SettingFragment : Fragment() {
+class PlantCollectionFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -36,21 +37,34 @@ class SettingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_setting, container, false)
         // Inflate the layout for this fragment
-        val mActivity = activity as MainActivity
-        val editProfileText = rootView.findViewById<TextView>(R.id.editProfileText)
-        val profileBottomSheet = ProfileBottomSheet(requireContext())
-        editProfileText.setOnClickListener {
-            profileBottomSheet.show(mActivity.supportFragmentManager, profileBottomSheet.tag)
-        }
+        val rootView = inflater.inflate(R.layout.fragment_plant_collection, container, false)
+        val plantItems = mutableListOf<String>()
 
-        val editPasswordText = rootView.findViewById<TextView>(R.id.editPasswordText)
-        val bottomSheet = PasswordBottomSheet(requireContext())
-        editPasswordText.setOnClickListener {
-            bottomSheet.show(mActivity.supportFragmentManager, bottomSheet.tag)
-        }
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+
+        Log.d("로그", "PlantCollectionFragment, $plantItems")
+
+        val plantCollectionRv = rootView.findViewById<RecyclerView>(R.id.plant_collectioin_recycler_view)
+
+        val plantRvAdapter = PlantCollectionRVAdapter(plantItems)
+        plantCollectionRv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        plantCollectionRv.adapter = plantRvAdapter
+
         return rootView
+
     }
 
     companion object {
@@ -60,12 +74,12 @@ class SettingFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment SettingFragment.
+         * @return A new instance of fragment PlantCollectionFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            SettingFragment().apply {
+            PlantCollectionFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

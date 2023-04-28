@@ -59,6 +59,7 @@ public class UserController {
 
         // 회원가입 성공 후 로그인
         resultMap.put("accessToken", tokenDTO.getAccessToken());
+        resultMap.put("refreshToken", tokenDTO.getRefreshToken());
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "회원가입 되었습니다.");
         return ResponseEntity.ok().body(resultMap);
@@ -198,6 +199,7 @@ public class UserController {
         }
 
         resultMap.put("accessToken", tokenDTO.getAccessToken());
+        resultMap.put("refreshToken", tokenDTO.getRefreshToken());
         resultMap.put("result", SUCCESS);
         resultMap.put("msg","로그인 성공");
         return ResponseEntity.ok().body(resultMap);
@@ -219,12 +221,19 @@ public class UserController {
         return ResponseEntity.ok().body(resultMap);
     }
 
-    // accessToken 재발급
-    @PutMapping("/refresh")
-    public ResponseEntity refreshAccessToken(HttpServletRequest request){
+    // 토큰 재발급
+    @PostMapping("/refresh")
+    public ResponseEntity refreshAccessToken(@RequestBody TokenDTO tokenDTO){
         Map<String, Object> resultMap = new HashMap<>();
+        // refresh 토큰 유효성 검사
+        if (!jwtTokenProvider.validateToken(tokenDTO.getRefreshToken())) {
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "유효하지 않은 토큰입니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
+
         // accessToken에서 id 뽑아오기
-        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        Long id = jwtTokenProvider.getIdByAccessToken(tokenDTO.getAccessToken());
         if(!userService.isExistedId(id)){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "존재하지 않는 사용자입니다.");
@@ -232,18 +241,20 @@ public class UserController {
         }
 
         // accessToken 재발급
-        TokenDTO tokenDTO = userService.refreshAccessToken(id);
-        if(tokenDTO == null){
+        // refreshToken 일치 여부 확인
+        String refreshToken = tokenDTO.getRefreshToken();
+        TokenDTO result = userService.refreshAccessToken(refreshToken, id);
+
+        if(result == null){
             resultMap.put("result", FAIL);
-            resultMap.put("msg", "refresh 토큰이 만료되었습니다.");
+            resultMap.put("msg", "refresh 토큰 불일치.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
         }
 
-        resultMap.put("accessToken", tokenDTO.getAccessToken());
+        resultMap.put("accessToken", result.getAccessToken());
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "토큰 재발급 완료");
         return ResponseEntity.ok().body(resultMap);
-
     }
 
     // 유저 작성글 조회

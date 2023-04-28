@@ -237,24 +237,24 @@ class WeatherFragment : Fragment() {
         layoutParams.humidityText.text = hum.toString() + "%"
         when (target) {
             "sun" -> {
-                layoutParams.weatherBgView.setImageResource(R.drawable.sun_gradient_bg)
-                layoutParams.weatherIcon.setImageResource(R.drawable.sun)
+                layoutParams.weatherBgView.setImageResource(R.drawable.weather_sun_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.weather_sun)
             }
             "cloudy" -> {
-                layoutParams.weatherBgView.setImageResource(R.drawable.cloudy_gradient_bg)
-                layoutParams.weatherIcon.setImageResource(R.drawable.cloudy)
+                layoutParams.weatherBgView.setImageResource(R.drawable.weather_cloudy_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.weather_cloudy)
             }
             "snow" -> {
-                layoutParams.weatherBgView.setImageResource(R.drawable.snow_gradient_bg)
-                layoutParams.weatherIcon.setImageResource(R.drawable.snow)
+                layoutParams.weatherBgView.setImageResource(R.drawable.weather_snow_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.weather_snow)
             }
             "rain" -> {
-                layoutParams.weatherBgView.setImageResource(R.drawable.rain_gradient_bg)
-                layoutParams.weatherIcon.setImageResource(R.drawable.rain)
+                layoutParams.weatherBgView.setImageResource(R.drawable.weather_rain_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.weather_rain)
             }
             "rain_thunder" -> {
-                layoutParams.weatherBgView.setImageResource(R.drawable.rain_thunder_gradient_bg)
-                layoutParams.weatherIcon.setImageResource(R.drawable.rain_thunder)
+                layoutParams.weatherBgView.setImageResource(R.drawable.weather_rain_thunder_gradient_bg)
+                layoutParams.weatherIcon.setImageResource(R.drawable.weather_rain_thunder)
             }
         }
     }
