@@ -7,39 +7,40 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 
-class DictRVAdapter(val items:MutableList<String>) : RecyclerView.Adapter<DictRVAdapter.ViewHolder>() {
+class DictRVAdapter(val items: MutableList<String>) :
+    RecyclerView.Adapter<DictRVAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DictRVAdapter.ViewHolder {
-        var view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_search_result_item, parent, false)
+        var view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.fragment_search_result_item, parent, false)
 
         return ViewHolder(view)
     }
 
     interface ItemClick {
-        fun onClick(view:View, position: Int)
+        fun onClick(view: View, position: Int)
     }
-    var itemClick : ItemClick? = null
+
+    var itemClick: ItemClick? = null
 
     override fun onBindViewHolder(holder: DictRVAdapter.ViewHolder, position: Int) {
-        if ( itemClick != null) {
-holder.itemView.setOnClickListener {
-    v ->
-    itemClick?.onClick(v, position)
-}
+        if (itemClick != null) {
+            holder.itemView.setOnClickListener { v ->
+                itemClick?.onClick(v, position)
+            }
         }
         holder.bindItems(items[position])
     }
 
-//    전체 리사이클러뷰의 개수
+    //    전체 리사이클러뷰의 개수
     override fun getItemCount(): Int {
         return items.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bindItems(item:String) {
+        fun bindItems(item: String) {
             val rv_text = itemView.findViewById<TextView>(R.id.dictRvItem)
             rv_text.text = item
-
         }
     }
 }
