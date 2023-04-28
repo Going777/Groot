@@ -278,7 +278,8 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
 
         // Draw point cloud.
         frame.acquirePointCloud().use { pointCloud ->
-            pointCloudRender.drawPointCloud(render, pointCloud, viewProjectionMatrix)
+//            포인트 클라우드 지움
+//            pointCloudRender.drawPointCloud(render, pointCloud, viewProjectionMatrix)
 
 //            추가사항
             Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, viewMatrix, 0)
@@ -359,16 +360,30 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
             for (arDetectedObject in arLabeledAnchors) {
                 val anchor = arDetectedObject.anchor
                 if (anchor.trackingState != TrackingState.TRACKING) continue
-                labelRenderer.draw(
-                    render,
-                    viewProjectionMatrix,
-                    anchor.pose,
-                    camera.pose,
-                    arDetectedObject.label
-                )
+//                labelRenderer.draw(
+//                    render,
+//                    viewProjectionMatrix,
+//                    anchor.pose,
+//                    camera.pose,
+//                    arDetectedObject.label
+//                )
 
                 if (arDetectedObject.label == "Plant") {
+                    labelRenderer.draw(
+                        render,
+                        viewProjectionMatrix,
+                        anchor.pose,
+                        camera.pose,
+                        arDetectedObject.label
+                    )
+
+
+
                     Log.d(TAG, "plant 인지")
+
+//                    캐릭터 띄우기
+                    activity.goCharacter()
+
 
                     anchor.pose.toMatrix(modelMatrix, 0)
                     Log.d(TAG, modelMatrix.toString())
@@ -388,7 +403,7 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
 //                        }
                     val texture = virtualObjectAlbedoInstantPlacementTexture
                     virtualObjectShader.setTexture("u_AlbedoTexture", texture)
-                    render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
+//                    render.draw(virtualObjectMesh, virtualObjectShader, virtualSceneFramebuffer)
 
                 }
                 backgroundRenderer.drawVirtualScene(render, virtualSceneFramebuffer, 0.01f, 100f)

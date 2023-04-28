@@ -109,6 +109,12 @@ public class JwtTokenProvider {
         return id;
     }
 
+    public static Long getIdByAccessToken(String accessToken){
+        Integer i = (Integer) parseClaims(accessToken).get("id");
+        Long id = Long.valueOf(i);
+        return id;
+    }
+
     // 클레임에서 정보 가져오기
     public static Claims parseClaims(String accessToken){
         try {
