@@ -1,14 +1,17 @@
 package com.chocobi.groot
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
+import com.chocobi.groot.view.community.CommunityTab2Fragment
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.signup.SignupActivity
 
 class ShortcutActivity : AppCompatActivity() {
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shortcut)
@@ -43,5 +46,6 @@ class ShortcutActivity : AppCompatActivity() {
             var intent = Intent(this, ArActivity::class.java)
             startActivity(intent)
         }
+
     }
 }

@@ -1,6 +1,7 @@
 package com.chocobi.groot.adapter.item
 
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,7 +15,9 @@ import java.lang.ref.WeakReference
 class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
     interface ItemViewHolderDelegate {
-        fun onItemViewClick(itemBean: ItemBean)
+        fun onItemViewClick(itemBean: ItemBean) {
+            Log.d("ItemViewHolder", "clicked")
+        }
     }
 
     private var view: WeakReference<View> = WeakReference(itemView)
@@ -42,6 +45,7 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private fun setListener() {
         view.get()?.setOnClickListener {
             delegate?.onItemViewClick(itemBean)
+            Log.d("??", "aaaaaaaaaaaaaaaaaaaaaaaaaa")
         }
     }
 

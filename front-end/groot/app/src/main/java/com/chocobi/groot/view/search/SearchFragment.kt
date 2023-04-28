@@ -66,7 +66,6 @@ class SearchFragment : Fragment() {
 //        Gallery 버튼 클릭
         val galleryBtn = rootView.findViewById<ImageButton>(R.id.galleryBtn)
         galleryBtn.setOnClickListener {
-            Log.d("SearchFragment", "////////////////////////////////////////////////////////")
             mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSON_GALLERY)
         }
 
