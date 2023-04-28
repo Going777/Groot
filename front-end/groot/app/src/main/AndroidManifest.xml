@@ -37,6 +37,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".view.community.CommunityDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".CharacterActivity"
             android:exported="false" />
         <activity

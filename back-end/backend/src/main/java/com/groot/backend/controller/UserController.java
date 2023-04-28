@@ -76,7 +76,7 @@ public class UserController {
         }else{
             resultMap.put("result", SUCCESS);
             resultMap.put("msg", "사용 가능한 아이디입니다.");
-            return ResponseEntity.status(HttpStatus.OK).body(resultMap);
+            return ResponseEntity.ok().body(resultMap);
         }
     }
 
@@ -91,7 +91,7 @@ public class UserController {
         }else{
             resultMap.put("result", SUCCESS);
             resultMap.put("msg", "사용 가능한 닉네임입니다.");
-            return ResponseEntity.badRequest().body(resultMap);
+            return ResponseEntity.ok().body(resultMap);
         }
     }
 

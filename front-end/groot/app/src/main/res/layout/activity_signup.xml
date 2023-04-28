@@ -79,19 +79,19 @@
 
 
     <Button
-        android:id="@+id/idUniqueButton"
+        android:id="@+id/dupIdBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/sub"
         android:text="중복 확인"
         android:textSize="10dp"
-        app:layout_constraintEnd_toEndOf="@+id/nameUniqueButton"
+        app:layout_constraintEnd_toEndOf="@+id/dupNameBtn"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/signupIdInput"
         app:layout_constraintTop_toTopOf="@+id/signupIdInput" />
 
     <Button
-        android:id="@+id/nameUniqueButton"
+        android:id="@+id/dupNameBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/sub"
@@ -100,7 +100,7 @@
         app:layout_constraintEnd_toEndOf="@+id/signupPwInput"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/signupNameInput"
-        app:layout_constraintTop_toBottomOf="@+id/idUniqueButton" />
+        app:layout_constraintTop_toBottomOf="@+id/dupIdBtn" />
 
     <Button
         android:id="@+id/basicSignupBtn"

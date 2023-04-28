@@ -4,12 +4,14 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.view.signup.SignupActivity
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,17 +29,16 @@ class LoginActivity : AppCompatActivity() {
         val editor = shared.edit() // 수정을 위한 에디터
 
 //        초기 토큰값 확인
-        var access_token = shared.getString("access_token", "초기값")
-        var dialog = AlertDialog.Builder(this@LoginActivity)
-        dialog.setTitle("초기값")
-        dialog.setMessage(access_token)
-        dialog.show()
-
+//        var access_token = shared.getString("access_token", "초기값")
+//        var dialog = AlertDialog.Builder(this@LoginActivity)
+//        dialog.setTitle("초기값")
+//        dialog.setMessage(access_token)
+//        dialog.show()
 
 
 //        retrofit 객체 만들기
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8000")
+            .baseUrl(GlobalVariables.getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -57,34 +58,47 @@ class LoginActivity : AppCompatActivity() {
             var textPw = loginPwInput.text.toString()
 
 //            로그인 요청 보내기
-            loginService.requestLogin(textId, textPw).enqueue(object:Callback<Login>{
+            loginService.requestLogin(LoginRequest(textId, textPw))
+                .enqueue(object : Callback<LoginResponse> {
 
-                override fun onResponse(call: Call<Login>, response: Response<Login>) {
+                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                        if (response.code() == 200) {
+                            Log.d("LoginActivity", "로그인 성공")
+
 //                    통신 성공시 실행되는 코드
-                    var login = response.body()
+                            var login = response.body()
 
-                    var dialog = AlertDialog.Builder(this@LoginActivity)
-                    dialog.setTitle("알림!")
+//                            var dialog = AlertDialog.Builder(this@LoginActivity)
+//                            dialog.setTitle("알림!")
 
 //                    토큰 저장
-                    editor.putString("access_token", login?.accessToken)
+                            editor.putString("access_token", login?.accessToken)
 //                    editor.putString("refresh_token", login?.refreshToken)
-                    editor.commit()
+                            editor.commit()
 
 //                    토큰 확인
-                    access_token = shared.getString("access_token", "")
-                    dialog.setMessage(access_token)
-                    dialog.show()
-                }
+//                    access_token = shared.getString("access_token", "")
+//                    dialog.setMessage(access_token)
+//                    dialog.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+//                        var intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                        startActivity(intent)
+//                    })
+//                    dialog.show()
+                            var intent = Intent(this@LoginActivity, MainActivity::class.java)
+                            startActivity(intent)
+                        } else {
+                            Log.d("LoginActivity", response.code().toString())
+                        }
+                    }
 
-                override fun onFailure(call: Call<Login>, t: Throwable) {
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
 //                    통신 실패시 실행되는 코드
-                    var dialog = AlertDialog.Builder(this@LoginActivity)
-                    dialog.setTitle("실패!")
-                    dialog.setMessage(t.message)
-                    dialog.show()
-                }
-            })
+                        var dialog = AlertDialog.Builder(this@LoginActivity)
+                        dialog.setTitle("실패!")
+                        dialog.setMessage(t.message)
+                        dialog.show()
+                    }
+                })
         }
 
 //        회원가입 안내 텍스트 클릭시
@@ -98,7 +112,6 @@ class LoginActivity : AppCompatActivity() {
             var intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
-
 
 
     }
