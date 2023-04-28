@@ -254,6 +254,14 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Override
     public void deleteArticle(Long articleId) {
+        // s3 이미지 삭제
+        List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleId);
+        if(articleImageEntityList != null){
+            for(ArticleImageEntity entity : articleImageEntityList){
+                s3Service.delete(entity.getImg());
+            }
+        }
+
         articleRepository.deleteById(articleId);
     }
 
