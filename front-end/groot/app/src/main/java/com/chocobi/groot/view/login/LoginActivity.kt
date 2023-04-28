@@ -1,7 +1,6 @@
 package com.chocobi.groot.view.login
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -60,9 +59,9 @@ class LoginActivity : AppCompatActivity() {
 
 //            로그인 요청 보내기
             loginService.requestLogin(LoginRequest(textId, textPw))
-                .enqueue(object : Callback<Login> {
+                .enqueue(object : Callback<LoginResponse> {
 
-                    override fun onResponse(call: Call<Login>, response: Response<Login>) {
+                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                         if (response.code() == 200) {
                             Log.d("LoginActivity", "로그인 성공")
 
@@ -92,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<Login>, t: Throwable) {
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
 //                    통신 실패시 실행되는 코드
                         var dialog = AlertDialog.Builder(this@LoginActivity)
                         dialog.setTitle("실패!")
