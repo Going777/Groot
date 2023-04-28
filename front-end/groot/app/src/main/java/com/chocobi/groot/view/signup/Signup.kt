@@ -5,4 +5,6 @@ package com.chocobi.groot.view.signup
 data class Signup(
     var result : String,
     var msg : String,
+    var accessToken : String,
+    var refreshToken : String
 )

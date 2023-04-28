@@ -1,13 +1,21 @@
 package com.chocobi.groot.view.signup
 
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.view.login.LoginActivity
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,6 +27,10 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
+        //        sharedPreference
+        val shared = getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
+        val editor = shared.edit() // 수정을 위한 에디터
+
         var signupIdInput = findViewById<EditText>(R.id.signupIdInput)
         var signupNameInput = findViewById<EditText>(R.id.signupNameInput)
         var signupPwInput = findViewById<EditText>(R.id.signupPwInput)
@@ -28,7 +40,7 @@ class SignupActivity : AppCompatActivity() {
 
         //        retrofit 객체 만들기
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:8000")
+            .baseUrl(GlobalVariables.getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -43,28 +55,49 @@ class SignupActivity : AppCompatActivity() {
             var textConfPw = signupConfPwInput.text.toString()
             var textProfile = ""
 
-            if (textPw==textConfPw) {
-            signupService.requestSignup(textId, textName, textPw, textProfile)
-                .enqueue(object : Callback<Signup> {
-                    override fun onResponse(call: Call<Signup>, response: Response<Signup>) {
-                        var signup = response.body()
+            if (textPw == textConfPw) {
+                signupService.requestSignup(SignupRequest(textId, textName, textPw))
+//            signupService.requestSignup(textId, textName, textPw, textProfile)
+                    .enqueue(object : Callback<Signup> {
+                        override fun onResponse(call: Call<Signup>, response: Response<Signup>) {
+                            if (response.code() == 200) {
 
-                        var dialog = AlertDialog.Builder(this@SignupActivity)
-                        dialog.setTitle("환영합니다!")
-                        dialog.setMessage("회원가입이 완료되었습니다")
-                        dialog.show()
+                                var signup = response.body()
 
-                        var intent = Intent(this@SignupActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                    }
+                                //                    토큰 저장
+                                editor.putString("access_token", signup?.accessToken)
+//                      editor.putString("refresh_token", login?.refreshToken)
+                                editor.commit()
 
-                    override fun onFailure(call: Call<Signup>, t: Throwable) {
-                        var dialog = AlertDialog.Builder(this@SignupActivity)
-                        dialog.setTitle("회원가입 실패")
-                        dialog.setMessage(t.message)
-                        dialog.show()
-                    }
-                })
+                                var dialog = AlertDialog.Builder(
+                                    this@SignupActivity,
+                                    android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
+                                )
+
+                                dialog.setTitle("환영합니다!")
+                                dialog.setMessage("회원가입이 완료되었습니다" + signup?.msg)
+                                dialog.setPositiveButton(
+                                    "확인",
+                                    DialogInterface.OnClickListener { dialog, which ->
+                                        var intent =
+                                            Intent(this@SignupActivity, MainActivity::class.java)
+                                        startActivity(intent)
+                                    })
+                                dialog.show()
+                            } else {
+                                Log.d("SignupActivity", response.code().toString())
+                            }
+
+
+                        }
+
+                        override fun onFailure(call: Call<Signup>, t: Throwable) {
+                            var dialog = AlertDialog.Builder(this@SignupActivity)
+                            dialog.setTitle("회원가입 실패")
+                            dialog.setMessage(t.message)
+                            dialog.show()
+                        }
+                    })
 
 
             } else {
