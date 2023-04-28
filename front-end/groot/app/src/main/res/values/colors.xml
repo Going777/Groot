@@ -13,6 +13,9 @@
     <color name="pill">#FFD600</color>
     <color name="button_main">#416D50</color>
     <color name="button_sub">#C4E1CD</color>
+    <color name="background">#E9F3ED</color>
+    <color name="chip">#80976E</color>
+
 
 
 </resources>
