@@ -15,6 +15,7 @@ import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.adapter.RecyclerViewAdapter
 import com.chocobi.groot.adapter.item.ItemBean
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,6 +40,8 @@ class CommunityTab2Fragment : Fragment() {
         setListeners()
         initList()
         reload()
+
+
         return view
     }
 
@@ -119,6 +122,9 @@ class CommunityTab2Fragment : Fragment() {
             itemBean.imageUrl = "https://cdn.wallpapersafari.com/15/87/kp4wAJ.jpg"
             list.add(itemBean)
         }
+
+
+
         return list
     }
 }

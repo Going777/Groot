@@ -1,12 +1,20 @@
 package com.chocobi.groot.view.community
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.adapter.RecyclerViewAdapter
+import com.chocobi.groot.adapter.item.ItemBean
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
@@ -20,45 +28,102 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class CommunityTab1Fragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: RecyclerViewAdapter
+    private lateinit var frameLayoutProgress: FrameLayout
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = inflater.inflate(R.layout.fragment_community_tab2, container, false)
+        findViews(view)
+        setListeners()
+        initList()
+        reload()
+
+
+        return view
+    }
+
+    private fun findViews(view: View) {
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+    }
+
+    private fun setListeners() {
+        swipeRefreshLayout.setOnRefreshListener {
+            reload()
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_community_tab1, container, false)
-
-
-        return rootView
+    private fun initList() {
+        adapter = RecyclerViewAdapter()
+        adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
+            override fun onLoadMore() {
+                loadMore()
+            }
+        }
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CommunityTab1Fragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommunityTab1Fragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun reload() {
+        showProgress()
+
+        // get data from server
+
+        ThreadUtil.startThread {
+            Log.d("???", "reload 10 items")
+            val list = createDummyData(0, 10)
+            ThreadUtil.startUIThread(1000) {
+                adapter.reload(list)
+                hideProgress()
+
             }
+        }
+    }
+
+    private fun loadMore() {
+        showProgress()
+
+        // get data from server
+
+        ThreadUtil.startThread {
+            Log.d("???", "reload 10 items")
+
+            val list = createDummyData(adapter.itemCount, 10)
+            ThreadUtil.startUIThread(1000) {
+                adapter.loadMore(list)
+                hideProgress()
+
+            }
+        }
+    }
+
+    private fun showProgress() {
+        frameLayoutProgress.visibility = View.VISIBLE
+    }
+
+    private fun hideProgress() {
+        frameLayoutProgress.visibility = View.GONE
+    }
+
+    private fun createDummyData(offset: Int, limit: Int): MutableList<ItemBean> {
+
+        val list: MutableList<ItemBean> = mutableListOf()
+
+        var itemBean: ItemBean
+        for (i in offset until (offset + limit)) {
+            itemBean = ItemBean()
+            itemBean.title = "title $i"
+            itemBean.content = "content, content, content, content, content, content, content, content, content, content, content, content"
+            itemBean.imageUrl = "https://cdn.wallpapersafari.com/15/87/kp4wAJ.jpg"
+            list.add(itemBean)
+        }
+
+
+
+        return list
     }
 }
