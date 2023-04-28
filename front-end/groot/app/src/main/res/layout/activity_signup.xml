@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.signup.SignupActivity">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/main_background" />
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:src="@drawable/logo_full"
+        app:layout_constraintBottom_toTopOf="@+id/signupIdInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/signupIdInput"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+
+        android:hint="아이디"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/signupNameInput"
+        app:layout_constraintStart_toStartOf="@+id/signupNameInput" />
+
+    <EditText
+        android:id="@+id/signupNameInput"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="닉네임"
+
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/signupPwInput"
+        app:layout_constraintStart_toStartOf="@+id/signupPwInput" />
+
+    <EditText
+        android:id="@+id/signupPwInput"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/signupConfPwInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <EditText
+        android:id="@+id/signupConfPwInput"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="48dp"
+        android:ems="10"
+        android:hint="비밀번호 확인"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/basicSignupBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.504"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+    <Button
+        android:id="@+id/idUniqueButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/sub"
+        android:text="중복 확인"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/nameUniqueButton"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/signupIdInput"
+        app:layout_constraintTop_toTopOf="@+id/signupIdInput" />
+
+    <Button
+        android:id="@+id/nameUniqueButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/sub"
+        android:text="중복 확인"
+        android:textSize="10dp"
+        app:layout_constraintEnd_toEndOf="@+id/signupPwInput"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/signupNameInput"
+        app:layout_constraintTop_toBottomOf="@+id/idUniqueButton" />
+
+    <Button
+        android:id="@+id/basicSignupBtn"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="146dp"
+        android:backgroundTint="@color/main"
+        android:text="회원가입"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

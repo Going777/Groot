@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="grey">#B4B4B4</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="main">#5F9363</color>
+    <color name="sub">#B5CDA3</color>
+    <color name="point">#60D9A7</color>
+    <color name="water">#6461FF</color>
+    <color name="pot">#BE8181</color>
+    <color name="bug">#FF2727</color>
+    <color name="sun">#FB8700</color>
+    <color name="pill">#FFD600</color>
+    <color name="button_main">#416D50</color>
+    <color name="button_sub">#C4E1CD</color>
+    <color name="background">#E9F3ED</color>
+    <color name="chip">#80976E</color>
+
+
+
+</resources>

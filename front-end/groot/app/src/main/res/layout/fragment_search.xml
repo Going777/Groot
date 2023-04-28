@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".view.search.SearchFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <!--    <TextView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:text="search" />-->
+
+
+    <ImageButton
+        android:id="@+id/cameraBtn"
+        style="@style/WHITE_CIRCLE_BTN"
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp"
+        android:src="@drawable/ic_camera"
+        app:tint="@color/main" />
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginHorizontal="10dp"
+        android:outlineAmbientShadowColor="#000"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:menu="@menu/search_menu"
+        app:navigationIcon="@drawable/baseline_arrow_back_24"
+        app:title="식물 이름을 입력해주세요"
+        app:titleTextColor="#6E6E6E" />
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="LinearLayoutManager"
+
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="난이도"
+                android:textStyle="bold" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip7"
+                    style="@style/BASIC_CHIP"
+                    android:text="쉬움" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip8"
+                    style="@style/BASIC_CHIP"
+                    android:text="보통" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip9"
+                    style="@style/BASIC_CHIP"
+                    android:text="어려움" />
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="빛 요구도"
+                android:textStyle="bold" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip10"
+                    style="@style/BASIC_CHIP"
+                    android:text="낮음" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip11"
+                    style="@style/BASIC_CHIP"
+                    android:text="중간" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip12"
+                    style="@style/BASIC_CHIP"
+                    android:text="높음" />
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="생육 형태"
+                android:textStyle="bold" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:chipSpacingVertical="0dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip13"
+                    style="@style/BASIC_CHIP"
+                    android:text="직립형"
+                    app:chipEndPadding="3dp"
+                    app:chipStartPadding="3dp"
+                    />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip14"
+                    style="@style/BASIC_CHIP"
+                    android:text="관목형"
+                    app:chipEndPadding="3dp"
+                    app:chipStartPadding="3dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip15"
+                    style="@style/BASIC_CHIP"
+                    android:text="덩굴형"
+                    app:chipEndPadding="3dp"
+                    app:chipStartPadding="3dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip16"
+                    style="@style/BASIC_CHIP"
+                    android:text="다육형"
+                    app:chipEndPadding="3dp"
+                    app:chipStartPadding="3dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip17"
+                    style="@style/BASIC_CHIP"
+                    android:text="포복형"
+                    app:chipEndPadding="3dp"
+                    app:chipStartPadding="3dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip18"
+                    style="@style/BASIC_CHIP"
+                    android:text="풀모양"
+                    app:chipEndPadding="3dp"
+                    app:chipStartPadding="3dp" />
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:text="크기"
+                android:textStyle="bold" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip19"
+                    style="@style/BASIC_CHIP"
+                    android:text="소형" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip20"
+                    style="@style/BASIC_CHIP"
+                    android:text="중형" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip21"
+                    style="@style/BASIC_CHIP"
+                    android:text="대형" />
+            </com.google.android.material.chip.ChipGroup>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/grey" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dictRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<!--    <ImageButton-->
+<!--        android:id="@+id/galleryBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:src="@drawable/ic_camera"-->
+<!--        android:layout_gravity="center|right"/>-->
+
+
+
+</LinearLayout>
