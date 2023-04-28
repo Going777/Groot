@@ -2,6 +2,7 @@ package com.chocobi.groot
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 import android.view.Menu
 import android.view.MenuItem
@@ -17,10 +18,12 @@ import io.github.sceneview.ar.getDescription
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.math.Position
+import io.github.sceneview.math.Rotation
 import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
 
 class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
+    val TAG: String = "로그"
 
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
@@ -39,8 +42,8 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         Model(
             fileLocation = "models/Whispa_A.glb",
             // Display the Tiger with a size of 3 m long
-            scaleUnits = 1f,
-//            placementMode = PlacementMode.BEST_AVAILABLE,
+            scaleUnits = 0.1f,
+            placementMode = PlacementMode.PLANE_HORIZONTAL,
             applyPoseRotation = false
         ),
 //        Model(
@@ -122,6 +125,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         }
 
         newModelNode()
+        placeModelNode()
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -130,6 +134,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //    }
 
     fun placeModelNode() {
+        Log.d(TAG, "PlaceModelNode: 불림");
         modelNode?.anchor()
         placeModelButton.isVisible = false
         sceneView.planeRenderer.isVisible = false
@@ -150,20 +155,26 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
                 autoAnimate = true,
                 scaleToUnits = model.scaleUnits,
                 // Place the model origin at the bottom center
-                centerOrigin = Position(y = -1.0f)
+//                centerOrigin =
             ) {
                 sceneView.planeRenderer.isVisible = true
-//                isLoading = false
             }
+            position = Position(x = 0.0f, y = 0.0f, z = -4.0f)
+            rotation = Rotation(y = 0f)
+
             onAnchorChanged = { anchor ->
                 placeModelButton.isGone = anchor != null
             }
             onHitResult = { node, _ ->
                 placeModelButton.isGone = !node.isTracking
             }
+            instantAnchor = true
         }
+
+
         sceneView.addChild(modelNode!!)
         // Select the model node by default (the model node is also selected on tap)
         sceneView.selectedNode = modelNode
+
     }
 }
