@@ -58,8 +58,8 @@ for row in reader:
                     'growthhginfo').text, soup.find('growtharainfo').text,
                 soup.select_one('smellcode').text, soup.find(
                     'toxctyinfo').text, soup.find('managelevelcodenm').text,
-                soup.find('grwtvecodenm').text, soup.find(
-                    'grwhtpcodenm').text, soup.select_one('hdcode').text,
+                soup.find('grwtvecodenm').text, soup.select_one(
+                    'grwhtpcode').text, soup.select_one('hdcode').text,
                 soup.find('watercyclesprngcodenm').text, soup.find(
                     'watercyclewintercodenm').text,
                 soup.find('speclmanageinfo').text, soup.find(
