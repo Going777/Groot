@@ -6,15 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-
 @Getter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleBookmarkEntityPK implements Serializable {
-    private Long userEntity;
+public class ArticleTagEntityPK implements Serializable {
 
     private Long articleEntity;
-
-
+    private Long tagEntity;
 }

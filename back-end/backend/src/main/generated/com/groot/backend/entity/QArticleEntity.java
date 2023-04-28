@@ -26,6 +26,8 @@ public class QArticleEntity extends EntityPathBase<ArticleEntity> {
 
     public final ListPath<ArticleImageEntity, QArticleImageEntity> articleImageEntityList = this.<ArticleImageEntity, QArticleImageEntity>createList("articleImageEntityList", ArticleImageEntity.class, QArticleImageEntity.class, PathInits.DIRECT2);
 
+    public final ListPath<ArticleTagEntity, QArticleTagEntity> articleTagEntityList = this.<ArticleTagEntity, QArticleTagEntity>createList("articleTagEntityList", ArticleTagEntity.class, QArticleTagEntity.class, PathInits.DIRECT2);
+
     public final StringPath category = createString("category");
 
     public final StringPath content = createString("content");

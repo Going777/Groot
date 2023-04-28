@@ -1,5 +1,6 @@
 package com.groot.backend.entity;
 
+import com.groot.backend.dto.response.ArticleListDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,4 +49,17 @@ public class ArticleEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "articleEntity", cascade = CascadeType.REMOVE)
     private List<ArticleImageEntity> articleImageEntityList;
+
+    @OneToMany(mappedBy = "articleEntity", cascade = CascadeType.REMOVE)
+    private List<ArticleTagEntity> articleTagEntityList;
+
+//    public ArticleListDTO toArticleListDTO(){
+//        ArticleListDTO articleListDTO = ArticleListDTO.builder()
+//                .articleId(this.id)
+//                .category(this.category)
+//                .userPK(this.userPK)
+//
+//                .build();
+//
+//    }
 }

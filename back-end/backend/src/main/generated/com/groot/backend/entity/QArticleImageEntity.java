@@ -24,7 +24,7 @@ public class QArticleImageEntity extends EntityPathBase<ArticleImageEntity> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
-    public final QArticleImageEntity articleEntity;
+    public final QArticleEntity articleEntity;
 
     public final NumberPath<Long> articleId = createNumber("articleId", Long.class);
 
@@ -56,7 +56,7 @@ public class QArticleImageEntity extends EntityPathBase<ArticleImageEntity> {
 
     public QArticleImageEntity(Class<? extends ArticleImageEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.articleEntity = inits.isInitialized("articleEntity") ? new QArticleImageEntity(forProperty("articleEntity"), inits.get("articleEntity")) : null;
+        this.articleEntity = inits.isInitialized("articleEntity") ? new QArticleEntity(forProperty("articleEntity"), inits.get("articleEntity")) : null;
     }
 
 }
