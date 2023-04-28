@@ -30,6 +30,7 @@ public class ArticleServiceImpl implements ArticleService{
     private final CommentRepository commentRepository;
     private final ArticleBookmarkRepository articleBookmarkRepository;
     private final ArticleImageRepository articleImageRepository;
+    private final S3Service s3Service;
 
     @Override
     public boolean existedArticleId(Long articleId) {
@@ -262,6 +263,13 @@ public class ArticleServiceImpl implements ArticleService{
         List<ArticleListDTO> articleListDTOList = new ArrayList<>();
         for(ArticleEntity articleEntity : articleEntities){
             // 이미지 조회
+            List<String> imgPaths = new ArrayList<>();
+            List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleEntity.getId());
+            if(articleImageEntityList != null){
+                for(ArticleImageEntity entity : articleImageEntityList){
+                    imgPaths.add(entity.getImg());
+                }
+            }
             // 유저 조회
             UserEntity userEntity = userRepository.findById(articleEntity.getUserPK()).orElseThrow();
             // 태그 조회
@@ -288,7 +296,7 @@ public class ArticleServiceImpl implements ArticleService{
             ArticleListDTO articleListDTO = ArticleListDTO.builder()
                     .articleId(articleEntity.getId())
                     .category(articleEntity.getCategory())
-                    .imgs(null)
+                    .imgs(imgPaths)
                     .userPK(articleEntity.getUserPK())
                     .nickName(userEntity.getNickName())
                     .profile(userEntity.getProfile())
@@ -306,6 +314,7 @@ public class ArticleServiceImpl implements ArticleService{
             articleListDTOList.add(articleListDTO);
         }
 
+        // pagination
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start+pageRequest.getPageSize()), articleListDTOList.size());
