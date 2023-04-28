@@ -1,16 +1,16 @@
 pipeline {
   agent any
-  // post {
-  //   failure {
-  //     updateGitlabCommitStatus name: 'build', state: 'failed'
-  //   }
-  //   success {
-  //     updateGitlabCommitStatus name: 'build', state: 'success'
-  //   }
-  //   aborted {
-  //     updateGitlabCommitStatus name: 'build', state: 'canceled'
-  //   }
-  // }
+  post {
+    failure {
+      updateGitlabCommitStatus name: 'build', state: 'failed'
+    }
+    success {
+      updateGitlabCommitStatus name: 'build', state: 'success'
+    }
+    aborted {
+      updateGitlabCommitStatus name: 'build', state: 'canceled'
+    }
+  }
   options {
     gitLabConnection('Groot')
   }
@@ -31,9 +31,8 @@ pipeline {
     }
     stage('test-built') {
       steps {
-        dir('./nosuchdirectory') {
-          updateGitlabCommitStatus name: 'done', state: 'success'
-        }
+        sh 'nosuchcommandlikethis'
+        updateGitlabCommitStatus name: 'done', state: 'success'
         echo 'done'
       }
     }
