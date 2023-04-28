@@ -6,25 +6,26 @@ pipeline {
         echo 'init pipeline'
       }
     }
-    // stage('cofing') {
-    //   steps {
-    //     echo 'copy configuration files'
-    //     sh 'pwd'
-    //     sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
-    //   }
-    // }
-    // stage('build') {
-    //   steps {
-    //     echo 'move directory'
-    //     dir('./back-end/backend/') {
-    //       sh 'pwd'
-    //       sh 'ls -l'
-    //       echo 'start build'
-    //       sh 'chmod +x ./gradlew'
-    //       sh './gradlew clean build'
-    //     }
-    //   }
-    // }
+    stage('cofing') {
+      steps {
+        echo 'copy configuration files'
+        sh 'pwd'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application-keys.properties ./back-end/backend/src/main/resources'
+      }
+    }
+    stage('build') {
+      steps {
+        echo 'move directory'
+        dir('./back-end/backend/') {
+          sh 'pwd'
+          sh 'ls -l'
+          echo 'start build'
+          sh 'chmod +x ./gradlew'
+          sh './gradlew clean build'
+        }
+      }
+    }
     stage('unload') {
       environment {
         // CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
@@ -49,10 +50,17 @@ pipeline {
         sh 'pwd'
         dir('./back-end/backend/') {
           echo 'build docker image'
-          sh 'docker build -t springboot .'
+          sh 'docker build --no-cache -t springboot .'
           echo 'run docker image'
           sh 'docker run --name spring -d -p 8080:8080 springboot'
         }
+      }
+    }
+    // will be integrated with python server clean
+    stage('clean') {
+      steps {
+        echo 'clean unused image'
+        sh 'docker image prune --force'
       }
     }
   }

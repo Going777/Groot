@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShortcutActivity">
+    tools:context=".ShortcutActivity"
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/shortcutLogin"
@@ -30,5 +31,25 @@
         android:text="메인"
         tools:layout_editor_absoluteX="199dp"
         tools:layout_editor_absoluteY="340dp" />
+
+    <Button
+        android:id="@+id/shortcutIntro"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="인트로"
+        tools:layout_editor_absoluteX="199dp"
+        tools:layout_editor_absoluteY="340dp" />
+
+    <Button
+        android:id="@+id/shortcutAr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="ar" />
+    <Button
+        android:id="@+id/shortcutCharacter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="캐릭터"/>
 
 </LinearLayout>

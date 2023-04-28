@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.community
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +27,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class CommunityFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var tab1: Int = 0
+    private var nowTab: Int = 0
     private var param2: String? = null
 
 
@@ -37,6 +38,7 @@ class CommunityFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +53,11 @@ class CommunityFragment : Fragment() {
 //        Community Post 페이지로 이동
         val communityPostFab = rootView.findViewById<FloatingActionButton>(R.id.communityPostFab)
         communityPostFab.setOnClickListener {
+            if (nowTab == 0) {
+                mActivity.changeFragment("community_share")
+            } else {
             mActivity.changeFragment("community_post")
+            }
         }
 
         // Inflate the layout for this fragment
@@ -71,7 +77,7 @@ class CommunityFragment : Fragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.layout_tab)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabList[position]
-            tab1 = position
+
         }.attach()
 
 
@@ -84,6 +90,8 @@ class CommunityFragment : Fragment() {
         }
 
         override fun createFragment(position: Int): Fragment {
+            nowTab = position
+            Log.d("CommunityFragment", nowTab.toString())
             return when (position) {
                 0 -> CommunityTab1Fragment()
                 1 -> CommunityTab2Fragment()

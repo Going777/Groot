@@ -1,15 +1,15 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.LoginDTO;
-import com.groot.backend.dto.request.UserDTO;
+import com.groot.backend.dto.request.RegisterDTO;
+import com.groot.backend.dto.request.UserPasswordDTO;
+import com.groot.backend.dto.request.UserProfileDTO;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.UserRepository;
-import com.groot.backend.util.CustomException;
 import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +23,14 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Override
-    public boolean isExistedId(String userId) {
+    public boolean isExistedId(Long id) {
+        return userRepository.existsById(id);
+    }
+
+    @Override
+    public boolean isExistedUserId(String userId) {
         return userRepository.existsByUserId(userId);
     }
 
@@ -34,19 +40,38 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserEntity createUser(UserDTO userDTO) {
+    public TokenDTO createUser(RegisterDTO registerDTO) {
         UserEntity userEntity = UserEntity.builder()
-                .userId(userDTO.getUserId())
-                .nickName(userDTO.getNickname())
-                .password(passwordEncoder.encode(userDTO.getPassword()))
+                .userId(registerDTO.getUserId())
+                .nickName(registerDTO.getNickName())
+                .password(passwordEncoder.encode(registerDTO.getPassword()))
                 .build();
 
-        return userRepository.save(userEntity);
+        userRepository.save(userEntity);
+
+        // token 생성
+        String accessToken = jwtTokenProvider.createAccessToken(userEntity);
+        String refreshToken = jwtTokenProvider.createRefreshToken(userEntity.getId());
+
+        UserEntity newUserEntity = userEntity.builder()
+                .id(userEntity.getId())
+                .userId(userEntity.getUserId())
+                .nickName(userEntity.getNickName())
+                .password(userEntity.getPassword())
+                .profile(userEntity.getProfile())
+                .token(refreshToken)
+                .build();
+
+        userRepository.save(newUserEntity);
+        return TokenDTO.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .build();
     }
 
     @Override
-    public UserEntity readUser(String userId) {
-        return userRepository.findByUserId(userId);
+    public UserEntity readUser(Long id) {
+        return userRepository.findById(id).orElseThrow();
     }
 
 
@@ -57,7 +82,7 @@ public class UserServiceImpl implements UserService{
 
         // 일치 확인
         if(!passwordEncoder.matches(loginDTO.getPassword(), userEntity.getPassword())){
-            throw new CustomException(HttpStatus.BAD_REQUEST,"fail","잘못된 비밀번호입니다.");
+            return null;
         }
 
         // token 생성
@@ -79,4 +104,93 @@ public class UserServiceImpl implements UserService{
                 .accessToken(accessToken)
                 .build();
     }
+
+    @Override
+    public boolean deleteUser(Long id) {
+        if(!userRepository.existsById(id)) return false;
+        userRepository.deleteById(id);
+        return true;
+    }
+
+    @Override
+    public boolean logout(Long id) {
+        if(!userRepository.existsById(id)) return false;
+        UserEntity userEntity = userRepository.findById(id).orElseThrow();
+
+        UserEntity newEntity = UserEntity.builder()
+                .id(userEntity.getId())
+                .userId(userEntity.getUserId())
+                .nickName(userEntity.getNickName())
+                .password(userEntity.getPassword())
+                .profile(userEntity.getProfile())
+                .token(null)
+                .build();
+
+        userRepository.save(newEntity);
+        return true;
+    }
+
+    @Override
+    public boolean updatePassword(UserPasswordDTO userPasswordDTO) {
+        // userEntity find
+        UserEntity userEntity = userRepository.findById(userPasswordDTO.getId()).orElseThrow();
+
+        // 비밀번호 일치 확인
+        if(!passwordEncoder.matches(userPasswordDTO.getPassword(), userEntity.getPassword())){
+            return false;
+        }
+
+        // 비밀번호 변경
+        UserEntity newUserEntity = UserEntity.builder()
+                .id(userEntity.getId())
+                .userId(userEntity.getUserId())
+                .nickName(userEntity.getNickName())
+                .password(passwordEncoder.encode(userPasswordDTO.getNewPassword()))
+                .profile(userEntity.getProfile())
+                .token(userEntity.getToken())
+                .build();
+        userRepository.save(newUserEntity);
+        return true;
+    }
+
+    @Override
+    public TokenDTO refreshAccessToken(Long id) {
+        // id로 refreshToken 가져오기
+        UserEntity userEntity = userRepository.findById(id).orElseThrow();
+        String refreshToken = userEntity.getToken();
+
+        // refreshToken 유효성 확인
+        if(!jwtTokenProvider.validateToken(refreshToken)){
+            return null;
+        }
+
+        // accessToken 재발급
+        String accessToken = jwtTokenProvider.createAccessToken(userEntity);
+
+        return TokenDTO.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .build();
+
+    }
+
+    @Override
+    public boolean updateProfile(UserProfileDTO userProfileDTO) {
+        UserEntity userEntity = userRepository.findById(userProfileDTO.getId()).orElseThrow();
+
+        UserEntity newUserEntity = UserEntity.builder()
+                .id(userEntity.getId())
+                .userId(userEntity.getUserId())
+                .nickName(userProfileDTO.getNickName())
+                .password(userEntity.getPassword())
+                .profile(userProfileDTO.getProfile())
+                .token(userEntity.getToken())
+                .build();
+
+        UserEntity result = userRepository.save(newUserEntity);
+        if(result == null) return false;
+        return true;
+    }
+
+
 }

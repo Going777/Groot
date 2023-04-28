@@ -1,15 +1,20 @@
 package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.LoginDTO;
-import com.groot.backend.dto.request.UserDTO;
+import com.groot.backend.dto.request.RegisterDTO;
+import com.groot.backend.dto.request.UserPasswordDTO;
+import com.groot.backend.dto.request.UserProfileDTO;
 import com.groot.backend.dto.response.TokenDTO;
+import com.groot.backend.entity.UserEntity;
 import com.groot.backend.service.UserService;
+import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,20 +25,40 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
     // 회원가입
     @PostMapping()
-    public ResponseEntity signup(@RequestBody UserDTO userDTO){
+    public ResponseEntity signup(@RequestBody RegisterDTO registerDTO){
         Map<String, Object> resultMap = new HashMap<>();
-        if(userService.createUser(userDTO)==null){
+        // 아이디 중복 체크
+        if(userService.isExistedUserId(registerDTO.getUserId())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "이미 존재하는 아이디입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 이메일 중복 체크
+        if(userService.isExistedNickName(registerDTO.getNickName())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "이미 존재하는 닉네임입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 회원가입 실패
+        TokenDTO tokenDTO = userService.createUser(registerDTO);
+        if(tokenDTO==null){
             // resultMap.put("accessToken", null);
             resultMap.put("result", FAIL);
             resultMap.put("msg", "회원가입에 실패하였습니다.");
 
             return ResponseEntity.badRequest().body(resultMap);
         }
+
+        // 회원가입 성공 후 로그인
+        resultMap.put("accessToken", tokenDTO.getAccessToken());
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "회원가입 되었습니다.");
         return ResponseEntity.ok().body(resultMap);
@@ -43,7 +68,7 @@ public class UserController {
     @GetMapping("/userId/{userId}")
     public ResponseEntity IdDuplicateCheck(@PathVariable String userId){
         Map<String, Object> resultMap = new HashMap<>();
-        if(userService.isExistedId(userId)){
+        if(userService.isExistedUserId(userId)){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "이미 존재하는 아이디입니다.");
            return ResponseEntity.badRequest().body(resultMap);
@@ -71,25 +96,107 @@ public class UserController {
 
 
     // 회원정보 조회
+    @GetMapping()
+    public ResponseEntity readUser(HttpServletRequest request){
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
 
-    // 프로필 변경
-
-    // 비밀번호 변경
-
-    // 회원탈퇴
-
-    // 로그인
-    @PostMapping("login")
-    public ResponseEntity login(@RequestBody LoginDTO loginDTO){
         Map<String, Object> resultMap = new HashMap<>();
+        UserEntity userEntity = userService.readUser(id);
+        if(userEntity == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }else {
+            resultMap.put("user", userEntity.toUserDTO());
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg", "회원정보 조회 완료");
+            return ResponseEntity.ok().body(resultMap);
+        }
+    }
 
-        // 사용자 존재 여부 확인
-        if(!userService.isExistedId(loginDTO.getUserId())){
+
+    // 프로필 변경 (닉네임, 프로필 사진 변경)
+    @PutMapping()
+    public ResponseEntity updateProfile(@RequestBody UserProfileDTO userProfileDTO){
+        Map<String, Object> resultMap = new HashMap<>();
+        if(!userService.isExistedId(userProfileDTO.getId())){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "존재하지 않는 사용자입니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
+
+        if(!userService.updateProfile(userProfileDTO)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "업데이트 실패");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "회원정보 수정 완료");
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+    // 비밀번호 변경
+    @PutMapping("/password")
+    public ResponseEntity updatePassword(@RequestBody UserPasswordDTO userPasswordDTO){
+        Map<String, Object> resultMap = new HashMap<>();
+        // 유저 존재 여부
+        if(!userService.isExistedId(userPasswordDTO.getId())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 비밀번호 일치 확인
+        if(!userService.updatePassword(userPasswordDTO)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "비밀번호 불일치");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 비밀번호 변경 성공
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "비밀번호를 변경하였습니다.");
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+    // 회원탈퇴
+    @DeleteMapping()
+    public ResponseEntity deleteUser(HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        if(!userService.deleteUser(id)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 아이디입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "회원탈퇴 되었습니다.");
+        return ResponseEntity.ok().body(resultMap);
+
+    }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody LoginDTO loginDTO){
+        Map<String, Object> resultMap = new HashMap<>();
+
+        // 사용자 존재 여부 확인
+        if(!userService.isExistedUserId(loginDTO.getUserId())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
         TokenDTO tokenDTO = userService.login(loginDTO);
+        // 비밀 번호 불일치
+        if(tokenDTO == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "비밀번호 불일치");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
         resultMap.put("accessToken", tokenDTO.getAccessToken());
         resultMap.put("result", SUCCESS);
         resultMap.put("msg","로그인 성공");
@@ -97,8 +204,47 @@ public class UserController {
     }
 
     // 로그아웃
+    @GetMapping("/logout")
+    public ResponseEntity logout(HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        if(!userService.logout(id)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
 
-    // 토큰 갱신
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "로그아웃 완료");
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+    // accessToken 재발급
+    @PutMapping("/refresh")
+    public ResponseEntity refreshAccessToken(HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        // accessToken에서 id 뽑아오기
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        if(!userService.isExistedId(id)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // accessToken 재발급
+        TokenDTO tokenDTO = userService.refreshAccessToken(id);
+        if(tokenDTO == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "refresh 토큰이 만료되었습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
+
+        resultMap.put("accessToken", tokenDTO.getAccessToken());
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "토큰 재발급 완료");
+        return ResponseEntity.ok().body(resultMap);
+
+    }
 
     // 유저 작성글 조회
 

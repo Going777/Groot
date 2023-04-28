@@ -5,7 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.view.search.DictRVAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,7 +40,27 @@ class UserTab1Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_tab1, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_user_tab1, container, false)
+        val mActivity = activity as MainActivity
+//        리사이클 뷰
+        val items = mutableListOf<String>()
+        items.add("산세베리아")
+        items.add("산세베리아")
+        items.add("산세베리아")
+
+        val rv = rootView.findViewById<RecyclerView>(R.id.useTab1RecyclerView)
+
+        val rvAdapter = UserTab1RVAdapter(items)
+        rv.layoutManager = LinearLayoutManager(activity)
+        rv.adapter = rvAdapter
+
+        rvAdapter.itemClick = object : UserTab1RVAdapter.ItemClick {
+            override fun onClick(view: View, position: Int) {
+                mActivity.changeFragment("plant_detail")
+            }
+        }
+
+        return rootView
     }
 
     companion object {
