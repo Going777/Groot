@@ -11,12 +11,6 @@ pipeline {
       updateGitlabCommitStatus name: 'result', state: 'canceled'
     }
   }
-  options {
-    gitLabConnection('Groot')
-  }
-  // triggers {
-  //   gitlab(triggerOnPush: true, triggerOnMergeRequest: true, branchFilterType: 'All')
-  // }
   stages {
     stage('init') {
       steps {
