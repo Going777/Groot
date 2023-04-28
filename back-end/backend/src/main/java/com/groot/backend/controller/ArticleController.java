@@ -4,14 +4,18 @@ import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
 import com.groot.backend.service.ArticleService;
+import com.groot.backend.service.S3Service;
 import com.groot.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/articles")
@@ -21,20 +25,26 @@ import java.util.Map;
 public class ArticleController {
     private final ArticleService articleService;
     private final UserService userService;
+    private final S3Service s3Service;
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
     private static Map<String, Object> resultMap = null;
 
     // 게시글 작성
     @PostMapping()
-    public ResponseEntity createArticle(@RequestBody ArticleDTO articleDTO){
+    public ResponseEntity createArticle(@RequestPart(value = "images", required = false) MultipartFile[] images,
+            @RequestPart(value = "articleDTO") ArticleDTO articleDTO) throws IOException {
         resultMap = new HashMap<>();
         if(!userService.isExistedId(articleDTO.getUserPK())){
             resultMap.put("result", FAIL);
             resultMap.put("msg","존재하지 않는 사용자입니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
-        if(!articleService.createArticle(articleDTO)){
+
+        // 이미지 업로드
+        String[] imgPaths = s3Service.upload(images, "article");
+
+        if(!articleService.createArticle(articleDTO, imgPaths)){
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시물 등록 실패");
             return ResponseEntity.badRequest().body(resultMap);

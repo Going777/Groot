@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ArticleResponseDTO {
     private String category;
-    private String[] imgs;
+    private List<String> imgs;
     private Long userPK;
     private String nickName;
     private String profile;

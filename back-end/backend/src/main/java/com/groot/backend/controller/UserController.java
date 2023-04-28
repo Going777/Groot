@@ -40,7 +40,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
-        // 이메일 중복 체크
+        // 닉네임 중복 체크
         if(userService.isExistedNickName(registerDTO.getNickName())){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "이미 존재하는 닉네임입니다.");

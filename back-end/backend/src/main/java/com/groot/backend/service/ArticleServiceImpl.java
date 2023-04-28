@@ -29,6 +29,7 @@ public class ArticleServiceImpl implements ArticleService{
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final ArticleBookmarkRepository articleBookmarkRepository;
+    private final ArticleImageRepository articleImageRepository;
 
     @Override
     public boolean existedArticleId(Long articleId) {
@@ -37,10 +38,8 @@ public class ArticleServiceImpl implements ArticleService{
 
     // 게시글 작성
     @Override
-    public boolean createArticle(ArticleDTO articleDTO) {
-        // 이미지 테이블에 게시글PK + 이미지주소 insert
-
-        // redis에 존재하는지 탐색
+    public boolean createArticle(ArticleDTO articleDTO, String[] imgPaths) {
+        // 태그가 redis에 존재하는지 탐색
 
         // redis에 태그 insert
         // redis에 새로 insert된 태그 리스트
@@ -73,12 +72,25 @@ public class ArticleServiceImpl implements ArticleService{
         // 태크-게시물 테이블에 insert
         for(String tag : articleDTO.getTags()){
             ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
-                    .articleEntity(articleRepository.findById(savedArticleEntity.getId()).orElseThrow())
+                    .articleEntity(savedArticleEntity)
                     .tagEntity(tagRepository.findByName(tag))
                     .build();
 
             articleTagRepository.save(articleTagEntity);
         }
+
+        // 이미지 테이블에 게시글PK + 이미지주소 insert
+        if(imgPaths.length >0){
+            for(String imgPath : imgPaths){
+                ArticleImageEntity articleImageEntity = ArticleImageEntity.builder()
+                        .articleEntity(savedArticleEntity)
+                        .img(imgPath)
+                        .build();
+
+                articleImageRepository.save(articleImageEntity);
+            }
+        }
+
 
         return true;
     }
@@ -129,9 +141,19 @@ public class ArticleServiceImpl implements ArticleService{
             bookmark = false;
         }else bookmark = true;
 
+        // image 조회
+        List<String> imgPaths = new ArrayList<>();
+        List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllById(articleId);
+        System.out.println(articleImageEntityList.toString());
+        if(articleImageEntityList != null){
+            for(ArticleImageEntity entity : articleImageEntityList){
+                imgPaths.add(entity.getImg());
+            }
+        }
+
         ArticleResponseDTO articleResponseDTO = ArticleResponseDTO.builder()
                 .category(articleEntity.getCategory())
-                .imgs(null)
+                .imgs(imgPaths)
                 .userPK(articleEntity.getUserPK())
                 .nickName(userEntity.getNickName())
                 .profile(userEntity.getProfile())
@@ -162,7 +184,7 @@ public class ArticleServiceImpl implements ArticleService{
 
         articleRepository.save(newArticleEntity);
 
-        // image 조회
+
 
         return articleResponseDTO;
     }

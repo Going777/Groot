@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ArticleService {
     boolean existedArticleId(Long articleId);
-    boolean createArticle(ArticleDTO articleDTO);
+    boolean createArticle(ArticleDTO articleDTO, String[] imgPaths);
     ArticleResponseDTO readArticle(Long articleId);
     boolean updateArticle(ArticleDTO articleDTO);
     void deleteArticle(Long articleId);
