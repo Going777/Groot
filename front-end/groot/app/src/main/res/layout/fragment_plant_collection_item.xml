@@ -7,6 +7,7 @@
     android:layout_marginHorizontal="10dp">
 
     <ImageView
+        android:id="@+id/characterImage"
         android:layout_width="105dp"
         android:layout_height="105dp"
         android:src="@drawable/sample_character"
@@ -64,6 +65,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/plantMeetDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -82,6 +84,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/plantPostDiaryBtn"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:background="@drawable/radius10"
@@ -90,6 +93,7 @@
                 android:paddingLeft="9dp" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/plantScanBtn"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:layout_marginLeft="12dp"
@@ -99,10 +103,10 @@
                 android:paddingLeft="12dp" />
 
             <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/plantDetailBtn"
                 android:layout_width="59dp"
                 android:layout_height="42dp"
                 android:layout_marginLeft="12dp"
-
                 android:background="@drawable/radius10"
                 android:backgroundTint="@color/button_main"
                 android:gravity="center"

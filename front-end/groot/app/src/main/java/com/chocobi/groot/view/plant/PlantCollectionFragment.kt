@@ -1,14 +1,19 @@
 package com.chocobi.groot.view.plant
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,6 +36,8 @@ class PlantCollectionFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+
     }
 
     override fun onCreateView(
@@ -40,6 +47,7 @@ class PlantCollectionFragment : Fragment() {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_plant_collection, container, false)
         val plantItems = mutableListOf<String>()
+        val mactivity = activity as MainActivity
 
         plantItems.add("산세산세")
         plantItems.add("산세산세")
@@ -62,6 +70,23 @@ class PlantCollectionFragment : Fragment() {
         val plantRvAdapter = PlantCollectionRVAdapter(plantItems)
         plantCollectionRv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         plantCollectionRv.adapter = plantRvAdapter
+
+        plantRvAdapter.setItemClickListener(object: PlantCollectionRVAdapter.ItemClickListener{
+            override fun onPostBtnClick(view: View, position: Int) {
+                mactivity.changeFragment("plant_diary")
+            }
+
+            override fun onScanBtnClick(view: View, position: Int) {
+                val intent = Intent(context, ArActivity::class.java)
+                startActivity(intent)
+            }
+
+            override fun onDetailBtnClick(view: View, position: Int) {
+                mactivity.changeFragment("plant_detail")
+            }
+        })
+
+
 
         return rootView
 
