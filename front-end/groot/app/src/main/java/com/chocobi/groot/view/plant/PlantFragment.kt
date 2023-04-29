@@ -49,7 +49,7 @@ class PlantFragment : Fragment() {
 //        Plant Diary 페이지로 이동
         val toDiaryBtn = rootView.findViewById<Button>(R.id.toDiaryBtn)
         toDiaryBtn.setOnClickListener {
-            mActivity.changeFragment("plant_diary")
+            mActivity.changeFragment("plant_diary_create")
         }
 
 //        Plant Detail 페이지로 이동

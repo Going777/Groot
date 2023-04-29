@@ -1,14 +1,18 @@
 package com.chocobi.groot.view.plant
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet.Layout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,6 +29,9 @@ class PlantDiaryCreateFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private val PERMISSION_GALLERY = 2 // 앨범 권한 처리
+
+    private var myImageView: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +45,7 @@ class PlantDiaryCreateFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        val mActivity = activity as MainActivity
         val rootView = inflater.inflate(R.layout.fragment_plant_diary_create, container, false)
 
 //        사진 첨부 취소 버튼
@@ -47,10 +54,21 @@ class PlantDiaryCreateFragment : Fragment() {
         val attachPhotoSection = rootView.findViewById<LinearLayout>(R.id.attachPhotoSection)
 //        첨부된 이미지 섹션
         val attachedPhotoSection = rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
+        val attachedPhoto = rootView.findViewById<ImageView>(R.id.attachedPhoto)
 
+        myImageView = rootView.findViewById(R.id.attachedPhoto)
+
+        Log.d("로그", "onCreateView: $attachedPhoto, 포토 이니셜라이즈")
+//        사진 첨부하기
+//        attachPhotoSection.setOnClickListener {
+//            mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_GALLERY)
+////            attachedPhotoSection.visibility = View.VISIBLE
+//        }
         attachPhotoSection.setOnClickListener {
-
-            attachedPhotoSection.visibility = View.VISIBLE
+            mActivity.requirePermissions(
+                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
+                PERMISSION_GALLERY
+            )
         }
         attachCancleBtn.setOnClickListener {
             attachPhotoSection.visibility = View.VISIBLE
@@ -58,6 +76,12 @@ class PlantDiaryCreateFragment : Fragment() {
         }
 
         return rootView
+    }
+
+    fun attachPhoto(uri: Uri) {
+        Log.d("로그", "attachPhoto: 사진을 첨부합니다, $uri")
+        Log.d("로그", "attachPhoto: 여기서는 과연 $myImageView")
+        myImageView?.setImageURI(uri)
     }
 
     companion object {
