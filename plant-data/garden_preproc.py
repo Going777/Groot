@@ -57,9 +57,10 @@ writer = csv.writer(fw)
 # output columns
 writer.writerow(col)
 
+cnt = 0
 # read lines
 for row in reader:
-    data = [None] * 25
+    data = [None] * 24
     # skip metadata
     if (row[0] == 'id'):
         continue
@@ -125,7 +126,10 @@ for row in reader:
     # desc 23
     data[23] = reduce_new_lines(row[15])
 
-    writer.writerow(data)
+    writer.writerow(data[0:24])
+
+    cnt += 1
+    print("[%3d] row done : %2d columns" % (cnt, len(data)))
 
 
 print("DONE !")

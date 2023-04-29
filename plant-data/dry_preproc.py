@@ -53,6 +53,8 @@ writer = csv.writer(fw)
 # output columns
 writer.writerow(col)
 
+cnt = 0
+
 for row in reader:
     if row[0] == 'id':
         continue
@@ -122,6 +124,9 @@ for row in reader:
     # desc 23
     data[23] = ""
 
-    writer.writerow(data)
+    writer.writerow(data[0:24])
+
+    cnt += 1
+    print("[%3d] row done : %2d colums" % (cnt, len(data)))
 
 print("DONE")
