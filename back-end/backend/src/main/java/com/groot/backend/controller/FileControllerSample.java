@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +25,15 @@ public class FileControllerSample {
     private final FileServiceSample fileServiceSample;
 
     @PostMapping(value = "/one", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity upload(@RequestPart("file") MultipartFile multipartFile) {
-        logger.info("Upload file : {}", multipartFile.getName());
+    public ResponseEntity upload(@RequestPart("file") MultipartFile multipartFile, @RequestPart("key") String key) {
+        logger.info("Upload file : {}", multipartFile.getOriginalFilename());
         Map<String, Object> result = new HashMap<>();
+
+        if(!"A303".equals(key)) {
+            logger.info("Incorrect key : {}", key);
+            result.put("msg", "Unauthorized key");
+            return new ResponseEntity(result, HttpStatus.UNAUTHORIZED);
+        }
 
         try {
             String fileURL = fileServiceSample.upload(multipartFile);
@@ -39,9 +46,15 @@ public class FileControllerSample {
     }
 
     @PostMapping(value = "/multi", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity uploads(@RequestPart("files") MultipartFile[] multipartFiles) {
+    public ResponseEntity uploads(@RequestPart("files") MultipartFile[] multipartFiles, @RequestPart("key") String key) {
         logger.info("Upload {} files", multipartFiles.length);
         Map<String, Object> result = new HashMap<>();
+
+        if(!"A303".equals(key)) {
+            logger.info("Incorrect key : {}", key);
+            result.put("msg", "Unauthorized key");
+            return new ResponseEntity(result, HttpStatus.UNAUTHORIZED);
+        }
 
         try {
             String[] fileURLs = fileServiceSample.upload(multipartFiles);
