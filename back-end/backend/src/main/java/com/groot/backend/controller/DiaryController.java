@@ -27,7 +27,7 @@ public class DiaryController {
     private final DiaryService diaryService;
 
     @PostMapping    // 다이어리 작성
-    public ResponseEntity insertDiary(@RequestPart("postData") @Validated DiaryDTO diaryDTO, @RequestPart(value="files", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
+    public ResponseEntity insertDiary(@RequestPart("postData") @Validated DiaryDTO diaryDTO, @RequestPart(value="file", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         if(diaryDTO.getBug() && diaryDTO.getNutrients() && diaryDTO.getPruning() && diaryDTO.getWater() && diaryDTO.getSun() && diaryDTO.getContent().isEmpty()){
@@ -48,7 +48,7 @@ public class DiaryController {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
 
-        if(diaryDTO.getUserId()!=userId){
+        if(diaryDTO.getUserPK()!=userId){
             resultMap.put("msg", "수정 권한이 없습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
@@ -64,10 +64,10 @@ public class DiaryController {
         return ResponseEntity.ok().body(resultMap);
     }
 
-    @DeleteMapping("/{diaryId}/{userId}")    // 다이어리 삭제
-    public ResponseEntity deleteDiary(@PathVariable Long diaryId, @PathVariable Long userId, HttpServletRequest request){
+    @DeleteMapping("/{diaryId}/{userPK}")    // 다이어리 삭제
+    public ResponseEntity deleteDiary(@PathVariable Long diaryId, @PathVariable Long userPK, HttpServletRequest request){
         Map resultMap = new HashMap();
-        Long userPK = JwtTokenProvider.getIdByAccessToken(request);
+        Long userId = JwtTokenProvider.getIdByAccessToken(request);
         if(userId != userPK){
             resultMap.put("msg", "삭제 권한이 없습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);

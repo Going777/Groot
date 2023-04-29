@@ -1,5 +1,6 @@
 package com.groot.backend.service;
 
+import com.groot.backend.controller.NotificationController;
 import com.groot.backend.controller.exception.CustomException;
 import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.entity.DiaryEntity;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -39,6 +41,7 @@ public class DiaryServiceImpl implements DiaryService{
 //    private S3Uploader s3Uploader;
 
 
+    @Transactional
     @Override
     public DiaryEntity saveDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException {
         String storedFileName = null;
@@ -57,6 +60,16 @@ public class DiaryServiceImpl implements DiaryService{
                 .pruning(diaryDTO.getPruning()?true:false)
                 .water(diaryDTO.getWater()?true:false)
                 .build();
+//        List<Long> subsToList = subscribeRepository.findSubscribeTo(principalDetails.getUser().getId());
+        Long id = userId;
+            SseEmitter sseEmitter = NotificationController.sseEmitterMap.get(id);
+            try {
+                sseEmitter.send(SseEmitter.event().name("notification").data("새로운 글을 업로드했습니다!"));
+            } catch (Exception e) {
+                NotificationController.sseEmitterMap.remove(id);
+            }
+//        }
+
         return diaryRepository.save(diary);
     }
 

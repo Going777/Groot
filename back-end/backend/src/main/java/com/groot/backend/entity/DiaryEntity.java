@@ -55,4 +55,6 @@ public class DiaryEntity extends BaseEntity{
     @JoinColumn(name = "pot_id")
     @JsonBackReference
     private PotEntity potEntity;
+
+
 }

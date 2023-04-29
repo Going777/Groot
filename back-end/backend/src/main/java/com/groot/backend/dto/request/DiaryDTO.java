@@ -15,7 +15,7 @@ public class DiaryDTO {
 
     private Long potId;
 
-    private Long userId;
+    private Long userPK;
 
     private String content;
 
