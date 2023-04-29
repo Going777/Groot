@@ -81,7 +81,7 @@ public class ArticleServiceImpl implements ArticleService{
         }
 
         // 이미지 테이블에 게시글PK + 이미지주소 insert
-        if(imgPaths.length >0){
+        if(imgPaths != null){
             for(String imgPath : imgPaths){
                 ArticleImageEntity articleImageEntity = ArticleImageEntity.builder()
                         .articleEntity(savedArticleEntity)
@@ -191,7 +191,6 @@ public class ArticleServiceImpl implements ArticleService{
 
     @Override
     public boolean updateArticle(ArticleDTO articleDTO, String[] imgPaths) {
-
         // redis에 존재하는지 탐색
 
         // redis에 태그 insert
@@ -215,6 +214,18 @@ public class ArticleServiceImpl implements ArticleService{
             }
         }
 
+        // 태크-게시물 테이블에 기존 태그 delete
+        List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleDTO.getArticleId());
+        for(ArticleTagEntity articleTagEntity : articleTagEntityList){
+            articleTagRepository.delete(articleTagEntity);
+        }
+
+        // 이미지 테이블의 기존 정보 delete
+        List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleDTO.getArticleId());
+        for(ArticleImageEntity articleImageEntity : articleImageEntityList){
+            articleImageRepository.delete(articleImageEntity);
+        }
+
         // article 테이블에 update
         ArticleEntity articleEntity = articleRepository.findById(articleDTO.getArticleId()).orElseThrow();
         ArticleEntity newArticleEntity = ArticleEntity.builder()
@@ -229,15 +240,8 @@ public class ArticleServiceImpl implements ArticleService{
                 .build();
 
         ArticleEntity savedArticleEntity = articleRepository.save(newArticleEntity);
-        if(savedArticleEntity == null) return false;
 
-        // 태크-게시물 테이블에 기존 태그 delete
-        List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleDTO.getArticleId());
-        for(ArticleTagEntity articleTagEntity : articleTagEntityList){
-            articleTagRepository.delete(articleTagEntity);
-        }
-
-        // 태크-게시물 테이블에 insert
+        // 태그-게시물 테이블에 insert
         for(String tag : articleDTO.getTags()){
             ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
                     .articleEntity(articleRepository.findById(savedArticleEntity.getId()).orElseThrow())
@@ -247,14 +251,8 @@ public class ArticleServiceImpl implements ArticleService{
             articleTagRepository.save(articleTagEntity);
         }
 
-        // 이미지 테이블의 기존 정보 delete
-        List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleDTO.getArticleId());
-        for(ArticleImageEntity articleImageEntity : articleImageEntityList){
-            articleImageRepository.delete(articleImageEntity);
-        }
-
         // 이미지 테이블에 insert
-        if(imgPaths.length >0){
+        if(imgPaths != null){
             for(String imgPath : imgPaths){
                 ArticleImageEntity articleImageEntity = ArticleImageEntity.builder()
                         .articleEntity(savedArticleEntity)
@@ -277,22 +275,22 @@ public class ArticleServiceImpl implements ArticleService{
                 s3Service.delete(entity.getImg());
             }
         }
-
         articleRepository.deleteById(articleId);
     }
 
     @Override
     public Page<ArticleListDTO> readArticleList(String category, Integer page, Integer size) {
+        // 카테고리에 해당하는 게시글 조회
         List<ArticleEntity> articleEntities = articleRepository.findAllByCategory(category);
-        List<ArticleListDTO> articleListDTOList = new ArrayList<>();
+        List<ArticleListDTO> articleListDTOList = new ArrayList<>();  // response DTO list
+
         for(ArticleEntity articleEntity : articleEntities){
             // 이미지 조회
-            List<String> imgPaths = new ArrayList<>();
             List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleEntity.getId());
-            if(articleImageEntityList != null){
-                for(ArticleImageEntity entity : articleImageEntityList){
-                    imgPaths.add(entity.getImg());
-                }
+            String imgPath = null;
+            if(articleImageEntityList != null && articleImageEntityList.size() !=0){
+                // 첫번째 이미지 가져오기
+                imgPath = articleImageEntityList.get(0).getImg();
             }
             // 유저 조회
             UserEntity userEntity = userRepository.findById(articleEntity.getUserPK()).orElseThrow();
@@ -317,10 +315,12 @@ public class ArticleServiceImpl implements ArticleService{
             if(articleBookmarkRepository.findById(articleBookmarkEntityPK).isPresent()){
                 bookmark = false;
             }else bookmark = true;
+
+            // articleListDTO builder
             ArticleListDTO articleListDTO = ArticleListDTO.builder()
                     .articleId(articleEntity.getId())
                     .category(articleEntity.getCategory())
-                    .imgs(imgPaths)
+                    .img(imgPath)
                     .userPK(articleEntity.getUserPK())
                     .nickName(userEntity.getNickName())
                     .profile(userEntity.getProfile())
@@ -342,6 +342,9 @@ public class ArticleServiceImpl implements ArticleService{
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start+pageRequest.getPageSize()), articleListDTOList.size());
+        if(start > end){
+            return null;
+        }
         Page<ArticleListDTO> articleListDTOPage = new PageImpl<>(articleListDTOList.subList(start, end), pageRequest, articleListDTOList.size());
         return articleListDTOPage;
     }

@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
-
-import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Builder
@@ -14,16 +12,16 @@ import javax.persistence.Column;
 @NoArgsConstructor
 public class ArticleDTO {
     private Long articleId;
+    @NotNull
     private Long userPK;
-
+    @NotNull
     private String category;
-
+    @NotNull
     private String title;
-
+    @NotNull
     private String content;
 
     private Long views;
-
     private Boolean shareStatus;
 
     private String shareRegion;

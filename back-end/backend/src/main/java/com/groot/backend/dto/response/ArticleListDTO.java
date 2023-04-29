@@ -11,7 +11,7 @@ import java.util.List;
 public class ArticleListDTO {
     private Long articleId;
     private String category;
-    private List<String> imgs;
+    private String img;
     private Long userPK;
     private String nickName;
     private String profile;

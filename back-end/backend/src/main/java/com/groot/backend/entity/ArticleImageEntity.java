@@ -21,7 +21,7 @@ public class ArticleImageEntity extends BaseEntity{
     @Column(name = "article_id", insertable = false, updatable = false)
     private Long articleId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "MEDIUMTEXT")
     private String img;
 
     @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
