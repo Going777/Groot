@@ -31,19 +31,8 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/toDiaryBtn"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
+                style="@style/GO_TO_DIARY_BTN"
                 android:layout_marginTop="15dp"
-                android:drawableLeft="@drawable/drawable_left_img_customize"
-                android:text="다이어리 보러 갈래요"
-                android:textColor="#fff"
-                android:background="@drawable/radius10"
-                android:backgroundTint="#B5CDA3"
-                android:textAlignment="textStart"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingHorizontal="20dp"
-                android:drawablePadding="12dp"
                 />
 
             <fragment

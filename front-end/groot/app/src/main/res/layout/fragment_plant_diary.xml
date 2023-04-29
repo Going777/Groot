@@ -5,10 +5,54 @@
     android:layout_height="match_parent"
     tools:context=".view.plant.PlantDiaryFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:src="@drawable/sample_plant_image" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:src="@drawable/sample_plant_image" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:src="@drawable/sample_plant_image" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:src="@drawable/sample_plant_image" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:src="@drawable/sample_plant_image" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:src="@drawable/sample_plant_image" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:src="@drawable/sample_plant_image" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:src="@drawable/sample_plant_image" />
+        </LinearLayout>
+    </HorizontalScrollView>
 
 </FrameLayout>

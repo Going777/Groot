@@ -129,15 +129,11 @@
     </FrameLayout>
 
 
-    <Button
-        android:drawableLeft="@drawable/ic_diary_plant"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:backgroundTint="@color/point"
-        android:text="다이어리 보러 갈래요"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/toDiaryBtn"
+        style="@style/GO_TO_DIARY_BTN"
+        android:layout_marginTop="15dp"
+        />
 
 
 </LinearLayout>
