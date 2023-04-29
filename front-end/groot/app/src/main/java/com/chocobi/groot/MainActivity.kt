@@ -17,7 +17,7 @@ import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.plant.PlantDetailFragment
-import com.chocobi.groot.view.plant.PlantDiaryFragment
+import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
 import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchCameraActivity
 import com.chocobi.groot.view.search.SearchDetailFragment
@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity() {
     fun changeFragment(index: String) {
         when (index) {
             "plant_diary" -> {
-                val plantDiaryFragment = PlantDiaryFragment()
+                val plantDiaryCreateFragment = PlantDiaryCreateFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, plantDiaryFragment)
+                    .replace(R.id.fl_container, plantDiaryCreateFragment)
                     .commit()
             }
 

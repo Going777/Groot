@@ -5,6 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet.Layout
 import com.chocobi.groot.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -14,10 +18,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [PlantDiaryFragment.newInstance] factory method to
+ * Use the [PlantDiaryCreateFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PlantDiaryFragment : Fragment() {
+class PlantDiaryCreateFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -35,7 +39,25 @@ class PlantDiaryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_plant_diary, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_plant_diary_create, container, false)
+
+//        사진 첨부 취소 버튼
+        val attachCancleBtn = rootView.findViewById<ImageButton>(R.id.attachCancleBtn)
+//        사진 첨부 섹션
+        val attachPhotoSection = rootView.findViewById<LinearLayout>(R.id.attachPhotoSection)
+//        첨부된 이미지 섹션
+        val attachedPhotoSection = rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
+
+        attachPhotoSection.setOnClickListener {
+
+            attachedPhotoSection.visibility = View.VISIBLE
+        }
+        attachCancleBtn.setOnClickListener {
+            attachPhotoSection.visibility = View.VISIBLE
+            attachedPhotoSection.visibility = View.GONE
+        }
+
+        return rootView
     }
 
     companion object {
@@ -50,7 +72,7 @@ class PlantDiaryFragment : Fragment() {
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            PlantDiaryFragment().apply {
+            PlantDiaryCreateFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
