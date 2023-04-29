@@ -57,10 +57,10 @@ for row in reader:
                 soup.find('adviseinfo').text, soup.find(
                     'growthhginfo').text, soup.find('growtharainfo').text,
                 soup.select_one('smellcode').text, soup.find(
-                    'toxctyinfo').text, soup.find('managelevelcodenm').text,
+                    'toxctyinfo').text, soup.find('managelevelcode').text,
                 soup.find('grwtvecodenm').text, soup.select_one(
                     'grwhtpcode').text, soup.select_one('hdcode').text,
-                soup.find('watercyclesprngcodenm').text, soup.find(
+                soup.select_one('watercyclesprngcode').text, soup.find(
                     'watercyclewintercodenm').text,
                 soup.find('speclmanageinfo').text, soup.find(
                     'fncltyinfo').text,

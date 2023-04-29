@@ -33,6 +33,23 @@ def humidity_code(code):
     return lists[int(code) % 83001]
 
 
+def convert_illuminance(message):
+    ret = 0
+    if message.find('낮은') != -1:
+        ret += 1
+    if message.find('중간') != -1:
+        ret += 2
+    if message.find('높은') != -1:
+        ret += 4
+    return ret
+
+
+def mgmt_level_code(code):
+    if code.strip() == '':
+        return 0
+    return int(code) % 89000
+
+
 col = ['id', 'kr_name', 'sci_name', 'grw_type', 'grw_speed',
        'min_temp', 'max_temp', 'winter_min_temp',
        'min_humidity', 'max_humidity', 'light_demand',
@@ -84,13 +101,13 @@ for row in reader:
     data[8:9] = humidity_code(row[11])
 
     # lightdemand 10
-    data[10] = row[19]
+    data[10] = convert_illuminance(row[19])
 
     # water cycle 11
     data[11] = row[12]
 
     # mgmt_level 12
-    data[12] = row[8]
+    data[12] = mgmt_level_code(row[8])
 
     # mgmt_demand 13
     data[13] = row[16]
