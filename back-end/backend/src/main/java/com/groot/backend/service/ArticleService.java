@@ -20,4 +20,5 @@ public interface ArticleService {
     Page<ArticleListDTO> filterRegion(String[] region,Integer page, Integer size);
     Page<ArticleListDTO> searchArticle(String keyword,Integer page, Integer size);
     List<UserSharedArticleDTO> readUserShared(Long articleId);
+    Page<ArticleListDTO> readUserArticles(Long userPK,Integer page, Integer size);
 }

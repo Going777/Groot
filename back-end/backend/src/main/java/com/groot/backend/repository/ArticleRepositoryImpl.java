@@ -57,7 +57,15 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
         return result;
     }
 
-
+    @Override
+    public List<ArticleEntity> findAllByUserPK(Long userPK) {
+        articleEntity = QArticleEntity.articleEntity;
+        List<ArticleEntity> result = queryFactory
+                .selectFrom(articleEntity)
+                .where(articleEntity.userPK.eq(userPK))
+                .fetch();
+        return result;
+    }
 
 
     // 키워드로 게시글 제목 검색

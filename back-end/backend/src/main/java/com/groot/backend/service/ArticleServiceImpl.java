@@ -358,6 +358,12 @@ public class ArticleServiceImpl implements ArticleService{
         return result;
     }
 
+    // 마이페이지 - 유저 작성글 조회
+    @Override
+    public Page<ArticleListDTO> readUserArticles(Long userPK, Integer page, Integer size) {
+        List<ArticleEntity> articleEntityList = articleRepository.findAllByUserPK(userPK);
+        return entityListToResponseDTOPage(articleEntityList, page, size);
+    }
 
     // articleEntityList to articleListDTOPage
     public Page<ArticleListDTO> entityListToResponseDTOPage(List<ArticleEntity> articleEntityList, Integer page, Integer size) {

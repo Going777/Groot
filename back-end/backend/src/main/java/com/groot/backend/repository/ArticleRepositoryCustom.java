@@ -7,6 +7,6 @@ import java.util.List;
 public interface ArticleRepositoryCustom {
     List<ArticleEntity> filterRegion(String[] region);
     List<ArticleEntity> search(String keyword);
-
     List<ArticleEntity> findUserSharedArticle(Long userPK, Long articleId);
+    List<ArticleEntity> findAllByUserPK(Long userPK);
 }
