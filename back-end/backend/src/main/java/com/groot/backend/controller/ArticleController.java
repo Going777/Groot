@@ -217,9 +217,33 @@ public class ArticleController {
     }
 
     // 게시글 검색 (제목 검색)
-    @GetMapping("/search/{category}/{keyword}")
-    public ResponseEntity searchArticle(@PathVariable String category, @PathVariable String keyword){
-        return null;
+    @GetMapping("/search")
+    public ResponseEntity searchArticle(@RequestParam String keyword,
+                                        @RequestParam Integer page,
+                                        @RequestParam Integer size){
+        resultMap = new HashMap<>();
+
+        if(size == 0){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","size값은 1 이상이어야 합니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        try{
+            Page<ArticleListDTO> result = articleService.searchArticle(keyword, page, size);
+            if(result == null){
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            }
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg","게시글 조회 성공");
+            resultMap.put("articles", result);
+            return ResponseEntity.ok().body(resultMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","게시글 조회 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
     }
 
     // 인기태그 조회
@@ -246,7 +270,7 @@ public class ArticleController {
             }
             resultMap.put("result", SUCCESS);
             resultMap.put("msg","게시글 조회 성공");
-            resultMap.put("articles", articleService.filterRegion(region, page, size));
+            resultMap.put("articles", result);
             return ResponseEntity.ok().body(resultMap);
         }catch (Exception e){
             e.printStackTrace();

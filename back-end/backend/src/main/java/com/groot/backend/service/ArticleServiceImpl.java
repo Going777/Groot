@@ -324,6 +324,12 @@ public class ArticleServiceImpl implements ArticleService{
         return entityListToResponseDTOPage(articleEntityList, page, size);
     }
 
+    @Override
+    public Page<ArticleListDTO> searchArticle(String keyword, Integer page, Integer size) {
+        List<ArticleEntity> articleEntityList = articleRepository.search(keyword);
+        return entityListToResponseDTOPage(articleEntityList, page, size);
+    }
+
     // articleEntityList to articleListDTOPage
     public Page<ArticleListDTO> entityListToResponseDTOPage(List<ArticleEntity> articleEntityList, Integer page, Integer size) {
         List<ArticleListDTO> articleListDTOList = new ArrayList<>();  // response DTO list

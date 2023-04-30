@@ -15,4 +15,5 @@ public interface ArticleService {
     Page<ArticleListDTO> readArticleList(String category, Integer page, Integer size);
     void updateBookMark(BookmarkDTO bookmarkDTO);
     Page<ArticleListDTO> filterRegion(String[] region,Integer page, Integer size);
+    Page<ArticleListDTO> searchArticle(String keyword,Integer page, Integer size);
 }
