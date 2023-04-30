@@ -24,8 +24,6 @@ public class QPlantEntity extends EntityPathBase<PlantEntity> {
 
     public final NumberPath<Integer> area = createNumber("area", Integer.class);
 
-    public final StringPath botName = createString("botName");
-
     public final StringPath characteristics = createString("characteristics");
 
     //inherited
@@ -33,13 +31,11 @@ public class QPlantEntity extends EntityPathBase<PlantEntity> {
 
     public final StringPath description = createString("description");
 
-    public final StringPath flrLang = createString("flrLang");
-
     public final StringPath grwSeason = createString("grwSeason");
 
-    public final NumberPath<Integer> grwSeasonCd = createNumber("grwSeasonCd", Integer.class);
-
     public final StringPath grwSpeed = createString("grwSpeed");
+
+    public final StringPath grwType = createString("grwType");
 
     public final NumberPath<Integer> height = createNumber("height", Integer.class);
 
@@ -56,7 +52,9 @@ public class QPlantEntity extends EntityPathBase<PlantEntity> {
 
     public final NumberPath<Integer> maxGrwTemp = createNumber("maxGrwTemp", Integer.class);
 
-    public final NumberPath<Integer> mgmtDemand = createNumber("mgmtDemand", Integer.class);
+    public final NumberPath<Integer> maxHumidity = createNumber("maxHumidity", Integer.class);
+
+    public final StringPath mgmtDemand = createString("mgmtDemand");
 
     public final NumberPath<Integer> mgmtLevel = createNumber("mgmtLevel", Integer.class);
 
@@ -70,13 +68,15 @@ public class QPlantEntity extends EntityPathBase<PlantEntity> {
 
     public final ListPath<PotEntity, QPotEntity> potEntities = this.<PotEntity, QPotEntity>createList("potEntities", PotEntity.class, QPotEntity.class, PathInits.DIRECT2);
 
-    public final StringPath smellDegree = createString("smellDegree");
+    public final StringPath sciName = createString("sciName");
+
+    public final NumberPath<Integer> smellDegree = createNumber("smellDegree", Integer.class);
 
     public final StringPath toxicInfo = createString("toxicInfo");
 
     public final NumberPath<Integer> waterCycle = createNumber("waterCycle", Integer.class);
 
-    public final NumberPath<Integer> winterTemp = createNumber("winterTemp", Integer.class);
+    public final NumberPath<Integer> winterMinTemp = createNumber("winterMinTemp", Integer.class);
 
     public QPlantEntity(String variable) {
         super(PlantEntity.class, forVariable(variable));

@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ArticleRepository extends JpaRepository<ArticleEntity, Long> {
+public interface ArticleRepository extends JpaRepository<ArticleEntity, Long>, ArticleRepositoryCustom {
     List<ArticleEntity> findAllByCategory(String category);
 }

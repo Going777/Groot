@@ -283,9 +283,58 @@ public class ArticleServiceImpl implements ArticleService{
     public Page<ArticleListDTO> readArticleList(String category, Integer page, Integer size) {
         // 카테고리에 해당하는 게시글 조회
         List<ArticleEntity> articleEntities = articleRepository.findAllByCategory(category);
+        return entityListToResponseDTOPage(articleEntities, page, size);
+    }
+
+    @Override
+    public void updateBookMark(BookmarkDTO bookmarkDTO) {
+        Long articleId = bookmarkDTO.getArticleId();
+        Long userPK = bookmarkDTO.getUserPK();
+        Boolean bStatus = bookmarkDTO.getBookmarkStatus();
+
+        // bookmark 여부 조회
+        // 복합키 사용을 위한 id 등록
+        ArticleBookmarkEntityPK aBookmarkEntityPK = new ArticleBookmarkEntityPK();
+        aBookmarkEntityPK.setUserEntity(userPK);
+        aBookmarkEntityPK.setArticleEntity(articleId);
+
+        if(bStatus){
+            // 해제
+            if(aBookmarkRepo.findById(aBookmarkEntityPK).isPresent()){
+                aBookmarkRepo.delete(aBookmarkRepo.findById(aBookmarkEntityPK).orElseThrow());
+            }
+
+        }else{
+            // 등록
+            if(!aBookmarkRepo.findById(aBookmarkEntityPK).isPresent()){
+                ArticleBookmarkEntity aBookmarkEntity = ArticleBookmarkEntity.builder()
+                        .articleEntity(articleRepository.findById(articleId).orElseThrow())
+                        .userEntity(userRepository.findById(userPK).orElseThrow())
+                        .build();
+                aBookmarkRepo.save(aBookmarkEntity);
+            }
+        }
+
+    }
+
+    @Override
+    public Page<ArticleListDTO> filterRegion(String[] region, Integer page, Integer size) {
+        List<ArticleEntity> articleEntityList = articleRepository.filterRegion(region);
+
+        return entityListToResponseDTOPage(articleEntityList, page, size);
+    }
+
+    @Override
+    public Page<ArticleListDTO> searchArticle(String keyword, Integer page, Integer size) {
+        List<ArticleEntity> articleEntityList = articleRepository.search(keyword);
+        return entityListToResponseDTOPage(articleEntityList, page, size);
+    }
+
+    // articleEntityList to articleListDTOPage
+    public Page<ArticleListDTO> entityListToResponseDTOPage(List<ArticleEntity> articleEntityList, Integer page, Integer size) {
         List<ArticleListDTO> articleListDTOList = new ArrayList<>();  // response DTO list
 
-        for(ArticleEntity articleEntity : articleEntities){
+        for(ArticleEntity articleEntity : articleEntityList){
             // 이미지 조회
             List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleEntity.getId());
             String imgPath = null;
@@ -348,36 +397,5 @@ public class ArticleServiceImpl implements ArticleService{
         }
         Page<ArticleListDTO> articleListDTOPage = new PageImpl<>(articleListDTOList.subList(start, end), pageRequest, articleListDTOList.size());
         return articleListDTOPage;
-    }
-
-    @Override
-    public void updateBookMark(BookmarkDTO bookmarkDTO) {
-        Long articleId = bookmarkDTO.getArticleId();
-        Long userPK = bookmarkDTO.getUserPK();
-        Boolean bStatus = bookmarkDTO.getBookmarkStatus();
-
-        // bookmark 여부 조회
-        // 복합키 사용을 위한 id 등록
-        ArticleBookmarkEntityPK aBookmarkEntityPK = new ArticleBookmarkEntityPK();
-        aBookmarkEntityPK.setUserEntity(userPK);
-        aBookmarkEntityPK.setArticleEntity(articleId);
-
-        if(bStatus){
-            // 해제
-            if(aBookmarkRepo.findById(aBookmarkEntityPK).isPresent()){
-                aBookmarkRepo.delete(aBookmarkRepo.findById(aBookmarkEntityPK).orElseThrow());
-            }
-
-        }else{
-            // 등록
-            if(!aBookmarkRepo.findById(aBookmarkEntityPK).isPresent()){
-                ArticleBookmarkEntity aBookmarkEntity = ArticleBookmarkEntity.builder()
-                        .articleEntity(articleRepository.findById(articleId).orElseThrow())
-                        .userEntity(userRepository.findById(userPK).orElseThrow())
-                        .build();
-                aBookmarkRepo.save(aBookmarkEntity);
-            }
-        }
-
     }
 }
