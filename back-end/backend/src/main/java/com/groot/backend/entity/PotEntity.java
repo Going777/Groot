@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -18,6 +20,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
 public class PotEntity extends BaseEntity{
 
     @Id
@@ -37,6 +40,7 @@ public class PotEntity extends BaseEntity{
     private String imgPath;
 
     @Column(name = "sale_date", nullable = false)
+    @CreationTimestamp
     private Date saleDate;
 
     @Column(name = "character_id")
@@ -44,6 +48,9 @@ public class PotEntity extends BaseEntity{
 
     @Column
     private Double temperature;
+
+    @Column
+    private int illuminance;
 
     @Column
     private Double humidity;
@@ -57,10 +64,10 @@ public class PotEntity extends BaseEntity{
     @Column(name = "nutrients_date")
     private Date nutrientsDate;
 
-    @Column(nullable = false)
+    @Column(nullable = true, columnDefinition = "TINYINT(1) DEFAULT FALSE")
     private Boolean share;
 
-    @Column(nullable = false)
+    @Column(nullable = true, columnDefinition = "TINYINT(1) DEFAULT TRUE")
     private Boolean survival;
 
     @Column(name = "plant_kr_name", nullable = false)
