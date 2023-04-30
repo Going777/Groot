@@ -10,6 +10,7 @@ import com.groot.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,7 +62,7 @@ public class ArticleController {
 
     // 카테고리별 게시글 리스트 조회
     @GetMapping("/category/{category}")
-    public ResponseEntity readArticleList(@PathVariable String category, @RequestParam Integer page, Integer size){
+    public ResponseEntity readArticleList(@PathVariable String category, @RequestParam Integer page, @RequestParam Integer size){
         resultMap = new HashMap<>();
 
         if(size == 0){
@@ -215,11 +216,46 @@ public class ArticleController {
         }
     }
 
-    // 게시글 검색
+    // 게시글 검색 (제목 검색)
+    @GetMapping("/search/{category}/{keyword}")
+    public ResponseEntity searchArticle(@PathVariable String category, @PathVariable String keyword){
+        return null;
+    }
 
     // 인기태그 조회
 
     // 나눔 게시글 지역 필터링
+    @GetMapping("/filter")
+    public ResponseEntity regionFilteredArticle(@RequestParam String[] region,
+                                                @RequestParam Integer page,
+                                                @RequestParam Integer size){
+        resultMap = new HashMap<>();
+
+        if(size == 0){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","size값은 1 이상이어야 합니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        try{
+            Page<ArticleListDTO> result = articleService.filterRegion(region, page, size);
+            if(result == null){
+                resultMap.put("result", SUCCESS);
+                resultMap.put("msg","페이지에 해당하는 게시글이 존재하지 않습니다.");
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(resultMap);
+            }
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg","게시글 조회 성공");
+            resultMap.put("articles", articleService.filterRegion(region, page, size));
+            return ResponseEntity.ok().body(resultMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","게시글 조회 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+
+    }
 
     // 댓글 작성
 
