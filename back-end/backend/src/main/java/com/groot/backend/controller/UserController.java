@@ -323,6 +323,35 @@ public class UserController {
 
     }
     // 유저 북마크 조회
+    @GetMapping("/mypage/bookmark")
+    public ResponseEntity readUserBookmark(HttpServletRequest request,
+                                           @RequestParam Integer page,
+                                           @RequestParam Integer size){
+        Map<String, Object> resultMap = new HashMap<>();
+
+        if(size == 0){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","size값은 1 이상이어야 합니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+
+        try{
+            Page<ArticleListDTO> result = articleService.readUserBookmarks(id, page, size);
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg", "유저 북마크 조회 성공");
+            resultMap.put("articles", result);
+            return ResponseEntity.ok().body(resultMap);
+
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "북마크 목록 조회 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
+
 
     // 유저 식물 조회
 }

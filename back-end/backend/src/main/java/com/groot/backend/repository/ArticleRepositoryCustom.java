@@ -9,4 +9,5 @@ public interface ArticleRepositoryCustom {
     List<ArticleEntity> search(String keyword);
     List<ArticleEntity> findUserSharedArticle(Long userPK, Long articleId);
     List<ArticleEntity> findAllByUserPK(Long userPK);
+    List<Long> findBookmarkByUserPK(Long userPK);
 }

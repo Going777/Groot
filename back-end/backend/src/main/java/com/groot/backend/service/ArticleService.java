@@ -12,13 +12,14 @@ import java.util.List;
 public interface ArticleService {
     boolean existedArticleId(Long articleId);
     boolean createArticle(ArticleDTO articleDTO, String[] imgPaths);
-    ArticleResponseDTO readArticle(Long articleId);
+    ArticleResponseDTO readArticle(Long articleId, Long userPK);
     boolean updateArticle(ArticleDTO articleDTO, String[] imgPaths);
     void deleteArticle(Long articleId);
-    Page<ArticleListDTO> readArticleList(String category, Integer page, Integer size);
+    Page<ArticleListDTO> readArticleList(String category, Long userPK, Integer page, Integer size);
     void updateBookMark(BookmarkDTO bookmarkDTO);
-    Page<ArticleListDTO> filterRegion(String[] region,Integer page, Integer size);
-    Page<ArticleListDTO> searchArticle(String keyword,Integer page, Integer size);
+    Page<ArticleListDTO> filterRegion(String[] region, Long userPK,Integer page, Integer size);
+    Page<ArticleListDTO> searchArticle(String keyword,Long userPK, Integer page, Integer size);
     List<UserSharedArticleDTO> readUserShared(Long articleId);
     Page<ArticleListDTO> readUserArticles(Long userPK,Integer page, Integer size);
+    Page<ArticleListDTO> readUserBookmarks(Long userPK,Integer page, Integer size);
 }
