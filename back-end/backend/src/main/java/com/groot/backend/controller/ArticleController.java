@@ -1,6 +1,7 @@
 package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.ArticleDTO;
+import com.groot.backend.dto.request.BookmarkDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
 import com.groot.backend.service.ArticleService;
@@ -183,6 +184,36 @@ public class ArticleController {
     }
 
     // 개별 게시글 북마크 등록/해제
+    @PutMapping("/bookmark")
+    public ResponseEntity updateBookMark(@RequestBody BookmarkDTO bookmarkDTO){
+        resultMap = new HashMap<>();
+
+        // 게시글 존재 여부 확인
+        if(!articleService.existedArticleId(bookmarkDTO.getArticleId())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 게시글입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        if(!userService.isExistedId(bookmarkDTO.getUserPK())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        try{
+            // 북마크 수정
+            articleService.updateBookMark(bookmarkDTO);
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg","북마크 수정 완료");
+            return ResponseEntity.ok().body(resultMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","북마크 수정 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
 
     // 게시글 검색
 
@@ -199,6 +230,7 @@ public class ArticleController {
     // 사용자가 나눔 중인 다른 식물 조회
 
     // 태그 자동완성
+
 
 
 }

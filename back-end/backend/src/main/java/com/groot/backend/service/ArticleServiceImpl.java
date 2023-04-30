@@ -1,6 +1,7 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.ArticleDTO;
+import com.groot.backend.dto.request.BookmarkDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
 import com.groot.backend.dto.response.CommentDTO;
@@ -28,8 +29,8 @@ public class ArticleServiceImpl implements ArticleService{
     private final ArticleTagRepository articleTagRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
-    private final ArticleBookmarkRepository articleBookmarkRepository;
     private final ArticleImageRepository articleImageRepository;
+    private final ArticleBookmarkRepository aBookmarkRepo;
     private final S3Service s3Service;
 
     @Override
@@ -138,9 +139,9 @@ public class ArticleServiceImpl implements ArticleService{
         articleBookmarkEntityPK.setArticleEntity(articleId);
 
         boolean bookmark;
-        if(articleBookmarkRepository.findById(articleBookmarkEntityPK).isPresent()){
-            bookmark = false;
-        }else bookmark = true;
+        if(aBookmarkRepo.findById(articleBookmarkEntityPK).isPresent()){
+            bookmark = true;
+        }else bookmark = false;
 
         // image 조회
         List<String> imgPaths = new ArrayList<>();
@@ -312,9 +313,9 @@ public class ArticleServiceImpl implements ArticleService{
             articleBookmarkEntityPK.setUserEntity(userEntity.getId());
             articleBookmarkEntityPK.setArticleEntity(articleEntity.getId());
             boolean bookmark;
-            if(articleBookmarkRepository.findById(articleBookmarkEntityPK).isPresent()){
-                bookmark = false;
-            }else bookmark = true;
+            if(aBookmarkRepo.findById(articleBookmarkEntityPK).isPresent()){
+                bookmark = true;
+            }else bookmark = false;
 
             // articleListDTO builder
             ArticleListDTO articleListDTO = ArticleListDTO.builder()
@@ -349,5 +350,34 @@ public class ArticleServiceImpl implements ArticleService{
         return articleListDTOPage;
     }
 
+    @Override
+    public void updateBookMark(BookmarkDTO bookmarkDTO) {
+        Long articleId = bookmarkDTO.getArticleId();
+        Long userPK = bookmarkDTO.getUserPK();
+        Boolean bStatus = bookmarkDTO.getBookmarkStatus();
 
+        // bookmark 여부 조회
+        // 복합키 사용을 위한 id 등록
+        ArticleBookmarkEntityPK aBookmarkEntityPK = new ArticleBookmarkEntityPK();
+        aBookmarkEntityPK.setUserEntity(userPK);
+        aBookmarkEntityPK.setArticleEntity(articleId);
+
+        if(bStatus){
+            // 해제
+            if(aBookmarkRepo.findById(aBookmarkEntityPK).isPresent()){
+                aBookmarkRepo.delete(aBookmarkRepo.findById(aBookmarkEntityPK).orElseThrow());
+            }
+
+        }else{
+            // 등록
+            if(!aBookmarkRepo.findById(aBookmarkEntityPK).isPresent()){
+                ArticleBookmarkEntity aBookmarkEntity = ArticleBookmarkEntity.builder()
+                        .articleEntity(articleRepository.findById(articleId).orElseThrow())
+                        .userEntity(userRepository.findById(userPK).orElseThrow())
+                        .build();
+                aBookmarkRepo.save(aBookmarkEntity);
+            }
+        }
+
+    }
 }

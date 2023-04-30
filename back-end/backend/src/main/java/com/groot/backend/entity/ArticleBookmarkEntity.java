@@ -17,13 +17,17 @@ import javax.persistence.*;
 public class ArticleBookmarkEntity {
     @Id
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",insertable = false, updatable = false)
     private UserEntity userEntity;
+
+    @Column(name = "user_id", insertable = false, updatable = false)
+    private long userPK;
+
+    @Id
+    @ManyToOne(targetEntity = ArticleEntity.class,fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id",insertable = false, updatable = false)
+    private ArticleEntity articleEntity;
 
     @Column(name = "article_id", insertable = false, updatable = false)
     private long articleId;
-    @Id
-    @ManyToOne(targetEntity = ArticleEntity.class,fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
-    private ArticleEntity articleEntity;
 }
