@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.sql.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -33,16 +34,20 @@ public class PotServiceImpl implements PotService{
             return -1L;
         }
 
+        logger.info("image uploaded : {}", imgPath);
+
         PotEntity potEntity = potRepository.save(
                 PotEntity.builder()
                         .userId(potDTO.getUserId())
-                        .plantId(potDTO.getPlantId())
+//                        .plantId(potDTO.getPlantId())
+                        .plantId(12938L)
                         .characterId(potDTO.getCharacterId())
                         .name(potDTO.getPotName())
                         .imgPath(imgPath)
                         .temperature(potDTO.getTemperature())
                         .illuminance(potDTO.getIlluminance())
                         .humidity(potDTO.getHumidity())
+                        .plantKrName("식물이름")
                         .build()
         );
 

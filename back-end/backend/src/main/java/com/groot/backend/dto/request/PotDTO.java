@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PotDTO {
-    private Long id;
-
     private Long userId;
 
     private Long plantId;

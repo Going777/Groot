@@ -4,6 +4,8 @@ package com.groot.backend.controller;
 import com.groot.backend.dto.request.PotDTO;
 import com.groot.backend.service.PotService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,13 +33,14 @@ public class PotController {
     private final PotService potService;
     private final Logger logger = LoggerFactory.getLogger(PotController.class);
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create pot", description = "returns potId")
-    public ResponseEntity createPot(@RequestPart MultipartFile img, @RequestPart PotDTO potDTO) {
+    public ResponseEntity createPot(@RequestPart("img") @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
+                                    @RequestPart @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) PotDTO potDTO) {
         logger.info("Create pot : {}", potDTO.getPotName());
         Map<String, Object> result = new HashMap<>();
 
-        Long ret = potService.createPot(potDTO, img);
+        Long ret = potService.createPot(potDTO, multipartFile);
 
         if(ret < 0) {
             result.put("msg", "화분 등록에 실패했습니다.");
