@@ -11,6 +11,7 @@ public interface UserService {
     boolean isExistedId(Long id);
     boolean isExistedUserId(String userId);
     boolean isExistedNickName(String nickName);
+    boolean isExistedNickName(UserProfileDTO userProfileDTO);
     TokenDTO createUser(RegisterDTO registerDTO);
     UserEntity readUser(Long id);
     TokenDTO login(LoginDTO loginDTO);
@@ -18,5 +19,5 @@ public interface UserService {
     boolean logout(Long id);
     boolean updatePassword(UserPasswordDTO userPasswordDTO);
     TokenDTO refreshAccessToken(String refreshToken, Long id);
-    boolean updateProfile(UserProfileDTO userProfileDTO);
+    boolean updateProfile(UserProfileDTO userProfileDTO, String imgPath);
 }

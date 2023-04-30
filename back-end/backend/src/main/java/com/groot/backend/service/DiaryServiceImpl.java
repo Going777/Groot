@@ -3,6 +3,7 @@ package com.groot.backend.service;
 import com.groot.backend.controller.NotificationController;
 import com.groot.backend.controller.exception.CustomException;
 import com.groot.backend.dto.request.DiaryDTO;
+import com.groot.backend.dto.response.DiaryResponseDTO;
 import com.groot.backend.entity.DiaryEntity;
 import com.groot.backend.repository.DiaryRepository;
 //import com.groot.backend.util.S3Uploader;
@@ -111,10 +112,10 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public Page<DiaryEntity> diaryListByPotId(Long potId, long page, long size) {
-        PageRequest pageRequest = PageRequest.of((int)page, (int)size, Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<DiaryEntity> result = diaryRepository.findAllByPotId(potId, pageRequest);
-
+    public Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        Page<DiaryEntity> diaryEntities = diaryRepository.findAllByPotId(potId, pageRequest);
+        Page<DiaryResponseDTO> result = new DiaryResponseDTO().toDtoList(diaryEntities);
         return result;
     }
 

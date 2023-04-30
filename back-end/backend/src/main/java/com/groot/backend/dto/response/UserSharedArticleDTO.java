@@ -1,21 +1,18 @@
-package com.groot.backend.dto.request;
+package com.groot.backend.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-
-public class UserProfileDTO {
-    @NotNull
+public class UserSharedArticleDTO {
     private Long userPK;
-    @NotNull
     private String nickName;
-    private String profile;
+    private Long articleId;
+    private String title;
+    private String img;
 }

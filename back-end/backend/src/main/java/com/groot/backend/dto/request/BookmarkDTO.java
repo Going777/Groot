@@ -5,17 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotNull;
-
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-
-public class UserProfileDTO {
-    @NotNull
+@AllArgsConstructor
+public class BookmarkDTO {
+    private Long articleId;
     private Long userPK;
-    @NotNull
-    private String nickName;
-    private String profile;
+    private Boolean bookmarkStatus;
 }

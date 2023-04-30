@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @RequiredArgsConstructor
 public class CommentDTO {
-    Long articleId;
-    Long userPK;
-    String nickName;
-    String content;
+    private Long articleId;
+    private Long userPK;
+    private String nickName;
+    private String content;
 }
