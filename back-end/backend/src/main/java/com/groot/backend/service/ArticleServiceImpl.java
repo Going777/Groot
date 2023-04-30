@@ -5,6 +5,7 @@ import com.groot.backend.dto.request.BookmarkDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
 import com.groot.backend.dto.response.CommentDTO;
+import com.groot.backend.dto.response.UserSharedArticleDTO;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -329,6 +330,34 @@ public class ArticleServiceImpl implements ArticleService{
         List<ArticleEntity> articleEntityList = articleRepository.search(keyword);
         return entityListToResponseDTOPage(articleEntityList, page, size);
     }
+
+    // 작성자가 나눔 중인 다른 나눔글
+    @Override
+    public List<UserSharedArticleDTO> readUserShared(Long articleId) {
+        ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow();
+        Long userPK = articleEntity.getUserPK();
+
+        List<ArticleEntity> articleEntityList = articleRepository.findUserSharedArticle(userPK, articleId);
+
+        List<UserSharedArticleDTO> result = new ArrayList<>();
+        for(ArticleEntity entity : articleEntityList){
+            // 이미지 조회
+            List<ArticleImageEntity> aImageEntityList = articleImageRepository.findAllByArticleId(entity.getId());
+
+            UserSharedArticleDTO dto = UserSharedArticleDTO.builder()
+                    .articleId(entity.getId())
+                    .userPK(entity.getUserPK())
+                    .nickName(userRepository.findById(userPK).orElseThrow().getNickName())
+                    .title(entity.getTitle())
+                    .img((aImageEntityList == null || aImageEntityList.size() == 0) ? null : aImageEntityList.get(0).getImg())
+                    .build();
+
+            result.add(dto);
+        }
+
+        return result;
+    }
+
 
     // articleEntityList to articleListDTOPage
     public Page<ArticleListDTO> entityListToResponseDTOPage(List<ArticleEntity> articleEntityList, Integer page, Integer size) {

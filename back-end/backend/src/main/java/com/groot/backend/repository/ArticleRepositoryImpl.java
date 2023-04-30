@@ -1,7 +1,6 @@
 package com.groot.backend.repository;
 
-import com.groot.backend.entity.ArticleEntity;
-import com.groot.backend.entity.QArticleEntity;
+import com.groot.backend.entity.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -43,6 +42,23 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
         return result;
     }
+
+    // 사용자 이름 + 나눔 카테고리 글 조회
+    @Override
+    public List<ArticleEntity> findUserSharedArticle(Long userPK, Long articleId) {
+        articleEntity = QArticleEntity.articleEntity;
+        QUserEntity user = QUserEntity.userEntity;
+        List<ArticleEntity> result = queryFactory
+                .selectFrom(articleEntity)
+                .where(articleEntity.userPK.eq(userPK),
+                        articleEntity.category.eq("나눔"),
+                        articleEntity.id.ne(articleId))
+                .fetch();
+        return result;
+    }
+
+
+
 
     // 키워드로 게시글 제목 검색
     private BooleanExpression eqTitle(String keyword){

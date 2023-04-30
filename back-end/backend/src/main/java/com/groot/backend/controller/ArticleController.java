@@ -4,19 +4,20 @@ import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.request.BookmarkDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
+import com.groot.backend.dto.response.UserSharedArticleDTO;
 import com.groot.backend.service.ArticleService;
 import com.groot.backend.service.S3Service;
 import com.groot.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/articles")
@@ -284,6 +285,28 @@ public class ArticleController {
     }
 
     // 사용자가 나눔 중인 다른 식물 조회
+    @GetMapping("/share/{articleId}")
+    public ResponseEntity readUserShared(@PathVariable Long articleId){
+        resultMap = new HashMap<>();
+        if(!articleService.existedArticleId(articleId)){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 게시글입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        try{
+            List<UserSharedArticleDTO> result = articleService.readUserShared(articleId);
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg","나눔 목록이 조회되었습니다.");
+            resultMap.put("articles", result);
+            return ResponseEntity.ok().body(resultMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","게시글 조회 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
 
     // 태그 자동완성
 
