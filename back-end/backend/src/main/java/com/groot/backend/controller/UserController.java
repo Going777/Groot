@@ -6,6 +6,7 @@ import com.groot.backend.dto.request.UserPasswordDTO;
 import com.groot.backend.dto.request.UserProfileDTO;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
+import com.groot.backend.service.S3Service;
 import com.groot.backend.service.UserService;
 import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +14,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final S3Service s3Service;
     private static final String SUCCESS = "success";
     private static final String FAIL = "fail";
 
@@ -118,23 +123,48 @@ public class UserController {
 
     // 프로필 변경 (닉네임, 프로필 사진 변경)
     @PutMapping()
-    public ResponseEntity updateProfile(@RequestBody UserProfileDTO userProfileDTO){
+    public ResponseEntity updateProfile(@RequestPart(value = "image", required = false) MultipartFile image,
+                                        @Valid @RequestPart(value = "userProfileDTO") UserProfileDTO userProfileDTO) throws IOException {
         Map<String, Object> resultMap = new HashMap<>();
-        if(!userService.isExistedId(userProfileDTO.getId())){
+
+        if(!userService.isExistedId(userProfileDTO.getUserPK())){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "존재하지 않는 사용자입니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
 
-        if(!userService.updateProfile(userProfileDTO)){
+        if(userService.isExistedNickName(userProfileDTO)){
             resultMap.put("result", FAIL);
-            resultMap.put("msg", "업데이트 실패");
+            resultMap.put("msg", "닉네임 중복");
             return ResponseEntity.badRequest().body(resultMap);
         }
 
-        resultMap.put("result", SUCCESS);
-        resultMap.put("msg", "회원정보 수정 완료");
-        return ResponseEntity.ok().body(resultMap);
+        // 기존 프로필 사진 삭제
+        if(userProfileDTO.getProfile() != null){
+            s3Service.delete(userProfileDTO.getProfile());
+        }
+
+        // 프로필 사진 수정
+        String imgPath = null;
+        if(image != null) {
+            // 새 프로필 사진 업로드
+            imgPath = s3Service.upload(image, "user");
+        }
+
+        // 프로필 업데이트
+        try{
+            userService.updateProfile(userProfileDTO, imgPath);
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg", "회원정보 수정 완료");
+            return ResponseEntity.ok().body(resultMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "회원정보 수정 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+
+
     }
 
     // 비밀번호 변경

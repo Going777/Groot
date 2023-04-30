@@ -40,6 +40,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public boolean isExistedNickName(UserProfileDTO userProfileDTO) {
+        UserEntity userEntity = userRepository.findById(userProfileDTO.getUserPK()).orElseThrow();
+        if((userProfileDTO.getNickName()).equals(userEntity.getNickName())){
+            return false;
+        }
+        return userRepository.existsByNickName(userProfileDTO.getNickName());
+    }
+
+    @Override
     public TokenDTO createUser(RegisterDTO registerDTO) {
         UserEntity userEntity = UserEntity.builder()
                 .userId(registerDTO.getUserId())
@@ -177,15 +186,14 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public boolean updateProfile(UserProfileDTO userProfileDTO) {
-        UserEntity userEntity = userRepository.findById(userProfileDTO.getId()).orElseThrow();
-
+    public boolean updateProfile(UserProfileDTO userProfileDTO, String imgPath) {
+        UserEntity userEntity = userRepository.findById(userProfileDTO.getUserPK()).orElseThrow();
         UserEntity newUserEntity = UserEntity.builder()
                 .id(userEntity.getId())
                 .userId(userEntity.getUserId())
                 .nickName(userProfileDTO.getNickName())
                 .password(userEntity.getPassword())
-                .profile(userProfileDTO.getProfile())
+                .profile(imgPath)
                 .token(userEntity.getToken())
                 .build();
 
