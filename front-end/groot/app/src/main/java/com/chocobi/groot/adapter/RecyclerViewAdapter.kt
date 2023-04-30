@@ -10,6 +10,7 @@ import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.adapter.item.ItemBean
 import com.chocobi.groot.adapter.item.ItemViewHolder
+import com.chocobi.groot.data.ModelDiary
 import com.chocobi.groot.view.community.CommunityDetailFragment
 
 
