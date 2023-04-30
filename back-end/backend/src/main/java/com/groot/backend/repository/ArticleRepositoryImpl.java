@@ -33,13 +33,25 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
                 .where(eqTitle(keyword))
                 .fetch();
 
+        // 내용 + 제목 검색
+//        List<ArticleEntity> result = queryFactory
+//                .selectFrom(articleEntity)
+//                .where(eqTitle(keyword)
+//                        .or(eqContent(keyword)))
+//                .fetch();
+
 
         return result;
     }
 
-    // 게시글 제목 검색
+    // 키워드로 게시글 제목 검색
     private BooleanExpression eqTitle(String keyword){
         return keyword == null ? null : articleEntity.title.contains(keyword);
+    }
+
+    // 키워드로 게시글 내용 검색
+    private BooleanExpression eqContent(String keyword){
+        return keyword == null ? null : articleEntity.content.contains(keyword);
     }
 
     // 필터링 복수 검색

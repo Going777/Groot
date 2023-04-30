@@ -232,7 +232,9 @@ public class ArticleController {
         try{
             Page<ArticleListDTO> result = articleService.searchArticle(keyword, page, size);
             if(result == null){
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+                resultMap.put("result", FAIL);
+                resultMap.put("msg","존재하지 않는 page 번호 입니다.");
+                return ResponseEntity.badRequest().body(resultMap);
             }
             resultMap.put("result", SUCCESS);
             resultMap.put("msg","게시글 조회 성공");
@@ -264,9 +266,9 @@ public class ArticleController {
         try{
             Page<ArticleListDTO> result = articleService.filterRegion(region, page, size);
             if(result == null){
-                resultMap.put("result", SUCCESS);
-                resultMap.put("msg","페이지에 해당하는 게시글이 존재하지 않습니다.");
-                return ResponseEntity.status(HttpStatus.NO_CONTENT).body(resultMap);
+                resultMap.put("result", FAIL);
+                resultMap.put("msg","존재하지 않는 page 번호 입니다.");
+                return ResponseEntity.badRequest().body(resultMap);
             }
             resultMap.put("result", SUCCESS);
             resultMap.put("msg","게시글 조회 성공");
@@ -280,12 +282,6 @@ public class ArticleController {
         }
 
     }
-
-    // 댓글 작성
-
-    // 댓글 수정
-
-    // 댓글 삭제
 
     // 사용자가 나눔 중인 다른 식물 조회
 
