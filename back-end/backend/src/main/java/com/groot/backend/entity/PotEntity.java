@@ -46,6 +46,9 @@ public class PotEntity extends BaseEntity{
     private Double temperature;
 
     @Column
+    private int illuminance;
+
+    @Column
     private Double humidity;
 
     @Column(name = "water_date")
