@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
@@ -30,11 +31,17 @@ import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
-        private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private val PERMISSION_CAMERA = 0
     private val REQUEST_CAMERA = 1
     private val PERMISSON_GALLERY = 2
     private val REQUEST_STORAGE = 3
+
+//    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
+//
+//    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
+//        return activityToolbar
+//    }
 
 
     //        fragment 조작
@@ -178,17 +185,18 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, REQUEST_CAMERA)
         }
     }
-//    private fun openGallery() {
+
+    //    private fun openGallery() {
 //        val intent = Intent(Intent.ACTION_PICK)
 //        intent.type = MediaStore.Images.Media.CONTENT_TYPE
 //        startActivityForResult(intent, REQUEST_STORAGE)
 //    }
     private fun openGallery() {
-    val maxNumPhotosAndVideos = 3
-    val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
-    intent.type="images/*"
-    intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxNumPhotosAndVideos)
-    startActivityForResult(intent, REQUEST_STORAGE)
+        val maxNumPhotosAndVideos = 3
+        val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+        intent.type = "images/*"
+        intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxNumPhotosAndVideos)
+        startActivityForResult(intent, REQUEST_STORAGE)
     }
 
     private fun newFileName(): String {
@@ -223,6 +231,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
+
                 REQUEST_STORAGE -> {
 //                    data?.data?.let { uri ->
 //                        val intent = Intent( this, SearchGalleryActivity::class.java)
@@ -254,7 +263,11 @@ class MainActivity : AppCompatActivity() {
 //                .commit()
 //        }
 
-
+//        val plantFragment =
+//            supportFragmentManager.findFragmentById(R.id.plantFragment) as PlantFragment?
+//        if (plantFragment != null) {
+//            activityToolbar = plantFragment.getToolbar()
+//        }
 
 
 //      main에서만 날씨 fragment 보여주기

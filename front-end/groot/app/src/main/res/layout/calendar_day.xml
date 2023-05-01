@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+
     tools:background="@color/main">
+<!--    android:background="?attr/selectableItemBackground"-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
-            android:textColor="@color/example_7_white"
+            android:textColor="@color/main"
             android:textSize="12sp"
             tools:text="Mon" />
 
@@ -28,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:textColor="@color/example_7_white"
+            android:textColor="@color/main"
             android:textSize="14sp"
             tools:text="24" />
     </LinearLayout>
@@ -38,6 +39,6 @@
         android:layout_width="match_parent"
         android:layout_height="5dp"
         android:layout_gravity="bottom"
-        android:background="@color/example_7_yellow" />
+        android:background="@color/point" />
 
 </FrameLayout>

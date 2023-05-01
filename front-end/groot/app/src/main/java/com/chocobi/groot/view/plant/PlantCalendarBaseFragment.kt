@@ -1,4 +1,5 @@
 package com.chocobi.groot.view.plant
+
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -16,13 +17,14 @@ abstract class PlantCalendarBaseFragment(@LayoutRes layoutRes: Int) : Fragment(l
 
     abstract val titleRes: Int?
 
-    val activityToolbar: Toolbar
-        get() = (requireActivity() as MainActivity).binding.activityToolbar
+
+//        val activityToolbar : Toolbar?
+//            get() = (requireActivity() as MainActivity).getToolbar()
 
     override fun onStart() {
         super.onStart()
         if (this is HasToolbar) {
-            activityToolbar.makeGone()
+//            activityToolbar?.makeGone()
             (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         }
 
@@ -38,8 +40,8 @@ abstract class PlantCalendarBaseFragment(@LayoutRes layoutRes: Int) : Fragment(l
     override fun onStop() {
         super.onStop()
         if (this is HasToolbar) {
-            activityToolbar.makeVisible()
-            (requireActivity() as AppCompatActivity).setSupportActionBar(activityToolbar)
+//            activityToolbar?.makeVisible()
+//            (requireActivity() as AppCompatActivity).setSupportActionBar(activityToolbar)
         }
 
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
@@ -48,4 +50,4 @@ abstract class PlantCalendarBaseFragment(@LayoutRes layoutRes: Int) : Fragment(l
         }
         actionBar?.setDisplayHomeAsUpEnabled(true)
     }
-}}
+}
