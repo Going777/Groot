@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping()
-    public ResponseEntity signup(@RequestBody RegisterDTO registerDTO){
+    public ResponseEntity signup(@Valid @RequestBody RegisterDTO registerDTO){
         Map<String, Object> resultMap = new HashMap<>();
         // 아이디 중복 체크
         if(userService.isExistedUserId(registerDTO.getUserId())){
@@ -63,7 +64,7 @@ public class UserController {
             resultMap.put("result", FAIL);
             resultMap.put("msg", "회원가입에 실패하였습니다.");
 
-            return ResponseEntity.badRequest().body(resultMap);
+            return ResponseEntity.internalServerError().body(resultMap);
         }
 
         // 회원가입 성공 후 로그인
@@ -108,9 +109,14 @@ public class UserController {
     // 회원정보 조회
     @GetMapping()
     public ResponseEntity readUser(HttpServletRequest request){
+        Map<String, Object> resultMap = new HashMap<>();
+        if(request.getHeader("Authorization") == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "토큰이 존재하지 않습니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
         Long id = jwtTokenProvider.getIdByAccessToken(request);
 
-        Map<String, Object> resultMap = new HashMap<>();
         UserEntity userEntity = userService.readUser(id);
         if(userEntity == null){
             resultMap.put("result", FAIL);
@@ -173,7 +179,7 @@ public class UserController {
 
     // 비밀번호 변경
     @PutMapping("/password")
-    public ResponseEntity updatePassword(@RequestBody UserPasswordDTO userPasswordDTO){
+    public ResponseEntity updatePassword(@Valid @RequestBody UserPasswordDTO userPasswordDTO){
         Map<String, Object> resultMap = new HashMap<>();
         // 유저 존재 여부
         if(!userService.isExistedId(userPasswordDTO.getId())){
@@ -199,6 +205,13 @@ public class UserController {
     @DeleteMapping()
     public ResponseEntity deleteUser(HttpServletRequest request){
         Map<String, Object> resultMap = new HashMap<>();
+
+        if(request.getHeader("Authorization") == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "토큰이 존재하지 않습니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
         Long id = jwtTokenProvider.getIdByAccessToken(request);
         if(!userService.deleteUser(id)){
             resultMap.put("result", FAIL);
@@ -214,7 +227,7 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody LoginDTO loginDTO){
+    public ResponseEntity login(@Valid @RequestBody LoginDTO loginDTO){
         Map<String, Object> resultMap = new HashMap<>();
 
         // 사용자 존재 여부 확인
@@ -243,6 +256,11 @@ public class UserController {
     @GetMapping("/logout")
     public ResponseEntity logout(HttpServletRequest request){
         Map<String, Object> resultMap = new HashMap<>();
+        if(request.getHeader("Authorization") == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "토큰이 존재하지 않습니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
         Long id = jwtTokenProvider.getIdByAccessToken(request);
         if(!userService.logout(id)){
             resultMap.put("result", FAIL);
@@ -257,7 +275,7 @@ public class UserController {
 
     // 토큰 재발급
     @PostMapping("/refresh")
-    public ResponseEntity refreshAccessToken(@RequestBody TokenDTO tokenDTO){
+    public ResponseEntity refreshAccessToken(@NotNull @RequestBody TokenDTO tokenDTO){
         Map<String, Object> resultMap = new HashMap<>();
         // refresh 토큰 유효성 검사
         if (!jwtTokenProvider.validateToken(tokenDTO.getRefreshToken())) {

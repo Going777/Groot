@@ -37,7 +37,7 @@ public class SecurityConfig {
 //                .antMatchers("/users/userId/**").permitAll()
 //                .antMatchers("/users/nickname/**").permitAll()
 //                .anyRequest().authenticated()
-//                .antMatchers("/users/mypage/**").authenticated()
+                .antMatchers("/users/mypage/**").authenticated()
 //                .antMatchers("/articles/category/**").authenticated()
 //                .antMatchers("/articles/search/**").authenticated()
 //                .antMatchers("/articles/filter/**").authenticated()
