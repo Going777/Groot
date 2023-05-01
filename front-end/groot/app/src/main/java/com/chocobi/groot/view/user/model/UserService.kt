@@ -7,14 +7,13 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 
-class UserService {
-}
+
 
 interface LogoutService {
-    @Headers("content-type: application/json")
+//    @Headers("content-type: application/json")
     @GET("/api/users/logout")
     fun logout(
-        @Header("Authorization") accessToken: String
+//        @Header("Authorization") accessToken: String
     ): Call<LogoutResponse>
 }
 
@@ -26,7 +25,7 @@ interface  DeleteUserService {
     ): Call<LogoutResponse>
 }
 
-import retrofit2.http.Path
+
 
 interface UserService {
     @Headers("content-type: application/json")

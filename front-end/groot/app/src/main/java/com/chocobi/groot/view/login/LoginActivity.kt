@@ -84,6 +84,7 @@ class LoginActivity : AppCompatActivity() {
                             if (login != null) {
 
                                 GlobalVariables.prefs.setString("access_token", login.accessToken)
+                                GlobalVariables.prefs.setString("refresh_token", login.accessToken)
 //
 //                            editor.putString("access_token", login.accessToken)
 //                            editor.putString("refresh_token", login.refreshToken)
