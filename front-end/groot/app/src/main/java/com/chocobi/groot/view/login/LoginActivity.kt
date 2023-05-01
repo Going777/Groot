@@ -83,9 +83,11 @@ class LoginActivity : AppCompatActivity() {
 //                    토큰 저장
                             if (login != null) {
 
-                            editor.putString("access_token", login.accessToken)
-                            editor.putString("refresh_token", login.refreshToken)
-                            editor.commit()
+                                GlobalVariables.prefs.setString("access_token", login.accessToken)
+//
+//                            editor.putString("access_token", login.accessToken)
+//                            editor.putString("refresh_token", login.refreshToken)
+//                            editor.commit()
 
                             userService.getUser("Bearer " + login.accessToken).enqueue(object : Callback<GetUserResponse> {
                                 override fun onResponse(
