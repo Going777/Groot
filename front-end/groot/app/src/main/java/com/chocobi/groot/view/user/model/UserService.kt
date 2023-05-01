@@ -26,3 +26,12 @@ interface  DeleteUserService {
     ): Call<LogoutResponse>
 }
 
+import retrofit2.http.Path
+
+interface UserService {
+    @Headers("content-type: application/json")
+    @GET("/api/users")
+    fun getUser(
+        @Header("Authorization") accessToken: String
+    ): Call<GetUserResponse>
+}
