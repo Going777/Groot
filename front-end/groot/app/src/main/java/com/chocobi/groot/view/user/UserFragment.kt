@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.CommunityTab1Fragment
 import com.chocobi.groot.view.community.CommunityTab2Fragment
 import com.chocobi.groot.view.community.CommunityTab3Fragment
@@ -54,6 +56,13 @@ class UserFragment : Fragment() {
     ): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_user, container, false)
+
+//        초기 화면 설정
+        var nickname = rootView.findViewById<TextView>(R.id.nickname)
+        nickname.text = UserData.getNickName()
+
+        var registerDate = rootView.findViewById<TextView>(R.id.registerDate)
+        registerDate.text = UserData.getRegisterDate().toString()
 
 //        Fragment 이동 조작
         val mActivity = activity as MainActivity
