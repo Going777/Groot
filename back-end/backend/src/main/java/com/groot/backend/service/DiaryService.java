@@ -20,6 +20,8 @@ public interface DiaryService {
 
     DiaryResponseDTO detailDiary(Long diaryId);
 
+    Page<DiaryResponseDTO> diaryList(Long userId, Integer page, Integer size);
+
     Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size);
 
     List<DiaryEntity> weeklyDiaries();
