@@ -27,7 +27,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
     @Override
     public List<ArticleEntity> search(String keyword) {
-        QArticleEntity a = QArticleEntity.articleEntity;
+        articleEntity = QArticleEntity.articleEntity;
         QTagEntity t = QTagEntity.tagEntity;
         QArticleTagEntity at = QArticleTagEntity.articleTagEntity;
 

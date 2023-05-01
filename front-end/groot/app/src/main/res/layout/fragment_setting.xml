@@ -253,7 +253,7 @@
         android:layout_height="fill_parent">
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/logoutText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -266,12 +266,12 @@
             android:id="@+id/view"
             style="@style/BASIC_LINE"
             android:layout_gravity="bottom"
-            app:layout_constraintBottom_toTopOf="@+id/textView8"
+            app:layout_constraintBottom_toTopOf="@+id/deleteUserText"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="10dp"/>
 
         <TextView
-            android:id="@+id/textView8"
+            android:id="@+id/deleteUserText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
