@@ -99,7 +99,12 @@ class PlantDiaryListRVAdapter : RecyclerView.Adapter<PlantDiaryListRVAdapter.Vie
         private lateinit var postedTime: TextView
         private lateinit var diaryPhoto: ImageView
         private lateinit var diaryContent: TextView
-        private lateinit var tvOption: TextView
+        private lateinit var detailOption: TextView
+        private lateinit var waterBadge: ImageView
+        private lateinit var potBadge: ImageView
+        private lateinit var bugBadge: ImageView
+        private lateinit var sunnnyBadge: ImageView
+        private lateinit var pillBadge: ImageView
 
         //        var delegate: ItemViewHolderDelegate? = null
         lateinit var item: ModelDiary
@@ -115,7 +120,12 @@ class PlantDiaryListRVAdapter : RecyclerView.Adapter<PlantDiaryListRVAdapter.Vie
                 postedTime = it.findViewById(R.id.postedTime)
                 diaryPhoto = it.findViewById(R.id.diaryPhoto)
                 diaryContent = it.findViewById(R.id.diaryContent)
-                tvOption = it.findViewById(R.id.tvOption)
+                detailOption = it.findViewById(R.id.detailOption)
+                waterBadge = it.findViewById(R.id.waterBadge)
+                potBadge = it.findViewById(R.id.potBadge)
+                bugBadge = it.findViewById(R.id.bugBadge)
+                sunnnyBadge = it.findViewById(R.id.sunnnyBadge)
+                pillBadge = it.findViewById(R.id.pillBadge)
             }
         }
 
@@ -151,23 +161,39 @@ class PlantDiaryListRVAdapter : RecyclerView.Adapter<PlantDiaryListRVAdapter.Vie
                     if (lineCount > maxLine) {
                         maxLines = maxLine
                         ellipsize = TextUtils.TruncateAt.END
-                        tvOption.visibility = View.VISIBLE
+                        detailOption.visibility = View.VISIBLE
                     } else {
-                        tvOption.visibility = View.GONE
+                        detailOption.visibility = View.GONE
                     }
                 }
             }
-            tvOption.setOnClickListener {
+            detailOption.setOnClickListener {
                 when (diaryContent.maxLines) {
                     2 -> {
                         diaryContent.maxLines = 100
-                        tvOption.text = "간단히 보기"
+                        detailOption.text = "간단히 보기"
                     }
                     else -> {
                         diaryContent.maxLines = 2
-                        tvOption.text = "자세히 보기"
+                        detailOption.text = "자세히 보기"
                     }
                 }
+            }
+
+            if (item.water) {
+                waterBadge.visibility = View.VISIBLE
+            }
+            if (item.pruning) {
+                potBadge.visibility = View.VISIBLE
+            }
+            if (item.bug) {
+                bugBadge.visibility = View.VISIBLE
+            }
+            if (item.sun) {
+                sunnnyBadge.visibility = View.VISIBLE
+            }
+            if (item.nutrients) {
+                pillBadge.visibility = View.VISIBLE
             }
         }
     }
