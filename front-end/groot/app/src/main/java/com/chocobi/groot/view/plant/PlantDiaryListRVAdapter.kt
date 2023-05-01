@@ -119,8 +119,10 @@ class PlantDiaryListRVAdapter : RecyclerView.Adapter<PlantDiaryListRVAdapter.Vie
                 plantNickname = it.findViewById(R.id.plantNickname)
                 postedTime = it.findViewById(R.id.postedTime)
                 diaryPhoto = it.findViewById(R.id.diaryPhoto)
+
                 diaryContent = it.findViewById(R.id.diaryContent)
                 detailOption = it.findViewById(R.id.detailOption)
+
                 waterBadge = it.findViewById(R.id.waterBadge)
                 potBadge = it.findViewById(R.id.potBadge)
                 bugBadge = it.findViewById(R.id.bugBadge)
