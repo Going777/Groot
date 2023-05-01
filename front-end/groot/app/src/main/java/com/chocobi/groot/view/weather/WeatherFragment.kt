@@ -44,7 +44,6 @@ class WeatherFragment : Fragment() {
 
     companion object {
         const val API_KEY: String = "28cad4ba682e9a7b543ea7dfe3b5d05b"
-        const val WEATHER_URL: String = "https://api.openweathermap.org/data/2.5/weather"
         const val MIN_TIME: Long = 5000
         const val MIN_DISTANCE: Float = 1000F
         const val WEATHER_REQUEST: Int = 102
