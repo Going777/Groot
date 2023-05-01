@@ -76,7 +76,7 @@ public class JwtTokenProvider {
         Long id = Long.valueOf(i);
         // 정보 담아서 Authentication 리턴
         UserDTO userDTO = UserDTO.builder()
-                .id(id)
+                .userPK(id)
                 .nickName((String)claims.get("nickName"))
                 .build();
         return new UsernamePasswordAuthenticationToken(userDTO,"",new ArrayList<>());
