@@ -4,7 +4,7 @@ import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.request.BookmarkDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
-import com.groot.backend.dto.response.CommentDTO;
+import com.groot.backend.dto.response.CommentResponseDTO;
 import com.groot.backend.dto.response.UserSharedArticleDTO;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
@@ -114,18 +114,18 @@ public class ArticleServiceImpl implements ArticleService{
         // commentEntity 조회
         List<CommentEntity> commentEntityList = (List<CommentEntity>) commentRepository.findByArticleId(articleId);
 
-        List<CommentDTO> comments = new ArrayList<>();
+        List<CommentResponseDTO> comments = new ArrayList<>();
         int commentCnt = 0;
         // commentDTO build
         if(commentEntityList != null){
             for(CommentEntity commentEntity : commentEntityList){
                 UserEntity commentUserEntity = userRepository.findById(commentEntity.getUserPK()).orElseThrow();
-                CommentDTO commentDTO = CommentDTO.builder()
+                CommentResponseDTO commentDTO = CommentResponseDTO.builder()
                         .userPK(commentEntity.getUserPK())
                         .profile(commentUserEntity.getProfile())
                         .content(commentEntity.getContent())
                         .createTime(commentEntity.getCreatedDate())
-                        .updateTime(commentEntity.getLastModifiedDate())
+//                        .updateTime(commentEntity.getLastModifiedDate())
                         .build();
 
                 comments.add(commentDTO);

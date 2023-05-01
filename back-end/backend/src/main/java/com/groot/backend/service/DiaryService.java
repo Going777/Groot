@@ -1,6 +1,7 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.DiaryDTO;
+import com.groot.backend.dto.response.DiaryResponseDTO;
 import com.groot.backend.entity.DiaryEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,9 @@ public interface DiaryService {
 
     Boolean deleteDiary(Long diaryId);
 
-    DiaryEntity detailDiary(Long diaryId);
+    DiaryResponseDTO detailDiary(Long diaryId);
 
-    Page<DiaryEntity> diaryListByPotId(Long potId, long page, long size);
+    Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size);
 
     List<DiaryEntity> weeklyDiaries();
 }

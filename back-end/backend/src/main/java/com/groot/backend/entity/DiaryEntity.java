@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "diary")
+@Table(name = "diaries")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -55,4 +55,6 @@ public class DiaryEntity extends BaseEntity{
     @JoinColumn(name = "pot_id")
     @JsonBackReference
     private PotEntity potEntity;
+
+
 }
