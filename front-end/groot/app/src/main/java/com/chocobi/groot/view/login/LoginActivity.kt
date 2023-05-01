@@ -12,12 +12,18 @@ import androidx.appcompat.app.AlertDialog
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.TokenInterceptor
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.signup.SignupActivity
+import com.chocobi.groot.view.user.model.GetUserResponse
+import com.chocobi.groot.view.user.model.UserService
+import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +50,7 @@ class LoginActivity : AppCompatActivity() {
 
 //        service 객체 만들기
         var loginService = retrofit.create(LoginService::class.java)
+        var userService = retrofit.create(UserService::class.java)
 
 
         var loginIdInput = findViewById<EditText>(R.id.loginIdInput)
@@ -60,7 +67,6 @@ class LoginActivity : AppCompatActivity() {
 //            로그인 요청 보내기
             loginService.requestLogin(LoginRequest(textId, textPw))
                 .enqueue(object : Callback<LoginResponse> {
-
                     override fun onResponse(
                         call: Call<LoginResponse>,
                         response: Response<LoginResponse>
@@ -75,9 +81,37 @@ class LoginActivity : AppCompatActivity() {
 //                            dialog.setTitle("알림!")
 
 //                    토큰 저장
-                            editor.putString("access_token", login?.accessToken)
-                            editor.putString("refresh_token", login?.refreshToken)
+                            if (login != null) {
+
+                            editor.putString("access_token", login.accessToken)
+                            editor.putString("refresh_token", login.refreshToken)
                             editor.commit()
+
+                            userService.getUser("Bearer " + login.accessToken).enqueue(object : Callback<GetUserResponse> {
+                                override fun onResponse(
+                                    call: Call<GetUserResponse>,
+                                    response: Response<GetUserResponse>
+                                ) {
+                                    var getUser = response.body()
+                                    Log.d("LoginActivity", getUser?.msg.toString())
+
+                                    if (getUser?.user != null) {
+                                        UserData.setId(getUser.user.id)
+                                        UserData.setUserId(getUser.user.userId)
+                                        UserData.setNickName(getUser.user.nickName)
+                                        UserData.setProfile(getUser.user.profile)
+                                        UserData.setRegisterDate(getUser.user.registerDate)
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
+                                    var dialog = AlertDialog.Builder(this@LoginActivity)
+                                    dialog.setTitle("실패!")
+                                    dialog.setMessage(t.message)
+                                    dialog.show()
+                                }
+                            })
+                            }
 
 //                    토큰 확인
 //                    access_token = shared.getString("access_token", "")
