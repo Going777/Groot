@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".view.plant.PlantDiaryCreateFragment">
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:src="@drawable/sample_character" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="산세산세"
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="산세베리아"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="산세산세를 위해 어떤 활동을 하셨나요?"
+                    android:textColor="#416D50"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+
+                        <ImageButton
+                            android:id="@+id/tabBtn1"
+                            style="@style/TAB_BTN_WATER"
+                            android:layout_margin="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tabBtn2"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/tabBtn2"
+                            style="@style/TAB_BTN_POT"
+                            android:layout_margin="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tabBtn3"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/tabBtn3"
+                            style="@style/TAB_BTN_BUG"
+                            android:layout_margin="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tabBtn4"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/tabBtn4"
+                            style="@style/TAB_BTN_SUN"
+                            android:layout_margin="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/tabBtn5"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageButton
+                            android:id="@+id/tabBtn5"
+                            style="@style/TAB_BTN_PILL"
+                            android:layout_margin="10dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/radius10"
+                    android:backgroundTint="@color/background"
+                    android:hint="기록을 남겨주세요"
+                    android:padding="5dp"
+                    app:boxStrokeWidth="0dp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="500">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:inputType="textMultiLine"
+                        android:maxLength="500"
+                        android:minHeight="250dp"
+                        android:overScrollMode="ifContentScrolls"
+                        android:scrollbars="vertical" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!--                <androidx.cardview.widget.CardView-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="180dp"-->
+                <!--                    android:layout_marginTop="10dp"-->
+                <!--                    card_view:cardBackgroundColor="#E9F3ED"-->
+                <!--                    card_view:cardCornerRadius="20dp"-->
+                <!--                    card_view:cardElevation="0dp">-->
+
+                <!--                    <EditText-->
+                <!--                        android:id="@+id/contentInput"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="match_parent"-->
+                <!--                        android:background="@color/background"-->
+                <!--                        android:gravity="top"-->
+                <!--                        android:hint="기록을 남겨주세요!"-->
+
+                <!--                        android:inputType="textMultiLine"-->
+                <!--                        android:maxLength="500"-->
+                <!--                        android:paddingHorizontal="20dp"-->
+                <!--                        android:paddingVertical="12dp"-->
+                <!--                        android:scrollbars="vertical"-->
+                <!--                        android:scrollHorizontally="false" />-->
+
+                <!--                    <TextView-->
+                <!--                        android:id="@+id/contentCnt"-->
+                <!--                        android:layout_width="wrap_content"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:layout_gravity="bottom|right"-->
+                <!--                        android:layout_margin="6dp"-->
+                <!--                        android:hint="0 / 500" />-->
+                <!--                </androidx.cardview.widget.CardView>-->
+
+                <LinearLayout
+                    android:id="@+id/attachPhotoSection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:gravity="center_vertical"
+                    android:clickable="true"
+                    >
+
+                    <ImageButton
+                        android:id="@+id/plantScanBtn"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:background="@drawable/radius10"
+                        android:backgroundTint="@color/background"
+                        android:src="@drawable/ic_camera"
+                        android:clickable="false"
+                        android:duplicateParentState="true"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="사진 첨부하기"
+                        android:clickable="false"
+                        android:duplicateParentState="true"
+                        />
+                </LinearLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/attachedPhotoSection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+<!--                    android:visibility="gone"-->
+
+                    <ImageView
+                        android:id="@+id/attachedPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginTop="17dp"
+
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/sample_plant_image"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageButton
+                        android:id="@+id/attachCancleBtn"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/circle_button_white"
+                        android:src="@drawable/ic_cancle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/postDiaryBtn"
+                    style="@style/MAIN_BTN"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginBottom="20dp"
+                    android:text="작성 완료" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+
+</ScrollView>

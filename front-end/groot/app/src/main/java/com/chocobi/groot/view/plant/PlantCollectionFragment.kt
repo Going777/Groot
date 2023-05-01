@@ -73,7 +73,7 @@ class PlantCollectionFragment : Fragment() {
 
         plantRvAdapter.setItemClickListener(object: PlantCollectionRVAdapter.ItemClickListener{
             override fun onPostBtnClick(view: View, position: Int) {
-                mactivity.changeFragment("plant_diary")
+                mactivity.changeFragment("plant_diary_create")
             }
 
             override fun onScanBtnClick(view: View, position: Int) {

@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
@@ -19,6 +20,7 @@ import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.plant.PlantDetailFragment
+import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
 import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchCameraActivity
@@ -31,7 +33,9 @@ import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
+    val TAG = "로그"
+
+    //    private lateinit var binding: ActivityMainBinding
     private val PERMISSION_CAMERA = 0
     private val REQUEST_CAMERA = 1
     private val PERMISSON_GALLERY = 2
@@ -52,6 +56,14 @@ class MainActivity : AppCompatActivity() {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, plantDiaryFragment)
+                    .commit()
+            }
+
+            "plant_diary_create" -> {
+                val plantDiaryCreateFragment = PlantDiaryCreateFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, plantDiaryCreateFragment)
                     .commit()
             }
 
@@ -142,6 +154,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d(TAG, "onRequestPermissionsResult: $grantResults")
         if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
             permissionGranted(requestCode)
         } else {
@@ -186,18 +199,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    //    private fun openGallery() {
-//        val intent = Intent(Intent.ACTION_PICK)
-//        intent.type = MediaStore.Images.Media.CONTENT_TYPE
-//        startActivityForResult(intent, REQUEST_STORAGE)
-//    }
+    //    사진 하나만 첨부할 때 사용
     private fun openGallery() {
-        val maxNumPhotosAndVideos = 3
-        val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
-        intent.type = "images/*"
-        intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxNumPhotosAndVideos)
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = MediaStore.Images.Media.CONTENT_TYPE
         startActivityForResult(intent, REQUEST_STORAGE)
     }
+
+//    private fun openGallery() {
+//    val maxNumPhotosAndVideos = 3
+//    val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+//    intent.type="images/*"
+//    intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxNumPhotosAndVideos)
+//    startActivityForResult(intent, REQUEST_STORAGE)
+//    }
 
     private fun newFileName(): String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
@@ -233,15 +248,13 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 REQUEST_STORAGE -> {
-//                    data?.data?.let { uri ->
-//                        val intent = Intent( this, SearchGalleryActivity::class.java)
-//                        intent.putExtra("imageUri", uri.toString())
-//                        startActivity(intent)
-//                    }
-                    var i = 0
-                    while (i < data?.clipData!!.itemCount) {
-                        Log.d("MainActivity", "test")
+                    Log.d(TAG, "onActivityResult: 결과물 여기로 들어옴")
+                    data?.data?.let { uri ->
                     }
+//                    var i = 0
+//                    while (i < data?.clipData!!.itemCount) {
+//                        Log.d("MainActivity", "test")
+//                    }
                 }
             }
         }
