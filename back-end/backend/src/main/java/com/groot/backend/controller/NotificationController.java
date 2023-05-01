@@ -31,7 +31,7 @@ public class NotificationController {
 //    }
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity connect(){
-        SseEmitter emitter = new SseEmitter();
+        SseEmitter emitter = new SseEmitter(3 * 60 * 1000L);
         sseEmitters.add(emitter);
         try{
             emitter.send(SseEmitter.event()
@@ -49,11 +49,11 @@ public class NotificationController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/sub", produces = "text/event-stream")
-    public ResponseEntity subscribe(HttpServletRequest request, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId){
-        Long userPK = JwtTokenProvider.getIdByAccessToken(request);
-        SseEmitter sseEmitter = notificationService.subscribe(userPK);
-        return ResponseEntity.ok().body(sseEmitter);
-    }
+//    @GetMapping(value = "/sub", produces = "text/event-stream")
+//    public ResponseEntity subscribe(HttpServletRequest request, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId){
+//        Long userPK = JwtTokenProvider.getIdByAccessToken(request);
+//        SseEmitter sseEmitter = notificationService.subscribe(userPK);
+//        return ResponseEntity.ok().body(sseEmitter);
+//    }
 
 }
