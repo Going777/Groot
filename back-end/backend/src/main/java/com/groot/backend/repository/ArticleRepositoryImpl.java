@@ -3,16 +3,17 @@ package com.groot.backend.repository;
 import com.groot.backend.entity.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 @RequiredArgsConstructor
 @Repository
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
     private final JPAQueryFactory queryFactory;
+    private final EntityManager entityManager;
     private QArticleEntity articleEntity;
     @Override
     public List<ArticleEntity> filterRegion(String[] region) {
@@ -25,34 +26,28 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
         return result;
     }
 
+    // 제목 + 내용 + 태그 검색
     @Override
     public List<ArticleEntity> search(String keyword) {
-        articleEntity = QArticleEntity.articleEntity;
-        QTagEntity t = QTagEntity.tagEntity;
-        QArticleTagEntity at = QArticleTagEntity.articleTagEntity;
+        QArticleEntity article = QArticleEntity.articleEntity;
+        QTagEntity tag = QTagEntity.tagEntity;
+        QArticleTagEntity articleTag = QArticleTagEntity.articleTagEntity;
 
-//        List<ArticleEntity> result = queryFactory
-//                .select(a.id, a.content, a.title, t.name)
-//                .from(a)
-//                .join(JPAExpressions
-//                        .select(t.id, t.name, at.articleId)
-//                        .from(t)
-//                        .join(at)
-//                        .on(at.tagId.eq(t.id))
-//                )
-//                .where(eqTitle(keyword)
-//                        .or(eqContent(keyword)))
-//                .fetch();
+        List<ArticleEntity> articles = new JPAQueryFactory(entityManager)
+                .selectFrom(article)
+                .join(articleTag).on(article.id.eq(articleTag.articleId))
+                .join(tag).on(articleTag.tagId.eq(tag.id))
+                .where(
+                        tag.name.eq(keyword)
+                                .or(article.title.contains(keyword))
+                                        .or(article.content.contains(keyword))
 
-        // 내용 + 제목 검색
-        List<ArticleEntity> result = queryFactory
-                .selectFrom(articleEntity)
-                .where(eqTitle(keyword)
-                        .or(eqContent(keyword)))
+                )
                 .fetch();
 
 
-        return result;
+
+        return articles;
     }
 
     // 사용자 이름 + 나눔 카테고리 글 조회
