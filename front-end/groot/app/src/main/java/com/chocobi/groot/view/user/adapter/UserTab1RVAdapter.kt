@@ -1,4 +1,4 @@
-package com.chocobi.groot.view.user
+package com.chocobi.groot.view.user.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 
 class UserTab1RVAdapter(val items:MutableList<String>) : RecyclerView.Adapter<UserTab1RVAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserTab1RVAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_user_tab1_item, parent, false)
 
         return ViewHolder(view)
@@ -19,7 +19,7 @@ class UserTab1RVAdapter(val items:MutableList<String>) : RecyclerView.Adapter<Us
     }
     var itemClick : ItemClick? = null
 
-    override fun onBindViewHolder(holder: UserTab1RVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if ( itemClick != null) {
 holder.itemView.setOnClickListener {
     v ->
