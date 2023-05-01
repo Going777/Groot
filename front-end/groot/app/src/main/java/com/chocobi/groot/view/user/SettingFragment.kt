@@ -108,13 +108,15 @@ class SettingFragment : Fragment() {
 
 //        요청 보내기
         val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
-        val accessToken = shared.getString("access_token", "")
+        val accessToken = "Bearer " + shared.getString("access_token", "")
         if (accessToken != "") {
             logoutService.logout(accessToken!!).enqueue(object : Callback<LogoutResponse> {
                 override fun onResponse(
                     call: Call<LogoutResponse>,
                     response: Response<LogoutResponse>
                 ) {
+                    Log.d("로그", "로그아웃 완료 $response: ");
+
                     Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
 //                    토큰 초기화
                     initializeAccessToken()
@@ -142,7 +144,7 @@ class SettingFragment : Fragment() {
 
 //        요청 보내기
         val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
-        val accessToken = shared.getString("access_token", "")
+        val accessToken = "Bearer " + shared.getString("access_token", "")
         if (accessToken != "") {
             logoutService.deleteUser(accessToken!!).enqueue(object : Callback<LogoutResponse> {
                 override fun onResponse(

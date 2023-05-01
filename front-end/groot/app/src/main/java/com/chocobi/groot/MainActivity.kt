@@ -15,7 +15,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -46,6 +45,9 @@ class MainActivity : AppCompatActivity() {
 //    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
 //        return activityToolbar
 //    }
+
+    private var photoImage: ImageView? = null
+
 
 
     //        fragment 조작
@@ -217,7 +219,6 @@ class MainActivity : AppCompatActivity() {
     private fun newFileName(): String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
         val filename = sdf.format(System.currentTimeMillis())
-        Log.d("MainActivity", "newFileName")
         return "$filename.jpg"
     }
 
@@ -226,7 +227,6 @@ class MainActivity : AppCompatActivity() {
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
         values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
 
-        Log.d("MainActivity", "createImageUri")
         return this.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 
@@ -248,8 +248,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 REQUEST_STORAGE -> {
-                    Log.d(TAG, "onActivityResult: 결과물 여기로 들어옴")
                     data?.data?.let { uri ->
+                        val plantDiaryCreateFragment = supportFragmentManager.findFragmentById(R.id.fl_container) as PlantDiaryCreateFragment?
+                        if (plantDiaryCreateFragment != null) {
+                            photoImage = plantDiaryCreateFragment.getPhotoImageView()
+                        }
+                        photoImage?.setImageURI(uri)
                     }
 //                    var i = 0
 //                    while (i < data?.clipData!!.itemCount) {
@@ -267,6 +271,7 @@ class MainActivity : AppCompatActivity() {
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate실행: ");
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -276,11 +281,16 @@ class MainActivity : AppCompatActivity() {
 //                .commit()
 //        }
 
-//        val plantFragment =
-//            supportFragmentManager.findFragmentById(R.id.plantFragment) as PlantFragment?
+        val plantFragment =
+            supportFragmentManager.findFragmentById(R.id.plantFragment) as PlantFragment?
+        Log.d(TAG, "MainActivity, $plantFragment,이건 되니")
+
 //        if (plantFragment != null) {
 //            activityToolbar = plantFragment.getToolbar()
 //        }
+
+
+
 
 
 //      main에서만 날씨 fragment 보여주기
