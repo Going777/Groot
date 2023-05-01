@@ -70,7 +70,7 @@ public class ArticleController {
                                           @PathVariable String category, @RequestParam Integer page, @RequestParam Integer size){
         resultMap = new HashMap<>();
         //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 12L;
+        Long userPK = 5L;
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -149,7 +149,7 @@ public class ArticleController {
     public ResponseEntity readArticle(HttpServletRequest request,
                                       @PathVariable Long articleId){
         //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 12L;
+        Long userPK = 5L;
         resultMap = new HashMap<>();
         if(!articleService.existedArticleId(articleId)){
             resultMap.put("result", FAIL);
@@ -234,7 +234,7 @@ public class ArticleController {
                                         @RequestParam Integer size){
         resultMap = new HashMap<>();
         //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 12L;
+        Long userPK = 5L;
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -271,7 +271,7 @@ public class ArticleController {
                                                 @RequestParam Integer size){
         resultMap = new HashMap<>();
         //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 12L;
+        Long userPK = 5L;
 
         if(size == 0){
             resultMap.put("result", FAIL);

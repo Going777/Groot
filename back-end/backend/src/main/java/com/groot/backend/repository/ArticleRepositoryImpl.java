@@ -3,6 +3,7 @@ package com.groot.backend.repository;
 import com.groot.backend.entity.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -26,18 +27,29 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
     @Override
     public List<ArticleEntity> search(String keyword) {
-        articleEntity = QArticleEntity.articleEntity;
-        List<ArticleEntity> result = queryFactory
-                .selectFrom(articleEntity)
-                .where(eqTitle(keyword))
-                .fetch();
+        QArticleEntity a = QArticleEntity.articleEntity;
+        QTagEntity t = QTagEntity.tagEntity;
+        QArticleTagEntity at = QArticleTagEntity.articleTagEntity;
 
-        // 내용 + 제목 검색
 //        List<ArticleEntity> result = queryFactory
-//                .selectFrom(articleEntity)
+//                .select(a.id, a.content, a.title, t.name)
+//                .from(a)
+//                .join(JPAExpressions
+//                        .select(t.id, t.name, at.articleId)
+//                        .from(t)
+//                        .join(at)
+//                        .on(at.tagId.eq(t.id))
+//                )
 //                .where(eqTitle(keyword)
 //                        .or(eqContent(keyword)))
 //                .fetch();
+
+        // 내용 + 제목 검색
+        List<ArticleEntity> result = queryFactory
+                .selectFrom(articleEntity)
+                .where(eqTitle(keyword)
+                        .or(eqContent(keyword)))
+                .fetch();
 
 
         return result;
