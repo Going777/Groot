@@ -10,16 +10,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.doOnLayout
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.adapter.item.ItemBean
-import com.chocobi.groot.adapter.item.ItemViewHolder
 import com.chocobi.groot.data.ModelDiary
-import com.chocobi.groot.view.community.CommunityDetailFragment
 import java.lang.ref.WeakReference
 
 class PlantDiaryListRVAdapter : RecyclerView.Adapter<PlantDiaryListRVAdapter.ViewHolder>() {
