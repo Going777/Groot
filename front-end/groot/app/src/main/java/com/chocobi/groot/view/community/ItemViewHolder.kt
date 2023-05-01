@@ -45,7 +45,6 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private fun setListener() {
         view.get()?.setOnClickListener {
             delegate?.onItemViewClick(itemBean)
-            Log.d("??", "aaaaaaaaaaaaaaaaaaaaaaaaaa")
         }
     }
 

@@ -1,25 +1,22 @@
 package com.chocobi.groot.view.community
 
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.Spinner
-import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.R
+import com.chocobi.groot.view.community.adapter.CommentAdapter
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.INDICATOR_GRAVITY_CENTER
 import com.google.android.material.tabs.TabLayoutMediator
 
 // TODO: Rename parameter arguments, choose names that match
@@ -35,15 +32,33 @@ private const val ARG_PARAM2 = "param2"
 class CommunityDetailFragment : Fragment() {
     private lateinit var bookmarkButton: ImageButton
     private var isBookmarked = false
+    private var commentList = arrayListOf<CommunityComment>(
+        CommunityComment("sample_plant_image", "박세희1", "4", "댓글123"),
+        CommunityComment("sample_plant_image", "박세희2", "4", "댓글123"),
+        CommunityComment("sample_plant_image", "박세희3", "4", "댓글123"),
+        CommunityComment("sample_plant_image", "박세희4", "4", "댓글123"),)
+
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_community_detail, container, false)
 
+// 2. RecyclerView의 레이아웃 매니저 설정
+        val commentRecycleView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
+        val layoutManager = LinearLayoutManager(context)
+        commentRecycleView.layoutManager = layoutManager
+
+// 3. RecyclerView 어댑터가 데이터를 올바르게 처리하는지 확인
+        val commentAdapter = CommentAdapter(commentList)
+        commentRecycleView.adapter = commentAdapter
 
 
         val spinner: Spinner = view.findViewById(R.id.spinner)
@@ -64,7 +79,7 @@ class CommunityDetailFragment : Fragment() {
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 val selectedOption = options[position]
-                Toast.makeText(requireContext(), selectedOption, Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), selectedOption, Toast.LENGTH_SHORT).show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -91,7 +106,6 @@ class CommunityDetailFragment : Fragment() {
             )
         }
 
-
         return view
     }
 
@@ -109,8 +123,6 @@ class CommunityDetailFragment : Fragment() {
             tab.text = tabList[position]
 
         }.attach()
-
-
 
     }
 
@@ -130,5 +142,4 @@ class CommunityDetailFragment : Fragment() {
             }
         }
     }
-
 }
