@@ -4,9 +4,9 @@ package com.chocobi.groot.view.login
 
 data class LoginResponse(
     var accessToken : String,
+    var refreshToken : String,
     var result : String,
     var msg : String,
-//    var refreshToken : String,
 //    var user: User
 )
 
