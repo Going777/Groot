@@ -17,6 +17,7 @@
         android:background="@color/sun">
 
         <androidx.appcompat.widget.Toolbar
+            app:maxButtonHeight="0dp"
             android:id="@+id/exSevenToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
