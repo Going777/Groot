@@ -35,6 +35,8 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Integer> illuminance = createNumber("illuminance", Integer.class);
+
     public final StringPath imgPath = createString("imgPath");
 
     //inherited

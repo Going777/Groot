@@ -139,5 +139,13 @@ dependencies {
 
 //    circle image
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+//    달력
+    // The view calendar library
+    implementation 'com.kizitonwose.calendar:view:2.3.0'
+
+    // The compose calendar library
+    implementation 'com.kizitonwose.calendar:compose:2.3.0'
+
 }
 

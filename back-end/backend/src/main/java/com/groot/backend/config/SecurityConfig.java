@@ -5,6 +5,7 @@ import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,11 +32,16 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 사용 하지않음
                 .and()
                 .authorizeRequests()
-//                .antMatchers("/api/users/login").permitAll()
-//                .antMatchers("/api/users/signup").permitAll()
-//                .antMatchers("/api/users/userId/**").permitAll()
-//                .antMatchers("/api/users/nickname/**").permitAll()
+//                .antMatchers("/users/login").permitAll()
+//                .antMatchers("/users/signup").permitAll()
+//                .antMatchers("/users/userId/**").permitAll()
+//                .antMatchers("/users/nickname/**").permitAll()
 //                .anyRequest().authenticated()
+//                .antMatchers("/users/mypage/**").authenticated()
+//                .antMatchers("/articles/category/**").authenticated()
+//                .antMatchers("/articles/search/**").authenticated()
+//                .antMatchers("/articles/filter/**").authenticated()
+//                .antMatchers(HttpMethod.GET,"/articles/{articleId}").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)

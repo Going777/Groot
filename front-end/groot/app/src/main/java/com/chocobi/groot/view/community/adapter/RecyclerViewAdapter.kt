@@ -1,12 +1,10 @@
-package com.chocobi.groot.adapter
+package com.chocobi.groot.view.community.adapter
 
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.adapter.item.ItemBean
 import com.chocobi.groot.adapter.item.ItemViewHolder

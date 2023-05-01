@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.adapter.RecyclerViewAdapter
+import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.adapter.item.ItemBean
 
 // TODO: Rename parameter arguments, choose names that match

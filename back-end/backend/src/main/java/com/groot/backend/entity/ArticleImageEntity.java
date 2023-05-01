@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name="article_image")
+@Table(name="articles_images")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -21,10 +21,10 @@ public class ArticleImageEntity extends BaseEntity{
     @Column(name = "article_id", insertable = false, updatable = false)
     private Long articleId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "MEDIUMTEXT")
     private String img;
 
-    @ManyToOne(targetEntity = ArticleImageEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private ArticleEntity articleEntity;
 }

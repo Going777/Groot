@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
@@ -39,6 +40,12 @@ class MainActivity : AppCompatActivity() {
     private val REQUEST_CAMERA = 1
     private val PERMISSON_GALLERY = 2
     private val REQUEST_STORAGE = 3
+
+//    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
+//
+//    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
+//        return activityToolbar
+//    }
 
 
     //        fragment 조작
@@ -267,6 +274,12 @@ class MainActivity : AppCompatActivity() {
 //            supportFragmentManager.beginTransaction()
 //                .add(R.id.imageInput, CommunityPostFragment())
 //                .commit()
+//        }
+
+//        val plantFragment =
+//            supportFragmentManager.findFragmentById(R.id.plantFragment) as PlantFragment?
+//        if (plantFragment != null) {
+//            activityToolbar = plantFragment.getToolbar()
 //        }
 
 
