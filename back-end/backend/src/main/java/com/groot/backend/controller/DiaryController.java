@@ -96,7 +96,7 @@ public class DiaryController {
     @GetMapping("/detail/{diaryId}")   // 다이어리 상세 조회
     public ResponseEntity detailDiary(@PathVariable Long diaryId){
         Map resultMap = new HashMap();
-        DiaryEntity result = diaryService.detailDiary(diaryId);
+        DiaryResponseDTO result = diaryService.detailDiary(diaryId);
         if(result == null){
             resultMap.put("msg", "다이어리 상세 조회에 실패했습니다.");
             resultMap.put("result", FAIL);

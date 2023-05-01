@@ -59,7 +59,7 @@ public class CommentController {
         return ResponseEntity.ok().body(resultMap);
     }
 
-    @DeleteMapping("/{commentID}/{userPK}") // 댓글 삭제
+    @DeleteMapping("/{commentId}/{userPK}") // 댓글 삭제
     public ResponseEntity deleteComment(@PathVariable Long commentId, @PathVariable Long userPK, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
@@ -78,7 +78,7 @@ public class CommentController {
          return ResponseEntity.ok().body(resultMap);
      }
 
-    @GetMapping("/{articleId}") // 해당 게시글 댓글 리스트 조회
+    @GetMapping("/list/{articleId}") // 해당 게시글 댓글 리스트 조회
     public ResponseEntity readCommentList(@PathVariable Long articleId, @RequestParam Integer page, @RequestParam Integer size){
         Map<String, Object> resultMap = new HashMap();
         Page<CommentResponseDTO> commentEntities = commentService.readComment(articleId, page, size);

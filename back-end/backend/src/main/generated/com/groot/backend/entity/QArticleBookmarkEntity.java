@@ -28,6 +28,8 @@ public class QArticleBookmarkEntity extends EntityPathBase<ArticleBookmarkEntity
 
     public final QUserEntity userEntity;
 
+    public final NumberPath<Long> userPK = createNumber("userPK", Long.class);
+
     public QArticleBookmarkEntity(String variable) {
         this(ArticleBookmarkEntity.class, forVariable(variable), INITS);
     }

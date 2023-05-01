@@ -41,6 +41,7 @@ public class CommentServiceImpl implements CommentService{
     @Override
     public CommentEntity updateComment(CommentDTO commentDTO) {
         CommentEntity comment = CommentEntity.builder()
+                .id(commentDTO.getId())
                 .userEntity(userRepository.findById(commentDTO.getUserPK()).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다.")))
                 .articleEntity(articleRepository.findById(commentDTO.getArticleId()).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "해당 게시글을 찾을 수 없습니다.")))
                 .content(commentDTO.getContent())
@@ -51,7 +52,7 @@ public class CommentServiceImpl implements CommentService{
 
     @Override
     public boolean deleteComment(Long commentId) {
-        if(commentRepository.existsById(commentId)){
+        if(!commentRepository.existsById(commentId)){
             return false;
         }
         commentRepository.deleteById(commentId);

@@ -107,8 +107,10 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public DiaryEntity detailDiary(Long diaryId) {
-        return diaryRepository.findById(diaryId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
+    public DiaryResponseDTO detailDiary(Long diaryId) {
+        DiaryEntity diary = diaryRepository.findById(diaryId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
+        DiaryResponseDTO result = new DiaryResponseDTO().toDtoDiary(diary);
+        return result;
     }
 
     @Override
