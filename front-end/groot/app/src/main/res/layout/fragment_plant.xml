@@ -23,6 +23,7 @@
     <!--        app:layout_constraintTop_toTopOf="parent"-->
 
         <LinearLayout
+            android:id="@+id/collectionContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/weather_framgent"
@@ -54,6 +55,39 @@
                 android:layout_marginTop="15dp"
                 />
 
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:background="@color/background"
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/collectionContainer">
+
+            <fragment
+                android:id="@+id/plantCalendarFragment"
+                android:name="com.chocobi.groot.view.plant.PlantCalendarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="탭 영역"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/main"
+                    android:textColor="@color/white"
+                    android:text="오늘의 미션 완료"/>
+            </LinearLayout>
         </LinearLayout>
 
 

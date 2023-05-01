@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toolbar
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 
@@ -25,6 +26,12 @@ class PlantFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+//    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
+
+//    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
+//        return activityToolbar
+//    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +49,9 @@ class PlantFragment : Fragment() {
     ): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_plant, container, false)
+
+//        toolbar 잡기
+//        activityToolbar = rootView.findViewById<androidx.appcompat.widget.Toolbar>(R.id.activityToolbar)
 
 //        Fragment 이동 조작
         val mActivity = activity as MainActivity
