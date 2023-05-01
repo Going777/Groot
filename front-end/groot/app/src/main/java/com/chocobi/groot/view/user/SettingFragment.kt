@@ -17,11 +17,14 @@ import com.chocobi.groot.IntroActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+
 import com.chocobi.groot.data.RetrofitClient
-import com.chocobi.groot.view.user.model.DeleteUserService
-import com.chocobi.groot.view.user.model.LogoutResponse
-import com.chocobi.groot.view.user.model.LogoutService
+
 import org.json.JSONObject
+
+import com.chocobi.groot.view.user.model.LogoutResponse
+import com.chocobi.groot.view.user.model.UserService
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -108,7 +111,7 @@ class SettingFragment : Fragment() {
         var retrofit = RetrofitClient.getClient()!!
 
 //        service 객체 만들기
-        var logoutService = retrofit.create(LogoutService::class.java)
+        var logoutService = retrofit.create(UserService::class.java)
 
 //        요청 보내기
 //        val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
@@ -151,7 +154,7 @@ class SettingFragment : Fragment() {
             .build()
 
 //        service 객체 만들기
-        var logoutService = retrofit.create(DeleteUserService::class.java)
+        var logoutService = retrofit.create(UserService::class.java)
 
 //        요청 보내기
         val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
