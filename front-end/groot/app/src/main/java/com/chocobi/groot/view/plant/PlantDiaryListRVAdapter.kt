@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.adapter.RecyclerViewAdapter
 import com.chocobi.groot.adapter.item.ItemBean
 import com.chocobi.groot.adapter.item.ItemViewHolder
 import com.chocobi.groot.data.ModelDiary
