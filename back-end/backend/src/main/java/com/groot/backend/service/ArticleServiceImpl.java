@@ -4,7 +4,7 @@ import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.request.BookmarkDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
-import com.groot.backend.dto.response.CommentDTO;
+import com.groot.backend.dto.response.CommentResponseDTO;
 import com.groot.backend.dto.response.UserSharedArticleDTO;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
@@ -99,7 +99,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public ArticleResponseDTO readArticle(Long articleId) {
+    public ArticleResponseDTO readArticle(Long articleId, Long userPK) {
         // ArticleEntity 조회
         ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow();
         // UserEntity 조회
@@ -114,18 +114,18 @@ public class ArticleServiceImpl implements ArticleService{
         // commentEntity 조회
         List<CommentEntity> commentEntityList = (List<CommentEntity>) commentRepository.findByArticleId(articleId);
 
-        List<CommentDTO> comments = new ArrayList<>();
+        List<CommentResponseDTO> comments = new ArrayList<>();
         int commentCnt = 0;
         // commentDTO build
         if(commentEntityList != null){
             for(CommentEntity commentEntity : commentEntityList){
                 UserEntity commentUserEntity = userRepository.findById(commentEntity.getUserPK()).orElseThrow();
-                CommentDTO commentDTO = CommentDTO.builder()
+                CommentResponseDTO commentDTO = CommentResponseDTO.builder()
                         .userPK(commentEntity.getUserPK())
                         .profile(commentUserEntity.getProfile())
                         .content(commentEntity.getContent())
                         .createTime(commentEntity.getCreatedDate())
-                        .updateTime(commentEntity.getLastModifiedDate())
+//                        .updateTime(commentEntity.getLastModifiedDate())
                         .build();
 
                 comments.add(commentDTO);
@@ -136,7 +136,7 @@ public class ArticleServiceImpl implements ArticleService{
         // bookmark 여부 조회
         // 복합키 사용을 위한 id 등록
         ArticleBookmarkEntityPK articleBookmarkEntityPK = new ArticleBookmarkEntityPK();
-        articleBookmarkEntityPK.setUserEntity(userEntity.getId());
+        articleBookmarkEntityPK.setUserEntity(userPK);
         articleBookmarkEntityPK.setArticleEntity(articleId);
 
         boolean bookmark;
@@ -281,10 +281,10 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public Page<ArticleListDTO> readArticleList(String category, Integer page, Integer size) {
+    public Page<ArticleListDTO> readArticleList(String category, Long userPK, Integer page, Integer size) {
         // 카테고리에 해당하는 게시글 조회
         List<ArticleEntity> articleEntities = articleRepository.findAllByCategory(category);
-        return entityListToResponseDTOPage(articleEntities, page, size);
+        return entityListToResponseDTOPage(articleEntities, userPK, page, size);
     }
 
     @Override
@@ -319,16 +319,16 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public Page<ArticleListDTO> filterRegion(String[] region, Integer page, Integer size) {
+    public Page<ArticleListDTO> filterRegion(String[] region, Long userPK, Integer page, Integer size) {
         List<ArticleEntity> articleEntityList = articleRepository.filterRegion(region);
 
-        return entityListToResponseDTOPage(articleEntityList, page, size);
+        return entityListToResponseDTOPage(articleEntityList, userPK, page, size);
     }
 
     @Override
-    public Page<ArticleListDTO> searchArticle(String keyword, Integer page, Integer size) {
+    public Page<ArticleListDTO> searchArticle(String keyword, Long userPK, Integer page, Integer size) {
         List<ArticleEntity> articleEntityList = articleRepository.search(keyword);
-        return entityListToResponseDTOPage(articleEntityList, page, size);
+        return entityListToResponseDTOPage(articleEntityList, userPK, page, size);
     }
 
     // 작성자가 나눔 중인 다른 나눔글
@@ -358,9 +358,23 @@ public class ArticleServiceImpl implements ArticleService{
         return result;
     }
 
+    // 마이페이지 - 유저 작성글 조회
+    @Override
+    public Page<ArticleListDTO> readUserArticles(Long userPK, Integer page, Integer size) {
+        List<ArticleEntity> articleEntityList = articleRepository.findAllByUserPK(userPK);
+        return entityListToResponseDTOPage(articleEntityList, userPK, page, size);
+    }
+
+    // 마이페이지 - 유저 북마크 조회
+    @Override
+    public Page<ArticleListDTO> readUserBookmarks(Long userPK, Integer page, Integer size) {
+        List<Long> bookmarkList = articleRepository.findBookmarkByUserPK(userPK);
+        List<ArticleEntity> result = articleRepository.findAllById(bookmarkList);
+        return entityListToResponseDTOPage(result, userPK, page, size);
+    }
 
     // articleEntityList to articleListDTOPage
-    public Page<ArticleListDTO> entityListToResponseDTOPage(List<ArticleEntity> articleEntityList, Integer page, Integer size) {
+    public Page<ArticleListDTO> entityListToResponseDTOPage(List<ArticleEntity> articleEntityList, Long userPK, Integer page, Integer size) {
         List<ArticleListDTO> articleListDTOList = new ArrayList<>();  // response DTO list
 
         for(ArticleEntity articleEntity : articleEntityList){
@@ -371,7 +385,7 @@ public class ArticleServiceImpl implements ArticleService{
                 // 첫번째 이미지 가져오기
                 imgPath = articleImageEntityList.get(0).getImg();
             }
-            // 유저 조회
+            // 작성자 조회
             UserEntity userEntity = userRepository.findById(articleEntity.getUserPK()).orElseThrow();
             // 태그 조회
             List<String> tags = new ArrayList<>();
@@ -385,10 +399,11 @@ public class ArticleServiceImpl implements ArticleService{
             if(commentEntityList == null){
                 commentCnt = 0;
             }else commentCnt = commentEntityList.size();
+
             // bookmark 여부 조회
             // 복합키 사용을 위한 id 등록
             ArticleBookmarkEntityPK articleBookmarkEntityPK = new ArticleBookmarkEntityPK();
-            articleBookmarkEntityPK.setUserEntity(userEntity.getId());
+            articleBookmarkEntityPK.setUserEntity(userPK);
             articleBookmarkEntityPK.setArticleEntity(articleEntity.getId());
             boolean bookmark;
             if(aBookmarkRepo.findById(articleBookmarkEntityPK).isPresent()){

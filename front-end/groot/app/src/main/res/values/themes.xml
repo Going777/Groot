@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/main</item>
         <item name="colorOnSecondaryContainer">@color/white</item>
         <item name="colorOnSurfaceVariant">@color/grey</item>
+        <item name="android:windowBackground">@color/white</item>
 
         <item name="extendedFloatingActionButtonStyle">
             @style/Widget.App.ExtendedFloatingActionButton
@@ -14,6 +15,9 @@
 
     <style name="Theme.Groot" parent="Base.Theme.Groot" />
 
+<!--    calendar-->
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
     <!--    bottom navigation bar active indicator-->
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/main</item>
@@ -56,6 +60,40 @@
 
 
     <!--    button-->
+
+    <!--  기본 버튼 스타일 -->
+    <style name="MAIN_BTN">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">55dp</item>
+        <item name="android:background">@drawable/radius10</item>
+        <item name="android:backgroundTint">@color/main</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="GO_TO_DIARY_BTN">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">70dp</item>
+        <item name="android:drawableLeft">@drawable/drawable_left_img_customize</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/radius10</item>
+        <item name="android:backgroundTint">@color/sub</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:drawablePadding">12dp</item>
+        <item name="android:text">다이어리 보러 갈래요</item>
+    </style>
+
+    <style name="BASIC_ICON_BADGE">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
 
 
     <style name="BASIC_ICON_BTN">

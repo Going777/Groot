@@ -23,6 +23,7 @@
     <!--        app:layout_constraintTop_toTopOf="parent"-->
 
         <LinearLayout
+            android:id="@+id/collectionContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/weather_framgent"
@@ -31,19 +32,8 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/toDiaryBtn"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
+                style="@style/GO_TO_DIARY_BTN"
                 android:layout_marginTop="15dp"
-                android:drawableLeft="@drawable/drawable_left_img_customize"
-                android:text="다이어리 보러 갈래요"
-                android:textColor="#fff"
-                android:background="@drawable/radius10"
-                android:backgroundTint="#B5CDA3"
-                android:textAlignment="textStart"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:paddingHorizontal="20dp"
-                android:drawablePadding="12dp"
                 />
 
             <fragment
@@ -54,6 +44,39 @@
                 android:layout_marginTop="15dp"
                 />
 
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:background="@color/background"
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/collectionContainer">
+
+            <fragment
+                android:id="@+id/plantCalendarFragment"
+                android:name="com.chocobi.groot.view.plant.PlantCalendarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="탭 영역"/>
+                <androidx.appcompat.widget.AppCompatButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/main"
+                    android:textColor="@color/white"
+                    android:text="오늘의 미션 완료"/>
+            </LinearLayout>
         </LinearLayout>
 
 

@@ -5,7 +5,10 @@
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
-
+    <!--calendar-->
+    <string name="example_7_title">Example 7</string>
+    <string name="example_7_subtitle">Week calendar with single selection, paged scroll and visible item observation.</string>
+    <string name="activity_title_view">Calendar View Sample</string>
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
@@ -66,4 +69,6 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+
 </resources>

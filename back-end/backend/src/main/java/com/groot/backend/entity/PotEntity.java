@@ -15,7 +15,7 @@ import java.sql.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "pot")
+@Table(name = "pots")
 @Getter
 @Builder
 @NoArgsConstructor

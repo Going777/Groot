@@ -69,7 +69,27 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
         return result;
     }
 
+    @Override
+    public List<ArticleEntity> findAllByUserPK(Long userPK) {
+        articleEntity = QArticleEntity.articleEntity;
+        List<ArticleEntity> result = queryFactory
+                .selectFrom(articleEntity)
+                .where(articleEntity.userPK.eq(userPK))
+                .fetch();
+        return result;
+    }
 
+    @Override
+    public List<Long> findBookmarkByUserPK(Long userPK) {
+        QArticleBookmarkEntity bookmark = QArticleBookmarkEntity.articleBookmarkEntity;
+        List<Long> bookmarks = queryFactory
+                .select(bookmark.articleId)
+                .from(bookmark)
+                .where(bookmark.userPK.eq(userPK))
+                .fetch();
+
+        return bookmarks;
+    }
 
 
     // 키워드로 게시글 제목 검색

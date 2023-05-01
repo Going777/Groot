@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@drawable/ic_diary"
+        android:drawable="@drawable/ic_diary_plant"
         android:width="43dp"
         android:height="43dp"
         />

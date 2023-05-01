@@ -28,5 +28,5 @@ public class ArticleResponseDTO {
     private Boolean shareStatus;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
-    private List<CommentDTO> comments;
+    private List<CommentResponseDTO> comments;
 }

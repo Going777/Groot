@@ -61,7 +61,10 @@ class LoginActivity : AppCompatActivity() {
             loginService.requestLogin(LoginRequest(textId, textPw))
                 .enqueue(object : Callback<LoginResponse> {
 
-                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                    override fun onResponse(
+                        call: Call<LoginResponse>,
+                        response: Response<LoginResponse>
+                    ) {
                         if (response.code() == 200) {
                             Log.d("LoginActivity", "로그인 성공")
 
@@ -73,7 +76,7 @@ class LoginActivity : AppCompatActivity() {
 
 //                    토큰 저장
                             editor.putString("access_token", login?.accessToken)
-//                    editor.putString("refresh_token", login?.refreshToken)
+                            editor.putString("refresh_token", login?.refreshToken)
                             editor.commit()
 
 //                    토큰 확인

@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Data
 @Entity
-@Table(name="article_tag")
+@Table(name="articles_tags")
 @IdClass(ArticleTagEntityPK.class)
 @Getter
 @Setter

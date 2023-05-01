@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name="comment")
+@Table(name="comments")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -27,7 +27,7 @@ public class CommentEntity extends BaseEntity{
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne(targetEntity = ArticleImageEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private ArticleEntity articleEntity;
 
