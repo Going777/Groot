@@ -8,6 +8,7 @@ import com.groot.backend.dto.response.UserSharedArticleDTO;
 import com.groot.backend.service.ArticleService;
 import com.groot.backend.service.S3Service;
 import com.groot.backend.service.UserService;
+import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.Map;
 @Slf4j
 public class ArticleController {
     private final ArticleService articleService;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final S3Service s3Service;
     private static final String SUCCESS = "success";
@@ -63,8 +66,11 @@ public class ArticleController {
 
     // 카테고리별 게시글 리스트 조회
     @GetMapping("/category/{category}")
-    public ResponseEntity readArticleList(@PathVariable String category, @RequestParam Integer page, @RequestParam Integer size){
+    public ResponseEntity readArticleList(HttpServletRequest request,
+                                          @PathVariable String category, @RequestParam Integer page, @RequestParam Integer size){
         resultMap = new HashMap<>();
+        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+        Long userPK = 12L;
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -79,7 +85,7 @@ public class ArticleController {
         }
 
         try{
-            Page<ArticleListDTO> result = articleService.readArticleList(category, page, size);
+            Page<ArticleListDTO> result = articleService.readArticleList(category, userPK, page, size);
             if(result == null){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg","존재하지 않는 페이지번호 입니다.");
@@ -140,7 +146,10 @@ public class ArticleController {
 
     // 개별 게시글 조회
     @GetMapping("/{articleId}")
-    public ResponseEntity readArticle(@PathVariable Long articleId){
+    public ResponseEntity readArticle(HttpServletRequest request,
+                                      @PathVariable Long articleId){
+        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+        Long userPK = 12L;
         resultMap = new HashMap<>();
         if(!articleService.existedArticleId(articleId)){
             resultMap.put("result", FAIL);
@@ -149,7 +158,7 @@ public class ArticleController {
         }
 
         try{
-            ArticleResponseDTO articleResponseDTO = articleService.readArticle(articleId);
+            ArticleResponseDTO articleResponseDTO = articleService.readArticle(articleId, userPK);
             resultMap.put("result", SUCCESS);
             resultMap.put("msg","게시물이 조회되었습니다.");
             resultMap.put("article",articleResponseDTO);
@@ -219,10 +228,13 @@ public class ArticleController {
 
     // 게시글 검색 (제목 검색)
     @GetMapping("/search")
-    public ResponseEntity searchArticle(@RequestParam String keyword,
+    public ResponseEntity searchArticle(HttpServletRequest request,
+                                        @RequestParam String keyword,
                                         @RequestParam Integer page,
                                         @RequestParam Integer size){
         resultMap = new HashMap<>();
+        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+        Long userPK = 12L;
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -231,7 +243,7 @@ public class ArticleController {
         }
 
         try{
-            Page<ArticleListDTO> result = articleService.searchArticle(keyword, page, size);
+            Page<ArticleListDTO> result = articleService.searchArticle(keyword, userPK, page, size);
             if(result == null){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg","존재하지 않는 page 번호 입니다.");
@@ -253,10 +265,13 @@ public class ArticleController {
 
     // 나눔 게시글 지역 필터링
     @GetMapping("/filter")
-    public ResponseEntity regionFilteredArticle(@RequestParam String[] region,
+    public ResponseEntity regionFilteredArticle(HttpServletRequest request,
+                                                @RequestParam String[] region,
                                                 @RequestParam Integer page,
                                                 @RequestParam Integer size){
         resultMap = new HashMap<>();
+        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+        Long userPK = 12L;
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -265,7 +280,7 @@ public class ArticleController {
         }
 
         try{
-            Page<ArticleListDTO> result = articleService.filterRegion(region, page, size);
+            Page<ArticleListDTO> result = articleService.filterRegion(region, userPK, page, size);
             if(result == null){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg","존재하지 않는 page 번호 입니다.");

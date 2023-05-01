@@ -4,13 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/community_tab2"
-    tools:context=".view.community.CommunityTab2Fragment">
+    tools:context=".view.community.CommunityTab2Fragment"
+    android:layout_marginTop="100dp">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="@color/grey"
+        android:drawableLeft="@drawable/ic_position"
+        android:drawablePadding="50dp"
+        android:gravity="center_vertical|center_horizontal"
+        android:padding="0dp"
+        android:text="지역 필터"
+        android:textColor="#989B96" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="100dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
