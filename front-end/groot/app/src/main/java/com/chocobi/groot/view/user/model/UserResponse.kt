@@ -26,3 +26,9 @@ data class User(
 )
 
 
+//token refresh
+data class RefreshResponse(
+    var result: String,
+    var msg: String,
+    var accessToken: String
+)
