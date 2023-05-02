@@ -65,6 +65,7 @@ public class PlantServiceImpl implements PlantService{
                 .minGrwTemp(plantEntity.getMinGrwTemp()).maxGrwTemp(plantEntity.getMaxGrwTemp())
                 .minHumidity(plantEntity.getMinHumidity()).maxHumidity(plantEntity.getMaxHumidity())
                 .waterCycle(PlantCodeUtil.waterCycleCode[plantEntity.getWaterCycle()%53000])
+                .img(plantEntity.getImg())
                 .build();
 
 

@@ -40,4 +40,6 @@ public class PlantDetailDTO {
     private String insectInfo;
 
     private String smellDegree;
+
+    private String img;
 }
