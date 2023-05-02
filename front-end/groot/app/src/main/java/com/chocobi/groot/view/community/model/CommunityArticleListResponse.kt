@@ -8,7 +8,7 @@ data class CommunityArticleListResponse(
 
 data class Articles (
     val total: Int,
-    val content: List<Content>,
+    var content: List<Content>,
     val pageable: Pageable
 )
 
