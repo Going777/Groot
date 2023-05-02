@@ -1,15 +1,19 @@
 package com.chocobi.groot.view.plant
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 import com.chocobi.groot.databinding.CalendarDayBinding
 import com.chocobi.groot.databinding.FragmentPlantCalendarBinding
+import com.chocobi.groot.view.plant.adapter.PlantCalendarRVAdapter
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
@@ -41,6 +45,27 @@ class PlantCalendarFragment : PlantCalendarBaseFragment(R.layout.fragment_plant_
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
 
     private lateinit var binding: FragmentPlantCalendarBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val rootView = inflater.inflate(R.layout.fragment_plant_calendar, container, false)
+//        val rootView = super.onCreateView(inflater, container, savedInstanceState)
+        val items = mutableListOf<String>()
+        items.add("산세산세")
+        items.add("이열")
+        items.add("짜부짜부")
+        items.add("찌부짜부")
+
+        val rv = rootView.findViewById<RecyclerView>(R.id.plantCalendarRecyclerView)
+        val rvAdapter = PlantCalendarRVAdapter(items)
+        rv.layoutManager = LinearLayoutManager(activity)
+        rv.adapter = rvAdapter
+
+        return rootView
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
