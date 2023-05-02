@@ -17,8 +17,14 @@ import com.chocobi.groot.IntroActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+
+import com.chocobi.groot.data.RetrofitClient
+
+import org.json.JSONObject
+
 import com.chocobi.groot.view.user.model.LogoutResponse
 import com.chocobi.groot.view.user.model.UserService
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -98,31 +104,39 @@ class SettingFragment : Fragment() {
 
     private fun logout() {
 //        retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+//        var retrofit = Retrofit.Builder()
+//            .baseUrl(GlobalVariables.getBaseUrl())
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+        var retrofit = RetrofitClient.getClient()!!
 
 //        service 객체 만들기
         var logoutService = retrofit.create(UserService::class.java)
 
 //        요청 보내기
-        val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
-        val accessToken = "Bearer " + shared.getString("access_token", "")
+//        val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
+//        val accessToken = shared.getString("access_token", "")
+        val accessToken = GlobalVariables.prefs.getString("access_token", "")
+        Log.d("SettingFragment", accessToken.toString())
         if (accessToken != "") {
-            logoutService.logout(accessToken!!).enqueue(object : Callback<LogoutResponse> {
+            logoutService.logout().enqueue(object : Callback<LogoutResponse> {
+                //            logoutService.logout(accessToken!!).enqueue(object : Callback<LogoutResponse> {
                 override fun onResponse(
                     call: Call<LogoutResponse>,
                     response: Response<LogoutResponse>
                 ) {
-                    Log.d("로그", "로그아웃 완료 $response: ");
+                    var m = response.code()
+                    var b = response.errorBody()?.string()
 
+                    Log.d("SettingFragment", m.toString())
+                    Log.d("SettingFragment", "$b")
                     Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
 //                    토큰 초기화
                     initializeAccessToken()
 //                    인트로 페이지로 이동
                     goToIntro()
                 }
+
                 override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
                     Toast.makeText(requireContext(), "로그아웃 실패", Toast.LENGTH_SHORT).show()
                 }
@@ -151,12 +165,14 @@ class SettingFragment : Fragment() {
                     call: Call<LogoutResponse>,
                     response: Response<LogoutResponse>
                 ) {
+
                     Toast.makeText(requireContext(), "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
 //                    토큰 초기화
                     initializeAccessToken()
 //                    인트로 페이지로 이동
                     goToIntro()
                 }
+
                 override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
                     Toast.makeText(requireContext(), "회원탈퇴 실패", Toast.LENGTH_SHORT).show()
                 }

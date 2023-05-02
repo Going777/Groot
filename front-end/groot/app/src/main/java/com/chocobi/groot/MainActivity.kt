@@ -15,9 +15,12 @@ import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
+import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.plant.PlantDetailFragment
 import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
@@ -274,6 +277,17 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate실행: ");
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        getUser
+        var accessToken = GlobalVariables.prefs.getString("access_token", "")
+        if (accessToken != "") {
+            GlobalVariables.getUser()
+            var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
+            if (refreshToken == "") {
+                var intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
+        }
 
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
