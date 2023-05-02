@@ -38,29 +38,33 @@ class CommunityTab1Fragment : Fragment() {
         initList()
         reload()
 
-        //        retrofit 객체 만들기
+        showProgress()
+
+//                retrofit 객체 만들기
         var retrofit = Retrofit.Builder()
             .baseUrl(GlobalVariables.getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "자유"
+        var communityArticleCategory = "나눔"
         var communityArticlePage = 0
         var communityArticleSize = 10
 
         communityArticleListService.requestCommunityArticleList(communityArticleCategory,communityArticlePage,communityArticleSize).enqueue(object :
             Callback<CommunityArticleListResponse> {
-
-            override fun onResponse(
-                call: Call<CommunityArticleListResponse>,
-                response: Response<CommunityArticleListResponse>
-            ) {
+            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
                 if (response.code() == 200) {
                     Log.d("CommunityTab2Fragment", "성공")
-                    val checkResponse =  response.body()?.articles
+                    val checkResponse =  response.body()?.articles?.content
                     getData = response.body()!!
                     Log.d("CommunityTab2Fragment", "$checkResponse")
+
+                    val list = createDummyData(0, 10)
+                    ThreadUtil.startUIThread(1000) {
+                        adapter.reload(list)
+                        hideProgress()
+                    }
                 } else {
                     Log.d("CommunityTab2Fragment", "실패1")
                 }
@@ -69,6 +73,7 @@ class CommunityTab1Fragment : Fragment() {
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
                 Log.d("CommunityTab2Fragment", "실패2")
             }
+
         })
 
         return view
@@ -99,38 +104,104 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun reload() {
-        showProgress()
+        var retrofit = Retrofit.Builder()
+            .baseUrl(GlobalVariables.getBaseUrl())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        // get data from server
+        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
+        var communityArticleCategory = "나눔"
+        var communityArticlePage = 0
+        var communityArticleSize = 10
 
-        ThreadUtil.startThread {
-            Log.d("???", "reload 10 items")
-            val list = createDummyData(0, 10)
-            ThreadUtil.startUIThread(1000) {
-                adapter.reload(list)
-                hideProgress()
+        communityArticleListService.requestCommunityArticleList(communityArticleCategory,communityArticlePage,communityArticleSize).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+                if (response.code() == 200) {
+                    Log.d("CommunityTab2Fragment", "성공")
+                    val checkResponse =  response.body()?.articles?.content
+                    getData = response.body()!!
+                    Log.d("CommunityTab2Fragment", "$checkResponse")
 
+                    val list = createDummyData(0, 10)
+                    ThreadUtil.startUIThread(1000) {
+                        adapter.reload(list)
+                        hideProgress()
+                    }
+                } else {
+                    Log.d("CommunityTab2Fragment", "실패1")
+                }
             }
-        }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d("CommunityTab2Fragment", "실패2")
+            }
+
+        })
     }
+
+
+    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
+
+    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     private fun loadMore() {
+        if (isLastPage) { // 마지막 페이지라면, 로딩을 멈춥니다.
+            return
+        }
 
         showProgress()
 
-        // get data from server
+        // 페이지 번호를 1 증가시킵니다.
+        communityArticlePage++
 
-        ThreadUtil.startThread {
-            Log.d("???", "reload 10 items")
+        // Retrofit을 사용하여 새로운 데이터를 받아옵니다.
+        var retrofit = Retrofit.Builder()
+            .baseUrl(GlobalVariables.getBaseUrl())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-            val list = createDummyData(adapter.itemCount, getData.articles.content.size)
-            ThreadUtil.startUIThread(1000) {
-                adapter.loadMore(list)
-                hideProgress()
+        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
+        var communityArticleCategory = "나눔"
+        var communityArticleSize = 10
+
+        communityArticleListService.requestCommunityArticleList(communityArticleCategory, communityArticlePage, communityArticleSize).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+                if (response.code() == 200) {
+                    Log.d("loadmore", "성공")
+                    val checkResponse =  response.body()?.articles?.content
+                    getData = response.body()!!
+                    Log.d("loadmore", "$checkResponse")
+
+                    val totalElements = getData.articles.total // 전체 데이터 수
+                    val currentPage = communityArticlePage // 현재 페이지 번호
+                    val pageSize = 10 // 페이지 당 아이템 수
+                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+
+                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                        isLastPage = true
+                    }
+
+                    val list = createDummyData(0, 10)
+
+                    ThreadUtil.startUIThread(1000) {
+                        adapter.loadMore(list)
+                        hideProgress()
+                    }
+                } else {
+                    Log.d("loadmore", "실패1")
+                }
             }
-        }
 
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d("loadmore", "실패2")
+            }
+
+        })
     }
+
+
 
     private fun showProgress() {
         frameLayoutProgress.visibility = View.VISIBLE
@@ -144,8 +215,12 @@ class CommunityTab1Fragment : Fragment() {
         val list: MutableList<CommunityArticleListResponse> = mutableListOf()
 
         // API response를 이용하여 데이터 생성
+        val contents = getData.articles.content
         for (i in offset until (offset + limit)) {
-            val article = getData.articles.content[i - offset]
+            if (i >= contents.size) {
+                break
+            }
+            val article = contents[i]
             val communityArticleListResponse = CommunityArticleListResponse(
                 articles = Articles(
                     content = listOf(
@@ -153,15 +228,17 @@ class CommunityTab1Fragment : Fragment() {
                             articleId = article.articleId,
                             category = article.category,
                             userPK = article.userPK,
-                            img = article.img,
                             nickName = article.nickName,
                             title = article.title,
                             tags = article.tags,
                             views = article.views,
                             commentCnt = article.commentCnt,
                             bookmark = article.bookmark,
+                            shareRegion = article.shareRegion,
+                            shareStatus = article.shareStatus,
                             createTime = article.createTime,
-                            updateTime = article.updateTime
+                            updateTime = article.updateTime,
+                            img = article.img
                         )
                     ),
                     total = getData.articles.total,
@@ -171,7 +248,6 @@ class CommunityTab1Fragment : Fragment() {
                 msg = getData.msg
             )
             list.add(communityArticleListResponse)
-
         }
         return list
     }

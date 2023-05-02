@@ -23,6 +23,8 @@ data class Content (
     val views: Int,
     val commentCnt: Int,
     val bookmark: Boolean,
+    val shareRegion: String?,
+    val shareStatus: Boolean?,
     val createTime: CreateTime,
     val updateTime: UpdateTime
 )
