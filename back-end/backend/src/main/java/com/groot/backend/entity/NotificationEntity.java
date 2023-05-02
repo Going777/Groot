@@ -8,7 +8,8 @@ import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = "id")
+@Table(name = "notifications")
+//@EqualsAndHashCode(of = "id")
 @Getter
 public class NotificationEntity extends BaseEntity{
 
@@ -17,17 +18,20 @@ public class NotificationEntity extends BaseEntity{
     @Column(insertable = false, updatable = false)
     private Long id;
 
-    @Embedded
+    @Column
     private String content;
 
-    @Embedded
+    @Column
     private String url;
 
     @Column(nullable = false)
     private Boolean isRead;
 
+    @Column(name="user_id", insertable = false, updatable = false)
+    private Long userPK;
+
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", insertable=false, updatable=false)
+    @JoinColumn(name = "user_id")//, insertable=false, updatable=false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private UserEntity receiver;
 

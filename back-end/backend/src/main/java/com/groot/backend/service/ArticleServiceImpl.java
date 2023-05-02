@@ -418,7 +418,7 @@ public class ArticleServiceImpl implements ArticleService{
         }
 
         // pagination
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createTime").descending());
         int start = (int) pageRequest.getOffset();
         int end = Math.min((start+pageRequest.getPageSize()), articleListDTOList.size());
         if(start > end){
