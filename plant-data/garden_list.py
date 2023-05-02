@@ -14,7 +14,7 @@ f = open(filename, 'w', encoding='utf-8-sig', newline='')
 writer = csv.writer(f)
 
 # output column
-data = ["id", "kr_name"]
+data = ["id", "kr_name", "img"]
 writer.writerow(data)
 
 # request
@@ -33,7 +33,9 @@ if response.status_code == 200:
         it = item.item
         print(item.cntntsno, item.cntntssj)
         print(item.cntntsno.string, item.cntntssj.string)
-        data = [item.cntntsno.string, item.cntntssj.string]
+        print(item.rtnfileurl.string.split('|')[0])
+        data = [item.cntntsno.string,
+                item.cntntssj.string, item.rtnfileurl.string]
         writer.writerow(data)
 
 else:
