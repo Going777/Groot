@@ -102,20 +102,42 @@ class CommunityTab2Fragment : Fragment() {
     }
 
     private fun reload() {
-        showProgress()
+        var retrofit = Retrofit.Builder()
+            .baseUrl(GlobalVariables.getBaseUrl())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
-        // get data from server
+        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
+        var communityArticleCategory = "자유"
+        var communityArticlePage = 0
+        var communityArticleSize = 10
 
-        ThreadUtil.startThread {
-            Log.d("???", "reload 10 items")
-            val list = createDummyData(0, 10)
-            ThreadUtil.startUIThread(1000) {
-                adapter.reload(list)
-                hideProgress()
+        communityArticleListService.requestCommunityArticleList(communityArticleCategory,communityArticlePage,communityArticleSize).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+                if (response.code() == 200) {
+                    Log.d("CommunityTab2Fragment", "성공")
+                    val checkResponse =  response.body()?.articles?.content
+                    getData = response.body()!!
+                    Log.d("CommunityTab2Fragment", "$checkResponse")
 
+                    val list = createDummyData(0, 10)
+                    ThreadUtil.startUIThread(1000) {
+                        adapter.reload(list)
+                        hideProgress()
+                    }
+                } else {
+                    Log.d("CommunityTab2Fragment", "실패1")
+                }
             }
-        }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d("CommunityTab2Fragment", "실패2")
+            }
+
+        })
     }
+
 
     private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
 
