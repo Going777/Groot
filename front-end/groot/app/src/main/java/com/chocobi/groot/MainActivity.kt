@@ -22,6 +22,7 @@ import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.plant.PlantAdd1Fragment
+import com.chocobi.groot.view.plant.PlantAdd2Fragment
 import com.chocobi.groot.view.plant.PlantDetailFragment
 import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
@@ -57,8 +58,15 @@ class MainActivity : AppCompatActivity() {
     //        fragment 조작
     fun changeFragment(index: String) {
         when (index) {
-            "plant_add" -> {
+            "plant_add1" -> {
                 val plantAddFragment = PlantAdd1Fragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, plantAddFragment)
+                    .commit()
+            }
+            "plant_add2" -> {
+                val plantAddFragment = PlantAdd2Fragment()
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, plantAddFragment)

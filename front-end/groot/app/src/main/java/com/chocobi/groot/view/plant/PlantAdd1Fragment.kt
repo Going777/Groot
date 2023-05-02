@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -34,9 +36,15 @@ class PlantAdd1Fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val rootView = inflater.inflate(R.layout.fragment_plant_add1, container, false)
+        val mActivity = activity as MainActivity
+        //        Plant Add 페이지로 이동
+        val toAdd2Btn = rootView.findViewById<Button>(R.id.toAdd2Btn)
+        toAdd2Btn.setOnClickListener {
+            mActivity.changeFragment("plant_add2")
+        }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_plant_add1, container, false)
-    }
+        return rootView  }
 
     companion object {
         /**

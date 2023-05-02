@@ -64,7 +64,7 @@ class PlantFragment : Fragment() {
 //        Plant Add 페이지로 이동
         val plantAddBtn = rootView.findViewById<Button>(R.id.plantAddBtn)
         plantAddBtn.setOnClickListener {
-            mActivity.changeFragment("plant_add")
+            mActivity.changeFragment("plant_add1")
         }
 
 
