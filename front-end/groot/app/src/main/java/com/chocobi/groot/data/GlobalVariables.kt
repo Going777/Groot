@@ -37,15 +37,15 @@ class GlobalVariables : Application() {
                     call: Call<GetUserResponse>,
                     response: Response<GetUserResponse>
                 ) {
-                    var getUser = response.body()
-                    Log.d("LoginActivity", getUser?.msg.toString())
+                    var getUserBody = response.body()
+                    Log.d("LoginActivity", getUserBody?.msg.toString())
 
-                    if (getUser?.user != null) {
-                        UserData.setId(getUser.user.id)
-                        UserData.setUserId(getUser.user.userId)
-                        UserData.setNickName(getUser.user.nickName)
-                        UserData.setProfile(getUser.user.profile)
-                        UserData.setRegisterDate(getUser.user.registerDate)
+                    if (getUserBody?.user != null) {
+                        UserData.setId(getUserBody.user.id)
+                        UserData.setUserId(getUserBody.user.userId)
+                        UserData.setNickName(getUserBody.user.nickName)
+                        UserData.setProfile(getUserBody.user.profile)
+                        UserData.setRegisterDate(getUserBody.user.registerDate)
                     } else {
                         refresh()
                     }
@@ -73,10 +73,10 @@ class GlobalVariables : Application() {
                         call: Call<RefreshResponse>,
                         response: Response<RefreshResponse>
                     ) {
-                        var refresh = response.body()
-                        Log.d("LoginActivity", refresh?.msg.toString())
-                        if (refresh != null) {
-                            prefs.setString("access_token", refresh?.accessToken.toString())
+                        var refreshBody = response.body()
+                        Log.d("LoginActivity", refreshBody?.msg.toString())
+                        if (refreshBody != null) {
+                            prefs.setString("access_token", refreshBody?.accessToken.toString())
                             getUser()
                         } else {
                             prefs.setString("access_token", "")

@@ -77,12 +77,12 @@ class LoginActivity : AppCompatActivity() {
                         Log.d("LoginActivity", "로그인 성공")
 
 //                    통신 성공시 실행되는 코드
-                        var login = response.body()
+                        var loginBody = response.body()
 
 //                    토큰 저장
-                        if (login != null) {
-                            GlobalVariables.prefs.setString("access_token", login.accessToken)
-                            GlobalVariables.prefs.setString("refresh_token", login.accessToken)
+                        if (loginBody != null) {
+                            GlobalVariables.prefs.setString("access_token", loginBody.accessToken)
+                            GlobalVariables.prefs.setString("refresh_token", loginBody.accessToken)
                             GlobalVariables.getUser()
 
                         }
