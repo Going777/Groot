@@ -58,6 +58,8 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
 
     }
     fun reload(mutableList: MutableList<CommunityArticleListResponse>) {
+
+
         this.mutableList.clear()
         this.mutableList.addAll(mutableList)
         notifyDataSetChanged()

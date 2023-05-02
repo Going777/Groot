@@ -38,6 +38,8 @@ class CommunityTab2Fragment : Fragment() {
         initList()
         reload()
 
+        showProgress()
+
 //                retrofit 객체 만들기
         var retrofit = Retrofit.Builder()
             .baseUrl(GlobalVariables.getBaseUrl())
@@ -235,6 +237,8 @@ class CommunityTab2Fragment : Fragment() {
                             views = article.views,
                             commentCnt = article.commentCnt,
                             bookmark = article.bookmark,
+                            shareRegion = article.shareRegion,
+                            shareStatus = article.shareStatus,
                             createTime = article.createTime,
                             updateTime = article.updateTime,
                             img = article.img

@@ -32,6 +32,8 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private lateinit var commentCnt: TextView
     private lateinit var createTime: TextView
     private lateinit var bookmarkLine: ImageView
+    private lateinit var position: TextView
+    private lateinit var shareStatus: TextView
 
     var delegate: ItemViewHolderDelegate? = null
     lateinit var communityArticleListResponse: CommunityArticleListResponse
@@ -50,6 +52,8 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             eyeCnt = it.findViewById(R.id.eyeCnt)
             commentCnt = it.findViewById(R.id.commentCnt)
             createTime= it.findViewById(R.id.createTime)
+            position = it.findViewById(R.id.position)
+            shareStatus = it.findViewById(R.id.shareStatus)
             bookmarkLine = it.findViewById(R.id.bookmarkLine)
         }
     }
@@ -77,6 +81,23 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             bookmarkLine.setImageResource(R.drawable.ic_bookmark)
         }
         bookmarkLine.setColorFilter(itemView.context.getColor(android.R.color.darker_gray))
+
+
+        Log.d("share", communityArticleListResponse.articles.content[0].shareRegion.toString())
+//        나눔 아니면 공간차지 X
+        if (communityArticleListResponse.articles.content[0].shareRegion == null) {
+            position.visibility = View.GONE
+            shareStatus.visibility = View.GONE
+        } else {
+            position.text = communityArticleListResponse.articles.content[0].shareRegion
+            position.visibility = View.VISIBLE
+            if (communityArticleListResponse.articles.content[0].shareStatus == false) {
+                shareStatus.visibility = View.GONE
+            } else {
+                shareStatus.visibility = View.VISIBLE
+            }
+        }
+
 
 //        이미지 없으면 공간차지 X
         if (communityArticleListResponse.articles.content[0].img.isNullOrEmpty()) {
