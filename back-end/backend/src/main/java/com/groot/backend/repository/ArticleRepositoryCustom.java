@@ -1,13 +1,16 @@
 package com.groot.backend.repository;
 
 import com.groot.backend.entity.ArticleEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
 public interface ArticleRepositoryCustom {
-    List<ArticleEntity> filterRegion(String[] region);
-    List<ArticleEntity> search(String keyword);
+    Page<ArticleEntity> filterRegion(String[] region, PageRequest pageRequest);
+    Page<ArticleEntity> search(String keyword, PageRequest pageRequest);
     List<ArticleEntity> findUserSharedArticle(Long userPK, Long articleId);
-    List<ArticleEntity> findAllByUserPK(Long userPK);
+    Page<ArticleEntity> findAllByUserPK(Long userPK, PageRequest pageRequest);
     List<Long> findBookmarkByUserPK(Long userPK);
+    Page<ArticleEntity> findAllById(List<Long> bookmarkList, PageRequest pageRequest);
 }
