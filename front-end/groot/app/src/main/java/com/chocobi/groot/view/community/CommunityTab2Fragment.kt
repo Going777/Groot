@@ -38,7 +38,7 @@ class CommunityTab2Fragment : Fragment() {
         initList()
         reload()
 
-        //        retrofit 객체 만들기
+//                retrofit 객체 만들기
         var retrofit = Retrofit.Builder()
             .baseUrl(GlobalVariables.getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
