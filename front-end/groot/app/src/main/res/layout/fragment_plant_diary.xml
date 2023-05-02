@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/plant_diary"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.plant.PlantDiaryFragment">
+    tools:context=".view.plant.PlantDiaryFragment"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/topCategoryNavbar"
+        layout="@layout/top_category_navbar"/>
 
     <HorizontalScrollView
         android:id="@+id/plantSection"
@@ -201,7 +206,7 @@
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="100dp">
+        android:layout_marginTop="10dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -226,4 +231,4 @@
             android:layout_gravity="center" />
 
     </FrameLayout>
-</FrameLayout>
+</LinearLayout>

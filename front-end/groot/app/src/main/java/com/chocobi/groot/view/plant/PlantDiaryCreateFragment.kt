@@ -84,6 +84,11 @@ class PlantDiaryCreateFragment : Fragment() {
         myImageView?.setImageURI(uri)
     }
 
+    fun getPhotoImageView(): ImageView? {
+        Log.d("로그", "PlantDiaryCreateFragment $myImageView,ㅕㅕㅕㅕ")
+        return myImageView
+    }
+
     companion object {
         /**
          * Use this factory method to create a new instance of

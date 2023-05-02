@@ -158,7 +158,7 @@ class SettingFragment : Fragment() {
 
 //        요청 보내기
         val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
-        val accessToken = shared.getString("access_token", "")
+        val accessToken = "Bearer " + shared.getString("access_token", "")
         if (accessToken != "") {
             logoutService.deleteUser(accessToken!!).enqueue(object : Callback<LogoutResponse> {
                 override fun onResponse(
