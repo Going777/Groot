@@ -34,6 +34,7 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
 
         holder.communityArticleListResponse = mutableList[position]
+
         holder.delegate = object : ItemViewHolder.ItemViewHolderDelegate {
             override fun onItemViewClick(communityArticleListResponse: CommunityArticleListResponse) {
                 val context = holder.itemView.context
@@ -52,6 +53,7 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
 
         if (position == mutableList.size - 1) {
             delegate?.onLoadMore()
+
         }
 
     }
@@ -63,7 +65,10 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
 
     fun loadMore(mutableList: MutableList<CommunityArticleListResponse>) {
         this.mutableList.addAll(mutableList)
-        notifyItemRangeChanged(this.mutableList.size - mutableList.size + 1, mutableList.size)
+        notifyItemRangeChanged(this.mutableList.size - mutableList.size, mutableList.size)
     }
 
+
+
 }
+
