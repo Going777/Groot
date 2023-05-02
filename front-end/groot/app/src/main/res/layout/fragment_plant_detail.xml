@@ -6,36 +6,62 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".view.plant.PlantDetailFragment">
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="산세베리아" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/plantNameContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="40dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="산세산세"
-            android:textSize="25dp"
-            android:textStyle="bold"
+            android:layout_marginRight="-10dp"
+            android:rotation="270"
+            android:text="산세베리아"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/line"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <View
+            android:id="@+id/line"
+            android:layout_width="2dp"
+            android:layout_height="120dp"
+            android:layout_marginRight="20dp"
+            android:background="@android:color/black"
+            app:layout_constraintEnd_toStartOf="@+id/plantName" />
 
+        <TextView
+            android:id="@+id/plantName"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="100dp"
+            android:breakStrategy="balanced"
+            android:lineSpacingExtra="-10dp"
+            android:text="산세산세"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="만나러 가기"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="20dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+
 
 
     <ImageView

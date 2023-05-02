@@ -39,8 +39,8 @@ class PlantAdd1Fragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_plant_add1, container, false)
         val mActivity = activity as MainActivity
         //        Plant Add 페이지로 이동
-        val toAdd2Btn = rootView.findViewById<Button>(R.id.toAdd2Btn)
-        toAdd2Btn.setOnClickListener {
+        val add1Btn = rootView.findViewById<Button>(R.id.add1Btn)
+        add1Btn.setOnClickListener {
             mActivity.changeFragment("plant_add2")
         }
         // Inflate the layout for this fragment
