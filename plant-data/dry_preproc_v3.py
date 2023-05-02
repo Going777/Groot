@@ -24,7 +24,7 @@ for row in reader:
     if row[0] == 'id':
         continue
 
-    urls.append(row[2])
+    urls.append(row[2].split("|")[0])
 
 # load file
 filename = os.environ.get('OUTPUT_DIR') + 'dry_preproc_v2.csv'

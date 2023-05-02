@@ -1,8 +1,6 @@
 import csv
 import os
 from dotenv import load_dotenv
-import openai
-from time import sleep
 
 
 col = ['id', 'kr_name', 'sci_name', 'grw_type', 'grw_speed',
@@ -26,7 +24,7 @@ for row in reader:
     if row[0] == 'id':
         continue
 
-    urls.append(row[2])
+    urls.append(row[2].split("|")[0])
 
 # load file
 filename = os.environ.get('OUTPUT_DIR') + 'garden_preproc_v2.csv'
