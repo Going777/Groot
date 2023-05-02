@@ -30,7 +30,7 @@ public class DiaryController {
     private static String FAIL = "fail";
 
     @PostMapping    // 다이어리 작성
-    public ResponseEntity insertDiary(@RequestPart("postData") @Validated DiaryDTO diaryDTO, @RequestPart(value="file", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
+    public ResponseEntity insertDiary(@RequestPart("postData") @Validated DiaryDTO diaryDTO, @RequestPart(value="image", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         if(diaryDTO.getBug() && diaryDTO.getNutrients() && diaryDTO.getPruning() && diaryDTO.getWater() && diaryDTO.getSun() && diaryDTO.getContent().isEmpty()){
@@ -38,6 +38,7 @@ public class DiaryController {
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
+
         if(diaryService.saveDiary(userId, file, diaryDTO)==null){
             resultMap.put("msg", "다이어리 작성 실패");
             resultMap.put("result", FAIL);
@@ -50,7 +51,7 @@ public class DiaryController {
     }
 
     @PutMapping     // 다이어리 수정
-    public ResponseEntity updateDiary(@RequestPart("postData") @Validated DiaryDTO diaryDTO, @RequestPart(value="files", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
+    public ResponseEntity updateDiary(@RequestPart("postData") @Validated DiaryDTO diaryDTO, @RequestPart(value="image", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
 
@@ -96,7 +97,7 @@ public class DiaryController {
     @GetMapping("/detail/{diaryId}")   // 다이어리 상세 조회
     public ResponseEntity detailDiary(@PathVariable Long diaryId){
         Map resultMap = new HashMap();
-        DiaryEntity result = diaryService.detailDiary(diaryId);
+        DiaryResponseDTO result = diaryService.detailDiary(diaryId);
         if(result == null){
             resultMap.put("msg", "다이어리 상세 조회에 실패했습니다.");
             resultMap.put("result", FAIL);
@@ -105,6 +106,22 @@ public class DiaryController {
         resultMap.put("msg", "다이어리 상세 조회에 성공하였습니다.");
         resultMap.put("diary", result);
         resultMap.put("result", SUCCESS);
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity diaryList(@RequestParam Integer page, @RequestParam Integer size, HttpServletRequest request){
+        Map resultMap = new HashMap();
+        Long userId = JwtTokenProvider.getIdByAccessToken(request);
+        Page<DiaryResponseDTO> result = diaryService.diaryList(userId, page, size);
+        if(result.isEmpty()){
+            resultMap.put("msg", "해당 사용자의 다이어리를 찾을 수 없습니다.");
+            resultMap.put("result", FAIL);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
+        }
+        resultMap.put("diary", result);
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "해당 사용자의 다이어리 조회에 성공하였습니다.");
         return ResponseEntity.ok().body(resultMap);
     }
 

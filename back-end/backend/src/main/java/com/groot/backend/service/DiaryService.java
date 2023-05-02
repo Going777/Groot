@@ -18,7 +18,9 @@ public interface DiaryService {
 
     Boolean deleteDiary(Long diaryId);
 
-    DiaryEntity detailDiary(Long diaryId);
+    DiaryResponseDTO detailDiary(Long diaryId);
+
+    Page<DiaryResponseDTO> diaryList(Long userId, Integer page, Integer size);
 
     Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size);
 
