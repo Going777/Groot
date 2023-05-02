@@ -26,10 +26,6 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        //        sharedPreference
-        val shared = getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
-        val editor = shared.edit() // 수정을 위한 에디터
-
         var signupIdInput = findViewById<EditText>(R.id.signupIdInput)
         var signupNameInput = findViewById<EditText>(R.id.signupNameInput)
         var signupPwInput = findViewById<EditText>(R.id.signupPwInput)
@@ -38,18 +34,15 @@ class SignupActivity : AppCompatActivity() {
         var dupNameBtn = findViewById<Button>(R.id.dupNameBtn)
         var basicSignupBtn = findViewById<Button>(R.id.basicSignupBtn)
 
-
         dupIdBtn.setOnClickListener {
             var textId = signupIdInput.text.toString()
             checkDupId(textId)
         }
 
-
         dupNameBtn.setOnClickListener {
             var textName = signupNameInput.text.toString()
             checkDupName(textName)
         }
-
 
         basicSignupBtn.setOnClickListener {
             var textId = signupIdInput.text.toString()
@@ -145,9 +138,9 @@ class SignupActivity : AppCompatActivity() {
                     call: Call<DupNameResponse>,
                     response: Response<DupNameResponse>
                 ) {
-                    var checkDupName = response.body()?.msg
-                    if (checkDupName == null) {
-                        checkDupName =
+                    var checkDupNameMsg = response.body()?.msg
+                    if (checkDupNameMsg == null) {
+                        checkDupNameMsg =
                             JSONObject(response.errorBody()?.string()!!).getString("msg")
                     } else {
                         isCheckedDupName = true
@@ -158,7 +151,7 @@ class SignupActivity : AppCompatActivity() {
                     )
                     Log.d("SignupActivity", response.toString())
                     dialog.setTitle("닉네임 중복 체크")
-                    dialog.setMessage(checkDupName)
+                    dialog.setMessage(checkDupNameMsg)
                     dialog.setPositiveButton(
                         "확인",
                         DialogInterface.OnClickListener { dialog, which ->
