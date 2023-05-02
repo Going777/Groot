@@ -1,25 +1,19 @@
-package com.chocobi.groot.view.plant
+package com.chocobi.groot.view.plant.adapter
 
 import android.graphics.Bitmap
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.doOnLayout
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.adapter.item.ItemBean
-import com.chocobi.groot.adapter.item.ItemViewHolder
 import com.chocobi.groot.data.ModelDiary
-import com.chocobi.groot.view.community.CommunityDetailFragment
 import java.lang.ref.WeakReference
 
 class PlantDiaryListRVAdapter : RecyclerView.Adapter<PlantDiaryListRVAdapter.ViewHolder>() {
@@ -37,7 +31,7 @@ class PlantDiaryListRVAdapter : RecyclerView.Adapter<PlantDiaryListRVAdapter.Vie
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PlantDiaryListRVAdapter.ViewHolder {
+    ): ViewHolder {
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_plant_diary_list_item, parent, false)
         return ViewHolder(view)
@@ -48,7 +42,7 @@ class PlantDiaryListRVAdapter : RecyclerView.Adapter<PlantDiaryListRVAdapter.Vie
         return items.size
     }
 
-    override fun onBindViewHolder(holder: PlantDiaryListRVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.item = items[position]
 //        holder.delegate = object : PlantDiaryListRVAdapter.ViewHolder.ItemViewHolderDelegate {
 //            override fun onItemViewClick(diaryItem: ModelDiary) {

@@ -17,8 +17,14 @@ import com.chocobi.groot.IntroActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+
+import com.chocobi.groot.data.RetrofitClient
+
+import org.json.JSONObject
+
 import com.chocobi.groot.view.user.model.LogoutResponse
 import com.chocobi.groot.view.user.model.UserService
+
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -68,19 +74,6 @@ class SettingFragment : Fragment() {
             bottomSheet.show(mActivity.supportFragmentManager, bottomSheet.tag)
         }
 
-//        //        retrofit 객체 만들기
-//        var retrofit = Retrofit.Builder()
-//            .baseUrl(GlobalVariables.getBaseUrl())
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//
-////        service 객체 만들기
-//        var logoutService = retrofit.create(LogoutService::class.java)
-//        val deleteUserService = retrofit.create(DeleteUserService::class.java)
-//
-//        val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
-//        val accessToken = shared.getString("access_token", "")
-
 //        로그아웃
         val logoutText = rootView.findViewById<TextView>(R.id.logoutText)
         logoutText.setOnClickListener {
@@ -97,30 +90,38 @@ class SettingFragment : Fragment() {
     }
 
     private fun logout() {
+//        var retrofit = Retrofit.Builder()
+//            .baseUrl(GlobalVariables.getBaseUrl())
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+        
 //        retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.getClient()!!
 
 //        service 객체 만들기
-        var logoutService = retrofit.create(UserService::class.java)
+        var userService = retrofit.create(UserService::class.java)
 
 //        요청 보내기
-        val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
-        val accessToken = shared.getString("access_token", "")
+        val accessToken = GlobalVariables.prefs.getString("access_token", "")
         if (accessToken != "") {
-            logoutService.logout(accessToken!!).enqueue(object : Callback<LogoutResponse> {
+            userService.logout().enqueue(object : Callback<LogoutResponse> {
+                //            userService.logout(accessToken!!).enqueue(object : Callback<LogoutResponse> {
                 override fun onResponse(
                     call: Call<LogoutResponse>,
                     response: Response<LogoutResponse>
                 ) {
+//                    var m = response.code()
+//                    var b = response.errorBody()?.string()
+//
+//                    Log.d("SettingFragment", m.toString())
+//                    Log.d("SettingFragment", "$b")
                     Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
 //                    토큰 초기화
                     initializeAccessToken()
 //                    인트로 페이지로 이동
                     goToIntro()
                 }
+
                 override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
                     Toast.makeText(requireContext(), "로그아웃 실패", Toast.LENGTH_SHORT).show()
                 }
@@ -132,29 +133,27 @@ class SettingFragment : Fragment() {
 
     private fun deleteUser() {
         //        retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.getClient()!!
 
 //        service 객체 만들기
-        var logoutService = retrofit.create(UserService::class.java)
-
+        var userService = retrofit.create(UserService::class.java)
+        
 //        요청 보내기
-        val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
-        val accessToken = shared.getString("access_token", "")
+        val accessToken = GlobalVariables.prefs.getString("access_token", "")
         if (accessToken != "") {
-            logoutService.deleteUser(accessToken!!).enqueue(object : Callback<LogoutResponse> {
+            userService.deleteUser(accessToken!!).enqueue(object : Callback<LogoutResponse> {
                 override fun onResponse(
                     call: Call<LogoutResponse>,
                     response: Response<LogoutResponse>
                 ) {
+
                     Toast.makeText(requireContext(), "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
 //                    토큰 초기화
                     initializeAccessToken()
 //                    인트로 페이지로 이동
                     goToIntro()
                 }
+
                 override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
                     Toast.makeText(requireContext(), "회원탈퇴 실패", Toast.LENGTH_SHORT).show()
                 }
@@ -164,6 +163,7 @@ class SettingFragment : Fragment() {
         }
     }
 
+//    토큰 초기화
     private fun initializeAccessToken() {
         val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
         val editor = shared.edit()
@@ -171,28 +171,9 @@ class SettingFragment : Fragment() {
         editor.commit()
     }
 
+//    인트로 페이지 이동
     private fun goToIntro() {
         val intent = Intent(requireContext(), IntroActivity::class.java)
         startActivity(intent)
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SettingFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SettingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

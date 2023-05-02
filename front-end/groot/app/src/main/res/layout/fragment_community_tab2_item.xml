@@ -1,25 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginVertical="5dp"
+    app:cardCornerRadius="10dp"
     android:id="@+id/articleItem"
-    >
+    android:layout_marginHorizontal="5dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/sub"
+                    app:cardCornerRadius="5dp">
+
+                    <TextView
+                        android:id="@+id/position"
+                        android:paddingHorizontal="5dp"
+                        android:paddingVertical="2dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:text="위치"/>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#7D7D7D"
+                app:cardCornerRadius="5dp">
+
+                <TextView
+                    android:id="@+id/shareStatus"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:gravity="right"
+                    android:text="나눔완료"
+                    android:textColor="@color/white" />
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp">
                 <ImageView
                     android:id="@+id/imageView"
                     android:scaleType="centerCrop"
@@ -29,13 +76,13 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/textViewWriter"
                     android:text="작성자"
                     android:textColor="#111111"
-                    android:textSize="9pt"
+                    android:textSize="6pt"
                     android:layout_marginTop="10dp"
                     android:layout_marginHorizontal="20dp"
                     android:layout_width="wrap_content"
@@ -49,7 +96,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
                 <TextView
-                    android:id="@+id/textViewContent"
+                    android:id="@+id/textViewTag"
                     android:textColor="#777777"
                     android:textSize="6pt"
                     android:layout_marginTop="10dp"
@@ -63,28 +110,54 @@
                 android:layout_height="1dp"
                 android:background="#f2f2f2"
                 android:layout_marginHorizontal="15dp"/>
-
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginHorizontal="5dp"
             >
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginHorizontal="3dp"
+                android:src="@drawable/ic_eye"/>
+            <TextView
+                android:id="@+id/eyeCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="@color/grey"
+                android:layout_marginRight="7dp"
+
                 android:text="조회수"/>
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginHorizontal="3dp"
+                android:src="@drawable/ic_comment"/>
+            <TextView
+                android:id="@+id/commentCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginRight="7dp"
+                android:textColor="@color/grey"
+
+                android:gravity="center"
                 android:text="댓글수"/>
+            <ImageView
+                android:id="@+id/bookmarkLine"
+                android:layout_width="18dp"
+                android:layout_height="fill_parent"
+                android:padding="1dp"
+                android:src="@drawable/ic_bookmark"/>
             <TextView
+                android:id="@+id/createTime"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="북마크여부"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
+                android:gravity="center"
+                android:textColor="@color/grey"
+                android:layout_marginHorizontal="3dp"
                 android:text="작성일"/>
 
         </LinearLayout>

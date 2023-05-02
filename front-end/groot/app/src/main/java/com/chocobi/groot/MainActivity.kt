@@ -15,10 +15,14 @@ import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
+import com.chocobi.groot.view.login.LoginActivity
+import com.chocobi.groot.view.plant.PlantAdd1Fragment
+import com.chocobi.groot.view.plant.PlantAdd2Fragment
 import com.chocobi.groot.view.plant.PlantDetailFragment
 import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
@@ -47,10 +51,28 @@ class MainActivity : AppCompatActivity() {
 //        return activityToolbar
 //    }
 
+    private var photoImage: ImageView? = null
+
+
 
     //        fragment 조작
     fun changeFragment(index: String) {
         when (index) {
+            "plant_add1" -> {
+                val plantAddFragment = PlantAdd1Fragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, plantAddFragment)
+                    .commit()
+            }
+            "plant_add2" -> {
+                val plantAddFragment = PlantAdd2Fragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, plantAddFragment)
+                    .commit()
+            }
+
             "plant_diary" -> {
                 val plantDiaryFragment = PlantDiaryFragment()
                 supportFragmentManager
@@ -217,7 +239,6 @@ class MainActivity : AppCompatActivity() {
     private fun newFileName(): String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
         val filename = sdf.format(System.currentTimeMillis())
-        Log.d("MainActivity", "newFileName")
         return "$filename.jpg"
     }
 
@@ -226,7 +247,6 @@ class MainActivity : AppCompatActivity() {
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
         values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
 
-        Log.d("MainActivity", "createImageUri")
         return this.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
 
@@ -248,8 +268,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 REQUEST_STORAGE -> {
-                    Log.d(TAG, "onActivityResult: 결과물 여기로 들어옴")
                     data?.data?.let { uri ->
+                        val plantDiaryCreateFragment = supportFragmentManager.findFragmentById(R.id.fl_container) as PlantDiaryCreateFragment?
+                        if (plantDiaryCreateFragment != null) {
+                            photoImage = plantDiaryCreateFragment.getPhotoImageView()
+                        }
+                        photoImage?.setImageURI(uri)
                     }
 //                    var i = 0
 //                    while (i < data?.clipData!!.itemCount) {
@@ -267,8 +291,20 @@ class MainActivity : AppCompatActivity() {
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate실행: ");
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        getUser
+        var accessToken = GlobalVariables.prefs.getString("access_token", "")
+        if (accessToken != "") {
+            GlobalVariables.getUser()
+            var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
+            if (refreshToken == "") {
+                var intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
+        }
 
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
@@ -276,11 +312,16 @@ class MainActivity : AppCompatActivity() {
 //                .commit()
 //        }
 
-//        val plantFragment =
-//            supportFragmentManager.findFragmentById(R.id.plantFragment) as PlantFragment?
+        val plantFragment =
+            supportFragmentManager.findFragmentById(R.id.plantFragment) as PlantFragment?
+        Log.d(TAG, "MainActivity, $plantFragment,이건 되니")
+
 //        if (plantFragment != null) {
 //            activityToolbar = plantFragment.getToolbar()
 //        }
+
+
+
 
 
 //      main에서만 날씨 fragment 보여주기
@@ -301,12 +342,12 @@ class MainActivity : AppCompatActivity() {
                         val homeFragment = PlantFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, homeFragment).commit()
-                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
-                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 0
-                        params.rightMargin = 0
-                        params.topMargin = 0
-                        frameLayout.layoutParams = params
+//                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
+//                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+//                        params.leftMargin = 0
+//                        params.rightMargin = 0
+//                        params.topMargin = 0
+//                        frameLayout.layoutParams = params
                     }
 
                     R.id.searchFragment -> {
@@ -314,9 +355,8 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
                         val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
+                        params.leftMargin = 40
+                        params.rightMargin = 40
                         frameLayout.layoutParams = params
                     }
 
@@ -325,9 +365,8 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
                         val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
+                        params.leftMargin = 40
+                        params.rightMargin = 40
                         frameLayout.layoutParams = params
                     }
 
@@ -335,11 +374,11 @@ class MainActivity : AppCompatActivity() {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
-                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
-                        frameLayout.layoutParams = params
+//                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+//                        params.leftMargin = 20
+//                        params.rightMargin = 20
+//                        params.topMargin = 20
+//                        frameLayout.layoutParams = params
                     }
                 }
                 true

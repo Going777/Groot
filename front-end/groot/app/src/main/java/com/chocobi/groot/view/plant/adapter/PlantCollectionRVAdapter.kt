@@ -1,9 +1,8 @@
-package com.chocobi.groot.view.plant
+package com.chocobi.groot.view.plant.adapter
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemClickListener
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +14,7 @@ class PlantCollectionRVAdapter(val items: MutableList<String>) :
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): PlantCollectionRVAdapter.ViewHolder {
+    ): ViewHolder {
         android.util.Log.d("로그", "PlantCollectionRVAdapter, $items")
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_plant_collection_item, parent, false)
@@ -40,7 +39,7 @@ class PlantCollectionRVAdapter(val items: MutableList<String>) :
     }
 
 
-    override fun onBindViewHolder(holder: PlantCollectionRVAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindItems(items[position])
 
         val postBtn = holder.itemView.findViewById<Button>(R.id.plantPostDiaryBtn)

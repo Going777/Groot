@@ -144,7 +144,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public boolean updatePassword(UserPasswordDTO userPasswordDTO) {
         // userEntity find
-        UserEntity userEntity = userRepository.findById(userPasswordDTO.getId()).orElseThrow();
+        UserEntity userEntity = userRepository.findById(userPasswordDTO.getUserPK()).orElseThrow();
 
         // 비밀번호 일치 확인
         if(!passwordEncoder.matches(userPasswordDTO.getPassword(), userEntity.getPassword())){

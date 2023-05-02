@@ -6,9 +6,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
-import com.chocobi.groot.adapter.item.ItemBean
+import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.adapter.item.ItemViewHolder
-import com.chocobi.groot.data.ModelDiary
 import com.chocobi.groot.view.community.CommunityDetailFragment
 
 
@@ -18,7 +17,7 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
         fun onLoadMore()
     }
 
-    private var mutableList: MutableList<ItemBean> = mutableListOf()
+    private var mutableList: MutableList<CommunityArticleListResponse> = mutableListOf()
 
 
     var delegate: RecyclerViewAdapterDelegate? = null
@@ -34,10 +33,10 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
 
-        holder.itemBean = mutableList[position]
+        holder.communityArticleListResponse = mutableList[position]
+
         holder.delegate = object : ItemViewHolder.ItemViewHolderDelegate {
-            override fun onItemViewClick(itemBean: ItemBean) {
-                Log.d("??", "I click ${itemBean.title}")
+            override fun onItemViewClick(communityArticleListResponse: CommunityArticleListResponse) {
                 val context = holder.itemView.context
                 if (context is FragmentActivity) {
                     val fragmentManager = context.supportFragmentManager
@@ -54,18 +53,24 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
 
         if (position == mutableList.size - 1) {
             delegate?.onLoadMore()
+
         }
 
     }
-    fun reload(mutableList: MutableList<ItemBean>) {
+    fun reload(mutableList: MutableList<CommunityArticleListResponse>) {
+
+
         this.mutableList.clear()
         this.mutableList.addAll(mutableList)
         notifyDataSetChanged()
     }
 
-    fun loadMore(mutableList: MutableList<ItemBean>) {
+    fun loadMore(mutableList: MutableList<CommunityArticleListResponse>) {
         this.mutableList.addAll(mutableList)
-        notifyItemRangeChanged(this.mutableList.size - mutableList.size + 1, mutableList.size)
+        notifyItemRangeChanged(this.mutableList.size - mutableList.size, mutableList.size)
     }
 
+
+
 }
+

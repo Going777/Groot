@@ -182,7 +182,7 @@ public class UserController {
     public ResponseEntity updatePassword(@Valid @RequestBody UserPasswordDTO userPasswordDTO){
         Map<String, Object> resultMap = new HashMap<>();
         // 유저 존재 여부
-        if(!userService.isExistedId(userPasswordDTO.getId())){
+        if(!userService.isExistedId(userPasswordDTO.getUserPK())){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "존재하지 않는 사용자입니다.");
             return ResponseEntity.badRequest().body(resultMap);

@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.plant.PlantFragment">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
 
 
@@ -48,39 +57,33 @@
 
 
         <LinearLayout
-            android:background="@color/background"
+            android:background="@drawable/round_rectangle"
+            android:backgroundTint="@color/background"
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/collectionContainer">
+            app:layout_constraintTop_toBottomOf="@+id/collectionContainer"
+            android:layout_margin="10dp">
 
             <fragment
                 android:id="@+id/plantCalendarFragment"
                 android:name="com.chocobi.groot.view.plant.PlantCalendarFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp" />
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="탭 영역"/>
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/main"
-                    android:textColor="@color/white"
-                    android:text="오늘의 미션 완료"/>
-            </LinearLayout>
+                android:layout_marginVertical="15dp" />
         </LinearLayout>
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/plantAddBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="식물 등록 페이지"/>
+
+
+    </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/plant_fab"
@@ -89,14 +92,9 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:contentDescription="+"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add" />
 
-    <Button
-        android:id="@+id/toDtlBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:text="Detail" />
 
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

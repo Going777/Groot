@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserPasswordDTO {
     @NotNull
-    private Long id;
+    private Long userPK;
     @NotNull
     private String password;
     @NotNull
