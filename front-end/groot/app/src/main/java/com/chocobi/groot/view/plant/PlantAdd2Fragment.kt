@@ -1,15 +1,10 @@
 package com.chocobi.groot.view.plant
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.Toolbar
-import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -19,19 +14,13 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [PlantFragment.newInstance] factory method to
+ * Use the [PlantAdd2Fragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PlantFragment : Fragment() {
+class PlantAdd2Fragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-//    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
-
-//    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
-//        return activityToolbar
-//    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,38 +30,12 @@ class PlantFragment : Fragment() {
         }
     }
 
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val rootView = inflater.inflate(R.layout.fragment_plant, container, false)
-
-//        toolbar 잡기
-//        activityToolbar = rootView.findViewById<androidx.appcompat.widget.Toolbar>(R.id.activityToolbar)
-
-//        Fragment 이동 조작
-        val mActivity = activity as MainActivity
-
-//        Plant Diary 페이지로 이동
-        val toDiaryBtn = rootView.findViewById<Button>(R.id.toDiaryBtn)
-        toDiaryBtn.setOnClickListener {
-            mActivity.changeFragment("plant_diary")
-        }
-//        Plant Add 페이지로 이동
-        val plantAddBtn = rootView.findViewById<Button>(R.id.plantAddBtn)
-        plantAddBtn.setOnClickListener {
-            mActivity.changeFragment("plant_add")
-        }
-
-
-
-
-
         // Inflate the layout for this fragment
-        return rootView
+        return inflater.inflate(R.layout.fragment_plant_add2, container, false)
     }
 
     companion object {
@@ -82,12 +45,12 @@ class PlantFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment PlantFragment.
+         * @return A new instance of fragment PlantAdd2Fragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            PlantFragment().apply {
+            PlantAdd2Fragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
