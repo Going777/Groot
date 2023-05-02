@@ -1,8 +1,6 @@
 import csv
 import os
 from dotenv import load_dotenv
-import openai
-from time import sleep
 
 
 col = ['id', 'kr_name', 'sci_name', 'grw_type', 'grw_speed',
@@ -11,10 +9,22 @@ col = ['id', 'kr_name', 'sci_name', 'grw_type', 'grw_speed',
        'water_cycle', 'mgmt_level', 'mgmt_demand', 'place',
        'mgmt_tip', 'grw_season', 'characteristics',
        'insect_info', 'toxic_info', 'smell_degree', 'height', 'area',
-       'description'
+       'description', 'img'
        ]
 
 load_dotenv()
+
+# load urls from list
+filename = os.environ.get('OUTPUT_DIR') + 'dry_list.csv'
+fr = open(filename, 'r', encoding='utf-8-sig')
+reader = csv.reader(fr)
+
+urls = []
+for row in reader:
+    if row[0] == 'id':
+        continue
+
+    urls.append(row[2].split("|")[0])
 
 # load file
 filename = os.environ.get('OUTPUT_DIR') + 'dry_preproc_v2.csv'
@@ -48,6 +58,7 @@ for row in reader:
 
     data[17] = data[17].replace("\"", "\'")
 
+    data.append(urls[cnt - 1])
     writer.writerow(data)
     print("[%3d] row done : " % (cnt))
 
