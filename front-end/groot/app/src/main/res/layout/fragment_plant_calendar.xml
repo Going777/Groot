@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/point"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical"
@@ -14,25 +13,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:background="@color/sun">
+        android:background="@color/background">
 
         <androidx.appcompat.widget.Toolbar
-            app:maxButtonHeight="0dp"
             android:id="@+id/exSevenToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            android:background="@color/water"/>
+            android:background="@color/water"
+            android:visibility="gone"
+            app:maxButtonHeight="0dp"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <com.kizitonwose.calendar.view.WeekCalendarView
-            android:background="@color/bug"
             android:id="@+id/exSevenCalendar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cv_dayViewResource="@layout/calendar_day"
             app:cv_daySize="seventhWidth"
+            app:cv_dayViewResource="@layout/calendar_day"
             app:cv_orientation="horizontal" />
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="15dp"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/plantCalendarRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"/>
+        <androidx.appcompat.widget.AppCompatButton
+            style="@style/MAIN_BTN"
+            android:text="오늘의 미션 완료"/>
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,5 +1,9 @@
 package com.chocobi.groot.view.plant
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -18,8 +22,9 @@ abstract class PlantCalendarBaseFragment(@LayoutRes layoutRes: Int) : Fragment(l
     abstract val titleRes: Int?
 
 
-//        val activityToolbar : Toolbar?
+    //        val activityToolbar : Toolbar?
 //            get() = (requireActivity() as MainActivity).getToolbar()
+
 
     override fun onStart() {
         super.onStart()
