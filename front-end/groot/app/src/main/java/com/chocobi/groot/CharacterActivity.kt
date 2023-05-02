@@ -40,7 +40,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 
     val models = listOf(
         Model(
-            fileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/rabby_2.glb",
+            fileLocation = "models/Whispa_A.glb",
             // Display the Tiger with a size of 3 m long
             scaleUnits = 0.1f,
             placementMode = PlacementMode.PLANE_HORIZONTAL,
