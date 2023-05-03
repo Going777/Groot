@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/community_tab2"
     tools:context=".view.community.CommunityTab2Fragment"
-    android:layout_marginTop="100dp">
+    android:orientation="vertical">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="30dp"
-        android:layout_marginTop="50dp"
         android:backgroundTint="@color/grey"
         android:drawableLeft="@drawable/ic_position"
         android:drawablePadding="50dp"
@@ -22,8 +21,7 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="100dp">
+        android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -49,4 +47,4 @@
 
     </FrameLayout>
 
-</FrameLayout>
+</LinearLayout>
