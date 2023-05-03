@@ -83,24 +83,25 @@
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <ImageButton
                 android:id="@+id/plantPostDiaryBtn"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:background="@drawable/radius10"
                 android:backgroundTint="@color/button_sub"
-                android:drawableStart="@drawable/ic_post"
-                android:paddingLeft="9dp" />
+                app:tint="@color/button_main"
+                android:src="@drawable/ic_post"
+                 />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <ImageButton
                 android:id="@+id/plantScanBtn"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:layout_marginLeft="12dp"
                 android:background="@drawable/radius10"
                 android:backgroundTint="@color/button_sub"
-                android:drawableStart="@drawable/ic_scan"
-                android:paddingLeft="12dp" />
+                app:tint="@color/button_main"
+                android:src="@drawable/ic_scan"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/plantDetailBtn"
