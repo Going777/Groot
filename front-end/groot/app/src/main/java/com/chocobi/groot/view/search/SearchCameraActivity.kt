@@ -21,7 +21,9 @@ class SearchCameraActivity : AppCompatActivity() {
 
 //        imageUrl 전달받기
         var imageUri = intent.getStringExtra("imageUri")?.toUri()
+        var cameraStatus = intent.getStringExtra("cameraStatus")
         Log.d("SearchCameraActivity", imageUri.toString())
+        Log.d("SearchCameraActivity", cameraStatus.toString())
 
 
 

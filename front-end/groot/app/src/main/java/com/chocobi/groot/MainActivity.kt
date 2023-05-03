@@ -18,6 +18,7 @@ import android.widget.Toast
 import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toUri
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
@@ -151,6 +152,12 @@ class MainActivity : AppCompatActivity() {
      * @param requestCode 권한을 요청한 주체가 어떤 것인지 구분하기 위함.
      * */
     private var realUri: Uri? = null
+    private var cameraStatus: String? = null
+
+    fun setCameraStatus(status:String) {
+        cameraStatus = status
+    }
+
     fun requirePermissions(permissions: Array<String>, requestCode: Int) {
         Log.d("MainActivity", "권한 요청")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -268,14 +275,18 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
+            val a = data?.data
             Log.d("MainActivity", "onActivityResult")
+            Log.d("MainActivity", "$a")
             when (requestCode) {
                 REQUEST_CAMERA -> {
 //                    uri 기반
                     realUri?.let { uri ->
                         val intent = Intent(this, SearchCameraActivity::class.java)
                         intent.putExtra("imageUri", uri.toString())
+                        intent.putExtra("cameraStatus", cameraStatus)
                         Log.d("MainActivity", "uri:" + uri.toString())
+                        Log.d("MainActivity", "cameraStatus:" + cameraStatus)
                         startActivity(intent)
                     }
 
