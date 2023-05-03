@@ -58,7 +58,7 @@ class PlantDiaryCreateFragment : Fragment() {
 
         myImageView = rootView.findViewById(R.id.attachedPhoto)
 
-        Log.d("로그", "onCreateView: $attachedPhoto, 포토 이니셜라이즈")
+        Log.d("PlantDiaryCreateFragment", "onCreateView() 포토 이니셜라이즈")
 //        사진 첨부하기
 //        attachPhotoSection.setOnClickListener {
 //            mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_GALLERY)
@@ -79,13 +79,11 @@ class PlantDiaryCreateFragment : Fragment() {
     }
 
     fun attachPhoto(uri: Uri) {
-        Log.d("로그", "attachPhoto: 사진을 첨부합니다, $uri")
-        Log.d("로그", "attachPhoto: 여기서는 과연 $myImageView")
+        Log.d("PlantDiaryCreateFragment", "attachPhoto() 사진을 첨부합니다 $uri")
         myImageView?.setImageURI(uri)
     }
 
     fun getPhotoImageView(): ImageView? {
-        Log.d("로그", "PlantDiaryCreateFragment $myImageView,ㅕㅕㅕㅕ")
         return myImageView
     }
 

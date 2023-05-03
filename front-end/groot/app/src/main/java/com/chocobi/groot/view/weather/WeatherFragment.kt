@@ -40,8 +40,6 @@ private const val ARG_PARAM2 = "param2"
  */
 class WeatherFragment : Fragment() {
 
-    val TAG: String = "로그"
-
     companion object {
         const val API_KEY: String = "28cad4ba682e9a7b543ea7dfe3b5d05b"
         const val MIN_TIME: Long = 5000
@@ -147,7 +145,7 @@ class WeatherFragment : Fragment() {
     }
 
     private fun doNetworking(lat: String, lon: String, layoutParams: LayoutParams) {
-        Log.d(TAG, "WeatherFragment $lat, $lon")
+        Log.d("WeatherFragment", "doNetworking() / lat: $lat / lon: $lon")
 
 //        retrofit 객체 만들기
         var retrofit = Retrofit.Builder()
@@ -231,7 +229,12 @@ class WeatherFragment : Fragment() {
         return "sun"
     }
 
-    private fun updateWeatherImageView(target:String, layoutParams:LayoutParams, cTemp: Int, hum: Int) {
+    private fun updateWeatherImageView(
+        target: String,
+        layoutParams: LayoutParams,
+        cTemp: Int,
+        hum: Int
+    ) {
         layoutParams.thermometerText.text = cTemp.toString() + "℃"
         layoutParams.humidityText.text = hum.toString() + "%"
         when (target) {
@@ -239,18 +242,22 @@ class WeatherFragment : Fragment() {
                 layoutParams.weatherBgView.setImageResource(R.drawable.weather_sun_gradient_bg)
                 layoutParams.weatherIcon.setImageResource(R.drawable.weather_sun)
             }
+
             "cloudy" -> {
                 layoutParams.weatherBgView.setImageResource(R.drawable.weather_cloudy_gradient_bg)
                 layoutParams.weatherIcon.setImageResource(R.drawable.weather_cloudy)
             }
+
             "snow" -> {
                 layoutParams.weatherBgView.setImageResource(R.drawable.weather_snow_gradient_bg)
                 layoutParams.weatherIcon.setImageResource(R.drawable.weather_snow)
             }
+
             "rain" -> {
                 layoutParams.weatherBgView.setImageResource(R.drawable.weather_rain_gradient_bg)
                 layoutParams.weatherIcon.setImageResource(R.drawable.weather_rain)
             }
+
             "rain_thunder" -> {
                 layoutParams.weatherBgView.setImageResource(R.drawable.weather_rain_thunder_gradient_bg)
                 layoutParams.weatherIcon.setImageResource(R.drawable.weather_rain_thunder)

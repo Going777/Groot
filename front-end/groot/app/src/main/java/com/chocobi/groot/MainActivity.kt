@@ -33,7 +33,6 @@ import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
-    val TAG = "로그"
 
     //    private lateinit var binding: ActivityMainBinding
     private val PERMISSION_CAMERA = 0
@@ -163,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d(TAG, "onRequestPermissionsResult: $grantResults")
+        Log.d("MainActivity", "onRequestPermissionsResult(), $grantResults")
         if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
             permissionGranted(requestCode)
         } else {
@@ -291,7 +290,7 @@ class MainActivity : AppCompatActivity() {
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate실행: ");
+        Log.d("MainActivity", "onCreate()")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
