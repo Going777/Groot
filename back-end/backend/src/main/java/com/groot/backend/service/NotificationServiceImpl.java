@@ -1,6 +1,5 @@
 package com.groot.backend.service;
 
-import com.groot.backend.controller.NotificationController;
 import com.groot.backend.entity.NotificationEntity;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.EmitterRepository;
@@ -9,6 +8,9 @@ import com.groot.backend.dto.response.NotificationResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -42,29 +44,6 @@ public class NotificationServiceImpl implements NotificationService{
 
         return emitter;
     }
-
-
-//    @Override
-//    public SseEmitter subscribe(Long userId) {
-//        // 현재 클라이언트를 위한 SseEmitter 생성
-//        SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
-//        try {
-//            // 연결!!
-//            sseEmitter.send(SseEmitter.event().name("connect"));
-//            log.info("sseEM"+sseEmitter);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // user의 pk값을 key값으로 해서 SseEmitter를 저장
-//        NotificationController.sseEmitterMap.put(userId, sseEmitter);
-//
-//        sseEmitter.onCompletion(() -> NotificationController.sseEmitterMap.remove(userId));
-//        sseEmitter.onTimeout(() -> NotificationController.sseEmitterMap.remove(userId));
-//        sseEmitter.onError((e) -> NotificationController.sseEmitterMap.remove(userId));
-//
-//        return sseEmitter;
-//    }
 
     private String makeTimeIncludeId(Long userId) {
         return userId + "_" + System.currentTimeMillis();
@@ -101,9 +80,21 @@ public class NotificationServiceImpl implements NotificationService{
         emitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-                    sendNotification(emitter, eventId, key, NotificationResponseDTO.create(notification));
+                    sendNotification(emitter, eventId, key, NotificationResponseDTO.create(notification, notification.getId()));
                 }
         );
+    }
+
+    @Override
+    public Long readCheck(Long notificationId) {
+        Long result = notificationRepository.updateIsRead(notificationId);
+        return result;
+    }
+
+    @Override
+    public Page<NotificationEntity> notificationList(Long userPK, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        return notificationRepository.findAllByUserPK(userPK, pageRequest);
     }
 
     private NotificationEntity createNotification(UserEntity receiver, String content, String url, String page, Long contentId) {
