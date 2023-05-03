@@ -22,27 +22,52 @@
         android:src="@drawable/ic_camera"
         app:tint="@color/main" />
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_marginHorizontal="10dp"
-        android:outlineAmbientShadowColor="#000"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:menu="@menu/search_menu"
-        app:navigationIcon="@drawable/baseline_arrow_back_24"
-        app:title="식물 이름을 입력해주세요"
-        app:titleTextColor="#6E6E6E" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        app:layoutManager="LinearLayoutManager"
+        android:orientation="horizontal"
+        android:weightSum="1">
 
-        />
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="45dp"
+            android:completionThreshold="1"
+            android:gravity="center_vertical"
+            android:hint="식물 이름을 입력해 주세요"
+            android:textColorHint="@color/grey" />
+
+        <ImageButton
+            android:layout_width="45dp"
+            android:layout_weight="0"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:src="@drawable/ic_search" />
+    </LinearLayout>
+
+
+    <!--    <com.google.android.material.appbar.MaterialToolbar-->
+    <!--        android:id="@+id/toolbar"-->
+
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="?attr/actionBarSize"-->
+    <!--        android:layout_marginHorizontal="10dp"-->
+    <!--        android:outlineAmbientShadowColor="#000"-->
+    <!--        app:layout_scrollFlags="scroll|enterAlways"-->
+    <!--        app:menu="@menu/search_menu"-->
+    <!--        app:navigationIcon="@drawable/baseline_arrow_back_24"-->
+    <!--        app:title="식물 이름을 입력해주세요"-->
+    <!--        app:titleTextColor="#6E6E6E" />-->
+
+
+    <!--    <androidx.recyclerview.widget.RecyclerView-->
+    <!--        android:id="@+id/recyclerview"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layoutManager="LinearLayoutManager"-->
+
+    <!--        />-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -138,8 +163,7 @@
                     style="@style/BASIC_CHIP"
                     android:text="직립형"
                     app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    />
+                    app:chipStartPadding="3dp" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip14"
@@ -221,6 +245,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dictRecyclerView"
             android:layout_width="wrap_content"
@@ -232,13 +257,12 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-<!--    <ImageButton-->
-<!--        android:id="@+id/galleryBtn"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:src="@drawable/ic_camera"-->
-<!--        android:layout_gravity="center|right"/>-->
-
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/galleryBtn"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:src="@drawable/ic_camera"-->
+    <!--        android:layout_gravity="center|right"/>-->
 
 
 </LinearLayout>

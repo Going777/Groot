@@ -53,7 +53,7 @@ public class UserEntity extends BaseEntity{
     public UserDTO toUserDTO(){
         Long date = Duration.between(this.getCreatedDate(), LocalDateTime.now()).toDays() +1;
         UserDTO userDTO = UserDTO.builder()
-                .id(this.id)
+                .userPK(this.id)
                 .userId(this.userId)
                 .nickName(this.nickName)
                 .profile(this.profile)

@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
@@ -61,6 +63,7 @@ class SearchFragment : Fragment() {
 //        Camera 버튼 클릭
         val cameraBtn = rootView.findViewById<ImageButton>(R.id.cameraBtn)
         cameraBtn.setOnClickListener {
+            mActivity.setCameraStatus("searchPlant")
             mActivity.requirePermissions(arrayOf(android.Manifest.permission.CAMERA),  PERMISSION_CAMERA)
         }
 
@@ -99,6 +102,13 @@ class SearchFragment : Fragment() {
                 mActivity.changeFragment("search_detail")
             }
         }
+
+        // 자동완성으로 보여줄 내용들
+        var items = arrayOf("산세베리아", "산세산세", "산토리니", "산산산산", "secret", "sansesanse","santoriny")
+
+        var autoCompleteTextView = rootView.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
+        var adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line, items)
+        autoCompleteTextView.setAdapter(adapter)
 
         // Inflate the layout for this fragment
         return rootView

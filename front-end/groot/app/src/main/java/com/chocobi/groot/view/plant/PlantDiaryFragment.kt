@@ -5,7 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.ModelDiary
+import com.chocobi.groot.view.plant.adapter.PlantDiaryListRVAdapter
+import com.chocobi.groot.view.plant.adapter.PlantListRVAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,6 +27,12 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class PlantDiaryFragment : Fragment() {
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: PlantDiaryListRVAdapter
+    private lateinit var frameLayoutProgress: FrameLayout
+
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -34,27 +49,112 @@ class PlantDiaryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_plant_diary, container, false)
+        val rootView = inflater.inflate(R.layout.fragment_plant_diary, container, false)
+        findViews(rootView)
+        setListeners()
+        initList()
+        reload()
+
+        val plantItems = mutableListOf<String>()
+
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+
+        val plantListRV = rootView.findViewById<RecyclerView>(R.id.plantListRecyclerView)
+        val plantListRvAdapter = PlantListRVAdapter(plantItems)
+        plantListRV.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        plantListRV.adapter = plantListRvAdapter
+
+        return rootView
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PlantDiaryFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PlantDiaryFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    private fun findViews(view: View) {
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        recyclerView = view.findViewById(R.id.recyclerView)
+        frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+    }
+
+    private fun setListeners() {
+        swipeRefreshLayout.setOnRefreshListener {
+            reload()
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun initList() {
+        adapter = PlantDiaryListRVAdapter()
+        adapter.delegate = object : PlantDiaryListRVAdapter.RecyclerViewAdapterDelegate {
+            override fun onLoadMore() {
+                loadMore()
             }
+        }
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = adapter
+    }
+
+    private fun reload() {
+        showProgress()
+
+        ThreadUtil.startThread {
+            val list = createDummyData(0, 10)
+            ThreadUtil.startUIThread(1000) {
+                adapter.reload(list)
+                hideProgress()
+            }
+        }
+    }
+
+    private fun loadMore() {
+        showProgress()
+
+        ThreadUtil.startThread {
+            val list = createDummyData(adapter.itemCount, 10)
+            ThreadUtil.startUIThread(1000) {
+                adapter.reload(list)
+                hideProgress()
+            }
+        }
+    }
+
+    private fun showProgress() {
+        frameLayoutProgress.visibility = View.VISIBLE
+    }
+
+    private fun hideProgress() {
+        frameLayoutProgress.visibility = View.GONE
+    }
+
+    private fun createDummyData(offset: Int, limit: Int): MutableList<ModelDiary> {
+        val list: MutableList<ModelDiary> = mutableListOf()
+
+        for (i in offset until (offset + limit)) {
+            val diaryItem = ModelDiary(
+                id = 10,
+                potId = 0,
+                potName = "산세산세",
+                image = "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/PurpleFlowerWade.JPG/1920px-PurpleFlowerWade.JPG",
+                content = getString(R.string.lorem_ipsum),
+                water = true,
+                nutrients = true,
+                pruning = false,
+                bug = true,
+                sun = true,
+                createDate = "2023-02-06T16:43:50.313224",
+            )
+            list.add(diaryItem)
+        }
+
+        return list
     }
 }

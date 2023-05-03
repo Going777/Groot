@@ -6,13 +6,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
+import com.chocobi.groot.view.plant.adapter.PlantCollectionRVAdapter
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -73,7 +73,7 @@ class PlantCollectionFragment : Fragment() {
 
         plantRvAdapter.setItemClickListener(object: PlantCollectionRVAdapter.ItemClickListener{
             override fun onPostBtnClick(view: View, position: Int) {
-                mactivity.changeFragment("plant_diary")
+                mactivity.changeFragment("plant_diary_create")
             }
 
             override fun onScanBtnClick(view: View, position: Int) {

@@ -99,7 +99,7 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public ArticleResponseDTO readArticle(Long articleId) {
+    public ArticleResponseDTO readArticle(Long articleId, Long userPK) {
         // ArticleEntity 조회
         ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow();
         // UserEntity 조회
@@ -136,7 +136,7 @@ public class ArticleServiceImpl implements ArticleService{
         // bookmark 여부 조회
         // 복합키 사용을 위한 id 등록
         ArticleBookmarkEntityPK articleBookmarkEntityPK = new ArticleBookmarkEntityPK();
-        articleBookmarkEntityPK.setUserEntity(userEntity.getId());
+        articleBookmarkEntityPK.setUserEntity(userPK);
         articleBookmarkEntityPK.setArticleEntity(articleId);
 
         boolean bookmark;
@@ -281,10 +281,12 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public Page<ArticleListDTO> readArticleList(String category, Integer page, Integer size) {
+    public Page<ArticleListDTO> readArticleList(String category, Long userPK, Integer page, Integer size) {
         // 카테고리에 해당하는 게시글 조회
-        List<ArticleEntity> articleEntities = articleRepository.findAllByCategory(category);
-        return entityListToResponseDTOPage(articleEntities, page, size);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Page<ArticleEntity> articleEntities = articleRepository.findAllByCategory(category, pageRequest);
+        Page<ArticleListDTO> result = toDtoList(articleEntities, userPK);
+        return result;
     }
 
     @Override
@@ -319,16 +321,19 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public Page<ArticleListDTO> filterRegion(String[] region, Integer page, Integer size) {
-        List<ArticleEntity> articleEntityList = articleRepository.filterRegion(region);
-
-        return entityListToResponseDTOPage(articleEntityList, page, size);
+    public Page<ArticleListDTO> filterRegion(String[] region, Long userPK, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ArticleEntity> articleEntities = articleRepository.filterRegion(region, pageRequest);
+        Page<ArticleListDTO> result = toDtoList(articleEntities, userPK);
+        return result;
     }
 
     @Override
-    public Page<ArticleListDTO> searchArticle(String keyword, Integer page, Integer size) {
-        List<ArticleEntity> articleEntityList = articleRepository.search(keyword);
-        return entityListToResponseDTOPage(articleEntityList, page, size);
+    public Page<ArticleListDTO> searchArticle(String keyword, Long userPK, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ArticleEntity> articleEntities = articleRepository.search(keyword, pageRequest);
+        Page<ArticleListDTO> result = toDtoList(articleEntities, userPK);
+        return result;
     }
 
     // 작성자가 나눔 중인 다른 나눔글
@@ -358,73 +363,102 @@ public class ArticleServiceImpl implements ArticleService{
         return result;
     }
 
+    // 마이페이지 - 유저 작성글 조회
+    @Override
+    public Page<ArticleListDTO> readUserArticles(Long userPK, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        Page<ArticleEntity> articleEntities = articleRepository.findAllByUserPK(userPK, pageRequest);
+        Page<ArticleListDTO> result = toDtoList(articleEntities, userPK);
+        return result;
+    }
 
-    // articleEntityList to articleListDTOPage
-    public Page<ArticleListDTO> entityListToResponseDTOPage(List<ArticleEntity> articleEntityList, Integer page, Integer size) {
-        List<ArticleListDTO> articleListDTOList = new ArrayList<>();  // response DTO list
+    // 마이페이지 - 유저 북마크 조회
+    @Override
+    public Page<ArticleListDTO> readUserBookmarks(Long userPK, Integer page, Integer size) {
+        List<Long> bookmarkList = articleRepository.findBookmarkByUserPK(userPK);
 
-        for(ArticleEntity articleEntity : articleEntityList){
-            // 이미지 조회
-            List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleEntity.getId());
-            String imgPath = null;
-            if(articleImageEntityList != null && articleImageEntityList.size() !=0){
-                // 첫번째 이미지 가져오기
-                imgPath = articleImageEntityList.get(0).getImg();
-            }
-            // 유저 조회
-            UserEntity userEntity = userRepository.findById(articleEntity.getUserPK()).orElseThrow();
-            // 태그 조회
-            List<String> tags = new ArrayList<>();
-            List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleEntity.getId());
-            for(ArticleTagEntity entity : articleTagEntityList){
-                tags.add(tagRepository.findById(entity.getTagId()).orElseThrow().getName());
-            }
-            // 댓글수 조회
-            int commentCnt;
-            List<CommentEntity> commentEntityList = (List<CommentEntity>) commentRepository.findByArticleId(articleEntity.getId());
-            if(commentEntityList == null){
-                commentCnt = 0;
-            }else commentCnt = commentEntityList.size();
-            // bookmark 여부 조회
-            // 복합키 사용을 위한 id 등록
-            ArticleBookmarkEntityPK articleBookmarkEntityPK = new ArticleBookmarkEntityPK();
-            articleBookmarkEntityPK.setUserEntity(userEntity.getId());
-            articleBookmarkEntityPK.setArticleEntity(articleEntity.getId());
-            boolean bookmark;
-            if(aBookmarkRepo.findById(articleBookmarkEntityPK).isPresent()){
-                bookmark = true;
-            }else bookmark = false;
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDate").descending());
+        Page<ArticleEntity> articleEntities = articleRepository.findAllById(bookmarkList, pageRequest);
 
-            // articleListDTO builder
-            ArticleListDTO articleListDTO = ArticleListDTO.builder()
-                    .articleId(articleEntity.getId())
-                    .category(articleEntity.getCategory())
-                    .img(imgPath)
-                    .userPK(articleEntity.getUserPK())
-                    .nickName(userEntity.getNickName())
-                    .profile(userEntity.getProfile())
-                    .title(articleEntity.getTitle())
-                    .tags(tags)
-                    .views(articleEntity.getViews())
-                    .commentCnt(commentCnt)
-                    .bookmark(bookmark)
-                    .shareRegion(articleEntity.getShareRegion())
-                    .shareStatus(articleEntity.getShareStatus())
-                    .createTime(articleEntity.getCreatedDate())
-                    .updateTime(articleEntity.getLastModifiedDate())
-                    .build();
+        return toDtoList(articleEntities, userPK);
+    }
 
-            articleListDTOList.add(articleListDTO);
+
+    public Page<ArticleListDTO> toDtoList(Page<ArticleEntity> articleEntities, Long userPK){
+
+        Page<ArticleListDTO> dtoList = articleEntities.map(a ->
+                ArticleListDTO.builder()
+                        .articleId(a.getId())
+                        .category(a.getCategory())
+                        .img(findImgByArticleEntity(a))
+                        .userPK(a.getUserPK())
+                        .nickName(findUserEntityByArticleEntity(a).getNickName())
+                        .profile(findUserEntityByArticleEntity(a).getProfile())
+                        .title(a.getTitle())
+                        .tags(findTagsByArticleEntity(a))
+                        .views(a.getViews())
+                        .commentCnt(findCommentCntByArticleEntity(a))
+                        .bookmark(findBookmarkByArticleEntity(a, userPK))
+                        .shareRegion(a.getShareRegion())
+                        .shareStatus(a.getShareStatus())
+                        .createTime(a.getCreatedDate())
+                        .updateTime(a.getLastModifiedDate())
+                        .build());
+        return dtoList;
+    }
+
+    // 북마크 조회 함수
+    public boolean findBookmarkByArticleEntity(ArticleEntity articleEntity, Long userPK){
+        // 복합키 사용을 위한 id 등록
+        ArticleBookmarkEntityPK articleBookmarkEntityPK = new ArticleBookmarkEntityPK();
+        articleBookmarkEntityPK.setUserEntity(userPK);
+        articleBookmarkEntityPK.setArticleEntity(articleEntity.getId());
+        boolean bookmark;
+        if(aBookmarkRepo.findById(articleBookmarkEntityPK).isPresent()){
+            bookmark = true;
+        }else bookmark = false;
+
+        return bookmark;
+    }
+
+    // 댓글 수 조회 함수
+    public int findCommentCntByArticleEntity(ArticleEntity articleEntity){
+        // 댓글수 조회
+        int commentCnt;
+        List<CommentEntity> commentEntityList = commentRepository.findByArticleId(articleEntity.getId());
+        if(commentEntityList == null){
+            commentCnt = 0;
+        }else commentCnt = commentEntityList.size();
+
+        return commentCnt;
+    }
+
+
+    // 태그 조회 함수
+    public List<String> findTagsByArticleEntity(ArticleEntity articleEntity){
+        List<String> tags = new ArrayList<>();
+        List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleEntity.getId());
+        for(ArticleTagEntity entity : articleTagEntityList){
+            tags.add(tagRepository.findById(entity.getTagId()).orElseThrow().getName());
         }
+        return tags;
+    }
 
-        // pagination
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createTime").descending());
-        int start = (int) pageRequest.getOffset();
-        int end = Math.min((start+pageRequest.getPageSize()), articleListDTOList.size());
-        if(start > end){
-            return null;
+
+    // 게시글 entity로 작성자 entity 반환
+    public UserEntity findUserEntityByArticleEntity(ArticleEntity articleEntity){
+        return userRepository.findById(articleEntity.getUserPK()).orElseThrow();
+    }
+
+    // 이미지 조회 함수
+    public String findImgByArticleEntity (ArticleEntity articleEntity){
+        // 이미지 조회
+        List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleEntity.getId());
+        String imgPath = null;
+        if(articleImageEntityList != null && articleImageEntityList.size() !=0){
+            // 첫번째 이미지 가져오기
+            imgPath = articleImageEntityList.get(0).getImg();
         }
-        Page<ArticleListDTO> articleListDTOPage = new PageImpl<>(articleListDTOList.subList(start, end), pageRequest, articleListDTOList.size());
-        return articleListDTOPage;
+        return imgPath;
     }
 }

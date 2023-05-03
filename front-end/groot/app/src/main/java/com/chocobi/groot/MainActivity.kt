@@ -11,12 +11,14 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.plant.PlantDetailFragment
+import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
 import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchCameraActivity
@@ -29,21 +31,40 @@ import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
+    val TAG = "로그"
+
     //    private lateinit var binding: ActivityMainBinding
     private val PERMISSION_CAMERA = 0
     private val REQUEST_CAMERA = 1
     private val PERMISSON_GALLERY = 2
     private val REQUEST_STORAGE = 3
 
+//    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
+//
+//    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
+//        return activityToolbar
+//    }
+
+    private var photoImage: ImageView? = null
+
 
     //        fragment 조작
     fun changeFragment(index: String) {
         when (index) {
+
             "plant_diary" -> {
                 val plantDiaryFragment = PlantDiaryFragment()
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, plantDiaryFragment)
+                    .commit()
+            }
+
+            "plant_diary_create" -> {
+                val plantDiaryCreateFragment = PlantDiaryCreateFragment()
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fl_container, plantDiaryCreateFragment)
                     .commit()
             }
 
@@ -104,6 +125,12 @@ class MainActivity : AppCompatActivity() {
      * @param requestCode 권한을 요청한 주체가 어떤 것인지 구분하기 위함.
      * */
     private var realUri: Uri? = null
+    private var cameraStatus: String? = null
+
+    fun setCameraStatus(status: String) {
+        cameraStatus = status
+    }
+
     fun requirePermissions(permissions: Array<String>, requestCode: Int) {
         Log.d("MainActivity", "권한 요청")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -134,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        Log.d(TAG, "onRequestPermissionsResult: $grantResults")
         if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
             permissionGranted(requestCode)
         } else {
@@ -168,6 +196,7 @@ class MainActivity : AppCompatActivity() {
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
+//        uri 기반
         createImageUri(newFileName(), "image/jpg")?.let { uri: Uri ->
             Log.d("MainActivity", uri.toString())
             realUri = uri
@@ -176,35 +205,41 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
+
+
     }
-//    private fun openGallery() {
-//        val intent = Intent(Intent.ACTION_PICK)
-//        intent.type = MediaStore.Images.Media.CONTENT_TYPE
-//        startActivityForResult(intent, REQUEST_STORAGE)
-//    }
+
+    //    사진 하나만 첨부할 때 사용
     private fun openGallery() {
-    val maxNumPhotosAndVideos = 3
-    val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
-    intent.type="images/*"
-    intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxNumPhotosAndVideos)
-    startActivityForResult(intent, REQUEST_STORAGE)
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = MediaStore.Images.Media.CONTENT_TYPE
+        startActivityForResult(intent, REQUEST_STORAGE)
     }
+
+//    private fun openGallery() {
+//    val maxNumPhotosAndVideos = 3
+//    val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+//    intent.type="images/*"
+//    intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxNumPhotosAndVideos)
+//    startActivityForResult(intent, REQUEST_STORAGE)
+//    }
 
     private fun newFileName(): String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
         val filename = sdf.format(System.currentTimeMillis())
-        Log.d("MainActivity", "newFileName")
         return "$filename.jpg"
     }
 
+    //    갤러리에 이미지를 저장
     private fun createImageUri(filename: String, mimeType: String): Uri? {
         var values = ContentValues()
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
         values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Groot")
 
-        Log.d("MainActivity", "createImageUri")
         return this.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
+
 
     /** 카메라 및 앨범 Intent 결과
      * */
@@ -212,26 +247,36 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
+            val a = data?.data
             Log.d("MainActivity", "onActivityResult")
+            Log.d("MainActivity", "$a")
             when (requestCode) {
                 REQUEST_CAMERA -> {
+//                    uri 기반
                     realUri?.let { uri ->
                         val intent = Intent(this, SearchCameraActivity::class.java)
                         intent.putExtra("imageUri", uri.toString())
+                        intent.putExtra("cameraStatus", cameraStatus)
                         Log.d("MainActivity", "uri:" + uri.toString())
+                        Log.d("MainActivity", "cameraStatus:" + cameraStatus)
                         startActivity(intent)
                     }
+
                 }
+
                 REQUEST_STORAGE -> {
-//                    data?.data?.let { uri ->
-//                        val intent = Intent( this, SearchGalleryActivity::class.java)
-//                        intent.putExtra("imageUri", uri.toString())
-//                        startActivity(intent)
-//                    }
-                    var i = 0
-                    while (i < data?.clipData!!.itemCount) {
-                        Log.d("MainActivity", "test")
+                    data?.data?.let { uri ->
+                        val plantDiaryCreateFragment =
+                            supportFragmentManager.findFragmentById(R.id.fl_container) as PlantDiaryCreateFragment?
+                        if (plantDiaryCreateFragment != null) {
+                            photoImage = plantDiaryCreateFragment.getPhotoImageView()
+                        }
+                        photoImage?.setImageURI(uri)
                     }
+//                    var i = 0
+//                    while (i < data?.clipData!!.itemCount) {
+//                        Log.d("MainActivity", "test")
+//                    }
                 }
             }
         }
@@ -244,8 +289,10 @@ class MainActivity : AppCompatActivity() {
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate실행: ");
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
@@ -253,7 +300,13 @@ class MainActivity : AppCompatActivity() {
 //                .commit()
 //        }
 
+        val plantFragment =
+            supportFragmentManager.findFragmentById(R.id.plantFragment) as PlantFragment?
+        Log.d(TAG, "MainActivity, $plantFragment,이건 되니")
 
+//        if (plantFragment != null) {
+//            activityToolbar = plantFragment.getToolbar()
+//        }
 
 
 //      main에서만 날씨 fragment 보여주기
@@ -274,12 +327,12 @@ class MainActivity : AppCompatActivity() {
                         val homeFragment = PlantFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, homeFragment).commit()
-                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
-                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 0
-                        params.rightMargin = 0
-                        params.topMargin = 0
-                        frameLayout.layoutParams = params
+//                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
+//                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+//                        params.leftMargin = 0
+//                        params.rightMargin = 0
+//                        params.topMargin = 0
+//                        frameLayout.layoutParams = params
                     }
 
                     R.id.searchFragment -> {
@@ -287,9 +340,8 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
                         val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
+                        params.leftMargin = 40
+                        params.rightMargin = 40
                         frameLayout.layoutParams = params
                     }
 
@@ -298,9 +350,8 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
                         val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
+                        params.leftMargin = 40
+                        params.rightMargin = 40
                         frameLayout.layoutParams = params
                     }
 
@@ -308,11 +359,11 @@ class MainActivity : AppCompatActivity() {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
-                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
-                        frameLayout.layoutParams = params
+//                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+//                        params.leftMargin = 20
+//                        params.rightMargin = 20
+//                        params.topMargin = 20
+//                        frameLayout.layoutParams = params
                     }
                 }
                 true
@@ -324,10 +375,15 @@ class MainActivity : AppCompatActivity() {
 
         //        특정 프레그먼트로 이동
         var toPage = intent.getStringExtra("toPage")
-        Log.d("MainActivity", "onCreate")
-        if (toPage == "search_detail") {
+        if (toPage != null) {
+
             Log.d("MainActivity", "toPage" + toPage)
-            bnv_main.run { selectedItemId = R.id.searchFragment }
+
+            when (toPage) {
+                "search_detail" -> {
+                    bnv_main.run { selectedItemId = R.id.searchFragment }
+                }
+            }
             changeFragment(toPage)
         }
     }
