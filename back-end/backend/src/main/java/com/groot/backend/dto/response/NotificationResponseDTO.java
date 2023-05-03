@@ -8,19 +8,22 @@ import lombok.Getter;
 @Builder
 @Getter
 public class NotificationResponseDTO {
-    private UserEntity receiver;
+    private Long receiver;
 
     private String content;
 
-    private String url;
+    private String page;
+
+    private Long contentId;
 
     private boolean isRead;
 
     public static NotificationResponseDTO create(NotificationEntity notification){
         NotificationResponseDTO result = NotificationResponseDTO.builder()
                 .content(notification.getContent())
-                .url(notification.getUrl())
-                .receiver(notification.getReceiver())
+                .page(notification.getPage())
+                .contentId(notification.getContentId())
+                .receiver(notification.getReceiver().getId())
                 .isRead(notification.getIsRead())
                 .build();
         return result;

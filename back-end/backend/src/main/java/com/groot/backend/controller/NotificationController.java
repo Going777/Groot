@@ -46,11 +46,11 @@ public class NotificationController {
 //        return ResponseEntity.ok(emitter);
 //    }
 //
-//    @PostMapping("/count")
-//    public ResponseEntity count(){
-//        sseEmitters.count();
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("/count")
+    public ResponseEntity count(){
+        sseEmitters.count();
+        return ResponseEntity.ok().build();
+    }
 
 //    @GetMapping(value = "/sub", produces = "text/event-stream")
 //    public ResponseEntity subscribe(HttpServletRequest request, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId){

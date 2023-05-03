@@ -1,5 +1,6 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,9 +30,11 @@ public class CommentEntity extends BaseEntity{
 
     @ManyToOne(targetEntity = ArticleEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
+    @JsonBackReference
     private ArticleEntity articleEntity;
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private UserEntity userEntity;
 }

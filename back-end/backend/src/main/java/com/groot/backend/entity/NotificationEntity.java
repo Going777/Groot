@@ -1,5 +1,6 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -27,18 +28,27 @@ public class NotificationEntity extends BaseEntity{
     @Column(nullable = false)
     private Boolean isRead;
 
+    @Column
+    private String page;
+
+    @Column(name = "content_id")
+    private Long contentId;
+
     @Column(name="user_id", insertable = false, updatable = false)
     private Long userPK;
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")//, insertable=false, updatable=false)
+    @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private UserEntity receiver;
 
     @Builder
-    public NotificationEntity(UserEntity receiver, String content, String url, Boolean isRead) {
+    public NotificationEntity(UserEntity receiver, String content, String url, String page, Long contentId, Boolean isRead) {
         this.receiver = receiver;
         this.content = content;
+        this.contentId = contentId;
+        this.page = page;
         this.url = url;
         this.isRead = isRead;
     }

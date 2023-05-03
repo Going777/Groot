@@ -92,8 +92,8 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public void send(UserEntity receiver, String content, String url) {
-        NotificationEntity notification = notificationRepository.save(createNotification(receiver, content, url));
+    public void send(UserEntity receiver, String content, String url, String page, Long contentId) {
+        NotificationEntity notification = notificationRepository.save(createNotification(receiver, content, url, page, contentId));
 
         String receiverId = String.valueOf(receiver.getId());
         String eventId = receiverId + "_" + System.currentTimeMillis();
@@ -106,11 +106,13 @@ public class NotificationServiceImpl implements NotificationService{
         );
     }
 
-    private NotificationEntity createNotification(UserEntity receiver, String content, String url) {
+    private NotificationEntity createNotification(UserEntity receiver, String content, String url, String page, Long contentId) {
         return NotificationEntity.builder()
                 .receiver(receiver)
                 .content(content)
                 .url(url)
+                .page(page)
+                .contentId(contentId)
                 .isRead(false)
                 .build();
     }

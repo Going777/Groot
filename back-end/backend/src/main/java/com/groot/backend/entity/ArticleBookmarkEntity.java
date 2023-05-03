@@ -1,5 +1,6 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class ArticleBookmarkEntity {
     @Id
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",insertable = false, updatable = false)
+    @JsonBackReference
     private UserEntity userEntity;
 
     @Column(name = "user_id", insertable = false, updatable = false)
@@ -26,6 +28,7 @@ public class ArticleBookmarkEntity {
     @Id
     @ManyToOne(targetEntity = ArticleEntity.class,fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id",insertable = false, updatable = false)
+    @JsonBackReference
     private ArticleEntity articleEntity;
 
     @Column(name = "article_id", insertable = false, updatable = false)
