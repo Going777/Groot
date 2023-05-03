@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.view.plant.PlantBottomSheet
 import com.chocobi.groot.view.pot.Pot1Activity
 import kotlin.random.Random
 
@@ -58,7 +59,12 @@ class SearchCameraActivity : AppCompatActivity() {
         //        검색 등록 버튼 조작
         val searchBtn = findViewById<Button>(R.id.searchBtn)
         searchBtn.setOnClickListener {
-            Toast.makeText(this, "검색 모달 띄우기", Toast.LENGTH_SHORT).show()
+            val plantBottomSheet = PlantBottomSheet(this)
+            plantBottomSheet.show(
+                this.supportFragmentManager,
+                plantBottomSheet.tag
+            )
+
         }
 
 

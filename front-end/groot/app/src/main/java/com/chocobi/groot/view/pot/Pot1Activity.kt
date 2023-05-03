@@ -27,5 +27,7 @@ class Pot1Activity : AppCompatActivity() {
 //            intent.putExtra("toPage", "plant_add1")
             startActivity(intent)
         }
+
+
     }
 }
