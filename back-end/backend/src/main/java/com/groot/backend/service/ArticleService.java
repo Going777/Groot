@@ -22,4 +22,5 @@ public interface ArticleService {
     List<UserSharedArticleDTO> readUserShared(Long articleId);
     Page<ArticleListDTO> readUserArticles(Long userPK,Integer page, Integer size);
     Page<ArticleListDTO> readUserBookmarks(Long userPK,Integer page, Integer size);
+//    List<String> readTagRanking();
 }

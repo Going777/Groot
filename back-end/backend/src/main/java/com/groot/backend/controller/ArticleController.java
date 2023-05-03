@@ -261,8 +261,6 @@ public class ArticleController {
         }
     }
 
-    // 인기태그 조회
-
     // 나눔 게시글 지역 필터링
     @GetMapping("/filter")
     public ResponseEntity regionFilteredArticle(HttpServletRequest request,
@@ -322,6 +320,13 @@ public class ArticleController {
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
+
+
+//    // 인기태그 조회
+//    @GetMapping("/tag")
+//    public ResponseEntity readTagRanking(){
+//        ArticleService.readTagRanking();
+//    }
 
     // 태그 자동완성
 

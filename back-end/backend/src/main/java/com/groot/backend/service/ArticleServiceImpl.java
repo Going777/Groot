@@ -2,23 +2,25 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.request.BookmarkDTO;
-import com.groot.backend.dto.response.ArticleListDTO;
-import com.groot.backend.dto.response.ArticleResponseDTO;
-import com.groot.backend.dto.response.CommentResponseDTO;
-import com.groot.backend.dto.response.UserSharedArticleDTO;
+import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,8 @@ public class ArticleServiceImpl implements ArticleService{
     private final ArticleImageRepository articleImageRepository;
     private final ArticleBookmarkRepository aBookmarkRepo;
     private final S3Service s3Service;
+    private RedisTemplate<String, String> redisTemplate;
+    private TagCountRepository tagCountRepository;
 
     @Override
     public boolean existedArticleId(Long articleId) {
@@ -382,6 +386,35 @@ public class ArticleServiceImpl implements ArticleService{
 
         return toDtoList(articleEntities, userPK);
     }
+
+//    @Override
+//    public List<TagRankDTO> readTagRanking() {
+//        // mysql 테이블 redis로 불러오기
+////
+////        String key = "articles";
+////        String articles = redisTemplate.opsForValue().get(key);
+////        if (articles == null) {
+////            articles = tagCountRepository.findAll();
+////            redisTemplate.opsForValue().set(key, articles);
+////        }else {
+////            // 인기검색어 리스트 1위~10위까지
+////            ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
+////            //score순으로 10개 보여줌
+////            // 등록된 모든 목록을 점수와 함께 조회한다
+////            Set<ZSetOperations.TypedTuple<String>> rankSet = ZSetOperations.reverseRangeWithScores(key, 0, 9);
+////            List<String> result = new ArrayList<>();
+////            Long size = ZSetOperations.size("articles");
+////            for(int i=0; i<size; i++){
+////                result.add(rankSet)
+////            }
+////            return rankSet.stream().map(SearchRankResponseDto::convertToResponseRankingDto).collect(Collectors.toList());
+////        }
+//
+//
+//
+//        return null;
+//
+//    }
 
 
     public Page<ArticleListDTO> toDtoList(Page<ArticleEntity> articleEntities, Long userPK){
