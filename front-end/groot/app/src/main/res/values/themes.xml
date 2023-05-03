@@ -175,4 +175,24 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
+
+<!--  검색 디테일 페이지 리니어 레이아웃  -->
+    <style name="SEASRCH_DETAIL_LINEAR_STYLE">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginVertical">10dp</item>
+    </style>
+
+<!--  회색 구분선  -->
+
+    <style name="GREY_UNDERLINE">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">5dp</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="background">@drawable/round_rectangle</item>
+        <item name="backgroundTint">#000</item>
+    </style>
+
 </resources>

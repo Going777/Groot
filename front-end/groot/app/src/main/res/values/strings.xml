@@ -70,5 +70,13 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
 
+<!--  식물 검색 관련  -->
+    <string name="descriptionText"></string>
+    <string name="humidityText"></string>
+    <string name="tempText"></string>
+    <string name="tipText"></string>
+    <string name="placeText"></string>
+    <string name="insectInfoText"></string>
+
 
 </resources>

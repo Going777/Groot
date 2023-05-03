@@ -70,7 +70,7 @@ class IntroActivity : AppCompatActivity() {
 
             //            요청 실패
             override fun onFailure(call: Call<PlantNamesResponse>, t: Throwable) {
-                Log.d("로그", "IntroActivity 실패: $t")
+                Log.d("IntroActivity", "onFailure() 식물 이름 가져오기")
             }
         })
     }
