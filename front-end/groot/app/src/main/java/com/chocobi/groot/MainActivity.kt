@@ -342,12 +342,12 @@ class MainActivity : AppCompatActivity() {
                         val homeFragment = PlantFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, homeFragment).commit()
-                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
-                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 0
-                        params.rightMargin = 0
-                        params.topMargin = 0
-                        frameLayout.layoutParams = params
+//                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
+//                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+//                        params.leftMargin = 0
+//                        params.rightMargin = 0
+//                        params.topMargin = 0
+//                        frameLayout.layoutParams = params
                     }
 
                     R.id.searchFragment -> {
@@ -355,9 +355,8 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
                         val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
+                        params.leftMargin = 40
+                        params.rightMargin = 40
                         frameLayout.layoutParams = params
                     }
 
@@ -366,9 +365,8 @@ class MainActivity : AppCompatActivity() {
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
                         val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
+                        params.leftMargin = 40
+                        params.rightMargin = 40
                         frameLayout.layoutParams = params
                     }
 
@@ -376,11 +374,11 @@ class MainActivity : AppCompatActivity() {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
-                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 20
-                        params.rightMargin = 20
-                        params.topMargin = 20
-                        frameLayout.layoutParams = params
+//                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+//                        params.leftMargin = 20
+//                        params.rightMargin = 20
+//                        params.topMargin = 20
+//                        frameLayout.layoutParams = params
                     }
                 }
                 true

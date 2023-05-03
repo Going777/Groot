@@ -9,10 +9,12 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.ModelDiary
 import com.chocobi.groot.view.plant.adapter.PlantDiaryListRVAdapter
+import com.chocobi.groot.view.plant.adapter.PlantListRVAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,6 +54,27 @@ class PlantDiaryFragment : Fragment() {
         setListeners()
         initList()
         reload()
+
+        val plantItems = mutableListOf<String>()
+
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+        plantItems.add("산세산세")
+
+        val plantListRV = rootView.findViewById<RecyclerView>(R.id.plantListRecyclerView)
+        val plantListRvAdapter = PlantListRVAdapter(plantItems)
+        plantListRV.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        plantListRV.adapter = plantListRvAdapter
 
         return rootView
     }

@@ -141,7 +141,6 @@
             android:layout_marginHorizontal="20dp"
             android:adjustViewBounds="true"
             android:clipToOutline="true"
-            android:src="@drawable/sample_plant_image"
             android:layout_marginVertical="10dp"/>
 
 
