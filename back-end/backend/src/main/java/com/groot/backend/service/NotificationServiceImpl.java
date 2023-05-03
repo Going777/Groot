@@ -9,6 +9,9 @@ import com.groot.backend.dto.response.NotificationResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -107,17 +110,24 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public NotificationEntity readCheck(Long notificationId) {
-        NotificationEntity notification = notificationRepository.findById(notificationId).orElseThrow();
-        NotificationEntity newNotification = NotificationEntity.builder()
-//                .id(notification.getId())
-                .content(notification.getContent())
-                .page(notification.getPage())
-                .contentId(notification.getContentId())
-                .receiver(notification.getReceiver())
-                .isRead(true)
-                .build();
-        return notificationRepository.save(newNotification);
+    public Long readCheck(Long notificationId) {  //update로 바꾸는 방법 찾아보기
+//        NotificationEntity notification = notificationRepository.findById(notificationId).orElseThrow();
+//        NotificationEntity newNotification = NotificationEntity.builder()
+////                .id(notification.getId())
+//                .content(notification.getContent())
+//                .page(notification.getPage())
+//                .contentId(notification.getContentId())
+//                .receiver(notification.getReceiver())
+//                .isRead(true)
+//                .build();
+        Long result = notificationRepository.updateIsRead(notificationId);
+        return result;
+    }
+
+    @Override
+    public Page<NotificationEntity> notificationList(Long userPK, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
+        return notificationRepository.findAllByUserPK(userPK, pageRequest);
     }
 
     private NotificationEntity createNotification(UserEntity receiver, String content, String url, String page, Long contentId) {

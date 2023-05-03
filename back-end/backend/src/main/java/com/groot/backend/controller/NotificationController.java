@@ -7,6 +7,7 @@ import com.groot.backend.util.JwtTokenProvider;
 import com.groot.backend.util.SseEmitters;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class NotificationController {
 
     private final SseEmitters sseEmitters;
-
+    private static String SUCCESS = "success";
+    private static String FAIL = "fail";
     public static Map<Long, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
     private final NotificationService notificationService;
 
@@ -48,9 +51,33 @@ public class NotificationController {
 //    }
 //
     @PutMapping("/readCheck/{notificationId}")
-    public ResponseEntity read(@PathVariable Long notificationId){
-        NotificationEntity result = notificationService.readCheck(notificationId);
-        return ResponseEntity.ok().body(result);
+    public ResponseEntity checkRead(@PathVariable Long notificationId){
+        Map resultMap = new HashMap();
+        Long result = notificationService.readCheck(notificationId);
+        if(result<0){
+            resultMap.put("msg", "읽음 표시를 실패했습니다.");
+            resultMap.put("result", FAIL);
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+        resultMap.put("msg", "읽음 표시를 성공했습니다.");
+        resultMap.put("result", SUCCESS);
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity readList(@RequestParam Integer page, @RequestParam Integer size, HttpServletRequest request){
+        Map resultMap = new HashMap();
+        Long userId = JwtTokenProvider.getIdByAccessToken(request);
+        Page<NotificationEntity> result = notificationService.notificationList(userId, page, size);
+        if(result.isEmpty()){
+            resultMap.put("msg", "알림을 조회할 수 없습니다.");
+            resultMap.put("result", FAIL);
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+        resultMap.put("msg", "알림을 조회를 성공했습니다.");
+        resultMap.put("result", SUCCESS);
+        resultMap.put("notification", result);
+        return ResponseEntity.ok().body(resultMap);
     }
 
 //    @GetMapping(value = "/sub", produces = "text/event-stream")
