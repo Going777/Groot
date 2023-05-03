@@ -3,10 +3,12 @@ package com.chocobi.groot
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ViewGroup
@@ -15,6 +17,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.drawable.toBitmap
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
@@ -33,6 +36,8 @@ import com.chocobi.groot.view.search.SearchFragment
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
@@ -54,7 +59,6 @@ class MainActivity : AppCompatActivity() {
     private var photoImage: ImageView? = null
 
 
-
     //        fragment 조작
     fun changeFragment(index: String) {
         when (index) {
@@ -65,6 +69,7 @@ class MainActivity : AppCompatActivity() {
                     .replace(R.id.fl_container, plantAddFragment)
                     .commit()
             }
+
             "plant_add2" -> {
                 val plantAddFragment = PlantAdd2Fragment()
                 supportFragmentManager
@@ -211,6 +216,7 @@ class MainActivity : AppCompatActivity() {
     private fun openCamera() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
+//        uri 기반
         createImageUri(newFileName(), "image/jpg")?.let { uri: Uri ->
             Log.d("MainActivity", uri.toString())
             realUri = uri
@@ -219,6 +225,8 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
+
+
     }
 
     //    사진 하나만 첨부할 때 사용
@@ -242,13 +250,17 @@ class MainActivity : AppCompatActivity() {
         return "$filename.jpg"
     }
 
+    //    갤러리에 이미지를 저장
     private fun createImageUri(filename: String, mimeType: String): Uri? {
         var values = ContentValues()
         values.put(MediaStore.Images.Media.DISPLAY_NAME, filename)
         values.put(MediaStore.Images.Media.MIME_TYPE, mimeType)
+        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Groot")
 
         return this.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
     }
+
+
 
     /** 카메라 및 앨범 Intent 결과
      * */
@@ -259,17 +271,20 @@ class MainActivity : AppCompatActivity() {
             Log.d("MainActivity", "onActivityResult")
             when (requestCode) {
                 REQUEST_CAMERA -> {
+//                    uri 기반
                     realUri?.let { uri ->
                         val intent = Intent(this, SearchCameraActivity::class.java)
                         intent.putExtra("imageUri", uri.toString())
                         Log.d("MainActivity", "uri:" + uri.toString())
                         startActivity(intent)
                     }
+
                 }
 
                 REQUEST_STORAGE -> {
                     data?.data?.let { uri ->
-                        val plantDiaryCreateFragment = supportFragmentManager.findFragmentById(R.id.fl_container) as PlantDiaryCreateFragment?
+                        val plantDiaryCreateFragment =
+                            supportFragmentManager.findFragmentById(R.id.fl_container) as PlantDiaryCreateFragment?
                         if (plantDiaryCreateFragment != null) {
                             photoImage = plantDiaryCreateFragment.getPhotoImageView()
                         }
@@ -319,9 +334,6 @@ class MainActivity : AppCompatActivity() {
 //        if (plantFragment != null) {
 //            activityToolbar = plantFragment.getToolbar()
 //        }
-
-
-
 
 
 //      main에서만 날씨 fragment 보여주기

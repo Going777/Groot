@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.search
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -22,9 +23,15 @@ class SearchCameraActivity : AppCompatActivity() {
         var imageUri = intent.getStringExtra("imageUri")?.toUri()
         Log.d("SearchCameraActivity", imageUri.toString())
 
+
+
+
+
+
 //        image 띄우기
         var resultImgView = findViewById<ImageView>(R.id.resultImgView)
         resultImgView.setImageURI(imageUri)
+
 
 //        디테일 버튼 조작
         val button = findViewById<Button>(R.id.button)
