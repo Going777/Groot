@@ -17,7 +17,7 @@ data class GetUserResponse(
 )
 
 data class User(
-    var id: Int,
+    var userPK: Int,
     var userId: String,
     var nickName: String,
     var profile: String,

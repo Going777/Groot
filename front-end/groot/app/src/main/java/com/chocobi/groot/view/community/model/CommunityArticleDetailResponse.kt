@@ -20,3 +20,8 @@ data class Article (
     val createTime: CreateTime,
     val updateTime: UpdateTime,
 )
+
+data class BookmarkResponse(
+    val result: String,
+    val msg: String,
+)
