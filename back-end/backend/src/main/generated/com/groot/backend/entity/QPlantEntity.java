@@ -41,6 +41,8 @@ public class QPlantEntity extends EntityPathBase<PlantEntity> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath img = createString("img");
+
     public final StringPath insectInfo = createString("insectInfo");
 
     public final StringPath krName = createString("krName");
