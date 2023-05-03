@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.search
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.chocobi.groot.MainActivity
@@ -65,14 +67,17 @@ class SearchDetailFragment : Fragment() {
         plantId?.let { getDetail(it.toInt()) }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_search_detail, container, false)
         val mActivity = activity as MainActivity
-        val againBtn = rootView.findViewById<Button>(R.id.againBtn)
-        againBtn.setOnClickListener {
+
+//        뒤로가기
+        val backBtn = rootView.findViewById<ImageButton>(R.id.backBtn)
+        backBtn.setOnClickListener {
             mActivity.changeFragment("search")
         }
 
@@ -131,7 +136,7 @@ class SearchDetailFragment : Fragment() {
         mgmtLevel?.text = plant?.mgmtLevel
 
         isExist(plant?.description!!, docLinearLayout!!, descriptionText!!)
-        isExist("${plant?.minHumidity}~${plant?.maxHumidity}% 환경에서 잘 자라요\n${plant?.waterCycle?.replace("함","해주세요")}"!!, humidityLinearLayout!!, humidityText!!)
+        isExist("${plant?.minHumidity}~${plant?.maxHumidity}% 환경에서 잘 자라요\n${plant?.waterCycle?.replace("함","해 주세요")}"!!, humidityLinearLayout!!, humidityText!!)
         isExist("${plant?.minGrwTemp}~${plant?.maxGrwTemp}°C 환경에서 잘 자라요", tempLinearLayout!!, tempText!!)
         isExist(plant?.mgmtTip!!, tipLinearLayout!!, tipText!!)
         isExist(plant?.place?.replace(",","\n")!!, placeLinearLayout!!, placeText!!)
