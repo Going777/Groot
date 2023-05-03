@@ -16,20 +16,14 @@ import android.widget.Toast
 import com.chocobi.groot.IntroActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.GlobalVariables
-
 import com.chocobi.groot.data.RetrofitClient
-
-import org.json.JSONObject
-
-import com.chocobi.groot.view.user.model.LogoutResponse
 import com.chocobi.groot.view.user.model.UserService
 
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -104,11 +98,10 @@ class SettingFragment : Fragment() {
 //        요청 보내기
         val accessToken = GlobalVariables.prefs.getString("access_token", "")
         if (accessToken != "") {
-            userService.logout().enqueue(object : Callback<LogoutResponse> {
-                //            userService.logout(accessToken!!).enqueue(object : Callback<LogoutResponse> {
+            userService.logout().enqueue(object : Callback<BasicResponse> {
                 override fun onResponse(
-                    call: Call<LogoutResponse>,
-                    response: Response<LogoutResponse>
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
                 ) {
 //                    var m = response.code()
 //                    var b = response.errorBody()?.string()
@@ -122,7 +115,7 @@ class SettingFragment : Fragment() {
                     goToIntro()
                 }
 
-                override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
                     Toast.makeText(requireContext(), "로그아웃 실패", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -141,10 +134,10 @@ class SettingFragment : Fragment() {
 //        요청 보내기
         val accessToken = GlobalVariables.prefs.getString("access_token", "")
         if (accessToken != "") {
-            userService.deleteUser(accessToken!!).enqueue(object : Callback<LogoutResponse> {
+            userService.deleteUser(accessToken!!).enqueue(object : Callback<BasicResponse> {
                 override fun onResponse(
-                    call: Call<LogoutResponse>,
-                    response: Response<LogoutResponse>
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
                 ) {
 
                     Toast.makeText(requireContext(), "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
@@ -154,7 +147,7 @@ class SettingFragment : Fragment() {
                     goToIntro()
                 }
 
-                override fun onFailure(call: Call<LogoutResponse>, t: Throwable) {
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
                     Toast.makeText(requireContext(), "회원탈퇴 실패", Toast.LENGTH_SHORT).show()
                 }
             })

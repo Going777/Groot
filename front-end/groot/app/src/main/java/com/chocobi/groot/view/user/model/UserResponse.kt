@@ -2,12 +2,6 @@ package com.chocobi.groot.view.user.model
 
 
 
-data class LogoutResponse (
-    val result: String,
-    val msg: String
-)
-
-
 
 // 회원정보 조회
 data class GetUserResponse(
@@ -15,6 +9,7 @@ data class GetUserResponse(
     var msg: String,
     var user: User
 )
+
 
 data class User(
     var id: Int,
