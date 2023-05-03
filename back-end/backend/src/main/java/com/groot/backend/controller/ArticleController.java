@@ -69,8 +69,8 @@ public class ArticleController {
     public ResponseEntity readArticleList(HttpServletRequest request,
                                           @PathVariable String category, @RequestParam Integer page, @RequestParam Integer size){
         resultMap = new HashMap<>();
-        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 5L;
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -148,8 +148,8 @@ public class ArticleController {
     @GetMapping("/{articleId}")
     public ResponseEntity readArticle(HttpServletRequest request,
                                       @PathVariable Long articleId){
-        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 5L;
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+
         resultMap = new HashMap<>();
         if(!articleService.existedArticleId(articleId)){
             resultMap.put("result", FAIL);
@@ -233,8 +233,8 @@ public class ArticleController {
                                         @RequestParam Integer page,
                                         @RequestParam Integer size){
         resultMap = new HashMap<>();
-        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 5L;
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -270,8 +270,8 @@ public class ArticleController {
                                                 @RequestParam Integer page,
                                                 @RequestParam Integer size){
         resultMap = new HashMap<>();
-        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 5L;
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+
 
         if(size == 0){
             resultMap.put("result", FAIL);
