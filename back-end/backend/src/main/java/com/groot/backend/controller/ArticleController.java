@@ -327,4 +327,22 @@ public class ArticleController {
 
 
 
+    // 지역 반환
+    @GetMapping("/regions/list")
+    public ResponseEntity readRegion(){
+        resultMap = new HashMap<>();
+        try{
+            List<String> result = articleService.readRegion();
+
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg","지역 리스트 조회");
+            resultMap.put("regions", result);
+            return ResponseEntity.ok().body(resultMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","지역 리스트 조회 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
 }
