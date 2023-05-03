@@ -1,7 +1,11 @@
 package com.groot.backend.repository;
 
-import com.groot.backend.entity.NotificationEntity;
+import org.springframework.data.jpa.repository.Modifying;
+
+import javax.transaction.Transactional;
 
 public interface NotificationRepositoryCustom {
+    @Transactional
+    @Modifying
     Long updateIsRead(Long notificationId);
 }

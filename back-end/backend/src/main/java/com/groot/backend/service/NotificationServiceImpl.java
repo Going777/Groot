@@ -1,6 +1,5 @@
 package com.groot.backend.service;
 
-import com.groot.backend.controller.NotificationController;
 import com.groot.backend.entity.NotificationEntity;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.EmitterRepository;
@@ -46,29 +45,6 @@ public class NotificationServiceImpl implements NotificationService{
         return emitter;
     }
 
-
-//    @Override
-//    public SseEmitter subscribe(Long userId) {
-//        // 현재 클라이언트를 위한 SseEmitter 생성
-//        SseEmitter sseEmitter = new SseEmitter(Long.MAX_VALUE);
-//        try {
-//            // 연결!!
-//            sseEmitter.send(SseEmitter.event().name("connect"));
-//            log.info("sseEM"+sseEmitter);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // user의 pk값을 key값으로 해서 SseEmitter를 저장
-//        NotificationController.sseEmitterMap.put(userId, sseEmitter);
-//
-//        sseEmitter.onCompletion(() -> NotificationController.sseEmitterMap.remove(userId));
-//        sseEmitter.onTimeout(() -> NotificationController.sseEmitterMap.remove(userId));
-//        sseEmitter.onError((e) -> NotificationController.sseEmitterMap.remove(userId));
-//
-//        return sseEmitter;
-//    }
-
     private String makeTimeIncludeId(Long userId) {
         return userId + "_" + System.currentTimeMillis();
     }
@@ -110,16 +86,7 @@ public class NotificationServiceImpl implements NotificationService{
     }
 
     @Override
-    public Long readCheck(Long notificationId) {  //update로 바꾸는 방법 찾아보기
-//        NotificationEntity notification = notificationRepository.findById(notificationId).orElseThrow();
-//        NotificationEntity newNotification = NotificationEntity.builder()
-////                .id(notification.getId())
-//                .content(notification.getContent())
-//                .page(notification.getPage())
-//                .contentId(notification.getContentId())
-//                .receiver(notification.getReceiver())
-//                .isRead(true)
-//                .build();
+    public Long readCheck(Long notificationId) {
         Long result = notificationRepository.updateIsRead(notificationId);
         return result;
     }

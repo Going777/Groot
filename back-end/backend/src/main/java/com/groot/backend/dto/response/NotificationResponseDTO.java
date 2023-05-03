@@ -1,7 +1,6 @@
 package com.groot.backend.dto.response;
 
 import com.groot.backend.entity.NotificationEntity;
-import com.groot.backend.entity.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 

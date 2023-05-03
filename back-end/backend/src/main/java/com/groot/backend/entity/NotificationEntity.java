@@ -10,7 +10,6 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "notifications")
-//@EqualsAndHashCode(of = "id")
 @Getter
 public class NotificationEntity extends BaseEntity{
 

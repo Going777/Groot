@@ -27,37 +27,25 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class NotificationController {
 
-    private final SseEmitters sseEmitters;
     private static String SUCCESS = "success";
     private static String FAIL = "fail";
     public static Map<Long, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
     private final NotificationService notificationService;
 
-//    public SseController(SseEmitters sseEmitters){
-//        this.sseEmitters = sseEmitters;
-//    }
-//    @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-//    public ResponseEntity connect(){
-//        SseEmitter emitter = new SseEmitter(3 * 60 * 1000L);
-//        sseEmitters.add(emitter);
-//        try{
-//            emitter.send(SseEmitter.event()
-//                    .name("connect")
-//                    .data("connected"));
-//        } catch (IOException e){
-//            throw new RuntimeException(e);
-//        }
-//        return ResponseEntity.ok(emitter);
-//    }
-//
-    @PutMapping("/readCheck/{notificationId}")
-    public ResponseEntity checkRead(@PathVariable Long notificationId){
+    @PutMapping("/readCheck/{notificationId}/{userPK}")
+    public ResponseEntity checkRead(@PathVariable Long notificationId, @PathVariable Long userPK, HttpServletRequest request){
         Map resultMap = new HashMap();
+        Long userId = JwtTokenProvider.getIdByAccessToken(request);
+        if(!userId.equals(userPK)){
+            resultMap.put("msg", "수정 권한이 없습니다.");
+            resultMap.put("result", FAIL);
+            return ResponseEntity.badRequest().body(resultMap);
+        }
         Long result = notificationService.readCheck(notificationId);
         if(result<0){
             resultMap.put("msg", "읽음 표시를 실패했습니다.");
             resultMap.put("result", FAIL);
-            return ResponseEntity.badRequest().body(resultMap);
+            return ResponseEntity.internalServerError().body(resultMap);
         }
         resultMap.put("msg", "읽음 표시를 성공했습니다.");
         resultMap.put("result", SUCCESS);
@@ -80,12 +68,6 @@ public class NotificationController {
         return ResponseEntity.ok().body(resultMap);
     }
 
-//    @GetMapping(value = "/sub", produces = "text/event-stream")
-//    public ResponseEntity subscribe(HttpServletRequest request, @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId){
-//        Long userPK = JwtTokenProvider.getIdByAccessToken(request);
-//        SseEmitter sseEmitter = notificationService.subscribe(userPK);
-//        return ResponseEntity.ok().body(sseEmitter);
-//    }
 
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     @ResponseStatus(HttpStatus.OK)
