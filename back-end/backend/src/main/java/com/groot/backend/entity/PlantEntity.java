@@ -1,5 +1,6 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -7,7 +8,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="plant")
+@Table(name="plants")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -20,13 +21,14 @@ public class PlantEntity extends BaseEntity{
     @Column(name = "kr_name", nullable = false)
     private String krName;
 
-    @Column(name = "bot_name", nullable = false)
-    private String botName;
+    @Column(name = "sci_name", nullable = false, unique = true)
+    private String sciName;
 
-    @Column(name = "flr_lang", nullable = false)
-    private String flrLang;
+    @Column(name = "grw_type", nullable = false)
+    private String grwType;
 
     @Column(name = "grw_speed", nullable = false)
+    @ColumnDefault(value = "'보통'")
     private String grwSpeed;
 
     @Column(name = "min_grw_temp", nullable = false)
@@ -35,33 +37,38 @@ public class PlantEntity extends BaseEntity{
     @Column(name = "max_grw_temp", nullable = false)
     private Integer maxGrwTemp;
 
-    @Column(name = "winter_temp", nullable = false)
+    @Column(name = "winter_min_temp", nullable = false)
     @ColumnDefault(value = "10")
-    private Integer winterTemp;
+    private Integer winterMinTemp;
+
+    @Column(name = "min_humidity", nullable = false)
+    @ColumnDefault(value = "25")
+    private Integer minHumidity;
+
+    @Column(name = "max_humidity", nullable = false)
+    private Integer maxHumidity;
 
     @Column(name = "light_demand", nullable = false)
     private Integer lightDemand;
 
     @Column(name = "water_cycle", nullable = false)
+    @ColumnDefault(value = "53003")
     private Integer waterCycle;
 
     @Column(name = "mgmt_level", nullable = false)
     private Integer mgmtLevel;
 
     @Column(name = "mgmt_demand", nullable = false)
-    private Integer mgmtDemand;
+    private String mgmtDemand;
 
     @Column
     private String place;
 
-    @Column(name = "mgmt_tip")
+    @Column(name = "mgmt_tip", length = 500)
     private String mgmtTip;
 
     @Column(name = "grw_season")
     private String grwSeason;
-
-    @Column(name = "grw_season_cd")
-    private Integer grwSeasonCd;
 
     @Column
     private String characteristics;
@@ -69,15 +76,12 @@ public class PlantEntity extends BaseEntity{
     @Column(name = "insect_info")
     private String insectInfo;
 
-    @Column(name = "min_humidity", nullable = false)
-    @ColumnDefault(value = "25")
-    private Integer minHumidity;
 
-    @Column(name = "toxic_info", nullable = false)
+    @Column(name = "toxic_info", nullable = true)
     private String toxicInfo;
 
     @Column(name = "smell_degree")
-    private String smellDegree;
+    private Integer smellDegree;
 
     @Column
     private Integer height;
@@ -85,9 +89,10 @@ public class PlantEntity extends BaseEntity{
     @Column
     private Integer area;
 
-    @Column(nullable = false)
+    @Column(nullable = true, length = 2000)
     private String description;
 
     @OneToMany(mappedBy = "plantEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<PotEntity> potEntities;
 }

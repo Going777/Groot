@@ -1,5 +1,8 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.groot.backend.dto.response.ArticleListDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +13,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name="article")
+@Table(name="articles")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -44,8 +47,15 @@ public class ArticleEntity extends BaseEntity{
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private UserEntity userEntity;
 
     @OneToMany(mappedBy = "articleEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<ArticleImageEntity> articleImageEntityList;
+
+    @OneToMany(mappedBy = "articleEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<ArticleTagEntity> articleTagEntityList;
+
 }

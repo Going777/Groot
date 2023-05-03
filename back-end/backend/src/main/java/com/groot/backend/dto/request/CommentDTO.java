@@ -1,15 +1,15 @@
 package com.groot.backend.dto.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentDTO {
-    Long articleId;
-    Long userPK;
-    String nickName;
-    String content;
+    private Long id;
+    private Long articleId;
+    private Long userPK;
+    private String nickName;
+    private String content;
 }
