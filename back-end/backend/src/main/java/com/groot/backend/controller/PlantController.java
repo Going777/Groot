@@ -46,7 +46,7 @@ public class PlantController {
         }
     }
 
-    @GetMapping("{plantId}")
+    @GetMapping("/{plantId}")
     @Operation(summary = "Get plant detail info", description = "requires platn id")
     public ResponseEntity<Map<String, Object>> plantDetail(@PathVariable Long plantId) {
         logger.info("Get plant detail info : {}", plantId);
