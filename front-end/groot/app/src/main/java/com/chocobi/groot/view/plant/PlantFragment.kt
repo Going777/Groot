@@ -10,12 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import android.widget.Toolbar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.view.user.ProfileBottomSheet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
@@ -86,7 +88,13 @@ class PlantFragment : Fragment() {
                         )
                     }
 
-                    1 -> Toast.makeText(requireContext(), "검색 모달 띄우기", Toast.LENGTH_SHORT).show()
+                    1 -> {
+                        val plantBottomSheet = PlantBottomSheet(requireContext())
+                        plantBottomSheet.show(
+                            mActivity.supportFragmentManager,
+                            plantBottomSheet.tag
+                        )
+                    }
                 }
             }
             dialog.setNegativeButton(
