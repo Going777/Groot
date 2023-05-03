@@ -321,16 +321,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-//        getUser
-        var accessToken = GlobalVariables.prefs.getString("access_token", "")
-        if (accessToken != "") {
-            GlobalVariables.getUser()
-            var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
-            if (refreshToken == "") {
-                var intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
-            }
-        }
+
 
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()

@@ -1,8 +1,10 @@
 package com.chocobi.groot.data
 
 import android.app.Application
+import android.content.Intent
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.login.LoginRequest
 import com.chocobi.groot.view.user.model.GetUserResponse
 import com.chocobi.groot.view.user.model.RefreshRequest
@@ -67,14 +69,14 @@ class GlobalVariables : Application() {
             val accessToken = prefs.getString("access_token", "")
             val refreshToken = prefs.getString("refresh_token", "")
 
-            userService.refresh(RefreshRequest(accessToken, refreshToken))
+            userService.refresh(RefreshRequest("string", accessToken, refreshToken))
                 .enqueue(object : Callback<RefreshResponse> {
                     override fun onResponse(
                         call: Call<RefreshResponse>,
                         response: Response<RefreshResponse>
                     ) {
                         var refreshBody = response.body()
-                        Log.d("LoginActivity", refreshBody?.msg.toString())
+                        Log.d("GlobalVariables", refreshBody?.msg.toString())
                         if (refreshBody != null) {
                             prefs.setString("access_token", refreshBody?.accessToken.toString())
                             getUser()
@@ -96,5 +98,14 @@ class GlobalVariables : Application() {
     override fun onCreate() {
         super.onCreate()
         prefs = PreferenceUtil(applicationContext)
+        var accessToken = prefs.getString("access_token", "")
+        if (accessToken != "") {
+            getUser()
+            var refreshToken = prefs.getString("refresh_token", "")
+            if (refreshToken == "") {
+                var intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+            }
+        }
     }
 }
