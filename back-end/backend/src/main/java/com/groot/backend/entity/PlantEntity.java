@@ -1,5 +1,6 @@
 package com.groot.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -95,5 +96,6 @@ public class PlantEntity extends BaseEntity{
     private String img;
 
     @OneToMany(mappedBy = "plantEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<PotEntity> potEntities;
 }
