@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -103,7 +104,8 @@ class SearchFragment : Fragment() {
         }
 
         // 자동완성으로 보여줄 내용들
-        var items = arrayOf("산세베리아", "산세산세", "산토리니", "산산산산", "secret", "sansesanse","santoriny")
+        val plantNames = GlobalVariables.prefs.getString("plant_names","")
+        val items = plantNames.substring(1, plantNames.length - 1).split(",").toTypedArray() // 괄호 제거하고 쉼표로 분리
 
         var autoCompleteTextView = rootView.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
         var adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line, items)

@@ -9,6 +9,7 @@ import android.widget.Button
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.view.login.LoginActivity
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,20 +48,22 @@ class IntroActivity : AppCompatActivity() {
 
 //        요청 보내기
         plantNamesService.requestPlantNames().enqueue(object : Callback<PlantNamesResponse> {
+            //            요청 성공
             override fun onResponse(
                 call: Call<PlantNamesResponse>,
                 response: Response<PlantNamesResponse>
             ) {
-                if(response.code() == 200) {
+                if (response.code() == 200) {
                     val plantNameBody = response.body()
 
-                    if(plantNameBody != null) {
+                    if (plantNameBody != null) {
                         val plantNames = plantNameBody.nameList.toString()
                         GlobalVariables.prefs.setString("plant_names", plantNames)
                     }
                 }
             }
 
+            //            요청 실패
             override fun onFailure(call: Call<PlantNamesResponse>, t: Throwable) {
                 Log.d("로그", "IntroActivity 실패: $t")
             }
