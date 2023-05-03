@@ -16,7 +16,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
-import com.chocobi.groot.view.community.model.Content
+import com.chocobi.groot.view.community.model.ArticleContent
 import com.chocobi.groot.view.user.model.UserService
 import retrofit2.Call
 import retrofit2.Callback
@@ -159,7 +159,7 @@ class UserTab3Fragment : Fragment() {
             val communityArticleListResponse = CommunityArticleListResponse(
                 articles = Articles(
                     content = listOf(
-                        Content(
+                        ArticleContent(
                             articleId = article.articleId,
                             category = article.category,
                             userPK = article.userPK,

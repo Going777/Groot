@@ -18,8 +18,10 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.R
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.CommentAdapter
 import com.chocobi.groot.view.community.model.Article
+import com.chocobi.groot.view.community.model.BookmarkResponse
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.google.android.material.tabs.TabLayout
@@ -59,14 +61,16 @@ class CommunityDetailFragment : Fragment() {
         var detailContent = view.findViewById<TextView>(R.id.detailContent)
         var detailTag = view.findViewById<TextView>(R.id.detailTag)
         var detailCommentCnt = view.findViewById<TextView>(R.id.detailCommentCnt)
+        var bookmarkStatus = false
 
 //                retrofit 객체 만들기
-        var retrofit = RetrofitClient.getClient()!!
+        val retrofit = RetrofitClient.getClient()!!
 
-        var communityArticleDetailService = retrofit.create(CommunityArticleDetailService::class.java)
+        val communityArticleDetailService = retrofit.create(CommunityArticleDetailService::class.java)
 
         communityArticleDetailService.requestCommunityArticleDetail(articleId!!).enqueue(object :
             Callback<CommunityArticleDetailResponse> {
+                @SuppressLint("SetTextI18n")
                 override fun onResponse(call: Call<CommunityArticleDetailResponse>, response: Response<CommunityArticleDetailResponse>) {
                     if (response.code() == 200) {
                         Log.d("CommunityDetailFragment", "성공")
@@ -104,21 +108,15 @@ class CommunityDetailFragment : Fragment() {
                         detailCommentCnt.text = "댓글 (" + articleDetailData.article.commentCnt.toString() + ")"
 
 
-                        var isBookmarked = articleDetailData.article.bookmark
+                        bookmarkStatus = articleDetailData.article.bookmark
                         // 북마크
                         bookmarkButton = view.findViewById(R.id.bookmarkLine)
-                        if (isBookmarked == true) {
+                        if (bookmarkStatus == true) {
                             bookmarkButton.setImageResource(R.drawable.ic_bookmark_fill)
                         } else {
                             bookmarkButton.setImageResource(R.drawable.ic_bookmark)
                         }
-                        bookmarkButton.setOnClickListener {
-                            isBookmarked = !isBookmarked
-                            bookmarkButton.setImageResource(
-                                if (isBookmarked) R.drawable.ic_bookmark_fill
-                                else R.drawable.ic_bookmark
-                            )
-                        }
+
 
                         Log.d( "CommunityDetailFragment", articleDetailData.toString())
 
@@ -133,6 +131,36 @@ class CommunityDetailFragment : Fragment() {
             }
         )
 
+
+//        북마크 수정 api
+
+        val userPK = UserData.getUserPK()
+        val communityBookmarkService = retrofit.create(CommunityBookmarkService::class.java)
+        bookmarkButton = view.findViewById(R.id.bookmarkLine)
+        bookmarkButton.setOnClickListener {
+            communityBookmarkService.requestCommunityBookmark(BookmarkRequest(articleId, userPK, bookmarkStatus)).enqueue(object :
+                Callback<BookmarkResponse> {
+                override fun onResponse(
+                    call: Call<BookmarkResponse>,
+                    response: Response<BookmarkResponse>
+                ) {
+                    if (response.code() == 200) {
+                        Log.d("CommunityDetailFragment", "북마크상태변경 성공")
+                        bookmarkStatus = !bookmarkStatus
+                        bookmarkButton.setImageResource(
+                            if (bookmarkStatus) R.drawable.ic_bookmark_fill
+                            else R.drawable.ic_bookmark
+                        )
+                    } else {
+                        Log.d("CommunityDetailFragment", "북마크상태변경 실패")
+                    }
+                }
+
+                override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
+                    Log.d("CommunityDetailFragment", "북마크상태변경 실패")
+                }
+            })
+        }
 
 
 // 2. RecyclerView의 레이아웃 매니저 설정
