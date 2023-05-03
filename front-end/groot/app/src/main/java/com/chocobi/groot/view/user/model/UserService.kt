@@ -61,6 +61,7 @@ interface UserService {
 }
 
 class RefreshRequest internal constructor(
+    val grantType: String,
     val accessToken: String,
     val refreshToken: String
 )

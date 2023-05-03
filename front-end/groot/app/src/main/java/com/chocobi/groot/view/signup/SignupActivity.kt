@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -79,6 +80,9 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun checkDupId(textId: String) {
+        if (textId == null) {
+            return
+        }
         var retrofit = Retrofit.Builder()
             .baseUrl(GlobalVariables.getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
@@ -95,9 +99,18 @@ class SignupActivity : AppCompatActivity() {
                 ) {
                     var checkDupIdMsg = response.body()?.msg
                     if (checkDupIdMsg == null) {
-                        checkDupIdMsg =
-                            JSONObject(response.errorBody()?.string()!!).getString("msg")
-                    } else {
+
+                        try {
+                            JSONObject(response.errorBody()?.string()).let { json ->
+                                checkDupIdMsg = json.getString("msg")
+                            }
+                        } catch (e: JSONException) {
+                            // 예외 처리: msg 속성이 존재하지 않는 경우
+                            checkDupIdMsg = "아이디를 입력해주세요."
+                            e.printStackTrace()
+                        }
+
+                 } else {
                         isCheckedDupId = true
                     }
                     var dialog = AlertDialog.Builder(
@@ -126,6 +139,9 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun checkDupName(textName:String) {
+        if (textName == null) {
+            return
+        }
         //        retrofit 객체 만들기
         var retrofit = Retrofit.Builder()
             .baseUrl(GlobalVariables.getBaseUrl())
@@ -140,9 +156,15 @@ class SignupActivity : AppCompatActivity() {
                 ) {
                     var checkDupNameMsg = response.body()?.msg
                     if (checkDupNameMsg == null) {
-                        checkDupNameMsg =
-                            JSONObject(response.errorBody()?.string()!!).getString("msg")
-                    } else {
+                        try {
+                            JSONObject(response.errorBody()?.string()).let { json ->
+                                checkDupNameMsg = json.getString("msg")
+                            }
+                        } catch (e: JSONException) {
+                            // 예외 처리: msg 속성이 존재하지 않는 경우
+                            checkDupNameMsg = "닉네임을 입력해주세요."
+                            e.printStackTrace()
+                        }                   } else {
                         isCheckedDupName = true
                     }
                     var dialog = AlertDialog.Builder(
@@ -214,8 +236,8 @@ class SignupActivity : AppCompatActivity() {
                     } else {
                         signupMsg =
                             JSONObject(
-                                response.errorBody()?.string()!!
-                            ).getString("msg")
+                                response.errorBody()?.string()
+                            )?.getString("msg")
                         Log.d("SignupActivity", response.code().toString() + signupMsg)
                     }
 

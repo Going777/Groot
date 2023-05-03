@@ -63,6 +63,7 @@ class SearchFragment : Fragment() {
 //        Camera 버튼 클릭
         val cameraBtn = rootView.findViewById<ImageButton>(R.id.cameraBtn)
         cameraBtn.setOnClickListener {
+            mActivity.setCameraStatus("searchPlant")
             mActivity.requirePermissions(arrayOf(android.Manifest.permission.CAMERA),  PERMISSION_CAMERA)
         }
 
