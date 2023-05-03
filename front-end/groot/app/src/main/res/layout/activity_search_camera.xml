@@ -26,12 +26,13 @@
         android:id="@+id/cardView"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
         android:layout_marginBottom="30dp"
         app:cardBackgroundColor="#9E151515"
         app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,8 +41,7 @@
             app:layout_constraintBottom_toTopOf="@+id/button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.805">
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="150dp"
@@ -106,21 +106,49 @@
     </androidx.cardview.widget.CardView>
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/detailBtn"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="272dp"
         android:text="자세히 보기"
         android:translationZ="3dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintStart_toStartOf="@+id/cardView" />
+        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+    <Button
+        android:id="@+id/addPlantBtn"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="272dp"
+        android:text="식물 등록하기"
+        android:translationZ="3dp"
+        app:layout_constraintEnd_toEndOf="@+id/cardView"
+        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+
+
+    <Button
+        android:id="@+id/searchBtn"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="직접 찾아보기"
+        android:translationZ="3dp"
+        app:layout_constraintEnd_toEndOf="@+id/addPlantBtn"
+        app:layout_constraintStart_toStartOf="@+id/addPlantBtn"
+        app:layout_constraintTop_toBottomOf="@+id/addPlantBtn" />
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:translationZ="-3dp"
         app:cardBackgroundColor="#4D161616">
+
 
     </androidx.cardview.widget.CardView>
 

@@ -4,18 +4,18 @@ import android.app.Application
 
 class UserData : Application() {
     companion object {
-        private var id = 0
-        private var userId = "groot"
-        private var nickName = "Groot"
+        private var userPK = 0
+        private var userId = "User Id"
+        private var nickName = "User Nickname"
         private var profile : String? = null
-        private var registerDate = 1
+        private var registerDate = 0
 
-        fun getId(): Int {
-            return id
+        fun getUserPK(): Int {
+            return userPK
         }
 
-        fun setId(idNum: Int) {
-            id = idNum
+        fun setUserPK(idNum: Int) {
+            userPK = idNum
         }
 
         fun getUserId(): String {

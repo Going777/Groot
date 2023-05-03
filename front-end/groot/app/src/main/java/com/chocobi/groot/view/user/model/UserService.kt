@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.user.model
 
+import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.login.LoginRequest
 import retrofit2.Call
 import retrofit2.http.Body
@@ -8,6 +9,8 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface UserService {
@@ -28,6 +31,28 @@ interface UserService {
     fun getUser(
     ): Call<GetUserResponse>
 
+    @GET("/api/users/mypage/article")
+    fun requestUserArticleList(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): Call<CommunityArticleListResponse>
+
+
+    @GET("/api/users/mypage/bookmark")
+    fun requestUserBookmarkList(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): Call<CommunityArticleListResponse>
+
+    @GET("/api/articles/category/{category}") // 요청 url
+    fun requestUserArticleList(
+//        input 정의
+        @Path("category") categoryInput:String,
+        @Query("page") pageInput:Int,
+        @Query("size") sizeInput:Int,
+
+        ) : Call<CommunityArticleListResponse> // output 정의
+
     @Headers("content-type: application/json")
     @POST("/api/users/refresh")
     fun refresh(
@@ -36,6 +61,7 @@ interface UserService {
 }
 
 class RefreshRequest internal constructor(
+    val grantType: String,
     val accessToken: String,
     val refreshToken: String
 )

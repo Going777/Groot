@@ -13,10 +13,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
-import com.chocobi.groot.view.community.model.Content
+import com.chocobi.groot.view.community.model.ArticleContent
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,7 +33,7 @@ class CommunityTab4Fragment : Fragment() {
     private lateinit var getData: CommunityArticleListResponse
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_community_tab2, container, false)
+        val view = inflater.inflate(R.layout.fragment_community_tab4, container, false)
         findViews(view)
         setListeners()
         initList()
@@ -41,10 +42,8 @@ class CommunityTab4Fragment : Fragment() {
         showProgress()
 
 //                retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.getClient()!!
+
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
         var communityArticleCategory = "Tip"
@@ -55,10 +54,19 @@ class CommunityTab4Fragment : Fragment() {
             Callback<CommunityArticleListResponse> {
             override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
                 if (response.code() == 200) {
-                    Log.d("CommunityTab2Fragment", "성공")
+                    Log.d("CommunityTab4Fragment", "성공")
                     val checkResponse =  response.body()?.articles?.content
                     getData = response.body()!!
-                    Log.d("CommunityTab2Fragment", "$checkResponse")
+                    Log.d("CommunityTab4Fragment", "$checkResponse")
+
+                    val totalElements = getData.articles.total // 전체 데이터 수
+                    val currentPage = communityArticlePage // 현재 페이지 번호
+                    val pageSize = 10 // 페이지 당 아이템 수
+                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+
+                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                        isLastPage = true
+                    }
 
                     val list = createDummyData(0, 10)
                     ThreadUtil.startUIThread(1000) {
@@ -66,12 +74,12 @@ class CommunityTab4Fragment : Fragment() {
                         hideProgress()
                     }
                 } else {
-                    Log.d("CommunityTab2Fragment", "실패1")
+                    Log.d("CommunityTab4Fragment", "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("CommunityTab2Fragment", "실패2")
+                Log.d("CommunityTab4Fragment", "실패2")
             }
 
         })
@@ -104,10 +112,8 @@ class CommunityTab4Fragment : Fragment() {
     }
 
     private fun reload() {
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.getClient()!!
+
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
         var communityArticleCategory = "Tip"
@@ -118,10 +124,10 @@ class CommunityTab4Fragment : Fragment() {
             Callback<CommunityArticleListResponse> {
             override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
                 if (response.code() == 200) {
-                    Log.d("CommunityTab2Fragment", "성공")
+                    Log.d("CommunityTab4Fragment", "성공")
                     val checkResponse =  response.body()?.articles?.content
                     getData = response.body()!!
-                    Log.d("CommunityTab2Fragment", "$checkResponse")
+                    Log.d("CommunityTab4Fragment", "$checkResponse")
 
                     val list = createDummyData(0, 10)
                     ThreadUtil.startUIThread(1000) {
@@ -129,12 +135,12 @@ class CommunityTab4Fragment : Fragment() {
                         hideProgress()
                     }
                 } else {
-                    Log.d("CommunityTab2Fragment", "실패1")
+                    Log.d("CommunityTab4Fragment", "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("CommunityTab2Fragment", "실패2")
+                Log.d("CommunityTab4Fragment", "실패2")
             }
 
         })
@@ -156,10 +162,8 @@ class CommunityTab4Fragment : Fragment() {
         communityArticlePage++
 
         // Retrofit을 사용하여 새로운 데이터를 받아옵니다.
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.getClient()!!
+
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
         var communityArticleCategory = "Tip"
@@ -224,7 +228,7 @@ class CommunityTab4Fragment : Fragment() {
             val communityArticleListResponse = CommunityArticleListResponse(
                 articles = Articles(
                     content = listOf(
-                        Content(
+                        ArticleContent(
                             articleId = article.articleId,
                             category = article.category,
                             userPK = article.userPK,

@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
-import com.chocobi.groot.view.community.CommunityComment
+import com.chocobi.groot.view.community.model.CommunityCommentResponse
 
 
-class CommentAdapter(private val commentList: ArrayList<CommunityComment>) :
+class CommentAdapter(private val commentList: ArrayList<CommunityCommentResponse>) :
     RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -19,9 +19,9 @@ class CommentAdapter(private val commentList: ArrayList<CommunityComment>) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 //        holder.commentProfileImg.text = commentList[position].ProfileImg
-        holder.commentNickname.text = commentList[position].Nickname
-        holder.commentDate.text = commentList[position].Date
-        holder.commentContext.text = commentList[position].Context
+        holder.commentNickname.text = commentList[position].comment.content[0].nickName
+        holder.commentDate.text = commentList[position].comment.content[0].createTime.toString()
+        holder.commentContext.text = commentList[position].comment.content[0].content
     }
 
     override fun getItemCount(): Int {

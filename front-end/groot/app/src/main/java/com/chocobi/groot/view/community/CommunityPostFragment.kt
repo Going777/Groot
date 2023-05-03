@@ -1,10 +1,7 @@
 package com.chocobi.groot.view.community
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,12 +10,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import com.chocobi.groot.R
 import retrofit2.Call
@@ -119,17 +112,17 @@ class CommunityPostFragment : Fragment() {
         toPostListBtn.setOnClickListener(View.OnClickListener{
             // 요청 보내기
             communityPostService.requestLogin(titleInput.toString(), contentInput.toString()).enqueue(object:
-                Callback<CommunityPost>{
+                Callback<CommunityPostResponse>{
                 // 통신 성공 시 실행되는 코드
                 override fun onResponse(
-                    call: Call<CommunityPost>,
-                    response: Response<CommunityPost>
+                    call: Call<CommunityPostResponse>,
+                    response: Response<CommunityPostResponse>
                 ) {
                     TODO("Not yet implemented")
                 }
 
                 // 통신 실패 시 실행되는 코드
-                override fun onFailure(call: Call<CommunityPost>, t: Throwable) {
+                override fun onFailure(call: Call<CommunityPostResponse>, t: Throwable) {
                     TODO("Not yet implemented")
                 }
                 })

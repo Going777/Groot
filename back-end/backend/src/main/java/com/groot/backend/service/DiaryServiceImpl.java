@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -125,7 +126,13 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<DiaryEntity> diaryEntities = diaryRepository.findAllByPotId(potId, pageRequest);
+        List<DiaryEntity> diaryEntityList = diaryRepository.findAllByPotId(potId);
+        int start = (int) pageRequest.getOffset();
+        int end = Math.min((start+pageRequest.getPageSize()), diaryEntityList.size());
+        if(start > end){
+            return null;
+        }
+        Page<DiaryEntity> diaryEntities =  new PageImpl<>(diaryEntityList.subList(start, end), pageRequest, diaryEntityList.size());
         Page<DiaryResponseDTO> result = new DiaryResponseDTO().toDtoList(diaryEntities);
         return result;
     }

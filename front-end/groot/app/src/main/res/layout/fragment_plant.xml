@@ -75,18 +75,11 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/plantAddBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="식물 등록 페이지"/>
-
-
     </LinearLayout>
     </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/plant_fab"
+        android:id="@+id/plantFAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
