@@ -38,9 +38,9 @@ class CommunityTab1Fragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_tab1, container, false)
         val mActivity = activity as MainActivity
 
+//        지역 필터 처리
         val regionFilterBtn = view.findViewById<MaterialButton>(R.id.regionFilterBtn)
         val regionFilterBottomSheet = RegionFilterBottomSheet(requireContext())
-
         regionFilterBtn.setOnClickListener{
             regionFilterBottomSheet.show(mActivity.supportFragmentManager, regionFilterBottomSheet.tag)
         }

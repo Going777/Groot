@@ -23,8 +23,12 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
 
+//        화분 정보 받아왔는지 체크
+        val isExistPlantData = GlobalVariables.prefs.getString("plant_names", "")
+        if (isExistPlantData == "") {
 //        화분 이름 받아오기
-        getPlantNameList()
+            getPlantNameList()
+        }
 
 //        시작하기 버튼 클릭시 -> 로그인 화면으로
         var toLoginBtn = findViewById<Button>(R.id.toLoginbtn)
@@ -55,9 +59,10 @@ class IntroActivity : AppCompatActivity() {
             ) {
                 if (response.code() == 200) {
                     val plantNameBody = response.body()
+                    val test = plantNameBody?.nameList
 
                     if (plantNameBody != null) {
-                        val plantNames = plantNameBody.nameList.toString()
+                        val plantNames = plantNameBody.nameList.joinToString()
                         GlobalVariables.prefs.setString("plant_names", plantNames)
                     }
                 }
@@ -67,7 +72,6 @@ class IntroActivity : AppCompatActivity() {
             override fun onFailure(call: Call<PlantNamesResponse>, t: Throwable) {
                 Log.d("로그", "IntroActivity 실패: $t")
             }
-
         })
     }
 }
