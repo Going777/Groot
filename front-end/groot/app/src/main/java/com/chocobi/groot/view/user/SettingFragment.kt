@@ -19,6 +19,8 @@ import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.user.model.PasswordRequest
 import com.chocobi.groot.view.user.model.UserService
 
 import retrofit2.Call
@@ -81,6 +83,33 @@ class SettingFragment : Fragment() {
         }
 
         return rootView
+    }
+
+    private fun changePassword() {
+        //        retrofit 객체 만들기
+        var retrofit = RetrofitClient.getClient()!!
+
+//        service 객체 만들기
+        var userService = retrofit.create(UserService::class.java)
+
+//            userService.changePassword(PasswordRequest()).enqueue(object : Callback<BasicResponse> {
+//                override fun onResponse(
+//                    call: Call<BasicResponse>,
+//                    response: Response<BasicResponse>
+//                ) {
+//
+//                    Toast.makeText(requireContext(), "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
+////                    토큰 초기화
+//                    initializeAccessToken()
+////                    인트로 페이지로 이동
+//                    goToIntro()
+//                }
+//
+//                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+//                    Toast.makeText(requireContext(), "회원탈퇴 실패", Toast.LENGTH_SHORT).show()
+//                }
+//            })
+
     }
 
     private fun logout() {
