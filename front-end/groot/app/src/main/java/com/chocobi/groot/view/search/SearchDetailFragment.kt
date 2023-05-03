@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.search
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,15 @@ import android.widget.Button
 import android.widget.TextView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.view.search.model.PlantDetailData
+import com.chocobi.groot.view.search.model.PlantDetailResponse
+import com.chocobi.groot.view.search.model.SearchService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.random.Random
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,17 +33,13 @@ private const val ARG_PARAM2 = "param2"
  */
 class SearchDetailFragment : Fragment() {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var plantId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        plantId = arguments?.getString("plant_id")
 
-
+        plantId?.let { getDetail(it.toInt()) }
     }
 
     override fun onCreateView(
@@ -50,23 +56,32 @@ class SearchDetailFragment : Fragment() {
         return rootView
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SearchDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun getDetail(plantId: Int) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(GlobalVariables.getBaseUrl())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val plantSearchService = retrofit.create(SearchService::class.java)
+
+        plantSearchService.getPlantDetail(plantId).enqueue(object : Callback<PlantDetailResponse> {
+            override fun onResponse(
+                call: Call<PlantDetailResponse>,
+                response: Response<PlantDetailResponse>
+            ) {
+                if(response.code() == 200){
+                    val res = response.body()
+                    if(res != null) {
+                        Log.d("로그", "$res: ");
+                    }
                 }
             }
+
+            override fun onFailure(call: Call<PlantDetailResponse>, t: Throwable) {
+                Log.d("로그", "정보조회 실패: $t");
+            }
+
+        })
     }
+
 }

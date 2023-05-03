@@ -79,7 +79,17 @@ class SearchFragment : Fragment() {
 
         rvAdapter.itemClick = object : DictRVAdapter.ItemClick {
             override fun onClick(view: View, position: Int) {
-                mActivity.changeFragment("search_detail")
+                val bundle = Bundle().apply {
+                    putString("plant_id", plants[position].plantId.toString())
+                }
+
+                val passBundleBFragment = SearchDetailFragment().apply {
+                    arguments = bundle
+                }
+
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fl_container, passBundleBFragment)
+                    .commit()
             }
         }
 
