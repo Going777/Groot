@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
     private var realUri: Uri? = null
     private var cameraStatus: String? = null
 
-    fun setCameraStatus(status:String) {
+    fun setCameraStatus(status: String) {
         cameraStatus = status
     }
 
@@ -268,7 +268,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     /** 카메라 및 앨범 Intent 결과
      * */
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Unit {
@@ -320,7 +319,6 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate실행: ");
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 
 
 //        if (savedInstanceState == null) {
@@ -404,10 +402,18 @@ class MainActivity : AppCompatActivity() {
 
         //        특정 프레그먼트로 이동
         var toPage = intent.getStringExtra("toPage")
-        Log.d("MainActivity", "onCreate")
-        if (toPage == "search_detail") {
+        if (toPage != null) {
+
             Log.d("MainActivity", "toPage" + toPage)
-            bnv_main.run { selectedItemId = R.id.searchFragment }
+
+            when (toPage) {
+                "search_detail" -> {
+                    bnv_main.run { selectedItemId = R.id.searchFragment }
+                }
+//                "plant_add1" -> {
+//                    bnv_main.run { selectedItemId = R.id.plantFragment }
+//                }
+            }
             changeFragment(toPage)
         }
     }
