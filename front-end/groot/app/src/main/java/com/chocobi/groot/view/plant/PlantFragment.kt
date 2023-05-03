@@ -68,11 +68,7 @@ class PlantFragment : Fragment() {
         toDiaryBtn.setOnClickListener {
             mActivity.changeFragment("plant_diary")
         }
-//        Plant Add 페이지로 이동
-        val plantAddBtn = rootView.findViewById<Button>(R.id.plantAddBtn)
-        plantAddBtn.setOnClickListener {
-            mActivity.changeFragment("plant_add1")
-        }
+
 
         val plantFAB = rootView.findViewById<FloatingActionButton>(R.id.plantFAB)
         plantFAB.setOnClickListener {

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.view.pot.Pot1Activity
 import kotlin.random.Random
 
 
@@ -21,8 +22,8 @@ class SearchCameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_camera)
 
-//        imageUrl 전달받기
-        var imageUri = intent.getStringExtra("imageUri")?.toUri()
+//        imageUri 전달받기
+        var imageUri = intent.getStringExtra("imageUri")
         var cameraStatus = intent.getStringExtra("cameraStatus")
         Log.d("SearchCameraActivity", imageUri.toString())
         Log.d("SearchCameraActivity", cameraStatus.toString())
@@ -30,7 +31,7 @@ class SearchCameraActivity : AppCompatActivity() {
 
 //        image 띄우기
         var resultImgView = findViewById<ImageView>(R.id.resultImgView)
-        resultImgView.setImageURI(imageUri)
+        resultImgView.setImageURI(imageUri?.toUri())
 
 //        퍼센트 조작
         var percentText = findViewById<TextView>(R.id.percentText)
@@ -49,8 +50,8 @@ class SearchCameraActivity : AppCompatActivity() {
         //        화분 등록 버튼 조작
         val addPlantBtn = findViewById<Button>(R.id.addPlantBtn)
         addPlantBtn.setOnClickListener {
-            var intent = Intent(this, MainActivity::class.java)
-            intent.putExtra("toPage", "plant_add1")
+            var intent = Intent(this, Pot1Activity::class.java)
+            intent.putExtra("imageUri", imageUri)
             startActivity(intent)
         }
 

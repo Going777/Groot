@@ -3,30 +3,20 @@ package com.chocobi.groot
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.net.toUri
-import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.databinding.ActivityMainBinding
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
-import com.chocobi.groot.view.login.LoginActivity
-import com.chocobi.groot.view.plant.PlantAdd1Fragment
-import com.chocobi.groot.view.plant.PlantAdd2Fragment
 import com.chocobi.groot.view.plant.PlantDetailFragment
 import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
@@ -37,8 +27,6 @@ import com.chocobi.groot.view.search.SearchFragment
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
@@ -63,21 +51,6 @@ class MainActivity : AppCompatActivity() {
     //        fragment 조작
     fun changeFragment(index: String) {
         when (index) {
-            "plant_add1" -> {
-                val plantAddFragment = PlantAdd1Fragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, plantAddFragment)
-                    .commit()
-            }
-
-            "plant_add2" -> {
-                val plantAddFragment = PlantAdd2Fragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, plantAddFragment)
-                    .commit()
-            }
 
             "plant_diary" -> {
                 val plantDiaryFragment = PlantDiaryFragment()
@@ -410,9 +383,6 @@ class MainActivity : AppCompatActivity() {
                 "search_detail" -> {
                     bnv_main.run { selectedItemId = R.id.searchFragment }
                 }
-//                "plant_add1" -> {
-//                    bnv_main.run { selectedItemId = R.id.plantFragment }
-//                }
             }
             changeFragment(toPage)
         }
