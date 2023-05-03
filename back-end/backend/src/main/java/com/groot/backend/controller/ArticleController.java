@@ -4,6 +4,7 @@ import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.request.BookmarkDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
+import com.groot.backend.dto.response.TagRankDTO;
 import com.groot.backend.dto.response.UserSharedArticleDTO;
 import com.groot.backend.service.ArticleService;
 import com.groot.backend.service.S3Service;
@@ -262,6 +263,15 @@ public class ArticleController {
     }
 
     // 인기태그 조회
+    @GetMapping("/tag")
+    public ResponseEntity readTagRanking(){
+        resultMap = new HashMap<>();
+        List<TagRankDTO> result = articleService.readTagRanking();
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg","인기 태그 조회 성공");
+        resultMap.put("tags", result);
+        return ResponseEntity.ok().body(resultMap);
+    }
 
     // 나눔 게시글 지역 필터링
     @GetMapping("/filter")
