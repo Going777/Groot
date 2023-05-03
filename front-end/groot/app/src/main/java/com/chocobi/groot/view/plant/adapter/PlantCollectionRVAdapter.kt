@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
@@ -42,8 +43,8 @@ class PlantCollectionRVAdapter(val items: MutableList<String>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindItems(items[position])
 
-        val postBtn = holder.itemView.findViewById<Button>(R.id.plantPostDiaryBtn)
-        val scanBtn = holder.itemView.findViewById<Button>(R.id.plantScanBtn)
+        val postBtn = holder.itemView.findViewById<ImageButton>(R.id.plantPostDiaryBtn)
+        val scanBtn = holder.itemView.findViewById<ImageButton>(R.id.plantScanBtn)
         val detailBtn = holder.itemView.findViewById<Button>(R.id.plantDetailBtn)
 
         postBtn.setOnClickListener {
