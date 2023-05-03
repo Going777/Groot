@@ -1,26 +1,21 @@
 package com.chocobi.groot.view.user
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings.Global
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.chocobi.groot.IntroActivity
+import com.chocobi.groot.view.intro.IntroActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 
 import com.chocobi.groot.data.RetrofitClient
-
-import org.json.JSONObject
 
 import com.chocobi.groot.view.user.model.LogoutResponse
 import com.chocobi.groot.view.user.model.UserService
@@ -28,8 +23,6 @@ import com.chocobi.groot.view.user.model.UserService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER

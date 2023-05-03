@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
-import com.chocobi.groot.view.community.CommunityTab2Fragment
+import com.chocobi.groot.view.intro.IntroActivity
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.signup.SignupActivity
 

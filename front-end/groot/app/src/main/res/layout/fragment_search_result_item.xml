@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/dictRvItemImage"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="centerCrop"
@@ -25,7 +25,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/dictRvItem"
+        android:id="@+id/dictRvItemName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="rv"
