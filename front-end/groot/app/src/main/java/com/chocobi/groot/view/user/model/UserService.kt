@@ -31,6 +31,19 @@ interface UserService {
     fun getUser(
     ): Call<GetUserResponse>
 
+    @GET("/api/users/mypage/article")
+    fun requestUserArticleList(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): Call<CommunityArticleListResponse>
+
+
+    @GET("/api/users/mypage/bookmark")
+    fun requestUserBookmarkList(
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): Call<CommunityArticleListResponse>
+
     @GET("/api/articles/category/{category}") // 요청 url
     fun requestUserArticleList(
 //        input 정의

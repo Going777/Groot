@@ -12,17 +12,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.view.community.CommunityArticleListService
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.Content
+import com.chocobi.groot.view.user.model.UserService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class UserTab2Fragment : Fragment() {
@@ -32,6 +30,9 @@ class UserTab2Fragment : Fragment() {
     private lateinit var adapter: RecyclerViewAdapter
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityArticleListResponse
+    private var communityArticleSize = 10
+    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
+    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,25 +46,36 @@ class UserTab2Fragment : Fragment() {
 
         showProgress()
 
-//                retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "자유"
         var communityArticlePage = 0
-        var communityArticleSize = 10
+        requestUserArticleList(communityArticlePage,communityArticleSize)
 
-        communityArticleListService.requestCommunityArticleList(communityArticleCategory,communityArticlePage,communityArticleSize).enqueue(object :
+        return view    }
+
+    private fun requestUserArticleList(communityArticlePage:Int, communityArticleSize:Int) {
+
+//                retrofit 객체 만들기
+        var retrofit = RetrofitClient.getClient()!!
+        var userService = retrofit.create(UserService::class.java)
+
+        userService.requestUserArticleList(communityArticlePage,communityArticleSize).enqueue(object :
             Callback<CommunityArticleListResponse> {
             override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
                 if (response.code() == 200) {
-                    Log.d("CommunityTab2Fragment", "성공")
+                    Log.d("UserTab2Fragment", "성공")
                     val checkResponse =  response.body()?.articles?.content
+                    val checkTotal =  response.body()?.articles?.total
                     getData = response.body()!!
-                    Log.d("CommunityTab2Fragment", "$checkResponse")
+                    Log.d("UserTab2Fragment", "$checkResponse")
+                    Log.d("UserTab2Fragment", "$checkTotal")
+
+                    val totalElements = getData.articles.total // 전체 데이터 수
+                    val currentPage = communityArticlePage // 현재 페이지 번호
+                    val pageSize = 10 // 페이지 당 아이템 수
+                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+
+                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                        isLastPage = true
+                    }
 
                     val list = createDummyData(0, 10)
                     ThreadUtil.startUIThread(1000) {
@@ -71,16 +83,15 @@ class UserTab2Fragment : Fragment() {
                         hideProgress()
                     }
                 } else {
-                    Log.d("CommunityTab2Fragment", "실패1")
+                    Log.d("UserTab2Fragment", "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("CommunityTab2Fragment", "실패2")
+                Log.d("UserTab2Fragment", "실패2")
             }
-
         })
-        return view    }
+    }
 
     private fun findViews(view: View) {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -107,46 +118,10 @@ class UserTab2Fragment : Fragment() {
     }
 
     private fun reload() {
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "자유"
         var communityArticlePage = 0
-        var communityArticleSize = 10
-
-        communityArticleListService.requestCommunityArticleList(communityArticleCategory,communityArticlePage,communityArticleSize).enqueue(object :
-            Callback<CommunityArticleListResponse> {
-            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
-                if (response.code() == 200) {
-                    Log.d("CommunityTab2Fragment", "성공")
-                    val checkResponse =  response.body()?.articles?.content
-                    getData = response.body()!!
-                    Log.d("CommunityTab2Fragment", "$checkResponse")
-
-                    val list = createDummyData(0, 10)
-                    ThreadUtil.startUIThread(1000) {
-                        adapter.reload(list)
-                        hideProgress()
-                    }
-                } else {
-                    Log.d("CommunityTab2Fragment", "실패1")
-                }
-            }
-
-            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("CommunityTab2Fragment", "실패2")
-            }
-
-        })
+        requestUserArticleList(communityArticlePage,communityArticleSize)
     }
 
-
-    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
-
-    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     private fun loadMore() {
         if (isLastPage) { // 마지막 페이지라면, 로딩을 멈춥니다.
@@ -157,53 +132,8 @@ class UserTab2Fragment : Fragment() {
 
         // 페이지 번호를 1 증가시킵니다.
         communityArticlePage++
-
-        // Retrofit을 사용하여 새로운 데이터를 받아옵니다.
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "자유"
-        var communityArticleSize = 10
-
-        communityArticleListService.requestCommunityArticleList(communityArticleCategory, communityArticlePage, communityArticleSize).enqueue(object :
-            Callback<CommunityArticleListResponse> {
-            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
-                if (response.code() == 200) {
-                    Log.d("loadmore", "성공")
-                    val checkResponse =  response.body()?.articles?.content
-                    getData = response.body()!!
-                    Log.d("loadmore", "$checkResponse")
-
-                    val totalElements = getData.articles.total // 전체 데이터 수
-                    val currentPage = communityArticlePage // 현재 페이지 번호
-                    val pageSize = 10 // 페이지 당 아이템 수
-                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                        isLastPage = true
-                    }
-
-                    val list = createDummyData(0, 10)
-
-                    ThreadUtil.startUIThread(1000) {
-                        adapter.loadMore(list)
-                        hideProgress()
-                    }
-                } else {
-                    Log.d("loadmore", "실패1")
-                }
-            }
-
-            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("loadmore", "실패2")
-            }
-
-        })
+        requestUserArticleList(communityArticlePage, communityArticleSize)
     }
-
 
 
     private fun showProgress() {
