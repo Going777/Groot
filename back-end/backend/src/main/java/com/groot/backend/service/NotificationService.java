@@ -8,4 +8,6 @@ public interface NotificationService {
     SseEmitter subscribe(Long userId, String lastEventId);
     void send(UserEntity receiver, String content, String url, String page, Long contentId) ;
 
+    NotificationEntity readCheck(Long notificationId);
+
 }

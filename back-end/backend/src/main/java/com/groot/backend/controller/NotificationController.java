@@ -1,6 +1,7 @@
 package com.groot.backend.controller;
 
 import com.groot.backend.dto.response.UserDTO;
+import com.groot.backend.entity.NotificationEntity;
 import com.groot.backend.service.NotificationService;
 import com.groot.backend.util.JwtTokenProvider;
 import com.groot.backend.util.SseEmitters;
@@ -46,10 +47,10 @@ public class NotificationController {
 //        return ResponseEntity.ok(emitter);
 //    }
 //
-    @PostMapping("/count")
-    public ResponseEntity count(){
-        sseEmitters.count();
-        return ResponseEntity.ok().build();
+    @PutMapping("/readCheck/{notificationId}")
+    public ResponseEntity read(@PathVariable Long notificationId){
+        NotificationEntity result = notificationService.readCheck(notificationId);
+        return ResponseEntity.ok().body(result);
     }
 
 //    @GetMapping(value = "/sub", produces = "text/event-stream")

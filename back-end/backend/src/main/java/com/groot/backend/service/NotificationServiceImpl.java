@@ -101,9 +101,23 @@ public class NotificationServiceImpl implements NotificationService{
         emitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-                    sendNotification(emitter, eventId, key, NotificationResponseDTO.create(notification));
+                    sendNotification(emitter, eventId, key, NotificationResponseDTO.create(notification, notification.getId()));
                 }
         );
+    }
+
+    @Override
+    public NotificationEntity readCheck(Long notificationId) {
+        NotificationEntity notification = notificationRepository.findById(notificationId).orElseThrow();
+        NotificationEntity newNotification = NotificationEntity.builder()
+//                .id(notification.getId())
+                .content(notification.getContent())
+                .page(notification.getPage())
+                .contentId(notification.getContentId())
+                .receiver(notification.getReceiver())
+                .isRead(true)
+                .build();
+        return notificationRepository.save(newNotification);
     }
 
     private NotificationEntity createNotification(UserEntity receiver, String content, String url, String page, Long contentId) {
