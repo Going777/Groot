@@ -1,7 +1,9 @@
 package com.groot.backend.service;
 
+import com.groot.backend.dto.request.PlantSearchDTO;
 import com.groot.backend.dto.response.PlantDetailDTO;
 import com.groot.backend.dto.response.PlantNameDTO;
+import com.groot.backend.dto.response.PlantThumbnailDTO;
 import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.repository.PlantRepository;
 import com.groot.backend.util.PlantCodeUtil;
@@ -9,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -70,5 +74,23 @@ public class PlantServiceImpl implements PlantService{
 
 
         return plantDetailDTO;
+    }
+
+    @Override
+    public List<PlantThumbnailDTO> plantList(PlantSearchDTO plantSearchDTO) {
+        logger.info("search plant list");
+        List<PlantThumbnailDTO> ret = new ArrayList<>(12);
+        Pageable pageable = PageRequest.of(plantSearchDTO.getPage(), 12);
+
+        List<PlantEntity> list = plantRepository.findByKrNameContains(plantSearchDTO.getName(), pageable);
+
+        list.forEach(plantEntity -> {
+            ret.add(PlantThumbnailDTO.builder()
+                            .plantId(plantEntity.getId())
+                            .krName(plantEntity.getKrName())
+                            .img(plantEntity.getImg())
+                            .build());
+        });
+        return ret;
     }
 }

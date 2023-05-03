@@ -1,6 +1,8 @@
 package com.groot.backend.controller;
 
+import com.groot.backend.dto.request.PlantSearchDTO;
 import com.groot.backend.dto.response.PlantDetailDTO;
+import com.groot.backend.dto.response.PlantThumbnailDTO;
 import com.groot.backend.service.PlantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -68,5 +67,25 @@ public class PlantController {
         }
     }
 
+    @GetMapping()
+    @Operation(summary = "Get plant thumbnail", description = "")
+    public ResponseEntity<Map<String, Object>> plantList(PlantSearchDTO plantSearchDTO) {
+        logger.info("Get plant list : {}", plantSearchDTO);
+        logger.info("param : name : {}", plantSearchDTO.getName());
+        logger.info("param : diff : {}", plantSearchDTO.getDifficulty());
+        logger.info("param : lux : {}", plantSearchDTO.getLux());
+        logger.info("param : growth : {}", plantSearchDTO.getGrowth());
+        logger.info("page no : {}", plantSearchDTO.getPage());
 
+        Map<String, Object> result = new HashMap<>();
+        List<PlantThumbnailDTO> list = plantService.plantList(plantSearchDTO);
+
+        if(list == null || list.size() < 1) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        result.put("msg", "식물 목록 조회에 성공했습니다.");
+        result.put("plants", list);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 }
