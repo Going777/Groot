@@ -38,7 +38,7 @@ class GlobalVariables : Application() {
                     response: Response<GetUserResponse>
                 ) {
                     var getUserBody = response.body()
-                    Log.d("LoginActivity", getUserBody?.msg.toString())
+                    Log.d("GlobalVariables", getUserBody?.msg.toString())
 
                     if (getUserBody?.user != null) {
                         UserData.setId(getUserBody.user.id)

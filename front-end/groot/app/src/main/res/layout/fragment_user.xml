@@ -76,7 +76,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
-                            android:text="ssafy1234"
+                            android:text="User Nickname"
                             android:textColor="@color/main"
                             android:textSize="24sp"
                             android:textStyle="bold"
@@ -105,7 +105,7 @@
                                     android:id="@+id/registerDate"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="249"
+                                    android:text="00"
                                     android:textColor="@color/main"
                                     android:textSize="16dp"
                                     android:textStyle="bold" />
@@ -124,10 +124,10 @@
                                 android:orientation="vertical">
 
                                 <TextView
-                                    android:id="@+id/article_text"
+                                    android:id="@+id/totalArticle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="10"
+                                    android:text="00"
                                     android:textColor="@color/main"
                                     android:textSize="16dp"
                                     android:textStyle="bold" />
@@ -147,10 +147,10 @@
                                 android:orientation="vertical">
 
                                 <TextView
-                                    android:id="@+id/bookmark_text"
+                                    android:id="@+id/totalBookmark"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="5"
+                                    android:text="00"
                                     android:textColor="@color/main"
                                     android:textSize="16dp"
                                     android:textStyle="bold" />
