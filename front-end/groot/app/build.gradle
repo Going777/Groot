@@ -147,5 +147,9 @@ dependencies {
     // The compose calendar library
     implementation 'com.kizitonwose.calendar:compose:2.3.0'
 
+//
+    implementation 'androidx.fragment:fragment:1.3.6'
+
+
 }
 

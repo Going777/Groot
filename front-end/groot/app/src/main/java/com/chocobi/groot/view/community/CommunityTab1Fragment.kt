@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
@@ -17,6 +18,8 @@ import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.Content
+import com.chocobi.groot.view.user.ProfileBottomSheet
+import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,6 +36,15 @@ class CommunityTab1Fragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_community_tab1, container, false)
+        val mActivity = activity as MainActivity
+
+        val regionFilterBtn = view.findViewById<MaterialButton>(R.id.regionFilterBtn)
+        val regionFilterBottomSheet = RegionFilterBottomSheet(requireContext())
+
+        regionFilterBtn.setOnClickListener{
+            regionFilterBottomSheet.show(mActivity.supportFragmentManager, regionFilterBottomSheet.tag)
+        }
+
         findViews(view)
         setListeners()
         initList()
