@@ -97,6 +97,8 @@ class GlobalVariables : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        Log.d("GlobalVariables", "onCreate")
+
         prefs = PreferenceUtil(applicationContext)
         var accessToken = prefs.getString("access_token", "")
         if (accessToken != "") {
