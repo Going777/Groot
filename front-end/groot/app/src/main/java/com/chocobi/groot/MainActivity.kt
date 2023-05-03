@@ -312,9 +312,7 @@ class MainActivity : AppCompatActivity() {
 //                .commit()
 //        }
 
-        val plantFragment =
-            supportFragmentManager.findFragmentById(R.id.plantFragment) as PlantFragment?
-        Log.d(TAG, "MainActivity, $plantFragment,이건 되니")
+
 
 //        if (plantFragment != null) {
 //            activityToolbar = plantFragment.getToolbar()
