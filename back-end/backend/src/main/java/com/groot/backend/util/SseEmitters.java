@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SseEmitters {
+public class  SseEmitters {
 
     private static final AtomicLong counter = new AtomicLong();
     private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();

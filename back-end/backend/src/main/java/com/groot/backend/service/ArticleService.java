@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface ArticleService {
+    List<String> readRegion();
     boolean existedArticleId(Long articleId);
     boolean createArticle(ArticleDTO articleDTO, String[] imgPaths);
     ArticleResponseDTO readArticle(Long articleId, Long userPK);

@@ -39,6 +39,7 @@
             android:textColorHint="@color/grey" />
 
         <ImageButton
+            android:id="@+id/searchPlantBtn"
             android:layout_width="45dp"
             android:layout_weight="0"
             android:layout_height="wrap_content"

@@ -69,8 +69,8 @@ public class ArticleController {
     public ResponseEntity readArticleList(HttpServletRequest request,
                                           @PathVariable String category, @RequestParam Integer page, @RequestParam Integer size){
         resultMap = new HashMap<>();
-        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 5L;
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -148,8 +148,8 @@ public class ArticleController {
     @GetMapping("/{articleId}")
     public ResponseEntity readArticle(HttpServletRequest request,
                                       @PathVariable Long articleId){
-        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 5L;
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+
         resultMap = new HashMap<>();
         if(!articleService.existedArticleId(articleId)){
             resultMap.put("result", FAIL);
@@ -233,8 +233,8 @@ public class ArticleController {
                                         @RequestParam Integer page,
                                         @RequestParam Integer size){
         resultMap = new HashMap<>();
-        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 5L;
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -270,8 +270,8 @@ public class ArticleController {
                                                 @RequestParam Integer page,
                                                 @RequestParam Integer size){
         resultMap = new HashMap<>();
-        //Long userPK = jwtTokenProvider.getIdByAccessToken(request);
-        Long userPK = 5L;
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+
 
         if(size == 0){
             resultMap.put("result", FAIL);
@@ -327,4 +327,22 @@ public class ArticleController {
 
 
 
+    // 지역 반환
+    @GetMapping("/regions/list")
+    public ResponseEntity readRegion(){
+        resultMap = new HashMap<>();
+        try{
+            List<String> result = articleService.readRegion();
+
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg","지역 리스트 조회");
+            resultMap.put("regions", result);
+            return ResponseEntity.ok().body(resultMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","지역 리스트 조회 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
 }

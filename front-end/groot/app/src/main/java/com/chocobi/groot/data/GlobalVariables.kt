@@ -43,7 +43,7 @@ class GlobalVariables : Application() {
                     Log.d("GlobalVariables", getUserBody?.msg.toString())
 
                     if (getUserBody?.user != null) {
-                        UserData.setId(getUserBody.user.id)
+                        UserData.setUserPK(getUserBody.user.userPK)
                         UserData.setUserId(getUserBody.user.userId)
                         UserData.setNickName(getUserBody.user.nickName)
                         UserData.setProfile(getUserBody.user.profile)

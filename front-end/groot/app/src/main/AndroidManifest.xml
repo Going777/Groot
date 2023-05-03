@@ -57,7 +57,7 @@
             android:name=".view.login.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".IntroActivity"
+            android:name=".view.intro.IntroActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

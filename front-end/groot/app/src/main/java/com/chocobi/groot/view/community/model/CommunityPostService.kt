@@ -13,5 +13,5 @@ interface CommunityPostService {
 //        input 정의
         @Field("title") titleInput:String,
         @Field("content") contentInput:String,
-    ) : Call<CommunityPost> // output 정의
+    ) : Call<CommunityPostResponse> // output 정의
 }

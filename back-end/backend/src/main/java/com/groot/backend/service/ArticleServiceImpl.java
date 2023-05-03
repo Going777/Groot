@@ -11,7 +11,6 @@ import com.groot.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,18 @@ public class ArticleServiceImpl implements ArticleService{
     private final CommentRepository commentRepository;
     private final ArticleImageRepository articleImageRepository;
     private final ArticleBookmarkRepository aBookmarkRepo;
+    private final RegionRepository regionRepository;
     private final S3Service s3Service;
+
+    @Override
+    public List<String> readRegion() {
+        List<RegionEntity> regions = regionRepository.findAll();
+        List<String> result = new ArrayList<>();
+        for(RegionEntity entity : regions){
+            result.add(entity.getRegion());
+        }
+        return result;
+    }
 
     @Override
     public boolean existedArticleId(Long articleId) {

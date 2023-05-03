@@ -13,10 +13,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
-import com.chocobi.groot.view.community.model.Content
+import com.chocobi.groot.view.community.model.ArticleContent
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,10 +42,8 @@ class CommunityTab2Fragment : Fragment() {
         showProgress()
 
 //                retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.getClient()!!
+
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
         var communityArticleCategory = "자유"
@@ -59,6 +58,15 @@ class CommunityTab2Fragment : Fragment() {
                     val checkResponse =  response.body()?.articles?.content
                     getData = response.body()!!
                     Log.d("CommunityTab2Fragment", "$checkResponse")
+
+                    val totalElements = getData.articles.total // 전체 데이터 수
+                    val currentPage = communityArticlePage // 현재 페이지 번호
+                    val pageSize = 10 // 페이지 당 아이템 수
+                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+
+                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                        isLastPage = true
+                    }
 
                     val list = createDummyData(0, 10)
                     ThreadUtil.startUIThread(1000) {
@@ -104,10 +112,8 @@ class CommunityTab2Fragment : Fragment() {
     }
 
     private fun reload() {
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.getClient()!!
+
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
         var communityArticleCategory = "자유"
@@ -156,10 +162,8 @@ class CommunityTab2Fragment : Fragment() {
         communityArticlePage++
 
         // Retrofit을 사용하여 새로운 데이터를 받아옵니다.
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.getClient()!!
+
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
         var communityArticleCategory = "자유"
@@ -227,7 +231,7 @@ class CommunityTab2Fragment : Fragment() {
             val communityArticleListResponse = CommunityArticleListResponse(
                 articles = Articles(
                     content = listOf(
-                        Content(
+                        ArticleContent(
                             articleId = article.articleId,
                             category = article.category,
                             userPK = article.userPK,

@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.community.adapter
 
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -41,12 +42,20 @@ class RecyclerViewAdapter: RecyclerView.Adapter<ItemViewHolder>() {
                 if (context is FragmentActivity) {
                     val fragmentManager = context.supportFragmentManager
                     val communityDetailFragment = CommunityDetailFragment()
+
+                    // articleId 값을 CommunityDetailFragment에 전달하기 위해 인수(bundle)를 설정합니다.
+                    val args = Bundle()
+                    args.putInt("articleId", communityArticleListResponse.articles.content[0].articleId)
+                    communityDetailFragment.arguments = args
+                    Log.d("CommunityDetailFragmentArticleId", communityDetailFragment.arguments.toString())
+
                     fragmentManager.beginTransaction()
                         .replace(R.id.fl_container, communityDetailFragment)
                         .addToBackStack(null)
                         .commit()
                 }
             }
+
         }
 
         holder.updateView()

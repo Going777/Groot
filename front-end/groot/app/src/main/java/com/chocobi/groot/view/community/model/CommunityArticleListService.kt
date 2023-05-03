@@ -12,10 +12,6 @@ import retrofit2.http.Query
 
 interface CommunityArticleListService {
 
-    @Headers(
-        "accept: application/json",
-        "content-type: application/json"
-    )
     @GET("/api/articles/category/{category}") // 요청 url
     fun requestCommunityArticleList(
 //        input 정의
