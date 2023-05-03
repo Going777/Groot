@@ -76,7 +76,29 @@ class PlantFragment : Fragment() {
 
         val plantFAB = rootView.findViewById<FloatingActionButton>(R.id.plantFAB)
         plantFAB.setOnClickListener {
-            showAddDialog()
+            var dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("새 화분 등록하기")
+            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+
+            dialog.setItems(dialogArray) { _, which ->
+                when (which) {
+                    0 -> {
+                        mActivity.setCameraStatus("addPlant")
+                        mActivity.requirePermissions(
+                            arrayOf(android.Manifest.permission.CAMERA),
+                            PERMISSION_CAMERA
+                        )
+                    }
+
+                    1 -> Toast.makeText(requireContext(), "검색 모달 띄우기", Toast.LENGTH_SHORT).show()
+                }
+            }
+            dialog.setNegativeButton(
+                "취소",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            dialog.show()
         }
 
 
@@ -84,29 +106,5 @@ class PlantFragment : Fragment() {
         return rootView
     }
 
-    private fun showAddDialog() {
-        var dialog = AlertDialog.Builder(requireContext())
-        dialog.setTitle("새 화분 등록하기")
-        val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
 
-        dialog.setItems(dialogArray) { _, which ->
-            when (which) {
-                0 -> {
-//                    mActivity.setCameraStatus("addPlant")
-//                    mActivity.requirePermissions(
-//                        arrayOf(android.Manifest.permission.CAMERA),
-//                        PERMISSION_CAMERA
-//                    )
-                }
-
-                1 -> Toast.makeText(requireContext(), "검색 모달 띄우기", Toast.LENGTH_SHORT).show()
-            }
-        }
-        dialog.setNegativeButton(
-            "취소",
-            DialogInterface.OnClickListener { dialog, which ->
-                dialog.dismiss()
-            })
-        dialog.show()
-    }
 }
