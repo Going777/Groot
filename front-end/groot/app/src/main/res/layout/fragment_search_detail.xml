@@ -118,7 +118,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
-                        android:src="@drawable/ic_doc" />
+                        android:src="@drawable/ic_doc"
+                        app:tint="#555151" />
 
                     <TextView
                         android:id="@+id/descriptionText"
@@ -147,7 +148,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
-                        android:src="@drawable/ic_water_drop" />
+                        android:src="@drawable/ic_water_drop"
+                        app:tint="@color/water"/>
 
                     <TextView
                         android:id="@+id/humidityText"
@@ -179,7 +181,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
-                        android:src="@drawable/ic_temp" />
+                        android:src="@drawable/ic_temp"
+                        app:tint="#EDCB50"/>
 
                     <TextView
                         android:id="@+id/tempText"
@@ -210,7 +213,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
-                        android:src="@drawable/ic_care" />
+                        android:src="@drawable/ic_care"
+                        app:tint="#6EB51E"/>
 
                     <TextView
                         android:id="@+id/tipText"
@@ -241,7 +245,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="15dp"
-                        android:src="@drawable/ic_sun" />
+                        android:src="@drawable/ic_sun"
+                        app:tint="@color/sun"/>
 
                     <TextView
                         android:id="@+id/placeText"
@@ -267,7 +272,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="15dp"
-                    android:src="@drawable/ic_bugs" />
+                    android:src="@drawable/ic_bugs"
+                    app:tint="@color/bug"/>
 
                 <TextView
                     android:id="@+id/insectInfoText"
