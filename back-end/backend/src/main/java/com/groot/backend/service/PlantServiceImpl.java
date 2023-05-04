@@ -187,7 +187,7 @@ public class PlantServiceImpl implements PlantService{
     /**
      * search plant from db by scientific name
      * @param result top-k list with score
-     * @return plant info
+     * @return plant info, sanse for not found
      */
     private PlantIdentificationDTO searchFromDB(String[][] result) {
         logger.info("search {} from database", result[0][0]);
@@ -202,6 +202,16 @@ public class PlantServiceImpl implements PlantService{
                     .build();
 
         }
-        return null;
+        // return for not found
+        else {
+            plantEntity = plantRepository.findById(19449L).get();
+            return PlantIdentificationDTO.builder()
+                    .plantId(plantEntity.getId())
+                    .krName(plantEntity.getKrName())
+                    .sciName(plantEntity.getSciName())
+                    .score(11)
+                    .build();
+        }
+//        return null;
     }
 }
