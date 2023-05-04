@@ -266,11 +266,18 @@ public class ArticleController {
     @GetMapping("/tag")
     public ResponseEntity readTagRanking(){
         resultMap = new HashMap<>();
-        List<TagRankDTO> result = articleService.readTagRanking();
-        resultMap.put("result", SUCCESS);
-        resultMap.put("msg","인기 태그 조회 성공");
-        resultMap.put("tags", result);
-        return ResponseEntity.ok().body(resultMap);
+        try{
+            List<TagRankDTO> result = articleService.readTagRanking();
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg","인기 태그 조회 성공");
+            resultMap.put("tags", result);
+            return ResponseEntity.ok().body(resultMap);
+        }catch (Exception e){
+            e.printStackTrace();
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","인기태그 조회 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
     }
 
     // 나눔 게시글 지역 필터링

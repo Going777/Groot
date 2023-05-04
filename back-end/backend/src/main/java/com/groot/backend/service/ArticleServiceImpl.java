@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,6 +36,7 @@ public class ArticleServiceImpl implements ArticleService{
     private final RegionRepository regionRepository;
     private final S3Service s3Service;
     private final RedisTemplate<String, String> redisTemplate;
+    private final TagCountRepository tagCountRepository;
 
 
     @Override
@@ -58,7 +60,59 @@ public class ArticleServiceImpl implements ArticleService{
         String key = "ranking";
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
         Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
-        return typedTuples.stream().map(TagRankDTO::convertToTagRankDTO).collect(Collectors.toList());
+
+        List<TagRankDTO> result = typedTuples.stream().map(TagRankDTO::convertToTagRankDTO).collect(Collectors.toList());
+
+        // 리셋 후 입력된 태그가 없으면 전날 데이터를 보여줌
+        if(Double.compare(result.get(0).getCount(), 0.0) == 0){
+            List<TagCountEntity> list = tagCountRepository.findAll(Sort.by(Sort.Direction.DESC, "count"));
+            List<TagCountEntity> sublist = list.subList(0, 9);
+            List<TagRankDTO> rankDTOS = new ArrayList<>();
+            for(TagCountEntity tagCountEntity : sublist){
+                TagRankDTO dto = TagRankDTO.builder()
+                        .tag(tagCountEntity.getTag())
+                        .count(tagCountEntity.getCount())
+                        .build();
+                rankDTOS.add(dto);
+            }
+
+            return rankDTOS;
+        }
+
+        return result;
+    }
+
+    // @Scheduled(fixedDelay = 60000)
+    @Scheduled(cron = "0 0 18 * * *", zone = "UTC") // 시간 설정 : KST - 9 (새벽 3시에 리셋)
+    @Override
+    public void updateTagCountTable() {
+        // mysql tagcount 테이블 데이터 삭제
+        tagCountRepository.deleteAll();
+
+        // redis 내용 mysql에 저장
+        String key = "ranking";
+        ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));  //score순으로 10개 보여줌
+
+        for(ZSetOperations.TypedTuple typedTuple : typedTuples) {
+            TagCountEntity tagCountEntity = TagCountEntity.builder()
+                    .tag(typedTuple.getValue().toString())
+                    .count(typedTuple.getScore())
+                    .build();
+
+            tagCountRepository.save(tagCountEntity);
+        }
+
+        // redis 리셋
+        ZSetOperations.getOperations().delete(key);
+
+        // mysql-tag table 태그 이름 redis에 올리기
+        List<TagEntity> tagEntities = tagRepository.findAll();
+        for(TagEntity tagEntity : tagEntities){
+            ZSetOperations.add(key, tagEntity.getName(), 0);
+        }
+
+        log.info("Updated TagCount Table, reset Redis");
     }
 
     // 게시글 작성
@@ -90,11 +144,12 @@ public class ArticleServiceImpl implements ArticleService{
 
         // 태그테이블에 태그 insert
         for(String tag : newTags){
-            TagEntity tagEntity = TagEntity.builder()
-                    .name(tag)
-                    .build();
-
-            tagRepository.save(tagEntity);
+            if(tagRepository.findByName(tag) == null){
+                TagEntity tagEntity = TagEntity.builder()
+                        .name(tag)
+                        .build();
+                tagRepository.save(tagEntity);
+            }
         }
 
         // article 테이블에 insert
@@ -255,11 +310,12 @@ public class ArticleServiceImpl implements ArticleService{
 
         // 태그테이블에 태그 insert
         for(String tag : newTags){
-            TagEntity tagEntity = TagEntity.builder()
-                    .name(tag)
-                    .build();
-
-            tagRepository.save(tagEntity);
+            if(tagRepository.findByName(tag) == null){
+                TagEntity tagEntity = TagEntity.builder()
+                        .name(tag)
+                        .build();
+                tagRepository.save(tagEntity);
+            }
         }
 
         // 태크-게시물 테이블에 기존 태그 delete

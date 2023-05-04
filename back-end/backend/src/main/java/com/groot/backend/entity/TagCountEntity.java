@@ -21,5 +21,5 @@ public class TagCountEntity {
     @Column(unique = true)
     private String tag;
     @Column
-    private Integer count;
+    private Double count;
 }
