@@ -15,6 +15,7 @@ data class PlantMetaData(
     val img: String?
 )
 
+
 data class PlantDetailData(
     val plantId: Int,
     val krName: String,
@@ -31,4 +32,17 @@ data class PlantDetailData(
     val mgmtTip: String,
     val insectInfo: String,
     val img: String
+)
+
+
+data class PlantIdentifyResponse(
+    val msg: String,
+    val plant: PlantIdentifyData
+)
+
+data class PlantIdentifyData(
+    val plantId: Int,
+    val krName: String,
+    val sciName: String,
+    val score: Int
 )
