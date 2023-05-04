@@ -15,7 +15,7 @@ import retrofit2.http.Query
 interface CommunityCommentService {
 
     @GET("/api/comments/list/{articleId}") // 요청 url
-    fun requestCommunityArticleDetail(
+    fun requestCommunityComment(
 //        input 정의
         @Path("articleId") articleIdInput:Int,
         @Query("page") pageInput:Int,

@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
@@ -21,8 +20,6 @@ import com.chocobi.groot.view.community.model.ArticleContent
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class CommunityTab4Fragment : Fragment() {
 

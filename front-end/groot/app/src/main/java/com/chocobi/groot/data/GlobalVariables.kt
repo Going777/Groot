@@ -1,10 +1,13 @@
 package com.chocobi.groot.data
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
@@ -117,7 +120,13 @@ class GlobalVariables : Application() {
 
         }
 
-        fun changeImgView(imgView: ImageView, userProfile: String, context: Context) {
+
+        //    키보드 내리기
+        fun hideKeyboard(activity: Activity) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(activity.window.decorView.applicationWindowToken, 0)
+
+        fun changeImgView(imgView: ImageView, userProfile:String, context: Context) {
             imgView.post {
                 ThreadUtil.startThread {
                     val futureTarget: FutureTarget<Bitmap> = Glide.with(context)

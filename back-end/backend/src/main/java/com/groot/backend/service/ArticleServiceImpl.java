@@ -2,10 +2,7 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.request.BookmarkDTO;
-import com.groot.backend.dto.response.ArticleListDTO;
-import com.groot.backend.dto.response.ArticleResponseDTO;
-import com.groot.backend.dto.response.CommentResponseDTO;
-import com.groot.backend.dto.response.UserSharedArticleDTO;
+import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +10,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +35,9 @@ public class ArticleServiceImpl implements ArticleService{
     private final ArticleBookmarkRepository aBookmarkRepo;
     private final RegionRepository regionRepository;
     private final S3Service s3Service;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final TagCountRepository tagCountRepository;
+
 
     @Override
     public List<String> readRegion() {
@@ -49,14 +54,93 @@ public class ArticleServiceImpl implements ArticleService{
         return articleRepository.existsById(articleId);
     }
 
+    // 인기 태그 조회
+    @Override
+    public List<TagRankDTO> readTagRanking() {
+        String key = "ranking";
+        ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
+
+        List<TagRankDTO> result = typedTuples.stream().map(TagRankDTO::convertToTagRankDTO).collect(Collectors.toList());
+
+        // 리셋 후 입력된 태그가 없으면 전날 데이터를 보여줌
+        if(Double.compare(result.get(0).getCount(), 0.0) == 0){
+            List<TagCountEntity> list = tagCountRepository.findAll(Sort.by(Sort.Direction.DESC, "count"));
+            List<TagCountEntity> sublist = list.subList(0, 9);
+            List<TagRankDTO> rankDTOS = new ArrayList<>();
+            for(TagCountEntity tagCountEntity : sublist){
+                TagRankDTO dto = TagRankDTO.builder()
+                        .tag(tagCountEntity.getTag())
+                        .count(tagCountEntity.getCount())
+                        .build();
+                rankDTOS.add(dto);
+            }
+
+            return rankDTOS;
+        }
+
+        return result;
+    }
+
+    // @Scheduled(fixedDelay = 60000)
+    @Scheduled(cron = "0 0 18 * * *", zone = "UTC") // 시간 설정 : KST - 9 (새벽 3시에 리셋)
+    @Override
+    public void updateTagCountTable() {
+        // mysql tagcount 테이블 데이터 삭제
+        tagCountRepository.deleteAll();
+
+        // redis 내용 mysql에 저장
+        String key = "ranking";
+        ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));  //score순으로 10개 보여줌
+
+        for(ZSetOperations.TypedTuple typedTuple : typedTuples) {
+            TagCountEntity tagCountEntity = TagCountEntity.builder()
+                    .tag(typedTuple.getValue().toString())
+                    .count(typedTuple.getScore())
+                    .build();
+
+            tagCountRepository.save(tagCountEntity);
+        }
+
+        // redis 리셋
+        ZSetOperations.getOperations().delete(key);
+
+        // mysql-tag table 태그 이름 redis에 올리기
+        List<TagEntity> tagEntities = tagRepository.findAll();
+        for(TagEntity tagEntity : tagEntities){
+            ZSetOperations.add(key, tagEntity.getName(), 0);
+        }
+
+        log.info("Updated TagCount Table, reset Redis");
+    }
+
     // 게시글 작성
     @Override
     public boolean createArticle(ArticleDTO articleDTO, String[] imgPaths) {
-        // 태그가 redis에 존재하는지 탐색
+        String[] tags = articleDTO.getTags();
+        ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
 
-        // redis에 태그 insert
+        String key = "ranking";
+
         // redis에 새로 insert된 태그 리스트
-        String[] newTags = articleDTO.getTags();
+        List<String> newTags = new ArrayList<>();
+
+        // 태그가 redis에 존재하는지 탐색
+        for(String tag : tags) {
+            // key와 value(tag)로 tag가 redis에 있는지 확인
+            Double score = ZSetOperations.score(key, tag);
+            if(score == null){
+                // 없으면 redis에 저장하고 score 1증가
+                ZSetOperations.add(key, tag, 1);
+                // 새 태그 리스트에 추가
+                newTags.add(tag);
+            }else {
+                // 있으면 score만 1증가
+                ZSetOperations.incrementScore(key, tag, 1);
+            }
+
+        }
 
         // 태그테이블에 태그 insert
         for(String tag : newTags){
@@ -64,7 +148,6 @@ public class ArticleServiceImpl implements ArticleService{
                 TagEntity tagEntity = TagEntity.builder()
                         .name(tag)
                         .build();
-
                 tagRepository.save(tagEntity);
             }
         }
@@ -103,8 +186,6 @@ public class ArticleServiceImpl implements ArticleService{
                 articleImageRepository.save(articleImageEntity);
             }
         }
-
-
         return true;
     }
 
@@ -115,14 +196,14 @@ public class ArticleServiceImpl implements ArticleService{
         // UserEntity 조회
         UserEntity userEntity = userRepository.findById(articleEntity.getUserPK()).orElseThrow();
         // tags id 조회
-        List<ArticleTagEntity> articleTagEntityList = (List<ArticleTagEntity>) articleTagRepository.findByArticleId(articleId);
+        List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleId);
         // tag id로 tagEntity 조회
         List<String> tags = new ArrayList<>();
         for(ArticleTagEntity articleTagEntity : articleTagEntityList){
             tags.add(tagRepository.findById(articleTagEntity.getTagId()).orElseThrow().getName());
         }
         // commentEntity 조회
-        List<CommentEntity> commentEntityList = (List<CommentEntity>) commentRepository.findByArticleId(articleId);
+        List<CommentEntity> commentEntityList = commentRepository.findByArticleId(articleId);
 
         List<CommentResponseDTO> comments = new ArrayList<>();
         int commentCnt = 0;
@@ -196,32 +277,43 @@ public class ArticleServiceImpl implements ArticleService{
 
         articleRepository.save(newArticleEntity);
 
-
-
         return articleResponseDTO;
     }
 
+
+
     @Override
     public boolean updateArticle(ArticleDTO articleDTO, String[] imgPaths) {
-        // redis에 존재하는지 탐색
-
-        // redis에 태그 insert
-        // redis에 새로 insert된 태그 리스트
         String[] tags = articleDTO.getTags();
+        ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
+
+        String key = "ranking";
+
+        // redis에 새로 insert된 태그 리스트
         List<String> newTags = new ArrayList<>();
-        for(String tag : tags){
-            if(tagRepository.findByName(tag) == null){
+
+        // 태그가 redis에 존재하는지 탐색
+        for(String tag : tags) {
+            // key와 value(tag)로 tag가 redis에 있는지 확인
+            Double score = ZSetOperations.score(key, tag);
+            if(score == null){
+                // 없으면 redis에 저장하고 score 1증가
+                ZSetOperations.add(key, tag, 1);
+                // 새 태그 리스트에 추가
                 newTags.add(tag);
+            }else {
+                // 있으면 score만 1증가
+                ZSetOperations.incrementScore(key, tag, 1);
             }
+
         }
 
         // 태그테이블에 태그 insert
-        if(newTags != null){
-            for(String tag : newTags){
+        for(String tag : newTags){
+            if(tagRepository.findByName(tag) == null){
                 TagEntity tagEntity = TagEntity.builder()
                         .name(tag)
                         .build();
-
                 tagRepository.save(tagEntity);
             }
         }
@@ -392,7 +484,6 @@ public class ArticleServiceImpl implements ArticleService{
 
         return toDtoList(articleEntities, userPK);
     }
-
 
     public Page<ArticleListDTO> toDtoList(Page<ArticleEntity> articleEntities, Long userPK){
 
