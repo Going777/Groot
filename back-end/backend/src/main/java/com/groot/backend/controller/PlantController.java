@@ -2,25 +2,20 @@ package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.PlantSearchDTO;
 import com.groot.backend.dto.response.PlantDetailDTO;
+import com.groot.backend.dto.response.PlantIdentificationDTO;
 import com.groot.backend.dto.response.PlantThumbnailDTO;
 import com.groot.backend.service.PlantService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
@@ -32,10 +27,6 @@ import java.util.*;
 public class PlantController {
     private final Logger logger = LoggerFactory.getLogger(PlantController.class);
     private final PlantService plantService;
-    @Value("${plantnet.apiKey}")
-    private String plantNetApiKey;
-    @Value("${plant.temp.dir}")
-    private String plantTempDir;
 
     @GetMapping("/names")
     @Operation(summary = "Get plant namne list", description = "no params required")
@@ -103,46 +94,29 @@ public class PlantController {
     @Operation(summary = "Get plant info by photo", description = "")
     public ResponseEntity<Map<String, Object>> identifyPlant(@RequestPart("file") MultipartFile multipartFile) {
         logger.info("Identify plant : {}", multipartFile.getOriginalFilename());
-        logger.info("API Key : {}", plantNetApiKey);
-        logger.info("File directory : {}", plantTempDir);
         Map<String, Object> result = new HashMap<>();
+        PlantIdentificationDTO plantIdentificationDTO;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+        try{
+            plantIdentificationDTO = plantService.identifyPlant(multipartFile);
 
-        MultiValueMap<String, Object> reqBody = new LinkedMultiValueMap<>();
-
-        File retFile = new File(plantTempDir + multipartFile.getOriginalFilename());
-
-        try {
-            if(retFile.createNewFile()) {
-                FileOutputStream fos = new FileOutputStream(retFile);
-                fos.write(multipartFile.getBytes());
-                fos.close();
-            }
+        } catch (InvalidContentTypeException e) {
+            result.put("msg", "올바르지 않은 파일 형식입니다.");
+            return new ResponseEntity<>(result, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
         } catch (IOException e) {
-            logger.info("Failed to create file");
-            result.put("msg", "Failed to convert image file");
-            retFile.delete();
+            result.put("msg", "Failed to create file");
+            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        reqBody.add("images", new FileSystemResource(plantTempDir + retFile.getName()));
+        if(plantIdentificationDTO == null) {
+            result.put("msg", "등록되지 않은 식물입니다.");
+            return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+        }
 
-        String url = "https://my-api.plantnet.org/v2/identify/all?include-related-images=false&no-reject=false&lang=en&api-key=" + plantNetApiKey;
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(reqBody, headers);
-
-        // send request
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<HashMap> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, HashMap.class);
-
-        // if success & fail
-        logger.info("response : {}", response.getStatusCode());
-        logger.info("body : {}", response.getBody().toString());
-
-        // delete local file
-        logger.info("Delete file : {}", retFile.delete());
-
-        return new ResponseEntity<>(HttpStatus.OK);
+        result.put("msg", "식물 식별에 성공했습니다.");
+        result.put("plant", plantIdentificationDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
