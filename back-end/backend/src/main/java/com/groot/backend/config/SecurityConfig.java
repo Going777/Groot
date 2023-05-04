@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .antMatchers("/articles/category/**").authenticated()
                 .antMatchers("/articles/search/**").authenticated()
                 .antMatchers("/articles/filter/**").authenticated()
-                .antMatchers(HttpMethod.GET,"/articles/{articleId}").authenticated()
+//                .antMatchers(HttpMethod.GET,"/articles/{articleId}").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
