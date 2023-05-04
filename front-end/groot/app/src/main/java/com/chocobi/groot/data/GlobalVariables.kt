@@ -10,6 +10,7 @@ import com.chocobi.groot.view.user.model.GetUserResponse
 import com.chocobi.groot.view.user.model.RefreshRequest
 import com.chocobi.groot.view.user.model.RefreshResponse
 import com.chocobi.groot.view.user.model.UserService
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,6 +56,7 @@ class GlobalVariables : Application() {
 
                 override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
                     Log.d("GlobalVariables", "getuser 실패")
+                    refresh()
                 }
             })
         }
@@ -76,11 +78,15 @@ class GlobalVariables : Application() {
                         response: Response<RefreshResponse>
                     ) {
                         var refreshBody = response.body()
-                        Log.d("GlobalVariables", refreshBody?.msg.toString())
                         if (refreshBody != null) {
+                            Log.d("GlobalVariables", refreshBody?.msg.toString())
                             prefs.setString("access_token", refreshBody?.accessToken.toString())
                             getUser()
                         } else {
+                            val errMsg = JSONObject(response.errorBody()?.string()).let { json ->
+                                json.getString("msg")
+                            }
+                            Log.d("GlobalVariables", errMsg.toString())
                             prefs.setString("access_token", "")
                             prefs.setString("refresh_token", "")
                         }
