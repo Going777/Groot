@@ -116,8 +116,8 @@ class CommunityTab1Fragment : Fragment() {
 //    사용자와 상호작용가능한 상태가 되었을 때 호출
     override fun onResume() {
         super.onResume()
-        regionFilterList = arguments?.getStringArrayList("region_list")
-        Log.d("CommunityTab1Fragment","onResume() $regionFilterList")
+//        regionFilterList = arguments?.getStringArrayList("region_list")
+//        Log.d("CommunityTab1Fragment","onResume() $regionFilterList")
 
     }
 

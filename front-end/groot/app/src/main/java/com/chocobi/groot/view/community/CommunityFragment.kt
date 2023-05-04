@@ -47,6 +47,7 @@ class CommunityFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("CommunityFragment","onCreateView()")
 
         val rootView = inflater.inflate(R.layout.fragment_community, container, false)
 
@@ -94,31 +95,46 @@ class CommunityFragment : Fragment() {
         override fun createFragment(position: Int): Fragment {
             nowTab = position
             Log.d(TAG, nowTab.toString())
-            return when (position) {
+
+//            val bundle = Bundle().apply {
+//                putString("my_data", dataList[position].toString())
+//            }
+//
+//            // Fragment를 생성하고, Bundle 객체를 전달한다
+//            val fragment = MyFragment()
+//            fragment.arguments = bundle
+            
+            Log.d("CommunityFragment","createFragment()")
+            
+            var fragment = when (position) {
                 0 -> CommunityTab1Fragment()
                 1 -> CommunityTab2Fragment()
                 2 -> CommunityTab3Fragment()
                 3 -> CommunityTab4Fragment()
                 else -> CommunityTab1Fragment()
             }
+
+            return fragment
         }
     }
 
     override fun onResume() {
+        Log.d("CommunityFragment","onResume()")
         super.onResume()
         regionFilterList = arguments?.getStringArrayList("region_list")
+        Log.d("CommunityFragment","onResume() $regionFilterList 받음")
 
         val bundle = Bundle().apply {
             putStringArrayList("region_list", regionFilterList)
         }
 
-        val passBundleBFragment = CommunityTab1Fragment().apply {
-            arguments = bundle
-        }
-
-        childFragmentManager.beginTransaction()
-            .replace(R.id.community_pager, passBundleBFragment)
-            .commit()
+//        val passBundleBFragment = CommunityTab1Fragment().apply {
+//            arguments = bundle
+//        }
+//
+//        childFragmentManager.beginTransaction()
+//            .replace(R.id.community_pager, passBundleBFragment)
+//            .commit()
     }
 
 
