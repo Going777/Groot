@@ -79,6 +79,7 @@ public class NotificationController {
         if(result==null){
             log.info("result가 널이다");
         }
+        log.info("연결 결과 sseEmitter 전송");
         return result;
     }
 

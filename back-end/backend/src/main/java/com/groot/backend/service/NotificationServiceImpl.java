@@ -41,8 +41,9 @@ public class NotificationServiceImpl implements NotificationService{
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, userId, emitterId, emitter);
+            log.info("미수신한 데이터가 있다");
         }
-
+        log.info("미수신한 데이터가 있는지 확인하고 emitter 리턴");
         return emitter;
     }
 
