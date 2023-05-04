@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.community.CommunityPostFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,8 +25,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/main"
-                android:src="@drawable/ic_back"/>
+                android:src="@drawable/ic_back" />
         </androidx.cardview.widget.CardView>
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="40dp"
@@ -53,25 +53,26 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/carousel_pager"
                     android:layout_width="wrap_content"
                     android:layout_height="230dp"
-                    android:layout_marginTop="20dp"/>
+                    android:layout_marginTop="20dp" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/carousel_layout"
@@ -96,15 +97,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-            <!-- Spinner 정의 -->
+                    <!-- Spinner 정의 -->
                     <Spinner
                         android:id="@+id/spinner"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"
+                        android:paddingHorizontal="5dp"
                         android:prompt="@null"
                         android:spinnerMode="dropdown"
-                        android:paddingHorizontal="5dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         tools:ignore="MissingConstraints" />
 
@@ -124,14 +125,15 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <LinearLayout
@@ -190,28 +192,28 @@
                         android:id="@+id/bookmarkLine"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_weight="0"
                         android:background="#00000000"
                         android:src="@drawable/ic_bookmark"
-                        android:layout_weight="0"
                         tools:ignore="MissingConstraints" />
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/boomarkFill"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:background="#00000000"-->
-<!--                android:src="@drawable/ic_bookmark_fill"-->
-<!--                android:layout_weight="0"-->
-<!--                tools:ignore="MissingConstraints" />-->
+                    <!--            <ImageButton-->
+                    <!--                android:id="@+id/boomarkFill"-->
+                    <!--                android:layout_width="wrap_content"-->
+                    <!--                android:layout_height="match_parent"-->
+                    <!--                android:background="#00000000"-->
+                    <!--                android:src="@drawable/ic_bookmark_fill"-->
+                    <!--                android:layout_weight="0"-->
+                    <!--                tools:ignore="MissingConstraints" />-->
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <Button
                     android:layout_width="50dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0"
                     android:padding="0dp"
                     android:text="채팅"
-                    android:textSize="14sp"
-                    android:layout_weight="0"/>
+                    android:textSize="14sp" />
 
 
             </LinearLayout>
@@ -224,84 +226,89 @@
                 android:textSize="14sp" />
 
             <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/main"
                     android:layout_margin="2dp"
+                    android:backgroundTint="@color/main"
                     app:cardCornerRadius="8dp">
+
                     <TextView
                         android:id="@+id/detailTag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="# 산세베리아"
-                        android:textSize="12sp"
-                        android:paddingHorizontal="2dp"
                         android:layout_margin="3dp"
                         android:background="@color/main"
-                        android:textColor="@color/white"/>
+                        android:paddingHorizontal="2dp"
+                        android:text="# 산세베리아"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
 
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/main"
                     android:layout_margin="2dp"
+                    android:backgroundTint="@color/main"
                     app:cardCornerRadius="8dp">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="# 다육이"
-                        android:textSize="12sp"
-                        android:paddingHorizontal="2dp"
                         android:layout_margin="3dp"
                         android:background="@color/main"
-                        android:textColor="@color/white"/>
+                        android:paddingHorizontal="2dp"
+                        android:text="# 다육이"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
             <View
+                android:id="@+id/underline"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="2dp"
-                android:background="@color/grey"/>
+                android:background="@color/grey" />
+
             <TextView
                 android:id="@+id/detailCommentCnt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="3dp"
                 android:text="댓글 (2)"
-                android:textStyle="bold"
-                android:layout_margin="3dp"/>
+                android:textStyle="bold" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/commentRecycleView"
+            <fragment
+                android:id="@+id/communityCommentFragment"
+                android:name="com.chocobi.groot.view.community.CommunityCommentFragment"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="8dp"
-                android:background="@color/white"/>
-
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
 
-
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/background"
+        android:layout_gravity="bottom"
         android:layout_margin="5dp"
+        android:backgroundTint="@color/background"
         app:cardCornerRadius="10dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
             android:layout_gravity="center"
+            android:layout_margin="5dp"
             android:layout_weight="0"
             android:orientation="horizontal">
 
@@ -311,21 +318,22 @@
                 android:layout_height="30dp"
                 android:layout_margin="10dp"
                 android:layout_weight="0"
-                android:src="@drawable/sample_plant_image"/>
+                android:src="@drawable/sample_plant_image" />
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                app:cardCornerRadius="10dp"
-                android:backgroundTint="@color/white">
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="10dp">
 
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/white"
+                    android:hint="댓글을 남겨보세요"
                     android:paddingHorizontal="5dp"
-                    android:paddingVertical="0dp"
-                    android:hint="댓글을 남겨보세요"/>
+                    android:paddingVertical="0dp" />
             </androidx.cardview.widget.CardView>
 
             <Button
@@ -333,7 +341,7 @@
                 android:layout_height="30dp"
                 android:layout_margin="10dp"
                 android:layout_weight="0"
-                android:background="@drawable/ic_plant"/>
+                android:background="@drawable/ic_plant" />
 
 
         </LinearLayout>
