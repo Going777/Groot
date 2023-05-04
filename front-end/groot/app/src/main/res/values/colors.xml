@@ -16,6 +16,7 @@
     <color name="button_main">#416D50</color>
     <color name="button_sub">#C4E1CD</color>
     <color name="background">#E9F3ED</color>
+    <color name="background_yellow">#FFFDD6</color>
     <color name="chip">#80976E</color>
     <color name="hint">#C9C9C9</color>
     <color name="region_chip">#B2BEA9</color>

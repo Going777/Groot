@@ -114,22 +114,21 @@ class GlobalVariables : Application() {
 
         }
 
-        fun changeImgView(profileImg: ImageView, userProfile:String, context: Context) {
-            profileImg.post {
+        fun changeImgView(imgView: ImageView, userProfile:String, context: Context) {
+            imgView.post {
                 ThreadUtil.startThread {
                     val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
                         .asBitmap()
                         .load(userProfile)
-                        .submit(profileImg.width, profileImg.height)
+                        .submit(imgView.width, imgView.height)
 
                     val bitmap = futureTarget.get()
 
                     ThreadUtil.startUIThread(0) {
-                        profileImg.setImageBitmap(bitmap)
+                        imgView.setImageBitmap(bitmap)
                     }
                 }
             }
-            profileImg.visibility= View.VISIBLE
         }
     }
 
