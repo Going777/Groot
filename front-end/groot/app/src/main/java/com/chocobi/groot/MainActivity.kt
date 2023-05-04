@@ -15,6 +15,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.PERMISSION_CAMERA
+import com.chocobi.groot.data.PERMISSION_GALLERY
+import com.chocobi.groot.data.REQUEST_CAMERA
+import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -35,10 +39,6 @@ import java.text.SimpleDateFormat
 class MainActivity : AppCompatActivity() {
 
     //    private lateinit var binding: ActivityMainBinding
-    private val PERMISSION_CAMERA = 0
-    private val REQUEST_CAMERA = 1
-    private val PERMISSON_GALLERY = 2
-    private val REQUEST_STORAGE = 3
 
 //    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
 //
@@ -174,7 +174,7 @@ class MainActivity : AppCompatActivity() {
 
         when (requestCode) {
             PERMISSION_CAMERA -> openCamera()
-            PERMISSON_GALLERY -> openGallery()
+            PERMISSION_GALLERY -> openGallery()
         }
     }
 
@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
 
-            PERMISSON_GALLERY -> Toast.makeText(
+            PERMISSION_GALLERY -> Toast.makeText(
                 this,
                 "저장소 권한을 승인해야 앨범에서 이미지를 불러올 수 있습니다.",
                 Toast.LENGTH_LONG

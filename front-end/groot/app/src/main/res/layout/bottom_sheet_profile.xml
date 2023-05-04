@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="25dp"
-    android:backgroundTint="@color/white"
     android:background="@color/white"
-    android:gravity="center_horizontal">
+    android:backgroundTint="@color/white"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="25dp">
 
 
     <TextView
@@ -17,28 +17,29 @@
         android:text="프로필 변경"
         android:textColor="@android:color/black"
         android:textSize="20sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="닉네임 변경"
-        android:textStyle="bold"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <EditText
-            android:id="@+id/editTextTextPassword"
+            android:id="@+id/nameText"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/point"
             android:ems="10"
             android:inputType="text"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/nicknameUniqueButton"
@@ -60,42 +61,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="프로필 사진 변경"
-        android:textStyle="bold"
-        android:textSize="14sp"/>
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginVertical="10dp">
+        android:layout_marginVertical="10dp"
+        android:orientation="horizontal">
 
 
+        <ImageButton
+            android:id="@+id/profileImgBtn"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/circle_button_background"
+            app:srcCompat="@drawable/ic_camera" />
 
-    <ImageButton
-        android:layout_margin="10dp"
-        android:id="@+id/imageButton"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        app:srcCompat="@drawable/ic_camera"
-        android:background="@drawable/circle_button_background"/>
+        <ImageView
+            android:id="@+id/profileImg"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_margin="10dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/circle_button_background"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
 
-    <ImageButton
-        android:layout_margin="10dp"
-        android:id="@+id/imageButton2"
-        android:layout_width="90dp"
-        android:layout_height="90dp"
-        android:padding="10dp"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/basic_profile"
-        android:background="@drawable/circle_button_background"/>
+
+        <ImageButton
+            android:id="@+id/basicImg"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/circle_button_background"
+            android:padding="10dp"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/basic_profile" />
 
     </LinearLayout>
+
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button_bottom_sheet"
+        android:id="@+id/profileSubmitBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="완료"
         android:backgroundTint="@color/main"
+        android:text="완료"
         android:textColor="@color/white" />
 
 

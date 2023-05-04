@@ -1,15 +1,23 @@
 package com.chocobi.groot.data
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
+import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.login.LoginRequest
 import com.chocobi.groot.view.user.model.GetUserResponse
 import com.chocobi.groot.view.user.model.RefreshRequest
 import com.chocobi.groot.view.user.model.RefreshResponse
 import com.chocobi.groot.view.user.model.UserService
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -83,9 +91,16 @@ class GlobalVariables : Application() {
                             prefs.setString("access_token", refreshBody?.accessToken.toString())
                             getUser()
                         } else {
-                            val errMsg = JSONObject(response.errorBody()?.string()).let { json ->
-                                json.getString("msg")
+                            var errMsg =  "$refreshBody"
+                            try {
+                                errMsg = JSONObject(response.errorBody()?.string()).let { json ->
+                                    json.getString("msg")
+                                }
+                            } catch (e: JSONException) {
+                                // 예외 처리: msg 속성이 존재하지 않는 경우
+                                e.printStackTrace()
                             }
+
                             Log.d("GlobalVariables", errMsg.toString())
                             prefs.setString("access_token", "")
                             prefs.setString("refresh_token", "")
@@ -97,6 +112,24 @@ class GlobalVariables : Application() {
                     }
                 })
 
+        }
+
+        fun changeImgView(profileImg: ImageView, userProfile:String, context: Context) {
+            profileImg.post {
+                ThreadUtil.startThread {
+                    val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
+                        .asBitmap()
+                        .load(userProfile)
+                        .submit(profileImg.width, profileImg.height)
+
+                    val bitmap = futureTarget.get()
+
+                    ThreadUtil.startUIThread(0) {
+                        profileImg.setImageBitmap(bitmap)
+                    }
+                }
+            }
+            profileImg.visibility= View.VISIBLE
         }
     }
 
