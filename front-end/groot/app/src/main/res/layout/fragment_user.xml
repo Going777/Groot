@@ -44,10 +44,9 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/profile_image"
+                    android:id="@+id/profileImg"
                     android:layout_width="110dp"
                     android:layout_height="110dp"
-                    android:src="@drawable/basic_profile"
                     app:civ_border_color="#fff"
                     app:civ_border_width="10dp"
                     app:civ_circle_background_color="@color/background"

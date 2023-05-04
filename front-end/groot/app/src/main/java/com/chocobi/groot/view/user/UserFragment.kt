@@ -13,6 +13,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.CommunityTab1Fragment
@@ -23,6 +24,7 @@ import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import de.hdodenhof.circleimageview.CircleImageView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,7 +42,6 @@ private const val ARG_PARAM2 = "param2"
 class UserFragment : Fragment() {
 
 
-
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -51,8 +52,6 @@ class UserFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
-
-
 
 
     }
@@ -76,6 +75,15 @@ class UserFragment : Fragment() {
 
         var totalBookmarkText = rootView.findViewById<TextView>(R.id.totalBookmark)
         getUserBookmark(totalBookmarkText)
+
+        var profileImg = rootView.findViewById<CircleImageView>(R.id.profileImg)
+        var userProfile = UserData.getProfile()
+        if (userProfile != "" && userProfile != null) {
+            GlobalVariables.changeImgView(profileImg, userProfile, requireContext())
+        } else {
+            profileImg.setImageResource(R.drawable.basic_profile)
+        }
+
 //        Fragment 이동 조작
         val mActivity = activity as MainActivity
 
@@ -141,18 +149,21 @@ class UserFragment : Fragment() {
     }
 
 
-    private fun getUserArticle(totalArticleText:TextView) {
+    private fun getUserArticle(totalArticleText: TextView) {
 
         var retrofit = RetrofitClient.getClient()!!
         var userService = retrofit.create(UserService::class.java)
 
         userService.requestUserArticleList(0, 1).enqueue(object :
             Callback<CommunityArticleListResponse> {
-            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
                 if (response.code() == 200) {
                     Log.d("UserFragment", "성공")
 
-                    val checkTotal =  response.body()?.articles?.total
+                    val checkTotal = response.body()?.articles?.total
                     totalArticleText.text = checkTotal.toString()
                     Log.d("UserFragment", "$checkTotal")
 
@@ -167,18 +178,21 @@ class UserFragment : Fragment() {
         })
     }
 
-    private fun getUserBookmark(totalBookmarkText:TextView) {
+    private fun getUserBookmark(totalBookmarkText: TextView) {
 
         var retrofit = RetrofitClient.getClient()!!
         var userService = retrofit.create(UserService::class.java)
 
         userService.requestUserBookmarkList(0, 1).enqueue(object :
             Callback<CommunityArticleListResponse> {
-            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
                 if (response.code() == 200) {
                     Log.d("UserFragment", "성공")
 
-                    val checkTotal =  response.body()?.articles?.total
+                    val checkTotal = response.body()?.articles?.total
                     totalBookmarkText.text = checkTotal.toString()
                     Log.d("UserFragment", "$checkTotal")
 
