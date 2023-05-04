@@ -30,6 +30,9 @@ class CommunityFragment : Fragment() {
     private var nowTab: Int = 0
     private var param2: String? = null
 
+    private var regionFilterList: ArrayList<String>? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -99,6 +102,23 @@ class CommunityFragment : Fragment() {
                 else -> CommunityTab1Fragment()
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        regionFilterList = arguments?.getStringArrayList("region_list")
+
+        val bundle = Bundle().apply {
+            putStringArrayList("region_list", regionFilterList)
+        }
+
+        val passBundleBFragment = CommunityTab1Fragment().apply {
+            arguments = bundle
+        }
+
+        childFragmentManager.beginTransaction()
+            .replace(R.id.community_pager, passBundleBFragment)
+            .commit()
     }
 
 

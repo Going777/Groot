@@ -53,14 +53,6 @@
         android:textStyle="bold"
         android:layout_marginTop="10dp"/>
 
-
-<!--    <com.google.android.material.chip.ChipGroup-->
-<!--        android:id="@+id/chip_group"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        app:layout_constraintWidth_percent="0.8" />-->
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
@@ -73,37 +65,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            style="@style/REGION_CHIP_ICON"-->
-<!--            android:text="정자동"-->
-<!--            app:icon="@drawable/ic_cancle"-->
-<!--            app:iconGravity="textEnd"-->
-<!--            app:cornerRadius="4dp"-->
-<!--            app:backgroundTint="@color/region_chip"-->
-<!--            />-->
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            style="@style/REGION_CHIP_ICON"-->
-<!--            android:text="정자동"-->
-<!--            app:icon="@drawable/ic_cancle"-->
-<!--            app:iconGravity="textEnd"-->
-<!--            app:cornerRadius="4dp"-->
-<!--            app:backgroundTint="@color/region_chip"-->
-<!--            />-->
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            style="@style/REGION_CHIP_ICON"-->
-<!--            android:text="정자동"-->
-<!--            app:icon="@drawable/ic_cancle"-->
-<!--            app:iconGravity="textEnd"-->
-<!--            app:cornerRadius="4dp"-->
-<!--            app:backgroundTint="@color/region_chip"-->
-<!--            />-->
 
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/selectRegionBtn"
+        android:id="@+id/regionFilterBtn"
         style="@style/MAIN_BTN"
         android:text="선택 완료" />
 

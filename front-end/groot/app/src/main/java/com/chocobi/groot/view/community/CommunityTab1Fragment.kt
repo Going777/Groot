@@ -20,6 +20,8 @@ import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.user.ProfileBottomSheet
 import com.google.android.material.button.MaterialButton
 import com.chocobi.groot.view.community.model.ArticleContent
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,7 +36,11 @@ class CommunityTab1Fragment : Fragment() {
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityArticleListResponse
 
+    private var regionFilterList: ArrayList<String>? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+
         val view = inflater.inflate(R.layout.fragment_community_tab1, container, false)
         val mActivity = activity as MainActivity
 
@@ -45,6 +51,15 @@ class CommunityTab1Fragment : Fragment() {
             regionFilterBottomSheet.show(mActivity.supportFragmentManager, regionFilterBottomSheet.tag)
         }
 
+        val chipRegionGroup = view.findViewById<ChipGroup>(R.id.chipRegionGroup)
+        chipRegionGroup.addView(Chip(requireContext()).apply {
+            text = "정자동" // chip 텍스트 설정
+            isCloseIconVisible = false // chip에서 X 버튼 보이게 하기
+        })
+        chipRegionGroup.addView(Chip(requireContext()).apply {
+            text = "정자동" // chip 텍스트 설정
+            isCloseIconVisible = false // chip에서 X 버튼 보이게 하기
+        })
         findViews(view)
         setListeners()
         initList()
@@ -96,6 +111,14 @@ class CommunityTab1Fragment : Fragment() {
         })
 
         return view
+    }
+
+//    사용자와 상호작용가능한 상태가 되었을 때 호출
+    override fun onResume() {
+        super.onResume()
+        regionFilterList = arguments?.getStringArrayList("region_list")
+        Log.d("CommunityTab1Fragment","onResume() $regionFilterList")
+
     }
 
     private fun findViews(view: View) {
