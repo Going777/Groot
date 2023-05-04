@@ -15,6 +15,8 @@ public class PlantDetailDTO {
 
     private String sciName;
 
+    private String grwType;
+
     private String waterCycle;
 
     private int minHumidity;
