@@ -30,6 +30,7 @@ import com.chocobi.groot.view.plant.PlantFragment
 import com.chocobi.groot.view.search.SearchCameraActivity
 import com.chocobi.groot.view.search.SearchDetailFragment
 import com.chocobi.groot.view.search.SearchFragment
+import com.chocobi.groot.view.user.ProfileBottomSheet
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -127,9 +128,18 @@ class MainActivity : AppCompatActivity() {
      * */
     private var realUri: Uri? = null
     private var cameraStatus: String? = null
+    private var galleryStatus: String? = null
 
     fun setCameraStatus(status: String) {
         cameraStatus = status
+    }
+
+    fun setGalleryStatus(status: String) {
+        galleryStatus = status
+    }
+
+    fun getRealUri(): Uri? {
+        return realUri
     }
 
     fun requirePermissions(permissions: Array<String>, requestCode: Int) {
@@ -248,9 +258,6 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == RESULT_OK) {
-            val a = data?.data
-            Log.d("MainActivity", "onActivityResult")
-            Log.d("MainActivity", "$a")
             when (requestCode) {
                 REQUEST_CAMERA -> {
 //                    uri 기반
@@ -306,7 +313,6 @@ class MainActivity : AppCompatActivity() {
 //                .add(R.id.imageInput, CommunityPostFragment())
 //                .commit()
 //        }
-
 
 
 //        if (plantFragment != null) {

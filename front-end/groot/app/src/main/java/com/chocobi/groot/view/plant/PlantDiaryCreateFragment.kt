@@ -65,6 +65,7 @@ class PlantDiaryCreateFragment : Fragment() {
 ////            attachedPhotoSection.visibility = View.VISIBLE
 //        }
         attachPhotoSection.setOnClickListener {
+            mActivity.setGalleryStatus("plant_diary_create")
             mActivity.requirePermissions(
                 arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                 PERMISSION_GALLERY
