@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
@@ -28,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class GlobalVariables : Application() {
     companion object {
         lateinit var prefs: PreferenceUtil
-        
+
         private val TAG = "GlobalVariables"
 
         private var BASE_URL = "https://k8a303.p.ssafy.io"
@@ -93,7 +94,7 @@ class GlobalVariables : Application() {
                             prefs.setString("access_token", refreshBody?.accessToken.toString())
                             getUser()
                         } else {
-                            var errMsg =  "$refreshBody"
+                            var errMsg = "$refreshBody"
                             try {
                                 errMsg = JSONObject(response.errorBody()?.string()).let { json ->
                                     json.getString("msg")
@@ -116,7 +117,7 @@ class GlobalVariables : Application() {
 
         }
 
-        fun changeImgView(imgView: ImageView, userProfile:String, context: Context) {
+        fun changeImgView(imgView: ImageView, userProfile: String, context: Context) {
             imgView.post {
                 ThreadUtil.startThread {
                     val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
@@ -132,6 +133,8 @@ class GlobalVariables : Application() {
                 }
             }
         }
+
+
     }
 
 

@@ -32,9 +32,9 @@ class SignupActivity : AppCompatActivity() {
         var signupNameInput = findViewById<EditText>(R.id.signupNameInput)
         var signupPwInput = findViewById<EditText>(R.id.signupPwInput)
         var signupConfPwInput = findViewById<EditText>(R.id.signupConfPwInput)
-        var dupIdBtn = findViewById<Button>(R.id.dupIdBtn)
-        var dupNameBtn = findViewById<Button>(R.id.dupNameBtn)
-        var basicSignupBtn = findViewById<Button>(R.id.basicSignupBtn)
+        val dupIdBtn = findViewById<Button>(R.id.dupIdBtn)
+        val dupNameBtn = findViewById<Button>(R.id.dupNameBtn)
+        val basicSignupBtn = findViewById<Button>(R.id.basicSignupBtn)
 
         dupIdBtn.setOnClickListener {
             var textId = signupIdInput.text.toString()
@@ -140,7 +140,7 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun checkDupName(textName:String) {
-        if (textName == null) {
+        if (textName == "") {
             return
         }
         //        retrofit 객체 만들기

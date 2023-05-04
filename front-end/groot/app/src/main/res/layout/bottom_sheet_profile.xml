@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.chip.Chip
-            android:id="@+id/nicknameUniqueButton"
+            android:id="@+id/nameUniqueBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/sub"
