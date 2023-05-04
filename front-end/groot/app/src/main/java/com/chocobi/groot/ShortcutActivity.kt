@@ -8,6 +8,7 @@ import android.widget.Button
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.intro.IntroActivity
 import com.chocobi.groot.view.login.LoginActivity
+import com.chocobi.groot.view.sensor.SensorActivity
 import com.chocobi.groot.view.signup.SignupActivity
 
 class ShortcutActivity : AppCompatActivity() {
@@ -22,6 +23,7 @@ class ShortcutActivity : AppCompatActivity() {
         val shortcutIntro = findViewById<Button>(R.id.shortcutIntro)
         val shortcutAr = findViewById<Button>(R.id.shortcutAr)
         val shortcutCharacter = findViewById<Button>(R.id.shortcutCharacter)
+        val shortcutSensor = findViewById<Button>(R.id.shortcutSensor)
 
         shortcutLogin.setOnClickListener {
             var intent = Intent(this, LoginActivity::class.java)
@@ -50,6 +52,11 @@ class ShortcutActivity : AppCompatActivity() {
 
         shortcutCharacter.setOnClickListener {
             var intent = Intent(this, CharacterActivity::class.java)
+            startActivity(intent)
+        }
+
+        shortcutSensor.setOnClickListener {
+            var intent = Intent(this, SensorActivity::class.java)
             startActivity(intent)
         }
     }
