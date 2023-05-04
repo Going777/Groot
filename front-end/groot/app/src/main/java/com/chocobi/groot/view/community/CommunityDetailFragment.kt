@@ -32,6 +32,7 @@ import retrofit2.Response
 
 class CommunityDetailFragment : Fragment() {
     private lateinit var bookmarkButton: ImageButton
+    private val TAG = "CommunityDetailFragment"
 
 //    private var commentList = arrayListOf<CommunityCommentResponse>()
 
@@ -71,10 +72,10 @@ class CommunityDetailFragment : Fragment() {
                 @SuppressLint("SetTextI18n")
                 override fun onResponse(call: Call<CommunityArticleDetailResponse>, response: Response<CommunityArticleDetailResponse>) {
                     if (response.code() == 200) {
-                        Log.d("CommunityDetailFragment", "성공")
+                        Log.d(TAG, "성공")
                         val responseData =  response.body()?.article
                         getData = response.body()!!
-                        Log.d("CommunityDetailFragment", "$responseData")
+                        Log.d(TAG, "$responseData")
 
                         val article = getData.article
                         val articleDetailData = CommunityArticleDetailResponse(
@@ -119,11 +120,11 @@ class CommunityDetailFragment : Fragment() {
                         Log.d( "CommunityDetailFragment", articleDetailData.toString())
 
                     } else {
-                        Log.d("CommunityDetailFragment", "실패1")
+                        Log.d(TAG, "실패1")
                     }
                 }
                 override fun onFailure(call: Call<CommunityArticleDetailResponse>, t: Throwable) {
-                    Log.d("CommunityDetailFragment", "실패2")
+                    Log.d(TAG, "실패2")
                 }
             }
         )
@@ -142,19 +143,19 @@ class CommunityDetailFragment : Fragment() {
                     response: Response<BookmarkResponse>
                 ) {
                     if (response.code() == 200) {
-                        Log.d("CommunityDetailFragment", "북마크상태변경 성공")
+                        Log.d(TAG, "북마크상태변경 성공")
                         bookmarkStatus = !bookmarkStatus
                         bookmarkButton.setImageResource(
                             if (bookmarkStatus) R.drawable.ic_bookmark_fill
                             else R.drawable.ic_bookmark
                         )
                     } else {
-                        Log.d("CommunityDetailFragment", "북마크상태변경 실패")
+                        Log.d(TAG, "북마크상태변경 실패")
                     }
                 }
 
                 override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
-                    Log.d("CommunityDetailFragment", "북마크상태변경 실패")
+                    Log.d(TAG, "북마크상태변경 실패")
                 }
             })
         }

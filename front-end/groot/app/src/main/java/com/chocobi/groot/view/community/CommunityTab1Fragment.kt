@@ -25,6 +25,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class CommunityTab1Fragment : Fragment() {
+    
+    private val TAG = "CommunityTab1Fragment"
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
@@ -63,10 +65,10 @@ class CommunityTab1Fragment : Fragment() {
             Callback<CommunityArticleListResponse> {
             override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
                 if (response.code() == 200) {
-                    Log.d("CommunityTab1Fragment", "성공")
+                    Log.d(TAG, "성공")
                     val checkResponse =  response.body()?.articles?.content
                     getData = response.body()!!
-                    Log.d("CommunityTab1Fragment", "$checkResponse")
+                    Log.d(TAG, "$checkResponse")
 
 
                     val totalElements = getData.articles.total // 전체 데이터 수
@@ -83,12 +85,12 @@ class CommunityTab1Fragment : Fragment() {
                         hideProgress()
                     }
                 } else {
-                    Log.d("CommunityTab1Fragment", "실패1")
+                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("CommunityTab1Fragment", "실패2")
+                Log.d(TAG, "실패2")
             }
 
         })
@@ -133,10 +135,10 @@ class CommunityTab1Fragment : Fragment() {
             Callback<CommunityArticleListResponse> {
             override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
                 if (response.code() == 200) {
-                    Log.d("CommunityTab1Fragment", "성공")
+                    Log.d(TAG, "성공")
                     val checkResponse =  response.body()?.articles?.content
                     getData = response.body()!!
-                    Log.d("CommunityTab1Fragment", "$checkResponse")
+                    Log.d(TAG, "$checkResponse")
 
                     val list = createDummyData(0, 10)
                     ThreadUtil.startUIThread(1000) {
@@ -144,12 +146,12 @@ class CommunityTab1Fragment : Fragment() {
                         hideProgress()
                     }
                 } else {
-                    Log.d("CommunityTab1Fragment", "실패1")
+                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("CommunityTab1Fragment", "실패2")
+                Log.d(TAG, "실패2")
             }
 
         })

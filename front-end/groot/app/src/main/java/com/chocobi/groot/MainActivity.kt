@@ -41,12 +41,12 @@ class MainActivity : AppCompatActivity() {
 
     //    private lateinit var binding: ActivityMainBinding
 
-//    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
+    //    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
 //
 //    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
 //        return activityToolbar
 //    }
-
+    private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
 
 
@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             "search_detail" -> {
-                Log.d("MainActivity", "search detail 호출")
+                Log.d(TAG, "search detail 호출")
                 val searchDetailFragment = SearchDetailFragment()
                 supportFragmentManager
                     .beginTransaction()
@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun requirePermissions(permissions: Array<String>, requestCode: Int) {
-        Log.d("MainActivity", "권한 요청")
+        Log.d(TAG, "권한 요청")
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             permissionGranted(requestCode)
         } else {
@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d("MainActivity", "onRequestPermissionsResult(), $grantResults")
+        Log.d(TAG, "onRequestPermissionsResult(), $grantResults")
         if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
             permissionGranted(requestCode)
         } else {
@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity() {
 
 //        uri 기반
         createImageUri(newFileName(), "image/jpg")?.let { uri: Uri ->
-            Log.d("MainActivity", uri.toString())
+            Log.d(TAG, uri.toString())
             realUri = uri
             // MediaStore.EXTRA_OUTPUT을 Key로 하여 Uri를 넘겨주면
             // 일반적인 Camera App은 이를 받아 내가 지정한 경로에 사진을 찍어서 저장시킨다.
@@ -265,8 +265,8 @@ class MainActivity : AppCompatActivity() {
                         val intent = Intent(this, SearchCameraActivity::class.java)
                         intent.putExtra("imageUri", uri.toString())
                         intent.putExtra("cameraStatus", cameraStatus)
-                        Log.d("MainActivity", "uri:" + uri.toString())
-                        Log.d("MainActivity", "cameraStatus:" + cameraStatus)
+                        Log.d(TAG, "uri:" + uri.toString())
+                        Log.d(TAG, "cameraStatus:" + cameraStatus)
                         startActivity(intent)
                     }
 
@@ -283,7 +283,7 @@ class MainActivity : AppCompatActivity() {
                     }
 //                    var i = 0
 //                    while (i < data?.clipData!!.itemCount) {
-//                        Log.d("MainActivity", "test")
+//                        Log.d(TAG, "test")
 //                    }
                 }
             }
@@ -297,7 +297,7 @@ class MainActivity : AppCompatActivity() {
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("MainActivity", "onCreate()")
+        Log.d(TAG, "onCreate()")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -388,7 +388,7 @@ class MainActivity : AppCompatActivity() {
         var toPage = intent.getStringExtra("toPage")
         if (toPage != null) {
 
-            Log.d("MainActivity", "toPage" + toPage)
+            Log.d(TAG, "toPage" + toPage)
 
             when (toPage) {
                 "search_detail" -> {

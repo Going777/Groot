@@ -19,6 +19,7 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 
 class IntroActivity : AppCompatActivity() {
+    private val TAG = "IntroActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
@@ -70,7 +71,7 @@ class IntroActivity : AppCompatActivity() {
 
             //            요청 실패
             override fun onFailure(call: Call<PlantNamesResponse>, t: Throwable) {
-                Log.d("IntroActivity", "onFailure() 식물 이름 가져오기")
+                Log.d(TAG, "onFailure() 식물 이름 가져오기")
             }
         })
     }

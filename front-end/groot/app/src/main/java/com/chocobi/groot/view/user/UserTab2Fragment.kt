@@ -25,6 +25,7 @@ import retrofit2.Response
 
 class UserTab2Fragment : Fragment() {
 
+    private val TAG = "UserTab2Fragment"
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
@@ -61,12 +62,12 @@ class UserTab2Fragment : Fragment() {
             Callback<CommunityArticleListResponse> {
             override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
                 if (response.code() == 200) {
-                    Log.d("UserTab2Fragment", "성공")
+                    Log.d(TAG, "성공")
                     val checkResponse =  response.body()?.articles?.content
                     val checkTotal =  response.body()?.articles?.total
                     getData = response.body()!!
-                    Log.d("UserTab2Fragment", "$checkResponse")
-                    Log.d("UserTab2Fragment", "$checkTotal")
+                    Log.d(TAG, "$checkResponse")
+                    Log.d(TAG, "$checkTotal")
 
                     val totalElements = getData.articles.total // 전체 데이터 수
                     val currentPage = communityArticlePage // 현재 페이지 번호
@@ -83,12 +84,12 @@ class UserTab2Fragment : Fragment() {
                         hideProgress()
                     }
                 } else {
-                    Log.d("UserTab2Fragment", "실패1")
+                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("UserTab2Fragment", "실패2")
+                Log.d(TAG, "실패2")
             }
         })
     }

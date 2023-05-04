@@ -42,7 +42,7 @@ private const val ARG_PARAM2 = "param2"
 class UserFragment : Fragment() {
 
 
-    // TODO: Rename and change types of parameters
+    private val TAG = "UserFragment"
     private var param1: String? = null
     private var param2: String? = null
 
@@ -161,19 +161,19 @@ class UserFragment : Fragment() {
                 response: Response<CommunityArticleListResponse>
             ) {
                 if (response.code() == 200) {
-                    Log.d("UserFragment", "성공")
+                    Log.d(TAG, "성공")
 
                     val checkTotal = response.body()?.articles?.total
                     totalArticleText.text = checkTotal.toString()
-                    Log.d("UserFragment", "$checkTotal")
+                    Log.d(TAG, "$checkTotal")
 
                 } else {
-                    Log.d("UserFragment", "실패1")
+                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("UserFragment", "실패2")
+                Log.d(TAG, "실패2")
             }
         })
     }
@@ -190,19 +190,19 @@ class UserFragment : Fragment() {
                 response: Response<CommunityArticleListResponse>
             ) {
                 if (response.code() == 200) {
-                    Log.d("UserFragment", "성공")
+                    Log.d(TAG, "성공")
 
                     val checkTotal = response.body()?.articles?.total
                     totalBookmarkText.text = checkTotal.toString()
-                    Log.d("UserFragment", "$checkTotal")
+                    Log.d(TAG, "$checkTotal")
 
                 } else {
-                    Log.d("UserFragment", "실패1")
+                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("UserFragment", "실패2")
+                Log.d(TAG, "실패2")
             }
         })
     }

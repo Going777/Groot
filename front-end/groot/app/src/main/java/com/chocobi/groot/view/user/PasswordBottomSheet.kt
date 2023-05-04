@@ -27,6 +27,7 @@ import retrofit2.Response
 
 class PasswordBottomSheet(context: Context) : BottomSheetDialogFragment() {
 
+    private val TAG = "PasswordBottomSheet"
     private var msg: String? = "비밀번호를 다시 확인해주세요."
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -87,7 +88,7 @@ class PasswordBottomSheet(context: Context) : BottomSheetDialogFragment() {
                             e.printStackTrace()
                         }
                     }
-                    Log.d("PasswordBottomSheet", pwMsg.toString())
+                    Log.d(TAG, pwMsg.toString())
                     showDialog(pwMsg.toString())
                 }
 
@@ -98,7 +99,7 @@ class PasswordBottomSheet(context: Context) : BottomSheetDialogFragment() {
     }
 
 
-    private fun showDialog(msg:String) {
+    private fun showDialog(msg: String) {
         var dialog = AlertDialog.Builder(
             requireContext(),
             android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth

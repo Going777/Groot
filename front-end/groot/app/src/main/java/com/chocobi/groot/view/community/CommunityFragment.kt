@@ -26,7 +26,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class CommunityFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+    private val TAG = "CommunityFragment"
     private var nowTab: Int = 0
     private var param2: String? = null
 
@@ -56,7 +56,7 @@ class CommunityFragment : Fragment() {
             if (nowTab == 0) {
                 mActivity.changeFragment("community_share")
             } else {
-            mActivity.changeFragment("community_post")
+                mActivity.changeFragment("community_post")
             }
         }
 
@@ -65,7 +65,7 @@ class CommunityFragment : Fragment() {
     }
 
 
-//    탭 구현
+    //    탭 구현
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -81,7 +81,6 @@ class CommunityFragment : Fragment() {
         }.attach()
 
 
-
     }
 
     private inner class CommunityTabAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
@@ -91,7 +90,7 @@ class CommunityFragment : Fragment() {
 
         override fun createFragment(position: Int): Fragment {
             nowTab = position
-            Log.d("CommunityFragment", nowTab.toString())
+            Log.d(TAG, nowTab.toString())
             return when (position) {
                 0 -> CommunityTab1Fragment()
                 1 -> CommunityTab2Fragment()

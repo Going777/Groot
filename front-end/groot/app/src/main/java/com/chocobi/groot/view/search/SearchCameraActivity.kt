@@ -19,6 +19,7 @@ import kotlin.random.Random
 
 
 class SearchCameraActivity : AppCompatActivity() {
+    private val TAG = "SearchCameraActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_camera)
@@ -26,8 +27,8 @@ class SearchCameraActivity : AppCompatActivity() {
 //        imageUri 전달받기
         var imageUri = intent.getStringExtra("imageUri")
         var cameraStatus = intent.getStringExtra("cameraStatus")
-        Log.d("SearchCameraActivity", imageUri.toString())
-        Log.d("SearchCameraActivity", cameraStatus.toString())
+        Log.d(TAG, imageUri.toString())
+        Log.d(TAG, cameraStatus.toString())
 
 
 //        image 띄우기

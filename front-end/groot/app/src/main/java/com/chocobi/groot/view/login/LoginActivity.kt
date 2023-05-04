@@ -26,6 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
 class LoginActivity : AppCompatActivity() {
+    private val TAG = "LoginActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -74,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
                     response: Response<LoginResponse>
                 ) {
                     if (response.code() == 200) {
-                        Log.d("LoginActivity", "로그인 성공")
+                        Log.d(TAG, "로그인 성공")
 
 //                    통신 성공시 실행되는 코드
                         var loginBody = response.body()
@@ -90,7 +91,7 @@ class LoginActivity : AppCompatActivity() {
                         var intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
                     } else {
-                        Log.d("LoginActivity", response.code().toString())
+                        Log.d(TAG, response.code().toString())
                     }
                 }
 

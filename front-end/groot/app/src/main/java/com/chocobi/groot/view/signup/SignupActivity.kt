@@ -21,8 +21,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SignupActivity : AppCompatActivity() {
-    var isCheckedDupId = false
-    var isCheckedDupName = false
+    private val TAG = "SignupActivity"
+    private var isCheckedDupId = false
+    private var isCheckedDupName = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
@@ -31,9 +32,9 @@ class SignupActivity : AppCompatActivity() {
         var signupNameInput = findViewById<EditText>(R.id.signupNameInput)
         var signupPwInput = findViewById<EditText>(R.id.signupPwInput)
         var signupConfPwInput = findViewById<EditText>(R.id.signupConfPwInput)
-        var dupIdBtn = findViewById<Button>(R.id.dupIdBtn)
-        var dupNameBtn = findViewById<Button>(R.id.dupNameBtn)
-        var basicSignupBtn = findViewById<Button>(R.id.basicSignupBtn)
+        val dupIdBtn = findViewById<Button>(R.id.dupIdBtn)
+        val dupNameBtn = findViewById<Button>(R.id.dupNameBtn)
+        val basicSignupBtn = findViewById<Button>(R.id.basicSignupBtn)
 
         dupIdBtn.setOnClickListener {
             var textId = signupIdInput.text.toString()
@@ -117,7 +118,7 @@ class SignupActivity : AppCompatActivity() {
                         this@SignupActivity,
                         android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
                     )
-                    Log.d("SignupActivity", response.toString())
+                    Log.d(TAG, response.toString())
                     dialog.setTitle("아이디 중복 체크")
                     dialog.setMessage(checkDupIdMsg)
                     dialog.setPositiveButton(
@@ -139,7 +140,7 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun checkDupName(textName:String) {
-        if (textName == null) {
+        if (textName == "") {
             return
         }
         //        retrofit 객체 만들기
@@ -171,7 +172,7 @@ class SignupActivity : AppCompatActivity() {
                         this@SignupActivity,
                         android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
                     )
-                    Log.d("SignupActivity", response.toString())
+                    Log.d(TAG, response.toString())
                     dialog.setTitle("닉네임 중복 체크")
                     dialog.setMessage(checkDupNameMsg)
                     dialog.setPositiveButton(
@@ -238,7 +239,7 @@ class SignupActivity : AppCompatActivity() {
                             JSONObject(
                                 response.errorBody()?.string()
                             )?.getString("msg")
-                        Log.d("SignupActivity", response.code().toString() + signupMsg)
+                        Log.d(TAG, response.code().toString() + signupMsg)
                     }
 
 
