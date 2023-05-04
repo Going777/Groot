@@ -8,4 +8,7 @@ interface IntroDataService {
     @Headers("accept: application/json")
     @GET("/api/plants/names")
     fun requestPlantNames(): Call<PlantNamesResponse>
+
+    @GET("/api/articles/regions/list")
+    fun requestRegionNames(): Call<RegionNameResponse>
 }

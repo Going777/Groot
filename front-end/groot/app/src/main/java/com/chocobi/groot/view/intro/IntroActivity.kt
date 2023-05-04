@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.Settings.Global
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.view.login.LoginActivity
@@ -29,6 +30,11 @@ class IntroActivity : AppCompatActivity() {
         if (isExistPlantData == "") {
 //        화분 이름 받아오기
             getPlantNameList()
+//            지역 받아오기
+            getRegionNameList()
+        } else {
+            GlobalVariables.prefs.setString("plant_names","")
+            Toast.makeText(this, "초기화", Toast.LENGTH_SHORT).show()
         }
 
 //        시작하기 버튼 클릭시 -> 로그인 화면으로
@@ -49,10 +55,10 @@ class IntroActivity : AppCompatActivity() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        val plantNamesService = retrofit.create(IntroDataService::class.java)
+        val IntroDataService = retrofit.create(IntroDataService::class.java)
 
 //        요청 보내기
-        plantNamesService.requestPlantNames().enqueue(object : Callback<PlantNamesResponse> {
+        IntroDataService.requestPlantNames().enqueue(object : Callback<PlantNamesResponse> {
             //            요청 성공
             override fun onResponse(
                 call: Call<PlantNamesResponse>,
@@ -60,18 +66,51 @@ class IntroActivity : AppCompatActivity() {
             ) {
                 if (response.code() == 200) {
                     val plantNameBody = response.body()
-                    val test = plantNameBody?.nameList
 
+                    Log.d("IntroActivity","onResponse(), 식물 $plantNameBody")
+//                    전역 변수에 식물 이름 리스트 저장
                     if (plantNameBody != null) {
                         val plantNames = plantNameBody.nameList.joinToString()
                         GlobalVariables.prefs.setString("plant_names", plantNames)
                     }
                 }
             }
-
             //            요청 실패
             override fun onFailure(call: Call<PlantNamesResponse>, t: Throwable) {
                 Log.d(TAG, "onFailure() 식물 이름 가져오기")
+            }
+        })
+    }
+
+    private fun getRegionNameList() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(GlobalVariables.getBaseUrl())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val IntroDataService = retrofit.create(IntroDataService::class.java)
+
+//        요청 보내기
+        IntroDataService.requestRegionNames().enqueue(object : Callback<RegionNameResponse> {
+            //            요청 성공
+            override fun onResponse(
+                call: Call<RegionNameResponse>,
+                response: Response<RegionNameResponse>
+            ) {
+                if (response.code() == 200) {
+                    val regionNameBody = response.body()
+
+                    Log.d("IntroActivity","지역 onResponse() / $regionNameBody")
+//                    전역 변수에 지역 리스트 저장
+                    if (regionNameBody != null) {
+                        val plantNames = regionNameBody.regions.joinToString()
+                        GlobalVariables.prefs.setString("region_names", plantNames)
+                    }
+                }
+            }
+
+            //            요청 실패
+            override fun onFailure(call: Call<RegionNameResponse>, t: Throwable) {
+                Log.d("IntroActivity", "onFailure() 지역 가져오기")
             }
         })
     }
