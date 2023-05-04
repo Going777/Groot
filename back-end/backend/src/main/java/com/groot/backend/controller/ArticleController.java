@@ -275,9 +275,10 @@ public class ArticleController {
         }catch (Exception e){
             e.printStackTrace();
             resultMap.put("result", FAIL);
-            resultMap.put("msg","인기태그 조회 실패");
+            resultMap.put("msg","게시글 조회 실패");
             return ResponseEntity.internalServerError().body(resultMap);
         }
+
     }
 
     // 나눔 게시글 지역 필터링
