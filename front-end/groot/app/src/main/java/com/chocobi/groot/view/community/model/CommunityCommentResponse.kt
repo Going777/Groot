@@ -4,9 +4,12 @@ package com.chocobi.groot.view.community.model
 
 data class CommunityCommentResponse(
     val comment: Comment,
+    val result: String,
+    val msg: String,
 )
 
 data class Comment (
+    val total: Int,
     val content: List<CommentContent>,
     val pageable: Pageable
 )
@@ -18,6 +21,6 @@ data class CommentContent (
     val content: String,
     val profile: String?,
     val createTime: CreateTime,
-    val updateTime: UpdateTime
+    val updateTime: UpdateTime?
 )
 

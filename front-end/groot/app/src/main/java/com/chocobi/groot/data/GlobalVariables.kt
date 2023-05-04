@@ -4,16 +4,24 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
+import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.login.LoginRequest
 import com.chocobi.groot.view.user.model.GetUserResponse
 import com.chocobi.groot.view.user.model.RefreshRequest
 import com.chocobi.groot.view.user.model.RefreshResponse
 import com.chocobi.groot.view.user.model.UserService
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,6 +67,7 @@ class GlobalVariables : Application() {
 
                 override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
                     Log.d("GlobalVariables", "getuser 실패")
+                    refresh()
                 }
             })
         }
@@ -80,11 +89,22 @@ class GlobalVariables : Application() {
                         response: Response<RefreshResponse>
                     ) {
                         var refreshBody = response.body()
-                        Log.d("GlobalVariables", refreshBody?.msg.toString())
                         if (refreshBody != null) {
+                            Log.d("GlobalVariables", refreshBody?.msg.toString())
                             prefs.setString("access_token", refreshBody?.accessToken.toString())
                             getUser()
                         } else {
+                            var errMsg =  "$refreshBody"
+                            try {
+                                errMsg = JSONObject(response.errorBody()?.string()).let { json ->
+                                    json.getString("msg")
+                                }
+                            } catch (e: JSONException) {
+                                // 예외 처리: msg 속성이 존재하지 않는 경우
+                                e.printStackTrace()
+                            }
+
+                            Log.d("GlobalVariables", errMsg.toString())
                             prefs.setString("access_token", "")
                             prefs.setString("refresh_token", "")
                         }
@@ -101,6 +121,23 @@ class GlobalVariables : Application() {
         fun hideKeyboard(activity: Activity) {
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(activity.window.decorView.applicationWindowToken, 0)
+
+        fun changeImgView(profileImg: ImageView, userProfile:String, context: Context) {
+            profileImg.post {
+                ThreadUtil.startThread {
+                    val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
+                        .asBitmap()
+                        .load(userProfile)
+                        .submit(profileImg.width, profileImg.height)
+
+                    val bitmap = futureTarget.get()
+
+                    ThreadUtil.startUIThread(0) {
+                        profileImg.setImageBitmap(bitmap)
+                    }
+                }
+            }
+            profileImg.visibility= View.VISIBLE
         }
     }
 
