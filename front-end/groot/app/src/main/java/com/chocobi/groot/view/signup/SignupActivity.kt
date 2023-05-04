@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.RetrofitClient
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -84,10 +85,7 @@ class SignupActivity : AppCompatActivity() {
         if (textId == null) {
             return
         }
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.basicClient()!!
         //        id 중복체크
         //        service 객체 만들기
         var dupIdService = retrofit.create(DupIdService::class.java)
@@ -144,10 +142,7 @@ class SignupActivity : AppCompatActivity() {
             return
         }
         //        retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.basicClient()!!
         var dupNameService = retrofit.create(DupNameService::class.java)
         dupNameService.requestDupName(textName)
             .enqueue(object : Callback<DupNameResponse> {
@@ -195,10 +190,7 @@ class SignupActivity : AppCompatActivity() {
 
     private fun signup(textId: String, textName: String, textPw: String) {
         //        retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.basicClient()!!
         var signupService = retrofit.create(SignupService::class.java)
 
         signupService.requestSignup(SignupRequest(textId, textName, textPw))
@@ -211,11 +203,10 @@ class SignupActivity : AppCompatActivity() {
                     var signupMsg = signupBody?.msg
                     if (response.code() == 200 && signupBody?.accessToken != null) {
 
-
                         //                    토큰 저장
                         GlobalVariables.prefs.setString("access_token", signupBody.accessToken)
-
-
+                        GlobalVariables.prefs.setString("refresh_token", signupBody.refreshToken)
+                        GlobalVariables.getUser()
                         var dialog = AlertDialog.Builder(
                             this@SignupActivity,
                             android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
@@ -226,6 +217,7 @@ class SignupActivity : AppCompatActivity() {
                         dialog.setPositiveButton(
                             "확인",
                             DialogInterface.OnClickListener { dialog, which ->
+
                                 var intent =
                                     Intent(
                                         this@SignupActivity,
@@ -241,8 +233,6 @@ class SignupActivity : AppCompatActivity() {
                             )?.getString("msg")
                         Log.d(TAG, response.code().toString() + signupMsg)
                     }
-
-
                 }
 
                 override fun onFailure(call: Call<SignupResponse>, t: Throwable) {
