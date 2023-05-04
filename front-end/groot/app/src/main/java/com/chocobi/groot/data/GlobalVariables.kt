@@ -21,6 +21,10 @@ import com.chocobi.groot.view.user.model.GetUserResponse
 import com.chocobi.groot.view.user.model.RefreshRequest
 import com.chocobi.groot.view.user.model.RefreshResponse
 import com.chocobi.groot.view.user.model.UserService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -36,6 +40,8 @@ class GlobalVariables : Application() {
         private val TAG = "GlobalVariables"
 
         private var BASE_URL = "https://k8a303.p.ssafy.io"
+        private var accessToken: String? = null
+        private var refreshToken: String? = null
 
         fun getBaseUrl(): String {
             return BASE_URL
@@ -43,6 +49,14 @@ class GlobalVariables : Application() {
 
         fun setBaseUrl(url: String) {
             BASE_URL = url
+        }
+
+
+        fun fetchUserData() {
+            val fetchGetUser = CoroutineScope(Dispatchers.Main).async {
+                getUser()
+            }
+
         }
 
         fun getUser() {
@@ -56,7 +70,6 @@ class GlobalVariables : Application() {
                 ) {
                     var getUserBody = response.body()
                     Log.d(TAG, getUserBody?.msg.toString())
-
                     if (getUserBody?.user != null) {
                         UserData.setUserPK(getUserBody.user.userPK)
                         UserData.setUserId(getUserBody.user.userId)
@@ -94,8 +107,12 @@ class GlobalVariables : Application() {
                         var refreshBody = response.body()
                         if (refreshBody != null) {
                             Log.d(TAG, refreshBody?.msg.toString())
-                            prefs.setString("access_token", refreshBody?.accessToken.toString())
-                            getUser()
+                            val tokenAction = CoroutineScope(Dispatchers.Main).launch {
+                                prefs.setString("access_token", refreshBody?.accessToken.toString())
+                            }
+                            val userAction = CoroutineScope(Dispatchers.Main).launch {
+                                getUser()
+                            }
                         } else {
                             var errMsg = "$refreshBody"
                             try {
@@ -152,13 +169,22 @@ class GlobalVariables : Application() {
         Log.d(TAG, "onCreate")
 
         prefs = PreferenceUtil(applicationContext)
-        var accessToken = prefs.getString("access_token", "")
-        if (accessToken != "") {
-            getUser()
-            var refreshToken = prefs.getString("refresh_token", "")
-            if (refreshToken == "") {
-                var intent = Intent(this, LoginActivity::class.java)
-                startActivity(intent)
+
+
+        val tokenAction = CoroutineScope(Dispatchers.IO).async {
+            accessToken = prefs.getString("access_token", "")
+        }
+
+        val refreshAction = CoroutineScope(Dispatchers.IO).async {
+            refreshToken = prefs.getString("refresh_token", "")
+        }
+
+        val userAction = CoroutineScope(Dispatchers.Main).launch {
+            tokenAction.await()
+            if (accessToken != "") {
+                getUser()
+            } else {
+                refreshAction.await()
             }
         }
     }
