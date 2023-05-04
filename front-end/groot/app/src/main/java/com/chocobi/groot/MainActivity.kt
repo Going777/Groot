@@ -344,20 +344,20 @@ class MainActivity : AppCompatActivity() {
                         val boardFragment = SearchFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
-                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 40
-                        params.rightMargin = 40
-                        frameLayout.layoutParams = params
+//                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+//                        params.leftMargin = 40
+//                        params.rightMargin = 40
+//                        frameLayout.layoutParams = params
                     }
 
                     R.id.communityFragment -> {
                         val boardFragment = CommunityFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment).commit()
-                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
-                        params.leftMargin = 40
-                        params.rightMargin = 40
-                        frameLayout.layoutParams = params
+//                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
+//                        params.leftMargin = 40
+//                        params.rightMargin = 40
+//                        frameLayout.layoutParams = params
                     }
 
                     R.id.userFragment -> {

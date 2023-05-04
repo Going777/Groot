@@ -1,10 +1,13 @@
 package com.chocobi.groot.data
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -113,6 +116,11 @@ class GlobalVariables : Application() {
                 })
 
         }
+
+        //    키보드 내리기
+        fun hideKeyboard(activity: Activity) {
+            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(activity.window.decorView.applicationWindowToken, 0)
 
         fun changeImgView(profileImg: ImageView, userProfile:String, context: Context) {
             profileImg.post {
