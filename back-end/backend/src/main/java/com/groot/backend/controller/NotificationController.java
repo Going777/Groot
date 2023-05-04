@@ -74,7 +74,13 @@ public class NotificationController {
     public SseEmitter subscribe(HttpServletRequest request,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        return notificationService.subscribe(userId, lastEventId);
+        log.info("sse 연결 요청");
+        SseEmitter result =  notificationService.subscribe(userId, lastEventId);
+        if(result==null){
+            log.info("result가 널이다");
+        }
+        log.info("연결 결과 sseEmitter 전송");
+        return result;
     }
 
 }
