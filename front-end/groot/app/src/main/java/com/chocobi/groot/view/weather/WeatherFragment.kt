@@ -47,7 +47,7 @@ class WeatherFragment : Fragment() {
         const val WEATHER_REQUEST: Int = 102
     }
 
-    // TODO: Rename and change types of parameters
+   private val TAG = "WeatherFragment"
     private var param1: String? = null
     private var param2: String? = null
 
@@ -145,7 +145,7 @@ class WeatherFragment : Fragment() {
     }
 
     private fun doNetworking(lat: String, lon: String, layoutParams: LayoutParams) {
-        Log.d("WeatherFragment", "doNetworking() / lat: $lat / lon: $lon")
+        Log.d(TAG, "doNetworking() / lat: $lat / lon: $lon")
 
 //        retrofit 객체 만들기
         var retrofit = Retrofit.Builder()

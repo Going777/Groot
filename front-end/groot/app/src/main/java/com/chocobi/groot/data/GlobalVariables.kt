@@ -28,6 +28,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class GlobalVariables : Application() {
     companion object {
         lateinit var prefs: PreferenceUtil
+        
+        private val TAG = "GlobalVariables"
 
         private var BASE_URL = "https://k8a303.p.ssafy.io"
 
@@ -49,7 +51,7 @@ class GlobalVariables : Application() {
                     response: Response<GetUserResponse>
                 ) {
                     var getUserBody = response.body()
-                    Log.d("GlobalVariables", getUserBody?.msg.toString())
+                    Log.d(TAG, getUserBody?.msg.toString())
 
                     if (getUserBody?.user != null) {
                         UserData.setUserPK(getUserBody.user.userPK)
@@ -63,7 +65,7 @@ class GlobalVariables : Application() {
                 }
 
                 override fun onFailure(call: Call<GetUserResponse>, t: Throwable) {
-                    Log.d("GlobalVariables", "getuser 실패")
+                    Log.d(TAG, "getuser 실패")
                     refresh()
                 }
             })
@@ -87,7 +89,7 @@ class GlobalVariables : Application() {
                     ) {
                         var refreshBody = response.body()
                         if (refreshBody != null) {
-                            Log.d("GlobalVariables", refreshBody?.msg.toString())
+                            Log.d(TAG, refreshBody?.msg.toString())
                             prefs.setString("access_token", refreshBody?.accessToken.toString())
                             getUser()
                         } else {
@@ -101,14 +103,14 @@ class GlobalVariables : Application() {
                                 e.printStackTrace()
                             }
 
-                            Log.d("GlobalVariables", errMsg.toString())
+                            Log.d(TAG, errMsg.toString())
                             prefs.setString("access_token", "")
                             prefs.setString("refresh_token", "")
                         }
                     }
 
                     override fun onFailure(call: Call<RefreshResponse>, t: Throwable) {
-                        Log.d("GlobalVariables", "refresh 실패")
+                        Log.d(TAG, "refresh 실패")
                     }
                 })
 
@@ -135,7 +137,7 @@ class GlobalVariables : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("GlobalVariables", "onCreate")
+        Log.d(TAG, "onCreate")
 
         prefs = PreferenceUtil(applicationContext)
         var accessToken = prefs.getString("access_token", "")

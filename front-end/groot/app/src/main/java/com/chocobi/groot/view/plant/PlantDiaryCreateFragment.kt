@@ -27,7 +27,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class PlantDiaryCreateFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
+    private val TAG = "PlantDiaryCreateFragment"
     private var param1: String? = null
     private var param2: String? = null
 
@@ -58,7 +59,7 @@ class PlantDiaryCreateFragment : Fragment() {
 
         myImageView = rootView.findViewById(R.id.attachedPhoto)
 
-        Log.d("PlantDiaryCreateFragment", "onCreateView() 포토 이니셜라이즈")
+        Log.d(TAG, "onCreateView() 포토 이니셜라이즈")
 //        사진 첨부하기
 //        attachPhotoSection.setOnClickListener {
 //            mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_GALLERY)
@@ -80,7 +81,7 @@ class PlantDiaryCreateFragment : Fragment() {
     }
 
     fun attachPhoto(uri: Uri) {
-        Log.d("PlantDiaryCreateFragment", "attachPhoto() 사진을 첨부합니다 $uri")
+        Log.d(TAG, "attachPhoto() 사진을 첨부합니다 $uri")
         myImageView?.setImageURI(uri)
     }
 

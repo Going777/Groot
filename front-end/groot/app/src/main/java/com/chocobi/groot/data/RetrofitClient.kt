@@ -9,6 +9,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
+    private val TAG = "RetrofitClient"
     private var retrofitClient: Retrofit? = null
 
     fun getClient(): Retrofit? {
@@ -30,7 +31,7 @@ object RetrofitClient {
                     ""
                 ) // ViewModel에서 지정한 key로 JWT 토큰을 가져온다.
 
-                Log.d("RetrofitClient", accessToken)
+                Log.d(TAG, accessToken)
                 val modifiedRequest = originalRequest.newBuilder()
                     .addHeader("content-type", "application/json")
                     .addHeader("Authorization", "Bearer $accessToken")

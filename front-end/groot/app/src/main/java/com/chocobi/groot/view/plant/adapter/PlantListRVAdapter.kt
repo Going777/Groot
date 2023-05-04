@@ -11,11 +11,13 @@ import com.chocobi.groot.R
 
 class PlantListRVAdapter(val items: MutableList<String>) :
     RecyclerView.Adapter<PlantListRVAdapter.ViewHolder>() {
+
+    private val TAG = "PlantListRVAdapter"
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
-        Log.d("PlantListRVAdapter", "onCreateViewHolder() $items")
+        Log.d(TAG, "onCreateViewHolder() $items")
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_plant_list_item, parent, false)
 

@@ -25,14 +25,18 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class CommunityTab2Fragment : Fragment() {
-
+    private val TAG = "CommunityTab2Fragment"
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityArticleListResponse
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_community_tab2, container, false)
         findViews(view)
         setListeners()
@@ -50,14 +54,21 @@ class CommunityTab2Fragment : Fragment() {
         var communityArticlePage = 0
         var communityArticleSize = 10
 
-        communityArticleListService.requestCommunityArticleList(communityArticleCategory,communityArticlePage,communityArticleSize).enqueue(object :
+        communityArticleListService.requestCommunityArticleList(
+            communityArticleCategory,
+            communityArticlePage,
+            communityArticleSize
+        ).enqueue(object :
             Callback<CommunityArticleListResponse> {
-            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
                 if (response.code() == 200) {
-                    Log.d("CommunityTab2Fragment", "성공")
-                    val checkResponse =  response.body()?.articles?.content
+                    Log.d(TAG, "성공")
+                    val checkResponse = response.body()?.articles?.content
                     getData = response.body()!!
-                    Log.d("CommunityTab2Fragment", "$checkResponse")
+                    Log.d(TAG, "$checkResponse")
 
                     val totalElements = getData.articles.total // 전체 데이터 수
                     val currentPage = communityArticlePage // 현재 페이지 번호
@@ -74,12 +85,12 @@ class CommunityTab2Fragment : Fragment() {
                         hideProgress()
                     }
                 } else {
-                    Log.d("CommunityTab2Fragment", "실패1")
+                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("CommunityTab2Fragment", "실패2")
+                Log.d(TAG, "실패2")
             }
 
         })
@@ -120,14 +131,21 @@ class CommunityTab2Fragment : Fragment() {
         var communityArticlePage = 0
         var communityArticleSize = 10
 
-        communityArticleListService.requestCommunityArticleList(communityArticleCategory,communityArticlePage,communityArticleSize).enqueue(object :
+        communityArticleListService.requestCommunityArticleList(
+            communityArticleCategory,
+            communityArticlePage,
+            communityArticleSize
+        ).enqueue(object :
             Callback<CommunityArticleListResponse> {
-            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
                 if (response.code() == 200) {
-                    Log.d("CommunityTab2Fragment", "성공")
-                    val checkResponse =  response.body()?.articles?.content
+                    Log.d(TAG, "성공")
+                    val checkResponse = response.body()?.articles?.content
                     getData = response.body()!!
-                    Log.d("CommunityTab2Fragment", "$checkResponse")
+                    Log.d(TAG, "$checkResponse")
 
                     val list = createDummyData(0, 10)
                     ThreadUtil.startUIThread(1000) {
@@ -135,12 +153,12 @@ class CommunityTab2Fragment : Fragment() {
                         hideProgress()
                     }
                 } else {
-                    Log.d("CommunityTab2Fragment", "실패1")
+                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("CommunityTab2Fragment", "실패2")
+                Log.d(TAG, "실패2")
             }
 
         })
@@ -169,12 +187,19 @@ class CommunityTab2Fragment : Fragment() {
         var communityArticleCategory = "자유"
         var communityArticleSize = 10
 
-        communityArticleListService.requestCommunityArticleList(communityArticleCategory, communityArticlePage, communityArticleSize).enqueue(object :
+        communityArticleListService.requestCommunityArticleList(
+            communityArticleCategory,
+            communityArticlePage,
+            communityArticleSize
+        ).enqueue(object :
             Callback<CommunityArticleListResponse> {
-            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
                 if (response.code() == 200) {
                     Log.d("loadmore", "성공")
-                    val checkResponse =  response.body()?.articles?.content
+                    val checkResponse = response.body()?.articles?.content
                     getData = response.body()!!
                     Log.d("loadmore", "$checkResponse")
 
@@ -206,7 +231,6 @@ class CommunityTab2Fragment : Fragment() {
     }
 
 
-
     private fun showProgress() {
         frameLayoutProgress.visibility = View.VISIBLE
     }
@@ -215,7 +239,10 @@ class CommunityTab2Fragment : Fragment() {
         frameLayoutProgress.visibility = View.GONE
     }
 
-    private fun createDummyData(offset: Int, limit: Int): MutableList<CommunityArticleListResponse> {
+    private fun createDummyData(
+        offset: Int,
+        limit: Int
+    ): MutableList<CommunityArticleListResponse> {
         val list: MutableList<CommunityArticleListResponse> = mutableListOf()
 
         // API response를 이용하여 데이터 생성

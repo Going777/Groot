@@ -23,7 +23,7 @@ import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
 
 class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
-
+    private val TAG = "CharacterActivity"
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
     lateinit var statusText: TextView
@@ -78,8 +78,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 
     var modelIndex = 0
     var modelNode: ArModelNode? = null
-
-//    var isLoading = false
+        //    var isLoading = false
         set(value) {
             field = value
 //            loadingView.isGone = !value
@@ -133,7 +132,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //    }
 
     fun placeModelNode() {
-        Log.d("CharacterActivity", "placeModelNode()")
+        Log.d(TAG, "placeModelNode()")
         modelNode?.anchor()
         placeModelButton.isVisible = false
         sceneView.planeRenderer.isVisible = false

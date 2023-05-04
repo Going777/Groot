@@ -38,7 +38,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SearchDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+    private val TAG = "SearchDetailFragment"
     private var plantId: String? = null
 
     private var plant: PlantDetailData? = null
@@ -124,7 +124,7 @@ class SearchDetailFragment : Fragment() {
                 }
             }
             override fun onFailure(call: Call<PlantDetailResponse>, t: Throwable) {
-                Log.d("SearchDetailFragment", "onFailure() 정보조회 실패")
+                Log.d(TAG, "onFailure() 정보조회 실패")
             }
 
         })

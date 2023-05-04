@@ -26,7 +26,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class PlantCollectionFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+    private val TAG = "PlantCollectionFragment"
     private var param1: String? = null
     private var param2: String? = null
 
@@ -63,7 +63,7 @@ class PlantCollectionFragment : Fragment() {
         plantItems.add("산세산세")
         plantItems.add("산세산세")
 
-        Log.d("PlantCollectionFragment", "onCreateView(), $plantItems")
+        Log.d(TAG, "onCreateView(), $plantItems")
 
         val plantCollectionRv = rootView.findViewById<RecyclerView>(R.id.plant_collectioin_recycler_view)
 
