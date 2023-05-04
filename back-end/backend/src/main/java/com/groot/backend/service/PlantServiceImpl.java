@@ -8,12 +8,14 @@ import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.repository.PlantRepository;
 import com.groot.backend.util.JsonParserUtil;
 import com.groot.backend.util.PlantCodeUtil;
+import com.groot.backend.util.RestTemplateErrorHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -121,19 +123,25 @@ public class PlantServiceImpl implements PlantService{
         File file = convertFile(multipartFile);
 
         ResponseEntity<String> response = getResponse(file);
+        logger.info("response : {}", response.getStatusCode());
         file.delete();
 
-        logger.info("response : {}", response.getStatusCode());
         if(response.getStatusCode() == HttpStatus.OK) {
             logger.info("Failed to get response. URL : {}, API_KEY : {}", plantNetUrl, plantNetApiKey);
             String[][] result = JsonParserUtil.plantNameParser(response.getBody());
             return searchFromDB(result);
         }
-        else if (response.getStatusCode() == HttpStatus.UNSUPPORTED_MEDIA_TYPE) {
+        else if (response.getStatusCode() == HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                || response.getStatusCode() == HttpStatus.BAD_REQUEST) {
             logger.info("Wrong file format");
             throw new InvalidContentTypeException();
         }
+        else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+            logger.info("image file is not a plant");
+            return defaultReturn(0);
+        }
         else {
+            logger.info("Plantnet request failed with response code : {}", response.getStatusCode());
             throw new Exception();
         }
     }
@@ -146,7 +154,6 @@ public class PlantServiceImpl implements PlantService{
      */
     private File convertFile(MultipartFile multipartFile) throws IOException{
         File retFile = new File(plantTempDir + multipartFile.getOriginalFilename());
-
         try {
             retFile.createNewFile();
             FileOutputStream fos = new FileOutputStream(retFile);
@@ -177,11 +184,16 @@ public class PlantServiceImpl implements PlantService{
 
         // send request
         HttpEntity<MultiValueMap<String, Object>> reqEntity = new HttpEntity<>(reqBody, headers);
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                    .errorHandler(new RestTemplateErrorHandler()).build();
 
         String url = plantNetUrl + plantNetApiKey;
 
-        return restTemplate.exchange(url, HttpMethod.POST, reqEntity, String.class);
+//        return restTemplate.exchange(url, HttpMethod.POST, reqEntity, String.class);
+
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, reqEntity, String.class);
+        logger.info("response : {}", response.getStatusCode());
+        return response;
     }
 
     /**
@@ -204,14 +216,18 @@ public class PlantServiceImpl implements PlantService{
         }
         // return for not found
         else {
-            plantEntity = plantRepository.findById(19449L).get();
-            return PlantIdentificationDTO.builder()
-                    .plantId(plantEntity.getId())
-                    .krName(plantEntity.getKrName())
-                    .sciName(plantEntity.getSciName())
-                    .score(11)
-                    .build();
+            return defaultReturn(11);
         }
 //        return null;
+    }
+
+    private PlantIdentificationDTO defaultReturn(int score) {
+        PlantEntity plantEntity = plantRepository.findById(19449L).get();
+        return PlantIdentificationDTO.builder()
+                .plantId(plantEntity.getId())
+                .krName(plantEntity.getKrName())
+                .sciName(plantEntity.getSciName())
+                .score(score)
+                .build();
     }
 }
