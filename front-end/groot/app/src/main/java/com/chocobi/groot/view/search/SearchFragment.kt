@@ -1,15 +1,20 @@
 package com.chocobi.groot.view.search
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
+import android.view.KeyEvent.KEYCODE_ENTER
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
@@ -68,7 +73,10 @@ class SearchFragment : Fragment() {
         val cameraBtn = rootView.findViewById<ImageButton>(R.id.cameraBtn)
         cameraBtn.setOnClickListener {
             mActivity.setCameraStatus("searchPlant")
-            mActivity.requirePermissions(arrayOf(android.Manifest.permission.CAMERA),  PERMISSION_CAMERA)
+            mActivity.requirePermissions(
+                arrayOf(android.Manifest.permission.CAMERA),
+                PERMISSION_CAMERA
+            )
         }
 
         val rv = rootView.findViewById<RecyclerView>(R.id.dictRecyclerView)
@@ -107,25 +115,48 @@ class SearchFragment : Fragment() {
         )
         autoCompleteTextView.setAdapter(adapter)
 
+//        자동완성된 필터 클릭 -> 검색
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
+//                키보드 내리기
+                GlobalVariables.hideKeyboard(requireActivity())
+
                 // 클릭한 아이템에 대한 처리를 여기에 작성합니다.
                 val selectedItem = parent.getItemAtPosition(position).toString()
                 // 예를 들어 선택된 아이템에 대한 처리를 하거나, 선택한 항목을 다른 뷰에 보여주는 등의 작업을 할 수 있습니다.
-                searchPlant(selectedItem)
+                requestSearchPlant(selectedItem)
             }
 
-        val searchPlantBtn = rootView.findViewById<ImageButton>(R.id.searchPlantBtn)
-        searchPlantBtn.setOnClickListener {
-            val inputText = autoCompleteTextView.text
-            searchPlant(inputText.toString())
+//        엔터키 클릭 -> 검색
+        autoCompleteTextView.setOnKeyListener { v, keyCode, event ->
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
+                // 엔터 눌렀을때 행동
+                // 엔터 눌렀을 때 필터 닫기
+                autoCompleteTextView.dismissDropDown()
+                // 키보드 내리기
+                GlobalVariables.hideKeyboard(requireActivity())
+                // 검색 api 요청
+                val inputText = autoCompleteTextView.text.toString()
+                search(inputText)
+            }
+            true
         }
 
-        // Inflate the layout for this fragment
+//        돋보기 버튼 클릭 -> 검색
+        val searchPlantBtn = rootView.findViewById<ImageButton>(R.id.searchPlantBtn)
+        searchPlantBtn.setOnClickListener {
+//            키보드 내리기
+            GlobalVariables.hideKeyboard(requireActivity())
+
+//            검색 api 요청
+            val inputText = autoCompleteTextView.text.toString()
+            search(inputText)
+        }
+
         return rootView
     }
 
-    private fun searchPlant(plantName: String) {
+    private fun requestSearchPlant(plantName: String) {
         val retrofit = Retrofit.Builder()
             .baseUrl(GlobalVariables.getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
@@ -148,11 +179,16 @@ class SearchFragment : Fragment() {
 
                     }
                 }
-
                 override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
                     TODO("Not yet implemented")
                 }
-
             })
+    }
+
+    private fun search(targetText: String) {
+        if (targetText == "") {
+            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
+        }
+            requestSearchPlant(targetText)
     }
 }
