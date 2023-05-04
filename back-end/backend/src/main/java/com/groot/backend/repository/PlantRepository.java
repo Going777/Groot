@@ -10,4 +10,6 @@ import java.util.List;
 public interface PlantRepository extends JpaRepository<PlantEntity, Long> {
 
     public List<PlantEntity> findByKrNameContains(String name, Pageable pageable);
+
+    public PlantEntity findBySciNameStartsWith(String sciName);
 }
