@@ -54,10 +54,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun login() {
         //        retrofit 객체 만들기
-        var retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        var retrofit = RetrofitClient.basicClient()!!
 
 //        service 객체 만들기
         var loginService = retrofit.create(LoginService::class.java)
