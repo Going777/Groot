@@ -289,7 +289,7 @@
                 android:id="@+id/communityCommentFragment"
                 android:name="com.chocobi.groot.view.community.CommunityCommentFragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="202dp" />
 
         </LinearLayout>
 

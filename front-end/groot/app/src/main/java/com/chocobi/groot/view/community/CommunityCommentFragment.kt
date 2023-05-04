@@ -30,6 +30,7 @@ class CommunityCommentFragment  : Fragment() {
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityCommentResponse
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_community_comment, container, false)
         findViews(view)
@@ -39,7 +40,9 @@ class CommunityCommentFragment  : Fragment() {
 
         showProgress()
 
-//                retrofit 객체 만들기
+
+
+        //                retrofit 객체 만들기
         var retrofit = RetrofitClient.getClient()!!
 
 
@@ -82,7 +85,15 @@ class CommunityCommentFragment  : Fragment() {
 
         })
 
+
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
+
     }
 
     private fun findViews(view: View) {

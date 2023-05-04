@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/grey"
+    android:padding="10dp"
     tools:context=".view.community.CommunityCommentFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -21,11 +23,10 @@
     <FrameLayout
         android:id="@+id/frameLayoutProgress"
         android:visibility="gone"
-        android:background="#00000000"
         android:clickable="true"
         android:focusable="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ProgressBar
             android:layout_gravity="center"
