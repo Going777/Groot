@@ -37,7 +37,7 @@ public class NotificationServiceImpl implements NotificationService{
         String eventId = makeTimeIncludeId(userId);
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + userId + "]");
         log.info("더미 데이터 전송");
-
+        log.info("emitter: "+emitter.toString()+" eventId: "+eventId+" emitterId: "+emitterId);
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 전송하여 Event 유실을 예방
         if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, userId, emitterId, emitter);
