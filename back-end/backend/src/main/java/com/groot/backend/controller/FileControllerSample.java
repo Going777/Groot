@@ -25,7 +25,7 @@ public class FileControllerSample {
     private final FileServiceSample fileServiceSample;
 
     @PostMapping(value = "/one", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity upload(@RequestPart("file") MultipartFile multipartFile, @RequestPart("key") String key) {
+    public ResponseEntity upload(@RequestPart("file") MultipartFile multipartFile, @RequestParam("key") String key) {
         logger.info("Upload file : {}", multipartFile.getOriginalFilename());
         Map<String, Object> result = new HashMap<>();
 
@@ -46,7 +46,7 @@ public class FileControllerSample {
     }
 
     @PostMapping(value = "/multi", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity uploads(@RequestPart("files") MultipartFile[] multipartFiles, @RequestPart("key") String key) {
+    public ResponseEntity uploads(@RequestPart("files") MultipartFile[] multipartFiles, @RequestParam("key") String key) {
         logger.info("Upload {} files", multipartFiles.length);
         Map<String, Object> result = new HashMap<>();
 
