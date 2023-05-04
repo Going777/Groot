@@ -125,8 +125,9 @@ class GlobalVariables : Application() {
         fun hideKeyboard(activity: Activity) {
             val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(activity.window.decorView.applicationWindowToken, 0)
+        }
 
-        fun changeImgView(imgView: ImageView, userProfile:String, context: Context) {
+        fun changeImgView(imgView: ImageView, userProfile: String, context: Context) {
             imgView.post {
                 ThreadUtil.startThread {
                     val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
@@ -142,7 +143,6 @@ class GlobalVariables : Application() {
                 }
             }
         }
-
 
     }
 
@@ -162,4 +162,5 @@ class GlobalVariables : Application() {
             }
         }
     }
+
 }
