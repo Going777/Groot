@@ -126,14 +126,9 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
-        List<DiaryEntity> diaryEntityList = diaryRepository.findAllByPotId(potId);
-        int start = (int) pageRequest.getOffset();
-        int end = Math.min((start+pageRequest.getPageSize()), diaryEntityList.size());
-        if(start > end){
-            return null;
-        }
-        Page<DiaryEntity> diaryEntities =  new PageImpl<>(diaryEntityList.subList(start, end), pageRequest, diaryEntityList.size());
-        Page<DiaryResponseDTO> result = new DiaryResponseDTO().toDtoList(diaryEntities);
+        Page<DiaryEntity> diaryEntityList = diaryRepository.findAllByPotId(potId, pageRequest);
+
+        Page<DiaryResponseDTO> result = new DiaryResponseDTO().toDtoList(diaryEntityList);
         return result;
     }
 

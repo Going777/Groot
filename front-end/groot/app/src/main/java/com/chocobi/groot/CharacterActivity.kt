@@ -23,7 +23,6 @@ import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
 
 class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
-    val TAG: String = "로그"
 
     lateinit var sceneView: ArSceneView
     lateinit var loadingView: View
@@ -134,7 +133,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //    }
 
     fun placeModelNode() {
-        Log.d(TAG, "PlaceModelNode: 불림");
+        Log.d("CharacterActivity", "placeModelNode()")
         modelNode?.anchor()
         placeModelButton.isVisible = false
         sceneView.planeRenderer.isVisible = false

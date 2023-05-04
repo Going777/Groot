@@ -4,12 +4,15 @@ import android.util.Log
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SearchService {
 
-    @Headers(        "accept: application/json",
-        "content-type: application/json")
+    @Headers(
+        "accept: application/json",
+        "content-type: application/json"
+    )
     @GET("/api/plants")
     fun searchPlants(
         @Query("name") name: String? = null,
@@ -18,4 +21,16 @@ interface SearchService {
         @Query("growth") growth: String? = null,
         @Query("page") page: Int? = null,
     ): Call<PlantSearchResponse>
+
+    @Headers(
+        "accept: application/json",
+        "content-type: application/json"
+    )
+    @GET("/api/plants/{plantId}")
+    fun getPlantDetail(
+        @Path("plantId") plantId: Int
+    ): Call<PlantDetailResponse>
+
+
+
 }

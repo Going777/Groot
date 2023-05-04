@@ -63,7 +63,7 @@ class PlantCollectionFragment : Fragment() {
         plantItems.add("산세산세")
         plantItems.add("산세산세")
 
-        Log.d("로그", "PlantCollectionFragment, $plantItems")
+        Log.d("PlantCollectionFragment", "onCreateView(), $plantItems")
 
         val plantCollectionRv = rootView.findViewById<RecyclerView>(R.id.plant_collectioin_recycler_view)
 

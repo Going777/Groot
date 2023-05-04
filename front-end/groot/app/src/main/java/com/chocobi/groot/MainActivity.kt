@@ -14,9 +14,15 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.PERMISSION_CAMERA
+import com.chocobi.groot.data.PERMISSION_GALLERY
+import com.chocobi.groot.data.REQUEST_CAMERA
+import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
+import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.plant.PlantDetailFragment
 import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
 import com.chocobi.groot.view.plant.PlantDiaryFragment
@@ -31,13 +37,8 @@ import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
-    val TAG = "로그"
 
     //    private lateinit var binding: ActivityMainBinding
-    private val PERMISSION_CAMERA = 0
-    private val REQUEST_CAMERA = 1
-    private val PERMISSON_GALLERY = 2
-    private val REQUEST_STORAGE = 3
 
 //    private var activityToolbar: androidx.appcompat.widget.Toolbar? = null
 //
@@ -161,7 +162,7 @@ class MainActivity : AppCompatActivity() {
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d(TAG, "onRequestPermissionsResult: $grantResults")
+        Log.d("MainActivity", "onRequestPermissionsResult(), $grantResults")
         if (grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
             permissionGranted(requestCode)
         } else {
@@ -173,7 +174,7 @@ class MainActivity : AppCompatActivity() {
 
         when (requestCode) {
             PERMISSION_CAMERA -> openCamera()
-            PERMISSON_GALLERY -> openGallery()
+            PERMISSION_GALLERY -> openGallery()
         }
     }
 
@@ -185,7 +186,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
 
-            PERMISSON_GALLERY -> Toast.makeText(
+            PERMISSION_GALLERY -> Toast.makeText(
                 this,
                 "저장소 권한을 승인해야 앨범에서 이미지를 불러올 수 있습니다.",
                 Toast.LENGTH_LONG
@@ -289,9 +290,15 @@ class MainActivity : AppCompatActivity() {
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate실행: ");
+        Log.d("MainActivity", "onCreate()")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
+        if (refreshToken == "") {
+            var intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
 
 
 //        if (savedInstanceState == null) {

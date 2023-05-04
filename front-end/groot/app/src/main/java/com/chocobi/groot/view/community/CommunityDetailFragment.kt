@@ -33,12 +33,10 @@ import retrofit2.Response
 class CommunityDetailFragment : Fragment() {
     private lateinit var bookmarkButton: ImageButton
 
-    private var commentList = arrayListOf<CommunityCommentResponse>(
-//        CommunityCommentResponse("sample_plant_image", "박세희1", "4", "댓글123"),
-//        CommunityCommentResponse("sample_plant_image", "박세희2", "4", "댓글123"),
-//        CommunityCommentResponse("sample_plant_image", "박세희3", "4", "댓글123"),
-//        CommunityCommentResponse("sample_plant_image", "박세희4", "4", "댓글123"),
-    )
+//    private var commentList = arrayListOf<CommunityCommentResponse>()
+
+    val commentFragment = CommunityCommentFragment()
+
     private lateinit var getData: CommunityArticleDetailResponse
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,7 +118,6 @@ class CommunityDetailFragment : Fragment() {
 
                         Log.d( "CommunityDetailFragment", articleDetailData.toString())
 
-
                     } else {
                         Log.d("CommunityDetailFragment", "실패1")
                     }
@@ -163,16 +160,6 @@ class CommunityDetailFragment : Fragment() {
         }
 
 
-// 2. RecyclerView의 레이아웃 매니저 설정
-        val commentRecycleView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
-        val layoutManager = LinearLayoutManager(context)
-        commentRecycleView.layoutManager = layoutManager
-
-// 3. RecyclerView 어댑터가 데이터를 올바르게 처리하는지 확인
-        val commentAdapter = CommentAdapter(commentList)
-        commentRecycleView.adapter = commentAdapter
-
-
         val spinner: Spinner = view.findViewById(R.id.spinner)
         val spinnerButton: ImageButton = view.findViewById(R.id.spinnerButton)
 
@@ -203,13 +190,16 @@ class CommunityDetailFragment : Fragment() {
             spinner.performClick()
         }
 
-
-
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
+
+        Log.d("CommunityDetailFragment_childFragmentManager", CommunityCommentFragment().toString())
 
         val viewPager: ViewPager2 = view.findViewById(R.id.carousel_pager)
         val adapter = CommunityTabAdapter(this)
@@ -222,6 +212,7 @@ class CommunityDetailFragment : Fragment() {
             tab.text = tabList[position]
 
         }.attach()
+
 
     }
 

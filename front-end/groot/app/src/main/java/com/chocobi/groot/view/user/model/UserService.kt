@@ -1,7 +1,7 @@
 package com.chocobi.groot.view.user.model
 
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
-import com.chocobi.groot.view.login.LoginRequest
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -9,7 +9,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.PUT
 import retrofit2.http.Query
 
 
@@ -17,15 +17,13 @@ interface UserService {
 
     @GET("/api/users/logout")
     fun logout(
-    ): Call<LogoutResponse>
+    ): Call<BasicResponse>
 
     @Headers("content-type: application/json")
     @DELETE("/api/users")
     fun deleteUser(
         @Header("Authorization") accessToken: String
-    ): Call<LogoutResponse>
-
-
+    ): Call<BasicResponse>
 
     @GET("/api/users")
     fun getUser(
@@ -44,14 +42,11 @@ interface UserService {
         @Query("size") size: Int,
     ): Call<CommunityArticleListResponse>
 
-    @GET("/api/articles/category/{category}") // 요청 url
-    fun requestUserArticleList(
-//        input 정의
-        @Path("category") categoryInput:String,
-        @Query("page") pageInput:Int,
-        @Query("size") sizeInput:Int,
+    @PUT("api/users/password")
+    fun changePassword(
+        @Body params: PasswordRequest
+    ): Call<BasicResponse>
 
-        ) : Call<CommunityArticleListResponse> // output 정의
 
     @Headers("content-type: application/json")
     @POST("/api/users/refresh")
@@ -64,4 +59,10 @@ class RefreshRequest internal constructor(
     val grantType: String,
     val accessToken: String,
     val refreshToken: String
+
+
+)class PasswordRequest internal constructor(
+    val userPK: Int,
+    val password: String,
+    val newPassword: String
 )

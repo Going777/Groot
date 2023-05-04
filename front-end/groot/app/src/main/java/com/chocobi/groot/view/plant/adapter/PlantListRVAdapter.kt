@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.plant.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,7 @@ class PlantListRVAdapter(val items: MutableList<String>) :
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
-        android.util.Log.d("로그", "PlantListRVAdapter, $items")
+        Log.d("PlantListRVAdapter", "onCreateViewHolder() $items")
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_plant_list_item, parent, false)
 

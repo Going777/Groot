@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.view.user.ProfileBottomSheet
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -40,7 +41,6 @@ class PlantFragment : Fragment() {
 //        return activityToolbar
 //    }
 
-    private val PERMISSION_CAMERA = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
