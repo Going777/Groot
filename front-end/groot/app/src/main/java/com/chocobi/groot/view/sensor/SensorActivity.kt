@@ -19,7 +19,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_sensor)
 
         // 센서 매니저 인스턴스 생성
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -64,7 +64,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-
         // 센서 등록
         sensorManager!!.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
         sensorManager!!.registerListener(this, humiditySensor, SensorManager.SENSOR_DELAY_NORMAL)
