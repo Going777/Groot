@@ -11,6 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitClient {
     private val TAG = "RetrofitClient"
     private var retrofitClient: Retrofit? = null
+    private var basicClient: Retrofit? = null
 
     fun getClient(): Retrofit? {
 
@@ -82,13 +83,13 @@ object RetrofitClient {
         })
         client.addInterceptor(baseParameterInterceptor)
 
-        if (retrofitClient == null) {
-            retrofitClient = Retrofit.Builder()
+        if (basicClient == null) {
+            basicClient = Retrofit.Builder()
                 .baseUrl(GlobalVariables.getBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(client.build())
                 .build()
         }
-        return retrofitClient
+        return basicClient
     }
 }

@@ -85,7 +85,6 @@ class LoginActivity : AppCompatActivity() {
                             GlobalVariables.prefs.setString("access_token", loginBody.accessToken)
                             GlobalVariables.prefs.setString("refresh_token", loginBody.accessToken)
                             GlobalVariables.getUser()
-
                         }
 
                         var intent = Intent(this@LoginActivity, MainActivity::class.java)
