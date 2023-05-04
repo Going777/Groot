@@ -114,12 +114,12 @@ class SearchCameraActivity : AppCompatActivity() {
         if (file == null) {
             return
         }
-        var retrofit = RetrofitClient.getClient()!!
+        var retrofit = RetrofitClient.basicClient()!!
         var searchService = retrofit.create(SearchService::class.java)
 
         var filePart: MultipartBody.Part? = null
 
-        val mediaType = "image/*".toMediaTypeOrNull()
+        val mediaType = "image/png".toMediaTypeOrNull()
         val requestFile = RequestBody.create(mediaType, file)
         filePart = MultipartBody.Part.createFormData("file", file.name, requestFile)
 
