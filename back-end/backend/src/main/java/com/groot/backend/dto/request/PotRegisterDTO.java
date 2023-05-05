@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -13,12 +15,11 @@ import lombok.NoArgsConstructor;
 public class PotRegisterDTO {
 
     @Schema(required = true)
+    @NotNull
     private Long plantId;
 
-//    @Schema(required = true)
-//    private Long characterId;
-
     @Schema(required = true)
+    @NotNull
     private String potName;
 
     @Schema(required = false)

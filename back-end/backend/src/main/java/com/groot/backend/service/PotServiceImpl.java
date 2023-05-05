@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
@@ -34,21 +33,16 @@ public class PotServiceImpl implements PotService{
     private final S3Service s3Service;
     private final Logger logger = LoggerFactory.getLogger(PotServiceImpl.class);
     @Override
-    public Long createPot(Long userPK, PotRegisterDTO potRegisterDTO, MultipartFile multipartFile) {
+    public Long createPot(Long userPK, PotRegisterDTO potRegisterDTO, MultipartFile multipartFile)
+            throws IOException, NoSuchElementException, Exception {
         logger.info("Create pot : {}", potRegisterDTO.getPotName());
         String imgPath = "";
 
-        // save image first
+
         try {
             imgPath = s3Service.upload(multipartFile, "pot");
-        } catch (IOException e) {
-            logger.info("Failed to upload image");
-            return -2L;
-        }
+            logger.info("image uploaded : {}", imgPath);
 
-        logger.info("image uploaded : {}", imgPath);
-
-        try {
             PlantEntity plantEntity = plantRepository.findById(potRegisterDTO.getPlantId()).get();
             logger.info("Plant found : {}", plantEntity.getKrName());
 
@@ -69,16 +63,20 @@ public class PotServiceImpl implements PotService{
             potRepository.save(potEntity);
 
             return potEntity.getId();
+        } catch (IOException e) {
+            logger.info("Failed to upload image");
+            throw new IOException();
+
         } catch (IllegalArgumentException | NoSuchElementException e) {
             logger.info("Plant or User not found : plant {}, user {}", potRegisterDTO.getPlantId(), userPK);
             s3Service.delete(imgPath);
-            return -1L;
+            throw new NoSuchElementException();
 
         } catch (Exception e) {
-            logger.info("Failed to save pot entity : {}, {}");
+            logger.info("Failed to save pot entity with pot name: {}", potRegisterDTO.getPotName());
             logger.info("Related Exception : {}", e.getMessage());
             s3Service.delete(imgPath);
-            return -3L;
+            throw new Exception();
         }
     }
 
