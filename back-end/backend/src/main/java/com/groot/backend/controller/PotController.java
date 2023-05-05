@@ -1,8 +1,9 @@
 package com.groot.backend.controller;
 
 
-import com.groot.backend.dto.request.PotDTO;
+import com.groot.backend.dto.request.PotRegisterDTO;
 import com.groot.backend.service.PotService;
+import com.groot.backend.util.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,17 +37,29 @@ public class PotController {
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create pot", description = "returns potId")
-    public ResponseEntity createPot(@RequestPart("img") @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
-                                    @RequestPart @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) PotDTO potDTO) {
-        logger.info("Create pot : {}", potDTO.getPotName());
+    public ResponseEntity createPot(HttpServletRequest request,
+                                    @RequestPart("img") @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
+                                    @RequestPart("pot") @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) PotRegisterDTO potRegisterDTO) {
+        logger.info("Create pot : {}", potRegisterDTO.getPotName());
         Map<String, Object> result = new HashMap<>();
 
-        Long ret = potService.createPot(potDTO, multipartFile);
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        Long ret = potService.createPot(userPK, potRegisterDTO, multipartFile);
 
         if(ret < 0) {
+            HttpStatus status = (ret == -1) ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
+            logger.info("Pot registration failed with code : {}", ret);
             result.put("msg", "화분 등록에 실패했습니다.");
-            return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity(result, status);
         }
+
         result.put("msg", "화분이 등록되었습니다.");
         result.put("potId", ret);
         return new ResponseEntity(result, HttpStatus.CREATED);

@@ -56,12 +56,15 @@ public class PotEntity extends BaseEntity{
     private Double humidity;
 
     @Column(name = "water_date")
+    @CreationTimestamp
     private Date waterDate;
 
     @Column(name = "pruning_date")
+    @CreationTimestamp
     private Date pruningDate;
 
     @Column(name = "nutrients_date")
+    @CreationTimestamp
     private Date nutrientsDate;
 
     @Column(nullable = true, columnDefinition = "TINYINT(1) DEFAULT FALSE")
@@ -69,6 +72,9 @@ public class PotEntity extends BaseEntity{
 
     @Column(nullable = true, columnDefinition = "TINYINT(1) DEFAULT TRUE")
     private Boolean survival;
+
+    @Column(name = "experience", columnDefinition = "INT DEFAULT 0")
+    private Integer experience;
 
     @Column(name = "plant_kr_name", nullable = false)
     private String plantKrName;
