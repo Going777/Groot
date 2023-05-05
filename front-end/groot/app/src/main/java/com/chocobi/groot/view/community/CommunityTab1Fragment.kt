@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -39,6 +40,7 @@ class CommunityTab1Fragment : Fragment() {
 
     private var isFiltered = false // 필터가 걸려있는 상황인지 체크
     private var regionFilterList: ArrayList<String>? = null
+    private var regionFullFilterList: ArrayList<String>? = null
     private lateinit var chipRegionGroup: ChipGroup
 
     override fun onCreateView(
@@ -49,7 +51,7 @@ class CommunityTab1Fragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_tab1, container, false)
         val mActivity = activity as MainActivity
 
-//        지역 필터 처리
+/** 지역 필터 버튼 눌렀을 때 처리 **/
         val regionFilterBtn = view.findViewById<MaterialButton>(R.id.regionFilterBtn)
         val regionFilterBottomSheet = RegionFilterBottomSheet(requireContext())
         regionFilterBtn.setOnClickListener {
@@ -59,22 +61,10 @@ class CommunityTab1Fragment : Fragment() {
             )
         }
 
+//        뷰 초기화
         findViews(view)
-
-
-        //        필터 데이터 받기
-        regionFilterList = arguments?.getStringArrayList("region_list")
-        isFiltered = !regionFilterList.isNullOrEmpty()
-        if (isFiltered) {
-            for (item in regionFilterList!!) {
-                chipRegionGroup.addView(Chip(requireContext()).apply {
-                    text = item
-                    isCloseIconVisible = false
-                })
-            }
-            Log.d("CommunityTab1Fragment", "onViewCreated()/필터 값: $regionFilterList")
-        }
-
+//        지역 필터 데이터 받아오기
+        getFilterData()
         setListeners()
         initList()
 //        reload()
@@ -86,9 +76,10 @@ class CommunityTab1Fragment : Fragment() {
             var communityArticleSize = 10
             val regionFilterService = retrofit.create(CommunityService::class.java)
             val regions = arrayListOf<String?>(null, null, null)
-            for (idx in 0..regionFilterList!!.count() - 1) {
-                regions[idx] = regionFilterList!![idx]
+            for (idx in 0..regionFullFilterList!!.count() - 1) {
+                regions[idx] = regionFullFilterList!![idx]
             }
+            Log.d("CommunityTab1Fragment", "onCreateView() 넘기는 필터값 $regions")
 
             regionFilterService.requestRegionFilter(
                 region1 = regions[0],
@@ -135,6 +126,7 @@ class CommunityTab1Fragment : Fragment() {
             })
 
         } else {
+            Toast.makeText(requireContext(), "모든 게시글을 검색합니다", Toast.LENGTH_SHORT).show()
 //                retrofit 객체 만들기
             var retrofit = RetrofitClient.getClient()!!
 
@@ -191,6 +183,23 @@ class CommunityTab1Fragment : Fragment() {
         return view
     }
 
+    //        필터 데이터 받기
+    private fun getFilterData() {
+        regionFilterList = arguments?.getStringArrayList("region_list")
+        regionFullFilterList = arguments?.getStringArrayList("region_full_list")
+//        필터 모드인지 아닌지 구분
+        isFiltered = !regionFilterList.isNullOrEmpty()
+        if (isFiltered) {
+            for (item in regionFilterList!!) {
+                chipRegionGroup.addView(Chip(requireContext(), null, R.style.REGION_CHIP_ICON).apply {
+                    text = item
+                    isCloseIconVisible = false
+                })
+            }
+            Log.d("CommunityTab1Fragment", "onViewCreated()/필터 값: $regionFullFilterList")
+        }
+    }
+
     private fun findViews(view: View) {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
@@ -223,8 +232,8 @@ class CommunityTab1Fragment : Fragment() {
             var communityArticleSize = 10
             val regionFilterService = retrofit.create(CommunityService::class.java)
             val regions = arrayListOf<String?>(null, null, null)
-            for (idx in 0..regionFilterList!!.count() - 1) {
-                regions[idx] = regionFilterList!![idx]
+            for (idx in 0..regionFullFilterList!!.count() - 1) {
+                regions[idx] = regionFullFilterList!![idx]
             }
 
             regionFilterService.requestRegionFilter(
@@ -324,8 +333,8 @@ class CommunityTab1Fragment : Fragment() {
 
             val regionFilterService = retrofit.create(CommunityService::class.java)
             val regions = arrayListOf<String?>(null, null, null)
-            for (idx in 0..regionFilterList!!.count() - 1) {
-                regions[idx] = regionFilterList!![idx]
+            for (idx in 0..regionFullFilterList!!.count() - 1) {
+                regions[idx] = regionFullFilterList!![idx]
             }
             var communityArticleSize = 10
 

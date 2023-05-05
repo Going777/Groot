@@ -32,10 +32,8 @@ class CommunityFragment : Fragment() {
     private var nowTab: Int = 0
     private var param2: String? = null
 
-    private var regionFilterList: ArrayList<String>? = null
-    private var articles: CommunityArticleListResponse? = null
-
-
+    private var regionList: ArrayList<String>? = null
+    private var regionFullList: ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +42,6 @@ class CommunityFragment : Fragment() {
             param2 = it.getString(ARG_PARAM2)
         }
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,7 +99,8 @@ class CommunityFragment : Fragment() {
             return when (position) {
                 0 -> {
                     val bundle = Bundle().apply {
-                        putStringArrayList("region_list", regionFilterList)
+                        putStringArrayList("region_list", regionList)
+                        putStringArrayList("region_full_list", regionFullList)
                     }
                     CommunityTab1Fragment().apply { arguments = bundle }
                 }
@@ -117,12 +115,8 @@ class CommunityFragment : Fragment() {
     //    사용자와 상호작용가능한 상태가 되었을 때 호출
     override fun onResume() {
         super.onResume()
-
-//        val json = arguments?.getString("article_list")
-//        val gson = Gson()
-//        articles = gson.fromJson(json, CommunityArticleListResponse::class.java)
-        regionFilterList = arguments?.getStringArrayList("region_list")
-//        Log.d("CommunityFragment", "onResume() / $json / $regionFilterList")
+        regionList = arguments?.getStringArrayList("region_list")
+        regionFullList = arguments?.getStringArrayList("region_full_list")
     }
 
 
