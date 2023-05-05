@@ -52,7 +52,7 @@ public class PotController {
         Long userPK;
         try {
             userPK = JwtTokenProvider.getIdByAccessToken(request);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
             logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -83,7 +83,7 @@ public class PotController {
         Long userPK;
         try {
             userPK = JwtTokenProvider.getIdByAccessToken(request);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
             logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
@@ -112,7 +112,7 @@ public class PotController {
         Long userPK;
         try {
             userPK = JwtTokenProvider.getIdByAccessToken(request);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
             logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
