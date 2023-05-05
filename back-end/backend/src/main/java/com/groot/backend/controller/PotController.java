@@ -127,6 +127,7 @@ public class PotController {
             result.put("msg", "화분 조회에 성공했습니다.");
             result.put("pot", potDetailDTO.getPot());
             result.put("plant", potDetailDTO.getPlant());
+            result.put("character", potDetailDTO.getCharacter());
             status = HttpStatus.OK;
         } catch (AccessDeniedException e) {
             status = HttpStatus.FORBIDDEN;

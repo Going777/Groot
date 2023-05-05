@@ -44,7 +44,7 @@ public class PotEntity extends BaseEntity{
     @CreationTimestamp
     private LocalDateTime saleDate;
 
-    @Column(name = "character_id")
+    @Column(name = "character_id",insertable = false, updatable = false)
     private Long characterId;
 
     @Column
@@ -101,4 +101,9 @@ public class PotEntity extends BaseEntity{
         this.illuminance = illuminance == 0? this.illuminance : illuminance;
         this.humidity = humidity == 0? this.humidity : humidity;
     }
+
+    @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "character_id")
+    @JsonBackReference
+    private CharacterEntity characterEntity;
 }
