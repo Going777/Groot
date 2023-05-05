@@ -39,9 +39,20 @@ import kotlin.random.Random
 class SearchCameraActivity : AppCompatActivity() {
     private val TAG = "SearchCameraActivity"
     private var file: File? = null
+    private lateinit var plantNameText : TextView
+    private lateinit var plantScoreText : TextView
+    private lateinit var plantSciText : TextView
+    private var plantId : Int? = null
+    private var plantName : String? = null
+    private var plantSci : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_camera)
+
+        plantNameText = findViewById(R.id.plantNameText)
+        plantSciText = findViewById(R.id.plantSciText)
+        plantScoreText = findViewById(R.id.plantScoreText)
 
 //        imageUri 전달받기
         var imageUri = intent.getStringExtra("imageUri")
@@ -60,11 +71,6 @@ class SearchCameraActivity : AppCompatActivity() {
         var resultImgView = findViewById<ImageView>(R.id.resultImgView)
         resultImgView.setImageURI(imageUri?.toUri())
 
-//        퍼센트 조작
-        var percentText = findViewById<TextView>(R.id.percentText)
-
-        var randomNum = Random.nextInt(15, 90)
-        percentText.text = randomNum.toString() + "%"
 
         //        디테일 버튼 조작
         val detailBtn = findViewById<Button>(R.id.detailBtn)
@@ -79,6 +85,8 @@ class SearchCameraActivity : AppCompatActivity() {
         addPlantBtn.setOnClickListener {
             var intent = Intent(this, Pot1Activity::class.java)
             intent.putExtra("imageUri", imageUri)
+            intent.putExtra("plantName", plantName)
+            intent.putExtra("plantId", plantId)
             startActivity(intent)
         }
 
@@ -131,9 +139,16 @@ class SearchCameraActivity : AppCompatActivity() {
                     response: Response<PlantIdentifyResponse>
                 ) {
                     var body = response.body()
+                    var msg = response.body()?.msg
                     Log.d(TAG, "$body")
                     if (body != null) {
-                        Toast.makeText(context, "$body", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                        plantNameText.text = body.plant.krName
+                        plantSciText.text = body.plant.sciName
+                        plantScoreText.text = body.plant.score.toString() + "%"
+                        plantId = body.plant.plantId
+                        plantName = body.plant.krName
+                        plantSci = body.plant.sciName
                     } else {
                         Log.d(TAG, "${response.errorBody()}")
                     }
