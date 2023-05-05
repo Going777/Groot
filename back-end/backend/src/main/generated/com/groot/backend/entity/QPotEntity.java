@@ -24,12 +24,16 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
+    public final QCharacterEntity characterEntity;
+
     public final NumberPath<Long> characterId = createNumber("characterId", Long.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
     public final ListPath<DiaryEntity, QDiaryEntity> diaryEntities = this.<DiaryEntity, QDiaryEntity>createList("diaryEntities", DiaryEntity.class, QDiaryEntity.class, PathInits.DIRECT2);
+
+    public final NumberPath<Integer> experience = createNumber("experience", Integer.class);
 
     public final NumberPath<Double> humidity = createNumber("humidity", Double.class);
 
@@ -44,7 +48,7 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public final StringPath name = createString("name");
 
-    public final DatePath<java.sql.Date> nutrientsDate = createDate("nutrientsDate", java.sql.Date.class);
+    public final DateTimePath<java.time.LocalDateTime> nutrientsDate = createDateTime("nutrientsDate", java.time.LocalDateTime.class);
 
     public final QPlantEntity plantEntity;
 
@@ -52,9 +56,9 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public final StringPath plantKrName = createString("plantKrName");
 
-    public final DatePath<java.sql.Date> pruningDate = createDate("pruningDate", java.sql.Date.class);
+    public final DateTimePath<java.time.LocalDateTime> pruningDate = createDateTime("pruningDate", java.time.LocalDateTime.class);
 
-    public final DatePath<java.sql.Date> saleDate = createDate("saleDate", java.sql.Date.class);
+    public final DateTimePath<java.time.LocalDateTime> saleDate = createDateTime("saleDate", java.time.LocalDateTime.class);
 
     public final BooleanPath share = createBoolean("share");
 
@@ -66,7 +70,7 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
 
-    public final DatePath<java.sql.Date> waterDate = createDate("waterDate", java.sql.Date.class);
+    public final DateTimePath<java.time.LocalDateTime> waterDate = createDateTime("waterDate", java.time.LocalDateTime.class);
 
     public QPotEntity(String variable) {
         this(PotEntity.class, forVariable(variable), INITS);
@@ -86,6 +90,7 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public QPotEntity(Class<? extends PotEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.characterEntity = inits.isInitialized("characterEntity") ? new QCharacterEntity(forProperty("characterEntity")) : null;
         this.plantEntity = inits.isInitialized("plantEntity") ? new QPlantEntity(forProperty("plantEntity")) : null;
         this.userEntity = inits.isInitialized("userEntity") ? new QUserEntity(forProperty("userEntity")) : null;
     }

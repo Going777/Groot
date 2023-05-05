@@ -1,11 +1,14 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.response.CharacterDTO;
 import com.groot.backend.dto.response.PlantDetailDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
+import com.groot.backend.entity.CharacterEntity;
 import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.entity.PotEntity;
+import com.groot.backend.repository.CharacterRepository;
 import com.groot.backend.repository.PlantRepository;
 import com.groot.backend.repository.PotRepository;
 import com.groot.backend.repository.UserRepository;
@@ -15,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,6 +36,7 @@ public class PotServiceImpl implements PotService{
     private final PotRepository potRepository;
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
+    private final CharacterRepository characterRepository;
     private final S3Service s3Service;
     private final Logger logger = LoggerFactory.getLogger(PotServiceImpl.class);
     @Override
@@ -54,7 +57,7 @@ public class PotServiceImpl implements PotService{
                     PotEntity.builder()
                             .userEntity(userRepository.findById(userPK).get())
                             .plantEntity(plantEntity)
-                            .characterId(PlantCodeUtil.characterCode(plantEntity.getGrwType()))
+                            .characterEntity(characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(plantEntity.getGrwType()),0))
                             .name(potRegisterDTO.getPotName())
                             .imgPath(imgPath)
                             // default values might be modified
@@ -109,6 +112,8 @@ public class PotServiceImpl implements PotService{
                             .survival(potEntity.getSurvival())
                             .level(expToLevel(potEntity.getExperience()))   // level?
                             .characterId(potEntity.getCharacterId())    // id or path
+                            .characterGLBPath(characterRepository.findById(potEntity.getCharacterId()).get().getGlbPath())
+                            .characterPNGPath(characterRepository.findById(potEntity.getCharacterId()).get().getPngPath())
                             .build());
         });
 
@@ -157,7 +162,16 @@ public class PotServiceImpl implements PotService{
                 .img(plantEntity.getImg())
                 .build();
 
-        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).build();
+        CharacterEntity characterEntity = characterRepository.findById(potEntity.getCharacterId()).get();
+
+        CharacterDTO characterDTO = CharacterDTO.builder()
+                .characterId(characterEntity.getId())
+                .level(characterEntity.getLevel())
+                .glbPath(characterEntity.getGlbPath())
+                .pngPath(characterEntity.getPngPath())
+                .build();
+
+        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).character(characterDTO).build();
     }
 
     private int calcPeriod(LocalDateTime from) {

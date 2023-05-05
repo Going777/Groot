@@ -36,4 +36,8 @@ public class PotListDTO {
     private int level;
 
     private Long characterId;
+
+    private String characterGLBPath;
+
+    private String characterPNGPath;
 }

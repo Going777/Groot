@@ -6,12 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,7 +42,7 @@ public class PotEntity extends BaseEntity{
     @CreationTimestamp
     private LocalDateTime saleDate;
 
-    @Column(name = "character_id")
+    @Column(name = "character_id",insertable = false, updatable = false)
     private Long characterId;
 
     @Column
@@ -93,4 +91,9 @@ public class PotEntity extends BaseEntity{
     @JoinColumn(name = "plant_id")
     @JsonBackReference
     private PlantEntity plantEntity;
+
+    @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "character_id")
+    @JsonBackReference
+    private CharacterEntity characterEntity;
 }
