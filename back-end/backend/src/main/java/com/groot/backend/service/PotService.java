@@ -1,5 +1,6 @@
 package com.groot.backend.service;
 
+import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
@@ -40,4 +41,19 @@ public interface PotService {
      * @throws AccessDeniedException for unauthorized access
      */
     public PotDetailDTO potDetail(Long userPK, Long potId);
+
+    /**
+     *
+     * @param userPK
+     * @param potId
+     * @param potModifyDTO name, temp, illum, hum
+     * @param multipartFile new image
+     * @throws NoSuchElementException when pot not found
+     * @throws AccessDeniedException for unauthorized access
+     * @throws IllegalArgumentException for GONE
+     * @throws Exception
+     */
+    public String modifyPot(Long userPK, Long potId, PotModifyDTO potModifyDTO, MultipartFile multipartFile) throws Exception;
+
+    public int deletePot(Long userPK, Long potId) throws Exception;
 }

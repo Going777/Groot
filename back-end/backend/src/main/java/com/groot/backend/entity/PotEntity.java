@@ -6,10 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -91,6 +93,14 @@ public class PotEntity extends BaseEntity{
     @JoinColumn(name = "plant_id")
     @JsonBackReference
     private PlantEntity plantEntity;
+
+    public void modify(String imgPath, String name, double temperature, int illuminance, double humidity) {
+        this.imgPath = imgPath;
+        this.name = name == null? this.name : name;
+        this.temperature = temperature == 0? this.temperature : temperature;
+        this.illuminance = illuminance == 0? this.illuminance : illuminance;
+        this.humidity = humidity == 0? this.humidity : humidity;
+    }
 
     @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id")
