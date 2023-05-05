@@ -50,7 +50,10 @@ public interface PotService {
      * @param multipartFile new image
      * @throws NoSuchElementException when pot not found
      * @throws AccessDeniedException for unauthorized access
+     * @throws IllegalArgumentException for GONE
      * @throws Exception
      */
     public String modifyPot(Long userPK, Long potId, PotModifyDTO potModifyDTO, MultipartFile multipartFile) throws Exception;
+
+    public int deletePot(Long userPK, Long potId) throws Exception;
 }

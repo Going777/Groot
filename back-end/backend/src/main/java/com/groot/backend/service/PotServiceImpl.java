@@ -193,6 +193,21 @@ public class PotServiceImpl implements PotService{
         }
     }
 
+    @Override
+    public int deletePot(Long userPK, Long potId) throws Exception{
+        logger.info("delete pot : {}", potId);
+
+        PotEntity potEntity = potRepository.findById(potId).get(); // NoSuchElementException
+
+        logger.info("pot {} found, delete it", potId);
+
+        if(potEntity.getUserId() != userPK) throw new IllegalAccessException("Unauthorized");
+
+        potRepository.delete(potEntity); // IllegalArgumentException
+
+        return 0;
+    }
+
     private int calcPeriod(LocalDateTime from) {
         LocalDateTime now = LocalDateTime.now();
 
