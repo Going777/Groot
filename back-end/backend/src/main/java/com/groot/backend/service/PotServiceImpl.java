@@ -1,6 +1,7 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.response.PotListDTO;
 import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.entity.PotEntity;
 import com.groot.backend.repository.PlantRepository;
@@ -15,6 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -74,5 +80,47 @@ public class PotServiceImpl implements PotService{
             s3Service.delete(imgPath);
             return -3L;
         }
+    }
+
+    @Override
+    public List<PotListDTO> potList(Long userPK) throws NoSuchElementException {
+        logger.info("user pk : {}", userPK);
+
+        List<PotEntity> list = potRepository.findAllByUserId(userPK);
+
+        if(list == null || list.size() < 1) throw new NoSuchElementException();
+
+        List<PotListDTO> ret = new ArrayList<>(list.size());
+
+        list.forEach(potEntity -> {
+            ret.add(PotListDTO.builder()
+                            .potId(potEntity.getId())
+                            .plantId(potEntity.getPlantId())
+                            .potName(potEntity.getName())
+                            .imgPath(potEntity.getImgPath())
+                            .plantKrName(potEntity.getPlantKrName())
+                            .dates(calcPeriod(potEntity.getCreatedDate()))
+                            .createdTime(potEntity.getCreatedDate())
+                            .waterDate(potEntity.getWaterDate())    // calc
+                            .nutrientsDate(potEntity.getNutrientsDate())    // calc
+                            .pruningDate(potEntity.getPruningDate())    // calc
+                            .survival(potEntity.getSurvival())
+                            .level(expToLevel(potEntity.getExperience()))   // level?
+                            .characterId(potEntity.getCharacterId())    // id or path
+                            .build());
+        });
+
+        return ret;
+    }
+
+    private int calcPeriod(LocalDateTime from) {
+        LocalDateTime now = LocalDateTime.now();
+
+        Period period = Period.between(from.toLocalDate(), now.toLocalDate());
+        return period.getDays() + 1;
+    }
+
+    private int expToLevel(int exp) {
+        return exp / 10;
     }
 }

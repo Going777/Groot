@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -41,7 +42,7 @@ public class PotEntity extends BaseEntity{
 
     @Column(name = "sale_date", nullable = false)
     @CreationTimestamp
-    private Date saleDate;
+    private LocalDateTime saleDate;
 
     @Column(name = "character_id")
     private Long characterId;
@@ -57,15 +58,15 @@ public class PotEntity extends BaseEntity{
 
     @Column(name = "water_date")
     @CreationTimestamp
-    private Date waterDate;
+    private LocalDateTime waterDate;
 
     @Column(name = "pruning_date")
     @CreationTimestamp
-    private Date pruningDate;
+    private LocalDateTime pruningDate;
 
     @Column(name = "nutrients_date")
     @CreationTimestamp
-    private Date nutrientsDate;
+    private LocalDateTime nutrientsDate;
 
     @Column(nullable = true, columnDefinition = "TINYINT(1) DEFAULT FALSE")
     private Boolean share;

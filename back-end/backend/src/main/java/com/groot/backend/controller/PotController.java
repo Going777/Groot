@@ -2,6 +2,7 @@ package com.groot.backend.controller;
 
 
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.response.PotListDTO;
 import com.groot.backend.service.PotService;
 import com.groot.backend.util.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,15 +16,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/pots")
@@ -63,5 +63,34 @@ public class PotController {
         result.put("msg", "화분이 등록되었습니다.");
         result.put("potId", ret);
         return new ResponseEntity(result, HttpStatus.CREATED);
+    }
+
+    @GetMapping("")
+    @Operation(summary = "Get pot detail", description = "")
+    public ResponseEntity<Map<String, Object>> potList(HttpServletRequest request) {
+
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+        logger.info("Get pot list of user : {}", userPK);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            List<PotListDTO> list = potService.potList(userPK);
+            status = HttpStatus.OK;
+            result.put("pots", list);
+            result.put("msg", "화분 목록 조회에 성공했습니다.");
+
+        } catch (NoSuchElementException e) {
+            logger.info("Failed to load pot list");
+            status = HttpStatus.NO_CONTENT;
+        }
+
+        return new ResponseEntity<>(result, status);
     }
 }
