@@ -19,7 +19,7 @@ public class CharacterEntity {
     private Long id;
     @Column(name="type")
     private Long type;
-    @Column(nullable = false)
+    @Column
     private Integer level;
     @Column (name = "glb_path")
     private String glbPath;
