@@ -37,7 +37,7 @@ public class PotController {
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create pot", description = "returns potId")
-    public ResponseEntity createPot(HttpServletRequest request,
+    public ResponseEntity<Map<String, Object>> createPot(HttpServletRequest request,
                                     @RequestPart("img") @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
                                     @RequestPart("pot") @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) PotRegisterDTO potRegisterDTO) {
         logger.info("Create pot : {}", potRegisterDTO.getPotName());
