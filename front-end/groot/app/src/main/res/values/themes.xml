@@ -65,11 +65,11 @@
     <!--  기본 버튼 스타일 -->
     <style name="MAIN_BTN">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">55dp</item>
+        <item name="android:layout_height">50dp</item>
         <item name="android:background">@drawable/radius10</item>
         <item name="android:backgroundTint">@color/main</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">21sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:clickable">true</item>
     </style>

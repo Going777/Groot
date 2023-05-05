@@ -18,7 +18,7 @@ interface SearchService {
         "content-type: application/json"
     )
     @GET("/api/plants")
-    fun searchPlants(
+    fun requestSearchPlants(
         @Query("name") name: String? = null,
         @Query("difficulty") difficulty: String? = null,
         @Query("lux") lux: String? = null,
