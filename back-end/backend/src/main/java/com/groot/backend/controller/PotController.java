@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -99,6 +100,42 @@ public class PotController {
         } catch (NoSuchElementException e) {
             logger.info("Failed to load pot list");
             status = HttpStatus.NO_CONTENT;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @GetMapping("/{potId}")
+    @Operation(summary = "pot detail")
+    public ResponseEntity<Map<String, Object>> potDetail(HttpServletRequest request, @PathVariable Long potId) {
+
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (IndexOutOfBoundsException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Find pot : {}", potId);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            PotDetailDTO potDetailDTO = potService.potDetail(userPK, potId);
+            result.put("msg", "화분 조회에 성공했습니다.");
+            result.put("pot", potDetailDTO.getPot());
+            result.put("plant", potDetailDTO.getPlant());
+            status = HttpStatus.OK;
+        } catch (AccessDeniedException e) {
+            status = HttpStatus.FORBIDDEN;
+            result.put("msg", "허가되지 않은 접근입니다.");
+        } catch (NoSuchElementException e) {
+            status = HttpStatus.NOT_FOUND;
+            result.put("msg", "화분을 찾을 수 없습니다.");
+        } catch (Exception e) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            result.put("msg", e.getMessage());
         }
 
         return new ResponseEntity<>(result, status);

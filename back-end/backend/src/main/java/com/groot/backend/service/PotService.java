@@ -1,7 +1,9 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -28,4 +30,14 @@ public interface PotService {
      * @throws java.util.NoSuchElementException when nothing found for userPK
      */
     public List<PotListDTO> potList(Long userPK);
+
+    /**
+     *
+     * @param userPK
+     * @param potId
+     * @return
+     * @throws NoSuchElementException when pot or plant not found
+     * @throws AccessDeniedException for unauthorized access
+     */
+    public PotDetailDTO potDetail(Long userPK, Long potId);
 }

@@ -1,6 +1,8 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.response.PlantDetailDTO;
+import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
 import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.entity.PotEntity;
@@ -12,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -109,6 +113,51 @@ public class PotServiceImpl implements PotService{
         });
 
         return ret;
+    }
+
+    @Override
+    public PotDetailDTO potDetail(Long userPK, Long potId) throws NoSuchElementException{
+        logger.info("Find pot : {}", potId);
+
+        PotEntity potEntity = potRepository.findById(potId).get();
+        if (potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
+
+        PotListDTO potListDTO = PotListDTO.builder()
+                .potId(potEntity.getId())
+                .plantId(potEntity.getPlantId())
+                .potName(potEntity.getName())
+                .imgPath(potEntity.getImgPath())
+                .plantKrName(potEntity.getPlantKrName())
+                .dates(calcPeriod(potEntity.getCreatedDate()))
+                .createdTime(potEntity.getCreatedDate())
+                .waterDate(potEntity.getWaterDate())    // calc
+                .nutrientsDate(potEntity.getNutrientsDate())    // calc
+                .pruningDate(potEntity.getPruningDate())    // calc
+                .survival(potEntity.getSurvival())
+                .level(expToLevel(potEntity.getExperience()))   // level?
+                .characterId(potEntity.getCharacterId())    // id or path
+                .build();
+
+        PlantEntity plantEntity = potEntity.getPlantEntity();
+
+        PlantDetailDTO plantDetailDTO = PlantDetailDTO.builder()
+                .plantId(plantEntity.getId())
+                .krName(plantEntity.getKrName())
+                .sciName(plantEntity.getSciName())
+                .description(plantEntity.getDescription())
+                .mgmtLevel(PlantCodeUtil.mgmtLevelCode[plantEntity.getMgmtLevel()])
+                .mgmtDemand(plantEntity.getMgmtDemand())
+                .place(plantEntity.getPlace())
+                .grwType(plantEntity.getGrwType())
+                .insectInfo(plantEntity.getInsectInfo())
+                .mgmtTip(plantEntity.getMgmtTip())
+                .minGrwTemp(plantEntity.getMinGrwTemp()).maxGrwTemp(plantEntity.getMaxGrwTemp())
+                .minHumidity(plantEntity.getMinHumidity()).maxHumidity(plantEntity.getMaxHumidity())
+                .waterCycle(PlantCodeUtil.waterCycleCode[plantEntity.getWaterCycle()%53000])
+                .img(plantEntity.getImg())
+                .build();
+
+        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).build();
     }
 
     private int calcPeriod(LocalDateTime from) {
