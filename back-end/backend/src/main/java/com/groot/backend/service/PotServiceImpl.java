@@ -1,5 +1,6 @@
 package com.groot.backend.service;
 
+import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
 import com.groot.backend.dto.response.PlantDetailDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
@@ -158,6 +159,38 @@ public class PotServiceImpl implements PotService{
                 .build();
 
         return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).build();
+    }
+
+    @Override
+    public String modifyPot(Long userPK, Long potId, PotModifyDTO potModifyDTO, MultipartFile multipartFile) throws Exception{
+        logger.info("Modify pot : {}", potId);
+
+        PotEntity potEntity = potRepository.findById(potId).get();
+
+        if(potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
+
+        String srcImgPath = potEntity.getImgPath();
+        String newImgPath = "";
+
+        try {
+            newImgPath = s3Service.upload(multipartFile, "pot");
+            logger.info("Successfully uploaded : {}", newImgPath);
+            if(potModifyDTO != null) potEntity.modify(newImgPath, potModifyDTO.getPotName(),
+                        potModifyDTO.getTemperature(), potModifyDTO.getIlluminance(), potModifyDTO.getHumidity());
+            else potEntity.modify(newImgPath, null, 0, 0, 0);
+
+            potRepository.save(potEntity);
+
+            s3Service.delete(srcImgPath);
+            return newImgPath;
+        } catch (IOException e) {
+            logger.info("Failed to create file");
+            throw new IOException();
+        } catch (Exception e) {
+            logger.info("failed to modify pot : {}, {}, {}", e.getCause(), e.getClass(), e.getStackTrace());
+            if(newImgPath != "") s3Service.delete(newImgPath);
+            throw new Exception();
+        }
     }
 
     private int calcPeriod(LocalDateTime from) {

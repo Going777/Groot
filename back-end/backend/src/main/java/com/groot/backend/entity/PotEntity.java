@@ -93,4 +93,12 @@ public class PotEntity extends BaseEntity{
     @JoinColumn(name = "plant_id")
     @JsonBackReference
     private PlantEntity plantEntity;
+
+    public void modify(String imgPath, String name, double temperature, int illuminance, double humidity) {
+        this.imgPath = imgPath;
+        this.name = name == null? this.name : name;
+        this.temperature = temperature == 0? this.temperature : temperature;
+        this.illuminance = illuminance == 0? this.illuminance : illuminance;
+        this.humidity = humidity == 0? this.humidity : humidity;
+    }
 }
