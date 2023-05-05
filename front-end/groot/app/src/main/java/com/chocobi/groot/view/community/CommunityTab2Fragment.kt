@@ -31,6 +31,8 @@ class CommunityTab2Fragment : Fragment() {
     private lateinit var adapter: RecyclerViewAdapter
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityArticleListResponse
+    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
+    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,10 +40,11 @@ class CommunityTab2Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community_tab2, container, false)
+        Log.d("CommunityTab2Fragment", "onCreateView()")
         findViews(view)
         setListeners()
         initList()
-        reload()
+//        reload()
 
         showProgress()
 
@@ -99,12 +102,14 @@ class CommunityTab2Fragment : Fragment() {
     }
 
     private fun findViews(view: View) {
+        Log.d("CommunityTab2Fragment", "findViews()")
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
     }
 
     private fun setListeners() {
+        Log.d("CommunityTab2Fragment", "setListeners()")
         swipeRefreshLayout.setOnRefreshListener {
             reload()
             swipeRefreshLayout.isRefreshing = false
@@ -112,6 +117,7 @@ class CommunityTab2Fragment : Fragment() {
     }
 
     private fun initList() {
+        Log.d("CommunityTab2Fragment", "initList()")
         adapter = RecyclerViewAdapter()
         adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
@@ -123,6 +129,7 @@ class CommunityTab2Fragment : Fragment() {
     }
 
     private fun reload() {
+        Log.d("CommunityTab2Fragment", "reload()")
         var retrofit = RetrofitClient.getClient()!!
 
 
@@ -165,11 +172,10 @@ class CommunityTab2Fragment : Fragment() {
     }
 
 
-    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
 
-    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     private fun loadMore() {
+        Log.d("CommunityTab2Fragment", "loadMore()")
         if (isLastPage) { // 마지막 페이지라면, 로딩을 멈춥니다.
             return
         }
@@ -232,10 +238,12 @@ class CommunityTab2Fragment : Fragment() {
 
 
     private fun showProgress() {
+        Log.d("CommunityTab2Fragment", "showProgress()")
         frameLayoutProgress.visibility = View.VISIBLE
     }
 
     private fun hideProgress() {
+        Log.d("CommunityTab2Fragment", "hideProgress()")
         frameLayoutProgress.visibility = View.GONE
     }
 
@@ -243,6 +251,7 @@ class CommunityTab2Fragment : Fragment() {
         offset: Int,
         limit: Int
     ): MutableList<CommunityArticleListResponse> {
+        Log.d("CommunityTab2Fragment", "createDummyData()")
         val list: MutableList<CommunityArticleListResponse> = mutableListOf()
 
         // API response를 이용하여 데이터 생성

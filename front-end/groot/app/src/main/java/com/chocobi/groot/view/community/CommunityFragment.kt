@@ -11,9 +11,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,6 +33,7 @@ class CommunityFragment : Fragment() {
     private var param2: String? = null
 
     private var regionFilterList: ArrayList<String>? = null
+    private var articles: CommunityArticleListResponse? = null
 
 
 
@@ -96,45 +99,30 @@ class CommunityFragment : Fragment() {
             nowTab = position
             Log.d(TAG, nowTab.toString())
 
-//            val bundle = Bundle().apply {
-//                putString("my_data", dataList[position].toString())
-//            }
-//
-//            // Fragment를 생성하고, Bundle 객체를 전달한다
-//            val fragment = MyFragment()
-//            fragment.arguments = bundle
-            
-            Log.d("CommunityFragment","createFragment()")
-            
-            var fragment = when (position) {
-                0 -> CommunityTab1Fragment()
+            return when (position) {
+                0 -> {
+                    val bundle = Bundle().apply {
+                        putStringArrayList("region_list", regionFilterList)
+                    }
+                    CommunityTab1Fragment().apply { arguments = bundle }
+                }
                 1 -> CommunityTab2Fragment()
                 2 -> CommunityTab3Fragment()
                 3 -> CommunityTab4Fragment()
                 else -> CommunityTab1Fragment()
             }
-
-            return fragment
         }
     }
 
+    //    사용자와 상호작용가능한 상태가 되었을 때 호출
     override fun onResume() {
-        Log.d("CommunityFragment","onResume()")
         super.onResume()
+
+//        val json = arguments?.getString("article_list")
+//        val gson = Gson()
+//        articles = gson.fromJson(json, CommunityArticleListResponse::class.java)
         regionFilterList = arguments?.getStringArrayList("region_list")
-        Log.d("CommunityFragment","onResume() $regionFilterList 받음")
-
-        val bundle = Bundle().apply {
-            putStringArrayList("region_list", regionFilterList)
-        }
-
-//        val passBundleBFragment = CommunityTab1Fragment().apply {
-//            arguments = bundle
-//        }
-//
-//        childFragmentManager.beginTransaction()
-//            .replace(R.id.community_pager, passBundleBFragment)
-//            .commit()
+//        Log.d("CommunityFragment", "onResume() / $json / $regionFilterList")
     }
 
 

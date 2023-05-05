@@ -12,5 +12,5 @@ interface CommunityService {
         @Query("region") region3: String? = null,
         @Query("page") pageInput: Int,
         @Query("size") sizeInput: Int,
-    ): Call<RegionFilterResponse>
+    ): Call<CommunityArticleListResponse>
 }

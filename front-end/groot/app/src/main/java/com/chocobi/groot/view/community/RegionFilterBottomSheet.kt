@@ -15,7 +15,7 @@ import androidx.fragment.app.DialogFragment
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
-import com.chocobi.groot.view.community.model.RegionFilterResponse
+import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.search.SearchDetailFragment
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -46,6 +46,7 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val rootView = inflater.inflate(R.layout.bottom_sheet_region_filter, container, false)
+        chipRegionGroup = rootView.findViewById(R.id.chipRegionGroup)
 
 //        자동완성으로 보여줄 내용들
         val regionNames =
@@ -61,18 +62,18 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
         )
         autoCompleteTextView.setAdapter(adapter)
 
-        chipRegionGroup = rootView.findViewById(R.id.chipRegionGroup)
-
+//        자동 완성 필터 눌렀을 때 처리
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
                 GlobalVariables.hideKeyboard(requireActivity())
+//                3개 초과 불가
                 if (chipRegionGroup.childCount == 3) {
                     Toast.makeText(requireContext(), "최대 3개까지 설정할 수 있습니다", Toast.LENGTH_SHORT)
                         .show()
                     autoCompleteTextView.setText("")
                 } else {
                     val selectedItem = parent.getItemAtPosition(position).toString()
-                    val regionName = selectedItem.split(" ").last()
+                    val regionName = selectedItem.split(" ").last() // '동' 정보만 뽑아서 저장
 
                     autoCompleteTextView.setText("")
                     chipRegionGroup.addView(Chip(requireContext()).apply {
@@ -80,9 +81,7 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
                         isCloseIconVisible = true // chip에서 X 버튼 보이게 하기
                         setOnCloseIconClickListener { chipRegionGroup.removeView(this) } // X버튼 누르면 chip 없어지게 하기
                     })
-
                 }
-
             }
 
         return rootView
@@ -90,7 +89,7 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-//        지역필터 설정 완료 버튼 누르기
+//        지역 필터 설정 완료 버튼 누르기 -> 데이터 전달
         view?.findViewById<Button>(R.id.regionFilterBtn)?.setOnClickListener {
             dismiss()
             regionList = ArrayList()
@@ -98,23 +97,17 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
                 val chip: Chip = chipRegionGroup.getChildAt(i - 1) as Chip
                 regionList.add(chip.text.toString())
             }
-
             val bundle = Bundle().apply {
                 putStringArrayList("region_list", regionList)
             }
-
             val passBundleBFragment = CommunityFragment().apply {
                 arguments = bundle
             }
-
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fl_container, passBundleBFragment)
                 .commit()
 
-
-
-
-            requestRegionFilter(regionList)
+//            requestRegionFilter(regionList)
         }
     }
 
@@ -123,32 +116,34 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
         val retrofit = RetrofitClient.getClient()!!
         val regionFilterService = retrofit.create(CommunityService::class.java)
         val regions = arrayListOf<String?>(null, null, null)
-        for (idx in 0..regionList.count()-1) {
+        for (idx in 0..regionList.count() - 1) {
             regions[idx] = regionList[idx]
         }
 
-        regionFilterService.requestRegionFilter(region1 = regions[0], region2 = regions[1], region3 = regions[2], pageInput = 0, sizeInput = 10).enqueue(object :
-            Callback<RegionFilterResponse> {
+        regionFilterService.requestRegionFilter(
+            region1 = regions[0],
+            region2 = regions[1],
+            region3 = regions[2],
+            pageInput = 0,
+            sizeInput = 10
+        ).enqueue(object :
+            Callback<CommunityArticleListResponse> {
             override fun onResponse(
-                call: Call<RegionFilterResponse>,
-                response: Response<RegionFilterResponse>
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
             ) {
                 if (response.code() == 200) {
-
                     val checkTotal = response.body()?.articles?.total
 //                    totalArticleText.text = checkTotal.toString()
-                    Log.d("RegionFilterBottomSheet","onResponse() 성공! $checkTotal")
-
+                    Log.d("RegionFilterBottomSheet", "onResponse() 성공! $checkTotal")
                 } else {
-//                    Log.d(TAG, "실패1")
+                    Log.d("RegionFilterBottomSheet", "onFailure() 지역 필터링 게시글 요청 실패")
                 }
             }
 
-            override fun onFailure(call: Call<RegionFilterResponse>, t: Throwable) {
-//                Log.d(TAG, "실패2")
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d("RegionFilterBottomSheet", "onFailure() 지역 필터링 게시글 요청 실패")
             }
         })
     }
-
-
 }
