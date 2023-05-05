@@ -112,6 +112,7 @@ class Pot2Activity : AppCompatActivity() {
                         Toast.makeText(context, body.potId.toString() + "번 화분이 등록 되었습니다.", Toast.LENGTH_SHORT).show()
                         var intent = Intent(context, MainActivity::class.java)
                         intent.putExtra("toPage", "plant_detail")
+                        intent.putExtra("potId", body.potId)
                         startActivity(intent)
                     }
                 }

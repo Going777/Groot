@@ -1,12 +1,14 @@
 package com.chocobi.groot.view.plant
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.chocobi.groot.R
 
@@ -24,6 +26,7 @@ class PlantDetailFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private val TAG = "PlantDetailFragment"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +48,12 @@ class PlantDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val potId = arguments?.getInt("potId")
+        Log.d(TAG, potId.toString())
+        val plantName = view.findViewById<TextView>(R.id.plantName)
+        plantName.text = potId.toString() + "번 화분"
+
         val tab1 = PlantDetailTab1Fragment()
         val tab2 = PlantDetailTab2Fragment()
         val tab3 = PlantDetailTab3Fragment()

@@ -48,6 +48,7 @@ class MainActivity : AppCompatActivity() {
 //    }
     private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
+    private var potId: Int = 0
 
 
     //        fragment 조작
@@ -71,7 +72,11 @@ class MainActivity : AppCompatActivity() {
             }
 
             "plant_detail" -> {
+                val bundle = Bundle()
+                bundle.putInt("potId", potId)
                 val plantDetailFragment = PlantDetailFragment()
+                plantDetailFragment.arguments = bundle
+
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, plantDetailFragment)
@@ -301,6 +306,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        potId = intent.getIntExtra("potId", 0)
         var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
         if (refreshToken == "") {
             var intent = Intent(this, LoginActivity::class.java)
