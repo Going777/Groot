@@ -1,6 +1,7 @@
 package com.groot.backend.controller;
 
 
+import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
@@ -141,4 +142,75 @@ public class PotController {
         return new ResponseEntity<>(result, status);
     }
 
+    @PutMapping("/{potId}")
+    @Operation(summary = "Modify pot info", description = "Image only")
+    public ResponseEntity<Map<String, Object>> modifyPot(
+            HttpServletRequest request, @PathVariable Long potId,
+            @RequestPart("img") @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
+            @RequestPart(value = "pot", required = false) @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) PotModifyDTO potModifyDTO) {
+
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("modify pot : {}", potId);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            String imgPath = potService.modifyPot(userPK, potId, potModifyDTO, multipartFile);
+            result.put("msg", "화분 정보 변경에 성공했습니다.");
+            result.put("img", imgPath);
+            status = HttpStatus.OK;
+        } catch (IOException e) {
+            result.put("msg", "파일 업로드에 실패했습니다.");
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        } catch (Exception e) {
+            result.put("msg", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @DeleteMapping("/{potId}")
+    @Operation(summary = "Delete pot..", description = "")
+    public ResponseEntity<Map<String, Object>> deletePot(HttpServletRequest request, @PathVariable Long potId) {
+
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Delete pot : {}", potId);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            int ret = potService.deletePot(userPK, potId);
+            result.put("msg", "성공적으로 삭제 되었습니다.");
+            status = HttpStatus.OK;
+        } catch (IllegalAccessException e) {
+            result.put("msg", "UNAUTHORIZED");
+            status = HttpStatus.FORBIDDEN;
+        } catch (NoSuchElementException e) {
+            result.put("msg", "존재하지 않는 화분입니다.");
+            status = HttpStatus.NOT_FOUND;
+       } catch (IllegalArgumentException e) {
+            result.put("msg", "이미 삭제 된 화분입니다.");
+            status = HttpStatus.GONE;
+        } catch (Exception e) {
+            result.put("msg", e.getStackTrace());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
 }
