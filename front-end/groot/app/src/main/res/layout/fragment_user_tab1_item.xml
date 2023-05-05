@@ -38,7 +38,7 @@
             android:layout_marginLeft="-40dp">
 
             <TextView
-                android:id="@+id/plantName"
+                android:id="@+id/potName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 

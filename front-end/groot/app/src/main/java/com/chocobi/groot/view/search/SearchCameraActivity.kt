@@ -2,7 +2,6 @@ package com.chocobi.groot.view.search
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -15,16 +14,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
-import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.plant.PlantBottomSheet
-import com.chocobi.groot.view.pot.Pot1Activity
+import com.chocobi.groot.view.pot.PlantBottomSheet
+import com.chocobi.groot.view.addpot.Pot1Activity
 import com.chocobi.groot.view.search.model.PlantIdentifyResponse
 import com.chocobi.groot.view.search.model.SearchService
-import com.chocobi.groot.view.user.model.ProfileRequest
-import com.chocobi.groot.view.user.model.UserService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -33,7 +27,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.random.Random
 
 
 class SearchCameraActivity : AppCompatActivity() {
@@ -81,8 +74,8 @@ class SearchCameraActivity : AppCompatActivity() {
         }
 
         //        화분 등록 버튼 조작
-        val addPlantBtn = findViewById<Button>(R.id.addPlantBtn)
-        addPlantBtn.setOnClickListener {
+        val addPotBtn = findViewById<Button>(R.id.addPotBtn)
+        addPotBtn.setOnClickListener {
             var intent = Intent(this, Pot1Activity::class.java)
             intent.putExtra("imageUri", imageUri)
             intent.putExtra("plantName", plantName)
@@ -105,13 +98,13 @@ class SearchCameraActivity : AppCompatActivity() {
 //        버튼 visibility 조작
         when (cameraStatus) {
             "searchPlant" -> {
-                addPlantBtn.visibility = View.GONE
+                addPotBtn.visibility = View.GONE
                 searchBtn.visibility = View.GONE
                 detailBtn.visibility = View.VISIBLE
             }
 
-            "addPlant" -> {
-                addPlantBtn.visibility = View.VISIBLE
+            "addPot" -> {
+                addPotBtn.visibility = View.VISIBLE
                 searchBtn.visibility = View.VISIBLE
                 detailBtn.visibility = View.GONE
             }

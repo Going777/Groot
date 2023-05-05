@@ -38,10 +38,10 @@
             android:name=".view.sensor.SensorActivity"
             android:exported="false" />
         <activity
-            android:name=".view.pot.Pot1Activity"
+            android:name=".view.addpot.Pot1Activity"
             android:exported="false" />
         <activity
-            android:name=".view.pot.Pot2Activity"
+            android:name=".view.addpot.Pot2Activity"
             android:exported="false" />
         <activity
             android:name=".CharacterActivity"

@@ -55,7 +55,7 @@ class UserTab1Fragment : Fragment() {
 
         rvAdapter.itemClick = object : UserTab1RVAdapter.ItemClick {
             override fun onClick(view: View, position: Int) {
-                mActivity.changeFragment("plant_detail")
+                mActivity.changeFragment("pot_detail")
             }
         }
 

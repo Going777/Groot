@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".view.pot.Pot2Activity">
+    tools:context=".view.addpot.Pot2Activity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
