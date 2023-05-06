@@ -27,8 +27,8 @@
 
         <ImageView
             android:id="@+id/categoryIcon"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginRight="10dp"
             android:src="@drawable/ic_diary"
             app:layout_constraintEnd_toStartOf="@id/categoryName" />
