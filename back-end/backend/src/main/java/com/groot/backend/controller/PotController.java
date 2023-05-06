@@ -79,7 +79,7 @@ public class PotController {
 
     @GetMapping("")
     @Operation(summary = "Get list of pot", description = "")
-    public ResponseEntity<Map<String, Object>> potList(HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> potList(HttpServletRequest request, Boolean isArchive) {
 
         Long userPK;
         try {
@@ -93,7 +93,7 @@ public class PotController {
         HttpStatus status;
 
         try {
-            List<PotListDTO> list = potService.potList(userPK);
+            List<PotListDTO> list = potService.potList(userPK, isArchive!= null);
             status = HttpStatus.OK;
             result.put("pots", list);
             result.put("msg", "화분 목록 조회에 성공했습니다.");
@@ -104,6 +104,12 @@ public class PotController {
         }
 
         return new ResponseEntity<>(result, status);
+    }
+
+    @GetMapping("/archive")
+    @Operation(summary = "Get all the list of pot", description = "")
+    public ResponseEntity<Map<String, Object>> potArchive(HttpServletRequest request) {
+        return potList(request, true);
     }
 
     @GetMapping("/{potId}")

@@ -88,10 +88,18 @@ public class PotServiceImpl implements PotService{
     }
 
     @Override
-    public List<PotListDTO> potList(Long userPK) throws NoSuchElementException {
+    public List<PotListDTO> potList(Long userPK, Boolean isArchive) throws NoSuchElementException {
         logger.info("user pk : {}", userPK);
 
-        List<PotEntity> list = potRepository.findAllByUserId(userPK);
+        List<PotEntity> list;
+        if(isArchive) {
+            logger.info("get archive");
+            list = potRepository.findAllByUserId(userPK);
+        }
+        else {
+            logger.info("get active pots");
+            list = potRepository.findAllByUserIdAndSurvival(userPK, true);
+        }
 
         if(list == null || list.size() < 1) throw new NoSuchElementException();
 

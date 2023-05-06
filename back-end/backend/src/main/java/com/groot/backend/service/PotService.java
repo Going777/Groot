@@ -30,7 +30,7 @@ public interface PotService {
      * @return list of pot
      * @throws java.util.NoSuchElementException when nothing found for userPK
      */
-    public List<PotListDTO> potList(Long userPK);
+    public List<PotListDTO> potList(Long userPK, Boolean isArchive);
 
     /**
      * get detail of pot and plant
