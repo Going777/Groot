@@ -20,6 +20,7 @@ data class PlantDetailData(
     val plantId: Int,
     val krName: String,
     val sciName: String,
+    val grwType: String,
     val waterCycle: String,
     val minHumidity: Int,
     val maxHumidity: Int,
