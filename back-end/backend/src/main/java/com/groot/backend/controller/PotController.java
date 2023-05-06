@@ -214,4 +214,38 @@ public class PotController {
 
         return new ResponseEntity<>(result, status);
     }
+
+    @PutMapping("/{potId}/status")
+    @Operation(summary = "toggle status", description = "alive or gone")
+    public ResponseEntity<Map<String, Object>> toggleStatus(HttpServletRequest request, @PathVariable Long potId) {
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Toggle status : {}", potId);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            boolean potStatus = potService.toggleStatus(userPK, potId);
+            result.put("msg", "상태 변경에 성공했습니다.");
+            result.put("status", potStatus);
+            status = HttpStatus.OK;
+        } catch (IllegalAccessException e) {
+            result.put("msg", "UNAUTHORIZED");
+            status = HttpStatus.FORBIDDEN;
+        } catch (NoSuchElementException e) {
+            result.put("msg", "존재하지 않는 화분입니다.");
+            status = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            result.put("msg", e.getStackTrace());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
 }

@@ -94,6 +94,11 @@ public class PotEntity extends BaseEntity{
     @JsonBackReference
     private PlantEntity plantEntity;
 
+    @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "character_id")
+    @JsonBackReference
+    private CharacterEntity characterEntity;
+
     public void modify(String imgPath, String name, double temperature, int illuminance, double humidity) {
         this.imgPath = imgPath;
         this.name = name == null? this.name : name;
@@ -102,8 +107,8 @@ public class PotEntity extends BaseEntity{
         this.humidity = humidity == 0? this.humidity : humidity;
     }
 
-    @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "character_id")
-    @JsonBackReference
-    private CharacterEntity characterEntity;
+    public boolean toggleSurvival() {
+        this.survival = !this.survival;
+        return this.survival;
+    }
 }
