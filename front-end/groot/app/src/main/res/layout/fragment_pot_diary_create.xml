@@ -39,6 +39,7 @@
                     android:src="@drawable/sample_character" />
 
                 <TextView
+                    android:id="@+id/potNameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="산세산세"
@@ -46,6 +47,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/potPlantText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="산세베리아"

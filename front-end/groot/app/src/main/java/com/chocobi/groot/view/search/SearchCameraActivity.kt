@@ -7,10 +7,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
@@ -38,6 +41,13 @@ class SearchCameraActivity : AppCompatActivity() {
     private var plantId : Int? = null
     private var plantName : String? = null
     private var plantSci : String? = null
+    private lateinit var frameLayoutProgress: LinearLayout
+    private lateinit var cardView: CardView
+    private lateinit var addPotBtn: Button
+    private lateinit var searchBtn: Button
+    private lateinit var detailBtn: Button
+    private var cameraStatus: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,10 +56,12 @@ class SearchCameraActivity : AppCompatActivity() {
         plantNameText = findViewById(R.id.plantNameText)
         plantSciText = findViewById(R.id.plantSciText)
         plantScoreText = findViewById(R.id.plantScoreText)
+        frameLayoutProgress = findViewById(R.id.frameLayoutProgress)
+        cardView = findViewById(R.id.cardView)
 
 //        imageUri 전달받기
         var imageUri = intent.getStringExtra("imageUri")
-        var cameraStatus = intent.getStringExtra("cameraStatus")
+        cameraStatus = intent.getStringExtra("cameraStatus")
         Log.d(TAG, "intent/imageUri:"+imageUri.toString())
         Log.d(TAG, "intent/cameraStatus:"+cameraStatus.toString())
 
@@ -66,7 +78,7 @@ class SearchCameraActivity : AppCompatActivity() {
 
 
         //        디테일 버튼 조작
-        val detailBtn = findViewById<Button>(R.id.detailBtn)
+        detailBtn = findViewById(R.id.detailBtn)
         detailBtn.setOnClickListener {
             var intent = Intent(this, MainActivity::class.java)
             intent.putExtra("toPage", "search_detail")
@@ -74,7 +86,7 @@ class SearchCameraActivity : AppCompatActivity() {
         }
 
         //        화분 등록 버튼 조작
-        val addPotBtn = findViewById<Button>(R.id.addPotBtn)
+        addPotBtn = findViewById(R.id.addPotBtn)
         addPotBtn.setOnClickListener {
             var intent = Intent(this, Pot1Activity::class.java)
             intent.putExtra("imageUri", imageUri)
@@ -84,7 +96,7 @@ class SearchCameraActivity : AppCompatActivity() {
         }
 
         //        검색 등록 버튼 조작
-        val searchBtn = findViewById<Button>(R.id.searchBtn)
+        searchBtn = findViewById(R.id.searchBtn)
         searchBtn.setOnClickListener {
             val plantBottomSheet = PlantBottomSheet(this)
             plantBottomSheet.show(
@@ -95,20 +107,7 @@ class SearchCameraActivity : AppCompatActivity() {
         }
 
 
-//        버튼 visibility 조작
-        when (cameraStatus) {
-            "searchPlant" -> {
-                addPotBtn.visibility = View.GONE
-                searchBtn.visibility = View.GONE
-                detailBtn.visibility = View.VISIBLE
-            }
 
-            "addPot" -> {
-                addPotBtn.visibility = View.VISIBLE
-                searchBtn.visibility = View.VISIBLE
-                detailBtn.visibility = View.GONE
-            }
-        }
     }
 
     private fun identifyPlant(context: Context, file: File?) {
@@ -142,13 +141,16 @@ class SearchCameraActivity : AppCompatActivity() {
                         plantId = body.plant.plantId
                         plantName = body.plant.krName
                         plantSci = body.plant.sciName
+                        hideProgress()
                     } else {
                         Log.d(TAG, "${response.errorBody()}")
+                        hideProgress()
                     }
                 }
 
                 override fun onFailure(call: Call<PlantIdentifyResponse>, t: Throwable) {
                     Log.d(TAG, "식물 식별 실패")
+                    hideProgress()
                 }
             })
     }
@@ -165,5 +167,27 @@ class SearchCameraActivity : AppCompatActivity() {
             }
         }
         return tempFile
+    }
+
+
+
+    private fun hideProgress() {
+        frameLayoutProgress.visibility = View.GONE
+        cardView.visibility = View.VISIBLE
+
+        //        버튼 visibility 조작
+        when (cameraStatus) {
+            "searchPlant" -> {
+                addPotBtn.visibility = View.GONE
+                searchBtn.visibility = View.GONE
+                detailBtn.visibility = View.VISIBLE
+            }
+
+            "addPot" -> {
+                addPotBtn.visibility = View.VISIBLE
+                searchBtn.visibility = View.VISIBLE
+                detailBtn.visibility = View.GONE
+            }
+        }
     }
 }
