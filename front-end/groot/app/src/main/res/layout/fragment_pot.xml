@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.pot.PotFragment">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
     <LinearLayout
@@ -13,75 +16,67 @@
         android:orientation="vertical">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/weather_framgent"
+            android:name="com.chocobi.groot.view.weather.WeatherFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="100dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <LinearLayout
+            android:id="@+id/collectionContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/weather_framgent"
+            android:paddingVertical="15dp"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/toDiaryBtn"
+                style="@style/GO_TO_DIARY_BTN"
+                android:layout_marginTop="5dp"
+                android:layout_marginHorizontal="10dp"
+                />
 
             <fragment
-                android:id="@+id/weather_framgent"
-                android:name="com.chocobi.groot.view.weather.WeatherFragment"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <ScrollView
+                android:id="@+id/pot_collection_fragment"
+                android:name="com.chocobi.groot.view.pot.PotCollectionFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/weather_framgent">
+                android:layout_marginTop="15dp"
+                />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:id="@+id/collectionContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingVertical="15dp">
-
-                        <androidx.appcompat.widget.AppCompatButton
-                            android:id="@+id/toDiaryBtn"
-                            style="@style/GO_TO_DIARY_BTN"
-                            android:layout_marginHorizontal="10dp"
-                            android:layout_marginTop="15dp" />
-
-                        <fragment
-                            android:id="@+id/pot_collection_fragment"
-                            android:name="com.chocobi.groot.view.pot.PotCollectionFragment"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp" />
-
-                    </LinearLayout>
+        </LinearLayout>
 
 
-                    <LinearLayout
-                        android:id="@+id/linearLayout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/round_rectangle"
-                        android:backgroundTint="@color/background"
-                        android:orientation="vertical">
+        <LinearLayout
+            android:background="@drawable/round_rectangle"
+            android:backgroundTint="@color/background"
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/collectionContainer"
+            android:layout_margin="10dp">
 
-                        <fragment
-                            android:id="@+id/potCalendarFragment"
-                            android:name="com.chocobi.groot.view.pot.PotCalendarFragment"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="15dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </ScrollView>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <fragment
+                android:id="@+id/potCalendarFragment"
+                android:name="com.chocobi.groot.view.pot.PotCalendarFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="15dp" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/potFAB"
