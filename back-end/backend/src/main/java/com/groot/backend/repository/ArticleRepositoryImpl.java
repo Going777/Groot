@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Repository
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
@@ -30,7 +32,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
     // 제목 + 내용 + 태그 검색
     @Override
-    public Page<ArticleEntity> search(String keyword, PageRequest pageRequest) {
+    public Page<ArticleEntity> search(String category, String keyword, PageRequest pageRequest) {
         articleEntity = QArticleEntity.articleEntity;
         QTagEntity tag = QTagEntity.tagEntity;
         QArticleTagEntity articleTag = QArticleTagEntity.articleTagEntity;
@@ -39,14 +41,13 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
                 .selectFrom(articleEntity)
                 .join(articleTag).on(articleEntity.id.eq(articleTag.articleId))
                 .join(tag).on(articleTag.tagId.eq(tag.id))
-                .where(
-                        tag.name.eq(keyword)
+                .where(articleEntity.category.eq(category)
+                        .and(tag.name.eq(keyword)
                                 .or(articleEntity.title.contains(keyword))
-                                        .or(articleEntity.content.contains(keyword))
-
+                                .or(articleEntity.content.contains(keyword)))
                 )
                 .orderBy(articleEntity.createdDate.desc())
-                .fetch();
+                .fetch().stream().distinct().collect(Collectors.toList());
 
         return convertListToPage(articles, pageRequest);
     }

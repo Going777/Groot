@@ -230,6 +230,7 @@ public class ArticleController {
     // 게시글 검색 (제목 검색)
     @GetMapping("/search")
     public ResponseEntity searchArticle(HttpServletRequest request,
+                                        @RequestParam String category,
                                         @RequestParam String keyword,
                                         @RequestParam Integer page,
                                         @RequestParam Integer size){
@@ -243,8 +244,14 @@ public class ArticleController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
+        if(!(category.equals("나눔") || category.equals("자유") || category.equals("QnA") || category.equals("Tip"))){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 카테고리입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
         try{
-            Page<ArticleListDTO> result = articleService.searchArticle(keyword, userPK, page, size);
+            Page<ArticleListDTO> result = articleService.searchArticle(category, keyword, userPK, page, size);
             if(result == null){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg","존재하지 않는 page 번호 입니다.");
