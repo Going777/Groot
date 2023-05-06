@@ -32,6 +32,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class GlobalVariables : Application() {
     companion object {
@@ -161,6 +163,33 @@ class GlobalVariables : Application() {
             }
         }
 
+        /** 날씨 관련 데이터 **/
+        data class WeatherData(
+            val weatherType: String,
+            val temperature: Int,
+            val humidity: Int,
+        )
+
+        private var current = LocalDateTime.now()
+        private var dateFormatter = DateTimeFormatter.ofPattern("M월 d일")
+        private var currentDate = current.format(dateFormatter)
+        private var weatherType: String = "sun"
+        private var temperature: Int = 15
+        private var humidity: Int = 20
+
+        fun getCurrentDate(): String {
+            return currentDate
+        }
+
+        fun getWeatherData(): WeatherData {
+            return WeatherData(weatherType, temperature, humidity)
+        }
+
+        fun updateWeatherData(type: String, temp: Int, hum: Int) {
+            weatherType = type
+            temperature = temp
+            humidity = hum
+        }
     }
 
 
