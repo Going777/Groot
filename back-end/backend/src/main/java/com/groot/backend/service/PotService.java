@@ -33,17 +33,17 @@ public interface PotService {
     public List<PotListDTO> potList(Long userPK);
 
     /**
-     *
+     * get detail of pot and plant
      * @param userPK
      * @param potId
-     * @return
+     * @return pot and plant information
      * @throws NoSuchElementException when pot or plant not found
      * @throws AccessDeniedException for unauthorized access
      */
     public PotDetailDTO potDetail(Long userPK, Long potId);
 
     /**
-     *
+     * modify pot image, name or environment
      * @param userPK
      * @param potId
      * @param potModifyDTO name, temp, illum, hum
@@ -55,5 +55,23 @@ public interface PotService {
      */
     public String modifyPot(Long userPK, Long potId, PotModifyDTO potModifyDTO, MultipartFile multipartFile) throws Exception;
 
+    /**
+     * Delete pot
+     * @param userPK
+     * @param potId
+     * @return 1 for success
+     * @throws NoSuchElementException when pot not found
+     * @throws IllegalArgumentException for unauthorized access
+     */
     public int deletePot(Long userPK, Long potId) throws Exception;
+
+    /**
+     * toggle survival status
+     * @param userPK
+     * @param potId
+     * @return next status (survival or not)
+     * @throws NoSuchElementException when pot not found
+     * @throws IllegalArgumentException for unauthorized access
+     */
+    public boolean toggleStatus(Long userPK, Long potId) throws Exception;
 }
