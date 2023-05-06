@@ -37,7 +37,6 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             app:layout_constraintBottom_toTopOf="@+id/button"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,7 +50,7 @@
 
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/plantNameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="산세베리아"
@@ -62,7 +61,7 @@
                     tools:layout_editor_absoluteY="307dp" />
 
                 <TextView
-                    android:id="@+id/textView3"
+                    android:id="@+id/plantSciText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sansevieria trifasciata"
@@ -80,10 +79,10 @@
 
 
                 <TextView
-                    android:id="@+id/percentText"
+                    android:id="@+id/plantScoreText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="%"
+                    android:text="00%"
                     android:textColor="@color/white"
                     android:textSize="35dp"
                     android:textStyle="bold"
@@ -119,7 +118,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
     <Button
-        android:id="@+id/addPlantBtn"
+        android:id="@+id/addPotBtn"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -138,9 +137,9 @@
         android:layout_marginTop="10dp"
         android:text="직접 찾아보기"
         android:translationZ="3dp"
-        app:layout_constraintEnd_toEndOf="@+id/addPlantBtn"
-        app:layout_constraintStart_toStartOf="@+id/addPlantBtn"
-        app:layout_constraintTop_toBottomOf="@+id/addPlantBtn" />
+        app:layout_constraintEnd_toEndOf="@+id/addPotBtn"
+        app:layout_constraintStart_toStartOf="@+id/addPotBtn"
+        app:layout_constraintTop_toBottomOf="@+id/addPotBtn" />
 
 
     <androidx.cardview.widget.CardView

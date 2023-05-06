@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
@@ -25,6 +26,8 @@ import com.chocobi.groot.view.search.adapter.DictRVAdapter
 import com.chocobi.groot.view.search.model.PlantMetaData
 import com.chocobi.groot.view.search.model.PlantSearchResponse
 import com.chocobi.groot.view.search.model.SearchService
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,9 +50,25 @@ class SearchFragment : Fragment() {
     private var param2: String? = null
 
 
+    private var plantName: String = ""
     private lateinit var plants: Array<PlantMetaData>
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 
+    private lateinit var difficultyChipGroup: ChipGroup
+    private lateinit var luxChipGroup: ChipGroup
+    private lateinit var growthChipGroup: ChipGroup
+    private lateinit var difficultyEasy: Chip
+    private lateinit var difficultyMedium: Chip
+    private lateinit var difficultyHard: Chip
+    private lateinit var luxLow: Chip
+    private lateinit var luxMedium: Chip
+    private lateinit var luxHigh: Chip
+    private lateinit var growthStraight: Chip
+    private lateinit var growthTree: Chip
+    private lateinit var growthVine: Chip
+    private lateinit var growthFleshy: Chip
+    private lateinit var growthCrawl: Chip
+    private lateinit var growthGrass: Chip
 
     private fun setupRecyclerView() {
         // RecyclerView 설정
@@ -68,6 +87,10 @@ class SearchFragment : Fragment() {
 
 //        Fragment 이동 조작
         val mActivity = activity as MainActivity
+
+        findView(rootView)
+        filterChipGroup()
+
 
 //        Camera 버튼 클릭
         val cameraBtn = rootView.findViewById<ImageButton>(R.id.cameraBtn)
@@ -122,9 +145,9 @@ class SearchFragment : Fragment() {
                 GlobalVariables.hideKeyboard(requireActivity())
 
                 // 클릭한 아이템에 대한 처리를 여기에 작성합니다.
-                val selectedItem = parent.getItemAtPosition(position).toString()
+                plantName = parent.getItemAtPosition(position).toString()
                 // 예를 들어 선택된 아이템에 대한 처리를 하거나, 선택한 항목을 다른 뷰에 보여주는 등의 작업을 할 수 있습니다.
-                requestSearchPlant(selectedItem)
+                requestSearchPlant()
             }
 
 //        엔터키 클릭 -> 검색
@@ -149,14 +172,75 @@ class SearchFragment : Fragment() {
             GlobalVariables.hideKeyboard(requireActivity())
 
 //            검색 api 요청
-            val inputText = autoCompleteTextView.text.toString()
-            search(inputText)
+            plantName = autoCompleteTextView.text.toString()
+            search(plantName)
         }
 
         return rootView
     }
 
-    private fun requestSearchPlant(plantName: String) {
+    private fun findView(view: View) {
+        difficultyChipGroup = view.findViewById(R.id.difficultyChipGroup)
+        luxChipGroup = view.findViewById(R.id.luxChipGroup)
+        growthChipGroup = view.findViewById(R.id.growthChipGroup)
+
+
+        difficultyEasy = view.findViewById(R.id.difficultyEasy)
+        difficultyMedium = view.findViewById(R.id.difficultyMedium)
+        difficultyHard = view.findViewById(R.id.difficultyHard)
+        luxLow = view.findViewById(R.id.luxLow)
+        luxMedium = view.findViewById(R.id.luxMidium)
+        luxHigh = view.findViewById(R.id.luxHigh)
+        growthStraight = view.findViewById(R.id.growthStraight)
+        growthTree = view.findViewById(R.id.growthTree)
+        growthVine = view.findViewById(R.id.growthVine)
+        growthFleshy = view.findViewById(R.id.growthFleshy)
+        growthCrawl = view.findViewById(R.id.growthCrawl)
+        growthGrass = view.findViewById(R.id.growthGrass)
+    }
+
+    private fun filterChipGroup() {
+        difficultyEasy.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        difficultyMedium.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        difficultyHard.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        luxLow.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        luxMedium.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        luxHigh.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthStraight.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthTree.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthVine.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthFleshy.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthCrawl.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthGrass.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+    }
+
+
+
+    private fun requestSearchPlant() {
         val retrofit = Retrofit.Builder()
             .baseUrl(GlobalVariables.getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
@@ -164,7 +248,7 @@ class SearchFragment : Fragment() {
 
         val plantSearchService = retrofit.create(SearchService::class.java)
 
-        plantSearchService.searchPlants(name = plantName)
+        plantSearchService.requestSearchPlants(name = plantName)
             .enqueue(object : Callback<PlantSearchResponse> {
                 override fun onResponse(
                     call: Call<PlantSearchResponse>,
@@ -189,6 +273,6 @@ class SearchFragment : Fragment() {
         if (targetText == "") {
             Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
         }
-            requestSearchPlant(targetText)
+        requestSearchPlant()
     }
 }

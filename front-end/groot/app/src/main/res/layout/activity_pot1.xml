@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context=".view.pot.Pot1Activity">
+    tools:context=".view.addpot.Pot1Activity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,6 +25,7 @@
         android:id="@+id/plantNameContainer">
 
         <TextView
+            android:id="@+id/plantNameShort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="-10dp"
@@ -41,10 +42,10 @@
             android:layout_height="120dp"
             android:layout_marginRight="20dp"
             android:background="@android:color/black"
-            app:layout_constraintEnd_toStartOf="@+id/plantName" />
+            app:layout_constraintEnd_toStartOf="@+id/potName" />
 
         <TextView
-            android:id="@+id/plantName"
+            android:id="@+id/potName"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="100dp"
@@ -71,7 +72,7 @@
         android:src="@drawable/sample_plant_image" />
 
     <TextView
-        android:id="@+id/textView7"
+        android:id="@+id/plantNameLong"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="산세베리아"

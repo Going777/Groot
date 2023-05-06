@@ -18,6 +18,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.loopj.android.http.RequestParams
 import retrofit2.Call
 import retrofit2.Callback
@@ -48,8 +49,6 @@ class WeatherFragment : Fragment() {
     }
 
    private val TAG = "WeatherFragment"
-    private var param1: String? = null
-    private var param2: String? = null
 
     //        현재 위치 가져오기
     var mLocationManager: LocationManager? = null
@@ -57,10 +56,7 @@ class WeatherFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     @SuppressLint("MissingInflatedId")
@@ -70,14 +66,10 @@ class WeatherFragment : Fragment() {
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_weather, container, false)
 
-//        현재 시간 받아오기
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("MM월 dd일")
-        val formattedDate = current.format(formatter)
 
-//        레이아웃에 현재 시간 적용
+//        레이아웃에 오늘 날짜 적용
         val dateText = rootView.findViewById<TextView>(R.id.date_text)
-        dateText.text = formattedDate
+        dateText.text = GlobalVariables.getCurrentDate()
 
         val thermometerText = rootView.findViewById<TextView>(R.id.thermomete_text)
         val humidityText = rootView.findViewById<TextView>(R.id.humidity_text)
@@ -94,6 +86,8 @@ class WeatherFragment : Fragment() {
 
 //      현재 위치 날씨 받아오기
         getWeatherInCurrentLocation(layoutParams)
+        updateWeatherImageView(layoutParams)
+
 
         return rootView
     }
@@ -140,8 +134,6 @@ class WeatherFragment : Fragment() {
             MIN_DISTANCE,
             mLocationListener!!
         )
-
-
     }
 
     private fun doNetworking(lat: String, lon: String, layoutParams: LayoutParams) {
@@ -169,8 +161,9 @@ class WeatherFragment : Fragment() {
                     val target = weatherCondition(weatherResponse!!.weather.get(0).id)
                     val cTemp = ceil(weatherResponse!!.main!!.temp - 273.15).toInt()  //켈빈을 섭씨로 변환
                     val hum = weatherResponse!!.main!!.humidity.toInt()
+                    GlobalVariables.updateWeatherData(target, cTemp, hum)
+                    updateWeatherImageView(layoutParams)
 
-                    updateWeatherImageView(target, layoutParams, cTemp, hum)
                 }
             }
 
@@ -182,34 +175,6 @@ class WeatherFragment : Fragment() {
         })
     }
 
-//
-//    override fun onPause() {
-//        super.onPause()
-////        if(mLocationManager!=null){
-////            mLocationManager.removeUpdates(mLocationListener)
-////        }
-//    }
-
-
-    //    companion object {
-//        /**
-//         * Use this factory method to create a new instance of
-//         * this fragment using the provided parameters.
-//         *
-//         * @param param1 Parameter 1.
-//         * @param param2 Parameter 2.
-//         * @return A new instance of fragment BlankFragment.
-//         */
-//        // TODO: Rename and change types and number of parameters
-//        @JvmStatic
-//        fun newInstance(param1: String, param2: String) =
-//            WeatherFragment().apply {
-//                arguments = Bundle().apply {
-//                    putString(ARG_PARAM1, param1)
-//                    putString(ARG_PARAM2, param2)
-//                }
-//            }
-//    }
     private fun weatherCondition(condition: Int): String {
         if (condition in 200..299) {
             return "rain_thunder"
@@ -230,11 +195,9 @@ class WeatherFragment : Fragment() {
     }
 
     private fun updateWeatherImageView(
-        target: String,
         layoutParams: LayoutParams,
-        cTemp: Int,
-        hum: Int
     ) {
+        val (target, cTemp, hum) = GlobalVariables.getWeatherData()
         layoutParams.thermometerText.text = cTemp.toString() + "℃"
         layoutParams.humidityText.text = hum.toString() + "%"
         when (target) {

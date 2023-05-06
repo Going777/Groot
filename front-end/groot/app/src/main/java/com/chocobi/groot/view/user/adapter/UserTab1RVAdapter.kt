@@ -37,8 +37,8 @@ holder.itemView.setOnClickListener {
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bindItems(item:String) {
-            val plantName = itemView.findViewById<TextView>(R.id.plantName)
-            plantName.text = item
+            val potName = itemView.findViewById<TextView>(R.id.potName)
+            potName.text = item
 
         }
     }

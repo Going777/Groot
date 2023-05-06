@@ -44,7 +44,7 @@ public class PotEntity extends BaseEntity{
     @CreationTimestamp
     private LocalDateTime saleDate;
 
-    @Column(name = "character_id")
+    @Column(name = "character_id",insertable = false, updatable = false)
     private Long characterId;
 
     @Column
@@ -93,6 +93,11 @@ public class PotEntity extends BaseEntity{
     @JoinColumn(name = "plant_id")
     @JsonBackReference
     private PlantEntity plantEntity;
+
+    @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "character_id")
+    @JsonBackReference
+    private CharacterEntity characterEntity;
 
     public void modify(String imgPath, String name, double temperature, int illuminance, double humidity) {
         this.imgPath = imgPath;

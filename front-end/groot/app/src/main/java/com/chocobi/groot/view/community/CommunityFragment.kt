@@ -11,9 +11,11 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.gson.Gson
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,6 +32,8 @@ class CommunityFragment : Fragment() {
     private var nowTab: Int = 0
     private var param2: String? = null
 
+    private var regionList: ArrayList<String>? = null
+    private var regionFullList: ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,11 +43,11 @@ class CommunityFragment : Fragment() {
         }
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("CommunityFragment","onCreateView()")
 
         val rootView = inflater.inflate(R.layout.fragment_community, container, false)
 
@@ -91,14 +95,28 @@ class CommunityFragment : Fragment() {
         override fun createFragment(position: Int): Fragment {
             nowTab = position
             Log.d(TAG, nowTab.toString())
+
             return when (position) {
-                0 -> CommunityTab1Fragment()
+                0 -> {
+                    val bundle = Bundle().apply {
+                        putStringArrayList("region_list", regionList)
+                        putStringArrayList("region_full_list", regionFullList)
+                    }
+                    CommunityTab1Fragment().apply { arguments = bundle }
+                }
                 1 -> CommunityTab2Fragment()
                 2 -> CommunityTab3Fragment()
                 3 -> CommunityTab4Fragment()
                 else -> CommunityTab1Fragment()
             }
         }
+    }
+
+    //    사용자와 상호작용가능한 상태가 되었을 때 호출
+    override fun onResume() {
+        super.onResume()
+        regionList = arguments?.getStringArrayList("region_list")
+        regionFullList = arguments?.getStringArrayList("region_full_list")
     }
 
 

@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
@@ -23,14 +22,13 @@ import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.login.LoginActivity
-import com.chocobi.groot.view.plant.PlantDetailFragment
-import com.chocobi.groot.view.plant.PlantDiaryCreateFragment
-import com.chocobi.groot.view.plant.PlantDiaryFragment
-import com.chocobi.groot.view.plant.PlantFragment
+import com.chocobi.groot.view.pot.PotDetailFragment
+import com.chocobi.groot.view.pot.PotDiaryCreateFragment
+import com.chocobi.groot.view.pot.PotDiaryFragment
+import com.chocobi.groot.view.pot.PotFragment
 import com.chocobi.groot.view.search.SearchCameraActivity
 import com.chocobi.groot.view.search.SearchDetailFragment
 import com.chocobi.groot.view.search.SearchFragment
-import com.chocobi.groot.view.user.ProfileBottomSheet
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -48,33 +46,38 @@ class MainActivity : AppCompatActivity() {
 //    }
     private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
+    private var potId: Int = 0
 
 
     //        fragment 조작
     fun changeFragment(index: String) {
         when (index) {
 
-            "plant_diary" -> {
-                val plantDiaryFragment = PlantDiaryFragment()
+            "pot_diary" -> {
+                val potDiaryFragment = PotDiaryFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, plantDiaryFragment)
+                    .replace(R.id.fl_container, potDiaryFragment)
                     .commit()
             }
 
-            "plant_diary_create" -> {
-                val plantDiaryCreateFragment = PlantDiaryCreateFragment()
+            "pot_diary_create" -> {
+                val potDiaryCreateFragment = PotDiaryCreateFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, plantDiaryCreateFragment)
+                    .replace(R.id.fl_container, potDiaryCreateFragment)
                     .commit()
             }
 
-            "plant_detail" -> {
-                val plantDetailFragment = PlantDetailFragment()
+            "pot_detail" -> {
+                val bundle = Bundle()
+                bundle.putInt("potId", potId)
+                val potDetailFragment = PotDetailFragment()
+                potDetailFragment.arguments = bundle
+
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, plantDetailFragment)
+                    .replace(R.id.fl_container, potDetailFragment)
                     .commit()
             }
 
@@ -274,10 +277,10 @@ class MainActivity : AppCompatActivity() {
 
                 REQUEST_STORAGE -> {
                     data?.data?.let { uri ->
-                        val plantDiaryCreateFragment =
-                            supportFragmentManager.findFragmentById(R.id.fl_container) as PlantDiaryCreateFragment?
-                        if (plantDiaryCreateFragment != null) {
-                            photoImage = plantDiaryCreateFragment.getPhotoImageView()
+                        val potDiaryCreateFragment =
+                            supportFragmentManager.findFragmentById(R.id.fl_container) as PotDiaryCreateFragment?
+                        if (potDiaryCreateFragment != null) {
+                            photoImage = potDiaryCreateFragment.getPhotoImageView()
                         }
                         photoImage?.setImageURI(uri)
                     }
@@ -301,6 +304,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        potId = intent.getIntExtra("potId", 0)
         var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
         if (refreshToken == "") {
             var intent = Intent(this, LoginActivity::class.java)
@@ -315,9 +319,6 @@ class MainActivity : AppCompatActivity() {
 //        }
 
 
-//        if (plantFragment != null) {
-//            activityToolbar = plantFragment.getToolbar()
-//        }
 
 
 //      main에서만 날씨 fragment 보여주기
@@ -333,9 +334,9 @@ class MainActivity : AppCompatActivity() {
         bnv_main.run {
             setOnNavigationItemSelectedListener {
                 when (it.itemId) {
-                    R.id.plantFragment -> {
+                    R.id.potFragment -> {
                         // 다른 프래그먼트 화면으로 이동하는 기능
-                        val homeFragment = PlantFragment()
+                        val homeFragment = PotFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, homeFragment).commit()
 //                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
@@ -379,7 +380,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
-            selectedItemId = R.id.plantFragment
+            selectedItemId = R.id.potFragment
 //            1차 릴리즈 : search를 메인으로
 //            selectedItemId = R.id.searchFragment
         }
