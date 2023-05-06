@@ -208,6 +208,22 @@ public class PotServiceImpl implements PotService{
         return 0;
     }
 
+    @Override
+    public boolean toggleStatus(Long userPK, Long potId) throws Exception {
+        logger.info("toggle status : {}", potId);
+
+        PotEntity potEntity = potRepository.findById(potId).get(); // NoSuchElementException
+
+        if(potEntity.getUserId() != userPK) throw new IllegalAccessException("Unauthorized");
+
+        logger.info("pot {} found with status : {}", potId, potEntity.getSurvival());
+
+        boolean ret = potEntity.toggleSurvival();
+        potRepository.save(potEntity);
+
+        return ret;
+    }
+
     private int calcPeriod(LocalDateTime from) {
         LocalDateTime now = LocalDateTime.now();
 

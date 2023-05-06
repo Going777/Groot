@@ -64,4 +64,14 @@ public interface PotService {
      * @throws IllegalArgumentException for unauthorized access
      */
     public int deletePot(Long userPK, Long potId) throws Exception;
+
+    /**
+     * toggle survival status
+     * @param userPK
+     * @param potId
+     * @return next status (survival or not)
+     * @throws NoSuchElementException when pot not found
+     * @throws IllegalArgumentException for unauthorized access
+     */
+    public boolean toggleStatus(Long userPK, Long potId) throws Exception;
 }

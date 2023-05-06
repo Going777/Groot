@@ -101,4 +101,9 @@ public class PotEntity extends BaseEntity{
         this.illuminance = illuminance == 0? this.illuminance : illuminance;
         this.humidity = humidity == 0? this.humidity : humidity;
     }
+
+    public boolean toggleSurvival() {
+        this.survival = !this.survival;
+        return this.survival;
+    }
 }
