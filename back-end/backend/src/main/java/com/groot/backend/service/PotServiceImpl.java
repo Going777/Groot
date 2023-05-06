@@ -58,7 +58,6 @@ public class PotServiceImpl implements PotService{
                     PotEntity.builder()
                             .userEntity(userRepository.findById(userPK).get())
                             .plantEntity(plantEntity)
-                            .characterEntity(characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(plantEntity.getGrwType()),0))
                             .name(potRegisterDTO.getPotName())
                             .imgPath(imgPath)
                             // default values might be modified
@@ -89,16 +88,25 @@ public class PotServiceImpl implements PotService{
     }
 
     @Override
-    public List<PotListDTO> potList(Long userPK) throws NoSuchElementException {
+    public List<PotListDTO> potList(Long userPK, Boolean isArchive) throws NoSuchElementException {
         logger.info("user pk : {}", userPK);
 
-        List<PotEntity> list = potRepository.findAllByUserId(userPK);
+        List<PotEntity> list;
+        if(isArchive) {
+            logger.info("get archive");
+            list = potRepository.findAllByUserId(userPK);
+        }
+        else {
+            logger.info("get active pots");
+            list = potRepository.findAllByUserIdAndSurvival(userPK, true);
+        }
 
         if(list == null || list.size() < 1) throw new NoSuchElementException();
 
         List<PotListDTO> ret = new ArrayList<>(list.size());
 
         list.forEach(potEntity -> {
+            String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
             ret.add(PotListDTO.builder()
                             .potId(potEntity.getId())
                             .plantId(potEntity.getPlantId())
@@ -112,9 +120,8 @@ public class PotServiceImpl implements PotService{
                             .pruningDate(potEntity.getPruningDate())    // calc
                             .survival(potEntity.getSurvival())
                             .level(expToLevel(potEntity.getExperience()))   // level?
-                            .characterId(potEntity.getCharacterId())    // id or path
-                            .characterGLBPath(characterRepository.findById(potEntity.getCharacterId()).get().getGlbPath())
-                            .characterPNGPath(characterRepository.findById(potEntity.getCharacterId()).get().getPngPath())
+                            .characterPNGPath(urls[0])
+                            .characterGLBPath(urls[1])
                             .build());
         });
 
@@ -127,6 +134,8 @@ public class PotServiceImpl implements PotService{
 
         PotEntity potEntity = potRepository.findById(potId).get();
         if (potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
+
+        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
 
         PotListDTO potListDTO = PotListDTO.builder()
                 .potId(potEntity.getId())
@@ -141,7 +150,8 @@ public class PotServiceImpl implements PotService{
                 .pruningDate(potEntity.getPruningDate())    // calc
                 .survival(potEntity.getSurvival())
                 .level(expToLevel(potEntity.getExperience()))   // level?
-                .characterId(potEntity.getCharacterId())    // id or path
+                .characterPNGPath(urls[0])
+                .characterGLBPath(urls[1])
                 .build();
 
         PlantEntity plantEntity = potEntity.getPlantEntity();
@@ -163,16 +173,7 @@ public class PotServiceImpl implements PotService{
                 .img(plantEntity.getImg())
                 .build();
 
-        CharacterEntity characterEntity = characterRepository.findById(potEntity.getCharacterId()).get();
-
-        CharacterDTO characterDTO = CharacterDTO.builder()
-                .characterId(characterEntity.getId())
-                .level(characterEntity.getLevel())
-                .glbPath(characterEntity.getGlbPath())
-                .pngPath(characterEntity.getPngPath())
-                .build();
-
-        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).character(characterDTO).build();
+        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).build();
     }
 
     @Override
@@ -246,6 +247,26 @@ public class PotServiceImpl implements PotService{
     }
 
     private int expToLevel(int exp) {
-        return exp / 10;
+        int ret = exp/10;
+        return (ret > 2) ? 2 : ret;
+    }
+
+    /**
+     * returns character png and glb url
+     * @param grwType
+     * @param exp
+     * @param survival
+     * @return [png url, glb url]
+     */
+    private String[] getAssets(String grwType, int exp, boolean survival) {
+        CharacterEntity characterEntity;
+        if(!survival) {
+            characterEntity =
+                characterRepository.findByType(PlantCodeUtil.characterCode("gone"));
+        }
+        else {
+            characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), expToLevel(exp));
+        }
+        return new String[] {characterEntity.getPngPath(), characterEntity.getGlbPath()};
     }
 }
