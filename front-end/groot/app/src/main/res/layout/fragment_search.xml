@@ -62,41 +62,31 @@
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/difficultyChipGroup"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:chipSpacingHorizontal="5dp">
+                app:chipSpacingHorizontal="5dp"
+                app:singleSelection="false">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/difficultyEasy"
                     style="@style/BASIC_CHIP"
-                    android:text="쉬움"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"
-                    />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="쉬움" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/difficultyMedium"
                     style="@style/BASIC_CHIP"
-                    android:text="보통"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="보통" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/difficultyHard"
                     style="@style/BASIC_CHIP"
-                    android:text="어려움"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="어려움" />
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
 
@@ -114,40 +104,31 @@
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/luxChipGroup"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:chipSpacingHorizontal="5dp">
+                app:chipSpacingHorizontal="5dp"
+                app:singleSelection="false">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/luxLow"
                     style="@style/BASIC_CHIP"
-                    android:text="낮음"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="낮음" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/luxMidium"
                     style="@style/BASIC_CHIP"
-                    android:text="중간"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="중간" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/luxHigh"
                     style="@style/BASIC_CHIP"
-                    android:text="높음"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="높음" />
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
 
@@ -165,70 +146,52 @@
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/growthChipGroup"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:chipSpacingHorizontal="5dp">
+                app:chipSpacingHorizontal="5dp"
+                app:singleSelection="false">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/growthStraight"
                     style="@style/BASIC_CHIP"
-                    android:text="직립형"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="직립형" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/growthTree"
                     style="@style/BASIC_CHIP"
-                    android:text="관목형"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="관목형" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/growthVine"
                     style="@style/BASIC_CHIP"
-                    android:text="덩굴형"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="덩굴형" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/growthFleshy"
                     style="@style/BASIC_CHIP"
-                    android:text="다육형"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="다육형" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/growthCrawl"
                     style="@style/BASIC_CHIP"
-                    android:text="포복형"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="포복형" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/growthGrass"
                     style="@style/BASIC_CHIP"
-                    android:text="풀모양"
-                    app:chipEndPadding="3dp"
-                    app:chipStartPadding="3dp"
-                    app:chipBackgroundColor="@color/white"
-                    app:chipStrokeColor="@color/grey"
-                    app:chipStrokeWidth="1.5dp"/>
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="풀모양" />
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
 

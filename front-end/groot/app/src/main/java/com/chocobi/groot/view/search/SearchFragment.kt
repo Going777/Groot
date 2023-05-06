@@ -89,12 +89,8 @@ class SearchFragment : Fragment() {
         val mActivity = activity as MainActivity
 
         findView(rootView)
-        difficultyChipGroup = rootView.findViewById(R.id.difficultyChipGroup)
+        filterChipGroup()
 
-        difficultyChipGroup.setOnCheckedChangeListener { group, checkedId ->
-            Log.d("SearchFragment", "onCreateView() $checkedId")
-        }
-        
 
 //        Camera 버튼 클릭
         val cameraBtn = rootView.findViewById<ImageButton>(R.id.cameraBtn)
@@ -203,18 +199,46 @@ class SearchFragment : Fragment() {
         growthGrass = view.findViewById(R.id.growthGrass)
     }
 
-    private fun clickChip(chip: Chip) {
-        Log.d("SearchFragment", "clickChip()")
-        chip.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) {
-                chip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.button_sub))
-                chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
-            } else {
-                chip.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
-                chip.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
-            }
+    private fun filterChipGroup() {
+        difficultyEasy.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        difficultyMedium.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        difficultyHard.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        luxLow.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        luxMedium.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        luxHigh.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthStraight.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthTree.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthVine.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthFleshy.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthCrawl.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+        }
+        growthGrass.setOnCheckedChangeListener { buttonView, isChecked ->
+            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
         }
     }
+
+
 
     private fun requestSearchPlant() {
         val retrofit = Retrofit.Builder()

@@ -51,12 +51,16 @@
 
 
     <!--    chip-->
-    <style name="BASIC_CHIP">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/grey</item>
-
+    <style name="BASIC_CHIP" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="chipBackgroundColor">@color/search_chip_checked_bg_color</item>
+        <item name="android:textColor">@color/search_chip_checked_text_color</item>
+<!--        <item name="chipEndPadding">1dp</item>-->
+<!--        <item name="chipStartPadding">1dp</item>-->
+        <item name="chipCornerRadius">10dp</item>
         <item name="android:textSize">12sp</item>
+        <item name="android:checkable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
     </style>
 
 
