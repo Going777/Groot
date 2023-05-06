@@ -10,35 +10,32 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_GALLERY
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PotDiaryCreateFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class PotDiaryCreateFragment : Fragment() {
 
     private val TAG = "PotDiaryCreateFragment"
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var potId : Int? = null
+    private var potName : String? = null
+    private var potPlant : String? = null
+
 
     private var myImageView: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
+
+
     }
 
     override fun onCreateView(
@@ -47,6 +44,15 @@ class PotDiaryCreateFragment : Fragment() {
     ): View? {
         val mActivity = activity as MainActivity
         val rootView = inflater.inflate(R.layout.fragment_pot_diary_create, container, false)
+
+//        변수 받기
+        potId = arguments?.getInt("potId")
+        potName = arguments?.getString("potName")
+        potPlant = arguments?.getString("potPlant")
+        var potNameText = rootView.findViewById<TextView>(R.id.potNameText)
+        potNameText.text = potName
+        var potPlantText = rootView.findViewById<TextView>(R.id.potPlantText)
+        potPlantText.text = potPlant
 
 //        사진 첨부 취소 버튼
         val attachCancleBtn = rootView.findViewById<ImageButton>(R.id.attachCancleBtn)
@@ -87,5 +93,4 @@ class PotDiaryCreateFragment : Fragment() {
     fun getPhotoImageView(): ImageView? {
         return myImageView
     }
-
 }

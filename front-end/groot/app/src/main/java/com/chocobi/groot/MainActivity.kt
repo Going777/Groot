@@ -47,6 +47,20 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
     private var potId: Int = 0
+    private var potName: String = "화분 이름"
+    private var potPlant: String = "화분 식물"
+
+    fun setPotId(id:Int) {
+        potId = id
+    }
+
+    fun setPotName(name:String) {
+        potName = name
+    }
+
+    fun setPlant(plant:String) {
+        potPlant = plant
+    }
 
 
     //        fragment 조작
@@ -62,7 +76,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             "pot_diary_create" -> {
+                val bundle = Bundle()
+                bundle.putInt("potId", potId)
+                bundle.putString("potName", potName)
+                bundle.putString("potPlant", potPlant)
                 val potDiaryCreateFragment = PotDiaryCreateFragment()
+                potDiaryCreateFragment.arguments = bundle
+
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, potDiaryCreateFragment)
@@ -72,6 +92,8 @@ class MainActivity : AppCompatActivity() {
             "pot_detail" -> {
                 val bundle = Bundle()
                 bundle.putInt("potId", potId)
+                bundle.putString("potName", potName)
+                bundle.putString("potPlant", potPlant)
                 val potDetailFragment = PotDetailFragment()
                 potDetailFragment.arguments = bundle
 
@@ -305,6 +327,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         potId = intent.getIntExtra("potId", 0)
+        potName = intent.getStringExtra("potName").toString()
+        potPlant = intent.getStringExtra("potPlant").toString()
         var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
         if (refreshToken == "") {
             var intent = Intent(this, LoginActivity::class.java)

@@ -29,13 +29,14 @@ import java.io.FileOutputStream
 class Pot2Activity : AppCompatActivity() {
     private val TAG = "Pot2Activity"
     private var plantId: Int = 0
+    private var plantNameSplit: String = ""
     private var isSuccessed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pot2)
 
-        val plantNameSplit = intent.getStringExtra("plantNameSplit")
+        plantNameSplit = intent.getStringExtra("plantNameSplit").toString()
         plantId = intent.getIntExtra("plantId", 0)
         val tempPotName = intent.getStringExtra("tempPotName")
         var imageUri = intent.getStringExtra("imageUri")
@@ -112,6 +113,8 @@ class Pot2Activity : AppCompatActivity() {
                         var intent = Intent(context, MainActivity::class.java)
                         intent.putExtra("toPage", "pot_detail")
                         intent.putExtra("potId", body.potId)
+                        intent.putExtra("potName", potName)
+                        intent.putExtra("potPlant", plantNameSplit)
                         startActivity(intent)
                     }
                 }
