@@ -426,6 +426,9 @@ public class ArticleServiceImpl implements ArticleService{
     public Page<ArticleListDTO> filterRegion(String[] region, Long userPK, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         Page<ArticleEntity> articleEntities = articleRepository.filterRegion(region, pageRequest);
+        if(articleEntities == null){
+            return null;
+        }
         Page<ArticleListDTO> result = toDtoList(articleEntities, userPK);
         return result;
     }
