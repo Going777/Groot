@@ -24,10 +24,6 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
-    public final QCharacterEntity characterEntity;
-
-    public final NumberPath<Long> characterId = createNumber("characterId", Long.class);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
@@ -90,7 +86,6 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public QPotEntity(Class<? extends PotEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.characterEntity = inits.isInitialized("characterEntity") ? new QCharacterEntity(forProperty("characterEntity")) : null;
         this.plantEntity = inits.isInitialized("plantEntity") ? new QPlantEntity(forProperty("plantEntity")) : null;
         this.userEntity = inits.isInitialized("userEntity") ? new QUserEntity(forProperty("userEntity")) : null;
     }
