@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.pot
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,9 +13,11 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.pot.model.Plant
@@ -65,6 +68,14 @@ class PotDetailFragment : Fragment() {
         potPlantText = rootView.findViewById(R.id.potPlant)
 
 
+        val settingBtn = rootView.findViewById<ImageButton>(R.id.settingBtn)
+        settingBtn.setOnClickListener {
+            val potBottomSheet = PotBottomSheet(requireContext())
+            potBottomSheet.show(
+                mActivity.supportFragmentManager,
+                potBottomSheet.tag
+            )
+        }
 //        다이어리 버튼 클릭시
         val potPostDiaryBtn = rootView.findViewById<ImageButton>(R.id.potPostDiaryBtn)
         potPostDiaryBtn.setOnClickListener {
