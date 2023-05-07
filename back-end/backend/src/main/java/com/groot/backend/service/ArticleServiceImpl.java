@@ -57,28 +57,62 @@ public class ArticleServiceImpl implements ArticleService{
     // 인기 태그 조회
     @Override
     public List<TagRankDTO> readTagRanking() {
-        String key = "ranking";
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
-        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
+        Set<ZSetOperations.TypedTuple<String>> typedTuples;
+        String key = "ranking";
+
+        if(ZSetOperations.size(key) >= 10){
+            typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
+        }else {
+            typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));
+        }
 
         List<TagRankDTO> result = typedTuples.stream().map(TagRankDTO::convertToTagRankDTO).collect(Collectors.toList());
 
-        // 리셋 후 입력된 태그가 없으면 전날 데이터를 보여줌
-        if(Double.compare(result.get(0).getCount(), 0.0) == 0){
-            List<TagCountEntity> list = tagCountRepository.findAll(Sort.by(Sort.Direction.DESC, "count"));
-            List<TagCountEntity> sublist = list.subList(0, 9);
-            List<TagRankDTO> rankDTOS = new ArrayList<>();
-            for(TagCountEntity tagCountEntity : sublist){
-                TagRankDTO dto = TagRankDTO.builder()
-                        .tag(tagCountEntity.getTag())
-                        .count(tagCountEntity.getCount())
-                        .build();
-                rankDTOS.add(dto);
+        // redis에 조회되는 값이 없으면 mysql에서 태그 데이터 가져오기
+        if(result.size() == 0){
+            // mysql-tag table 태그 이름 redis에 올리기
+            List<TagEntity> tagEntities = tagRepository.findAll();
+
+            // 태그 테이블에 데이터가 없으면 리턴
+            if(tagEntities.size() == 0) return result;
+
+            for(TagEntity tagEntity : tagEntities){
+                ZSetOperations.add(key, tagEntity.getName(), 0);
+            }
+            ZSetOperations = redisTemplate.opsForZSet();
+
+            if(ZSetOperations.size(key) >= 10){
+                typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
+            }else {
+                typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));
             }
 
-            return rankDTOS;
-        }
+            result = typedTuples.stream().map(TagRankDTO::convertToTagRankDTO).collect(Collectors.toList());
+        }else{
+            // 조회되는 값은 있는데, 리셋 후 입력된 태그가 없으면 전날 데이터를 보여줌
+            if(Double.compare(result.get(0).getCount(), 0.0) == 0){
+                System.out.println("전날데이터");
+                List<TagCountEntity> list = tagCountRepository.findAll(Sort.by(Sort.Direction.DESC, "count"));
 
+                // tagCount 데이터가 존재하지 않으면 태그 데이터만 보여줌
+                if(list.size() == 0) return result;
+
+                List<TagRankDTO> rankDTOS = new ArrayList<>();
+                if(list.size() != 0){
+                    List<TagCountEntity> sublist = (list.size() >= 10) ?  list.subList(0,9) : list;
+
+                    for(TagCountEntity tagCountEntity : sublist){
+                        TagRankDTO dto = TagRankDTO.builder()
+                                .tag(tagCountEntity.getTag())
+                                .count(tagCountEntity.getCount())
+                                .build();
+                        rankDTOS.add(dto);
+                    }
+                }
+                return rankDTOS;
+            }
+        }
         return result;
     }
 
@@ -565,4 +599,6 @@ public class ArticleServiceImpl implements ArticleService{
         }
         return imgPath;
     }
+
+
 }

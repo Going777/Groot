@@ -275,6 +275,12 @@ public class ArticleController {
         resultMap = new HashMap<>();
         try{
             List<TagRankDTO> result = articleService.readTagRanking();
+            if(result.size() == 0){
+                resultMap.put("result", SUCCESS);
+                resultMap.put("msg","존재하는 태그가 없습니다.");
+                resultMap.put("tags", result);
+                return ResponseEntity.ok().body(resultMap);
+            }
             resultMap.put("result", SUCCESS);
             resultMap.put("msg","인기 태그 조회 성공");
             resultMap.put("tags", result);
