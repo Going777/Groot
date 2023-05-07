@@ -42,15 +42,15 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     data class Model(
         val fileLocation: String,
         val scaleUnits: Float? = null,
-        val placementMode: PlacementMode = PlacementMode.INSTANT,
-        val applyPoseRotation: Boolean = true
+        val placementMode: PlacementMode? = PlacementMode.INSTANT,
+        val applyPoseRotation: Boolean? = true
     )
 
     val models =
         Model(
-            fileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/rabby_2.glb",
-            placementMode = PlacementMode.INSTANT,
-            applyPoseRotation = false
+            fileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/tree_2.glb",
+//            placementMode = PlacementMode.INSTANT,
+//            applyPoseRotation = false
         )
 
     var modelNode: ArModelNode? = null
@@ -160,8 +160,13 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         }
         val model = models
 //        modelIndex = (modelIndex + 1) % models.size
-        modelNode = ArModelNode(model.placementMode).apply {
-            applyPoseRotation = model.applyPoseRotation
+        modelNode = ArModelNode(
+            placementMode = PlacementMode.INSTANT,
+            instantAnchor = true,
+            followHitPosition = false,
+
+        ).apply {
+//            applyPoseRotation = model.applyPoseRotation
             loadModelGlbAsync(
                 glbFileLocation = model.fileLocation,
                 autoAnimate = false,
@@ -169,15 +174,16 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
                 centerOrigin = Position(x = 0f, y = 0.0f, z = 0f)
                 // Place the model origin at the bottom center
             ) {
-                sceneView.planeRenderer.isVisible = false
-                followHitPosition = false
-                instantAnchor = true
-                isScaleEditable = false
-                isRotationEditable = true
+                isPositionEditable = false
+//                sceneView.planeRenderer.isVisible = false
+//                followHitPosition = false
+//                instantAnchor = true
+//                isScaleEditable = false
+//                isRotationEditable = true
 //            playAnimation(0, true)
             }
 //            position = Position(x = 0.0f, y = 0f, z = 10f)
-            rotation = Rotation(x=0.0f, y = 0f, z=0.0f)
+//            rotation = Rotation(x=0.0f, y = 0f, z=0.0f)
 
 //            onAnchorChanged = { anchor ->
 //                placeModelButton.isGone = anchor != null
