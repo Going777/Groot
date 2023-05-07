@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.pot
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,19 +13,23 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_GALLERY
-
 
 
 class PotDiaryCreateFragment : Fragment() {
 
     private val TAG = "PotDiaryCreateFragment"
 
-    private var potId : Int? = null
-    private var potName : String? = null
-    private var potPlant : String? = null
+    private var potId: Int? = null
+    private var potName: String? = null
+    private var potPlant: String? = null
+    private var potCharImg: String? = null
 
 
     private var myImageView: ImageView? = null
@@ -49,17 +54,28 @@ class PotDiaryCreateFragment : Fragment() {
         potId = arguments?.getInt("potId")
         potName = arguments?.getString("potName")
         potPlant = arguments?.getString("potPlant")
+        potCharImg = arguments?.getString("potCharImg")
+
+//        화면 구성
         var potNameText = rootView.findViewById<TextView>(R.id.potNameText)
+        var potNameText2 = rootView.findViewById<TextView>(R.id.potNameText2)
         potNameText.text = potName
+        potNameText2.text = potName
         var potPlantText = rootView.findViewById<TextView>(R.id.potPlantText)
         potPlantText.text = potPlant
+        var potCharImage = rootView.findViewById<ImageView>(R.id.characterImg)
+        if (potCharImg is String) {
+            GlobalVariables.changeImgView(potCharImage, potCharImg.toString(), requireContext())
+        }
+
 
 //        사진 첨부 취소 버튼
         val attachCancleBtn = rootView.findViewById<ImageButton>(R.id.attachCancleBtn)
 //        사진 첨부 섹션
         val attachPhotoSection = rootView.findViewById<LinearLayout>(R.id.attachPhotoSection)
 //        첨부된 이미지 섹션
-        val attachedPhotoSection = rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
+        val attachedPhotoSection =
+            rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
         val attachedPhoto = rootView.findViewById<ImageView>(R.id.attachedPhoto)
 
         myImageView = rootView.findViewById(R.id.attachedPhoto)

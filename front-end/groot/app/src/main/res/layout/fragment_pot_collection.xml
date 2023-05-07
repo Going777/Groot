@@ -1,93 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.pot.PotCollectionFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/firstView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/radius10"
+        android:layout_marginHorizontal="10dp"
+        android:backgroundTint="@color/background"
+        android:visibility="gone">
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="화분을 등록하고" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="루티를 만나보세요!" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="첫 화분 등록하기"
+                android:layout_gravity="right"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/main"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="150dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/char_greeting"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!-- Horizontal scrollView  -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pot_collectioin_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 
-<!--    <HorizontalScrollView-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent">-->
+    <!--    <HorizontalScrollView-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent">-->
 
-<!--        &lt;!&ndash; using linear layout to store multiple view-->
-<!--             inside a Horizontal Scroll View &ndash;&gt;-->
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:background="@color/white">-->
+    <!--        &lt;!&ndash; using linear layout to store multiple view-->
+    <!--             inside a Horizontal Scroll View &ndash;&gt;-->
+    <!--        <LinearLayout-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            android:background="@color/white">-->
 
-<!--            &lt;!&ndash; multiple button views to show a-->
-<!--                  scrollable horizontal list &ndash;&gt;-->
-<!--            <Button-->
-<!--                android:id="@+id/C"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:text="GeeksforGeeks"-->
-<!--                android:padding="4dp"-->
-<!--                android:layout_margin="10dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:textColor="@color/black"/>-->
+    <!--            &lt;!&ndash; multiple button views to show a-->
+    <!--                  scrollable horizontal list &ndash;&gt;-->
+    <!--            <Button-->
+    <!--                android:id="@+id/C"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="100dp"-->
+    <!--                android:text="GeeksforGeeks"-->
+    <!--                android:padding="4dp"-->
+    <!--                android:layout_margin="10dp"-->
+    <!--                android:backgroundTint="@color/white"-->
+    <!--                android:textColor="@color/black"/>-->
 
-<!--            <Button-->
-<!--                android:id="@+id/Co"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:layout_margin="10dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:padding="4dp"-->
-<!--                android:text="GeeksforGeeks"-->
-<!--                android:textColor="@color/black" />-->
+    <!--            <Button-->
+    <!--                android:id="@+id/Co"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="100dp"-->
+    <!--                android:layout_margin="10dp"-->
+    <!--                android:backgroundTint="@color/white"-->
+    <!--                android:padding="4dp"-->
+    <!--                android:text="GeeksforGeeks"-->
+    <!--                android:textColor="@color/black" />-->
 
-<!--            <Button-->
-<!--                android:id="@+id/L"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:padding="4dp"-->
-<!--                android:layout_margin="10dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:text="GeeksforGeeks"-->
-<!--                android:textColor="@color/black"/>-->
+    <!--            <Button-->
+    <!--                android:id="@+id/L"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="100dp"-->
+    <!--                android:padding="4dp"-->
+    <!--                android:layout_margin="10dp"-->
+    <!--                android:backgroundTint="@color/white"-->
+    <!--                android:text="GeeksforGeeks"-->
+    <!--                android:textColor="@color/black"/>-->
 
-<!--            <Button-->
-<!--                android:id="@+id/Ha"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:padding="4dp"-->
-<!--                android:layout_margin="10dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:text="GeeksforGeeks"-->
-<!--                android:textColor="@color/black"/>-->
+    <!--            <Button-->
+    <!--                android:id="@+id/Ha"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="100dp"-->
+    <!--                android:padding="4dp"-->
+    <!--                android:layout_margin="10dp"-->
+    <!--                android:backgroundTint="@color/white"-->
+    <!--                android:text="GeeksforGeeks"-->
+    <!--                android:textColor="@color/black"/>-->
 
-<!--            <Button-->
-<!--                android:id="@+id/Hah"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:padding="4dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:layout_margin="10dp"-->
-<!--                android:text="GeeksforGeeks"-->
-<!--                android:textColor="@color/black"/>-->
+    <!--            <Button-->
+    <!--                android:id="@+id/Hah"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="100dp"-->
+    <!--                android:padding="4dp"-->
+    <!--                android:backgroundTint="@color/white"-->
+    <!--                android:layout_margin="10dp"-->
+    <!--                android:text="GeeksforGeeks"-->
+    <!--                android:textColor="@color/black"/>-->
 
-<!--            <Button-->
-<!--                android:id="@+id/ge"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="100dp"-->
-<!--                android:padding="4dp"-->
-<!--                android:layout_margin="10dp"-->
-<!--                android:backgroundTint="@color/white"-->
-<!--                android:text="GeeksforGeeks"-->
-<!--                android:textColor="@color/black"/>-->
-<!--        </LinearLayout>-->
+    <!--            <Button-->
+    <!--                android:id="@+id/ge"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="100dp"-->
+    <!--                android:padding="4dp"-->
+    <!--                android:layout_margin="10dp"-->
+    <!--                android:backgroundTint="@color/white"-->
+    <!--                android:text="GeeksforGeeks"-->
+    <!--                android:textColor="@color/black"/>-->
+    <!--        </LinearLayout>-->
 
-<!--    </HorizontalScrollView>-->
+    <!--    </HorizontalScrollView>-->
 
 </FrameLayout>

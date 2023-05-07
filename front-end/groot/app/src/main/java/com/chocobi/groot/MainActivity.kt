@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
     private var potId: Int = 0
     private var potName: String = "화분 이름"
     private var potPlant: String = "화분 식물"
+    private var potCharImg: String = "화분 이미지 URL"
 
     fun setPotId(id:Int) {
         potId = id
@@ -60,6 +61,10 @@ class MainActivity : AppCompatActivity() {
 
     fun setPotPlant(plant:String) {
         potPlant = plant
+    }
+
+    fun setPotCharImg(plant:String) {
+        potCharImg = plant
     }
 
 
@@ -80,6 +85,7 @@ class MainActivity : AppCompatActivity() {
                 bundle.putInt("potId", potId)
                 bundle.putString("potName", potName)
                 bundle.putString("potPlant", potPlant)
+                bundle.putString("potCharImg", potCharImg)
                 val potDiaryCreateFragment = PotDiaryCreateFragment()
                 potDiaryCreateFragment.arguments = bundle
 
