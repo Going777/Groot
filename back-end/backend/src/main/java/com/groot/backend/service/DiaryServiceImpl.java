@@ -74,17 +74,17 @@ public class DiaryServiceImpl implements DiaryService{
                 .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
                 .build();
-        int[] checkList = {diaryDTO.getWater()!=null?10:0, diaryDTO.getSun()!=null?10:0, diaryDTO.getPruning()!=null?30:0, diaryDTO.getNutrients()!=null?30:0, diaryDTO.getBug()!=null?10:0, diaryDTO.getContent()!=null?10:0};
-        for(int i: checkList){
-            score += i;
-        }
-        int tempExp = pot.getExperience()+score;
-        int tempLevel = pot.getLevel();
-        if(tempExp>tempLevel*100){
-            tempExp -= tempLevel*100;
-            tempLevel+=1;
-        }
-        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+//        int[] checkList = {diaryDTO.getWater()!=null?10:0, diaryDTO.getSun()!=null?10:0, diaryDTO.getPruning()!=null?30:0, diaryDTO.getNutrients()!=null?30:0, diaryDTO.getBug()!=null?10:0, diaryDTO.getContent()!=null?10:0};
+//        for(int i: checkList){
+//            score += i;
+//        }
+//        int tempExp = pot.getExperience()+score;
+//        int tempLevel = pot.getLevel();
+//        if(tempExp>tempLevel*100){
+//            tempExp -= tempLevel*100;
+//            tempLevel+=1;
+//        }
+//        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
 //        score += Collections.frequency(checkList, true);
 //        List<Long> subsToList = subscribeRepository.findSubscribeTo(principalDetails.getUser().getId());
         Long id = userId;
@@ -124,25 +124,25 @@ public class DiaryServiceImpl implements DiaryService{
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():diaryEntity.getWater())
                 .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():diaryEntity.getNutrients())
                 .build();
-        Integer score = 0;
-        int[] beforeScore = {!diaryEntity.getWater()?-10:0, diaryEntity.getSun()?-10:0, diaryEntity.getPruning()?-30:0, diaryEntity.getNutrients()?-30:0, diaryEntity.getBug()?-10:0, diaryEntity.getContent()!=null?-10:0};
-        for(int i: beforeScore){
-            score += i;
-        }
-        int[] checkList = {diaryDTO.getWater()!=null?10:0, diaryDTO.getSun()!=null?10:0, diaryDTO.getPruning()!=null?30:0, diaryDTO.getNutrients()!=null?30:0, diaryDTO.getBug()!=null?10:0, diaryDTO.getContent()!=null?10:0};
-        for(int i: checkList){
-            score += i;
-        }
-        int tempExp = pot.getExperience()+score;
-        int tempLevel = pot.getLevel();
-        if(tempExp>pot.getLevel()*100){
-            tempExp -= pot.getLevel()*100;
-            tempLevel+=1;
-        }else if(tempExp < 0){
-            tempLevel -= 1;
-            tempExp += tempLevel*100;
-        }
-        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+//        Integer score = 0;
+//        int[] beforeScore = {!diaryEntity.getWater()?-10:0, diaryEntity.getSun()?-10:0, diaryEntity.getPruning()?-30:0, diaryEntity.getNutrients()?-30:0, diaryEntity.getBug()?-10:0, diaryEntity.getContent()!=null?-10:0};
+//        for(int i: beforeScore){
+//            score += i;
+//        }
+//        int[] checkList = {diaryDTO.getWater()!=null?10:0, diaryDTO.getSun()!=null?10:0, diaryDTO.getPruning()!=null?30:0, diaryDTO.getNutrients()!=null?30:0, diaryDTO.getBug()!=null?10:0, diaryDTO.getContent()!=null?10:0};
+//        for(int i: checkList){
+//            score += i;
+//        }
+//        int tempExp = pot.getExperience()+score;
+//        int tempLevel = pot.getLevel();
+//        if(tempExp>pot.getLevel()*100){
+//            tempExp -= pot.getLevel()*100;
+//            tempLevel+=1;
+//        }else if(tempExp < 0){
+//            tempLevel -= 1;
+//            tempExp += tempLevel*100;
+//        }
+//        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
         return diaryRepository.save(newDiary);
     }
 
