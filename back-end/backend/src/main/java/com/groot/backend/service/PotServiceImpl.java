@@ -58,7 +58,6 @@ public class PotServiceImpl implements PotService{
                     PotEntity.builder()
                             .userEntity(userRepository.findById(userPK).get())
                             .plantEntity(plantEntity)
-                            .characterEntity(characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(plantEntity.getGrwType()),0))
                             .name(potRegisterDTO.getPotName())
                             .imgPath(imgPath)
                             // default values might be modified
@@ -89,33 +88,25 @@ public class PotServiceImpl implements PotService{
     }
 
     @Override
-    public List<PotListDTO> potList(Long userPK) throws NoSuchElementException {
+    public List<PotListDTO> potList(Long userPK, Boolean isArchive) throws NoSuchElementException {
         logger.info("user pk : {}", userPK);
 
-        List<PotEntity> list = potRepository.findAllByUserId(userPK);
+        List<PotEntity> list;
+        if(isArchive) {
+            logger.info("get archive");
+            list = potRepository.findAllByUserId(userPK);
+        }
+        else {
+            logger.info("get active pots");
+            list = potRepository.findAllByUserIdAndSurvival(userPK, true);
+        }
 
         if(list == null || list.size() < 1) throw new NoSuchElementException();
 
         List<PotListDTO> ret = new ArrayList<>(list.size());
 
         list.forEach(potEntity -> {
-            ret.add(PotListDTO.builder()
-                            .potId(potEntity.getId())
-                            .plantId(potEntity.getPlantId())
-                            .potName(potEntity.getName())
-                            .imgPath(potEntity.getImgPath())
-                            .plantKrName(potEntity.getPlantKrName())
-                            .dates(calcPeriod(potEntity.getCreatedDate()))
-                            .createdTime(potEntity.getCreatedDate())
-                            .waterDate(potEntity.getWaterDate())    // calc
-                            .nutrientsDate(potEntity.getNutrientsDate())    // calc
-                            .pruningDate(potEntity.getPruningDate())    // calc
-                            .survival(potEntity.getSurvival())
-                            .level(expToLevel(potEntity.getExperience()))   // level?
-                            .characterId(potEntity.getCharacterId())    // id or path
-                            .characterGLBPath(characterRepository.findById(potEntity.getCharacterId()).get().getGlbPath())
-                            .characterPNGPath(characterRepository.findById(potEntity.getCharacterId()).get().getPngPath())
-                            .build());
+            ret.add(buildListDTO(potEntity));
         });
 
         return ret;
@@ -128,21 +119,7 @@ public class PotServiceImpl implements PotService{
         PotEntity potEntity = potRepository.findById(potId).get();
         if (potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
 
-        PotListDTO potListDTO = PotListDTO.builder()
-                .potId(potEntity.getId())
-                .plantId(potEntity.getPlantId())
-                .potName(potEntity.getName())
-                .imgPath(potEntity.getImgPath())
-                .plantKrName(potEntity.getPlantKrName())
-                .dates(calcPeriod(potEntity.getCreatedDate()))
-                .createdTime(potEntity.getCreatedDate())
-                .waterDate(potEntity.getWaterDate())    // calc
-                .nutrientsDate(potEntity.getNutrientsDate())    // calc
-                .pruningDate(potEntity.getPruningDate())    // calc
-                .survival(potEntity.getSurvival())
-                .level(expToLevel(potEntity.getExperience()))   // level?
-                .characterId(potEntity.getCharacterId())    // id or path
-                .build();
+        PotListDTO potListDTO = buildListDTO(potEntity);
 
         PlantEntity plantEntity = potEntity.getPlantEntity();
 
@@ -163,16 +140,7 @@ public class PotServiceImpl implements PotService{
                 .img(plantEntity.getImg())
                 .build();
 
-        CharacterEntity characterEntity = characterRepository.findById(potEntity.getCharacterId()).get();
-
-        CharacterDTO characterDTO = CharacterDTO.builder()
-                .characterId(characterEntity.getId())
-                .level(characterEntity.getLevel())
-                .glbPath(characterEntity.getGlbPath())
-                .pngPath(characterEntity.getPngPath())
-                .build();
-
-        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).character(characterDTO).build();
+        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).build();
     }
 
     @Override
@@ -246,6 +214,92 @@ public class PotServiceImpl implements PotService{
     }
 
     private int expToLevel(int exp) {
-        return exp / 10;
+        int ret = exp/10;
+        return (ret > 2) ? 2 : ret;
+    }
+
+    /**
+     * returns character png and glb url
+     * @param grwType
+     * @param exp
+     * @param survival
+     * @return [png url, glb url]
+     */
+    private String[] getAssets(String grwType, int exp, boolean survival) {
+        CharacterEntity characterEntity;
+        if(!survival) {
+            characterEntity =
+                characterRepository.findByType(PlantCodeUtil.characterCode("gone"));
+        }
+        else {
+            characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), expToLevel(exp));
+        }
+        return new String[] {characterEntity.getPngPath(), characterEntity.getGlbPath()};
+    }
+
+    /**
+     * Build PotListDTO by PotEntity
+     * @param potEntity
+     * @return PotListDTO
+     */
+    public PotListDTO buildListDTO(PotEntity potEntity) {
+        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
+        return PotListDTO.builder()
+                .potId(potEntity.getId())
+                .plantId(potEntity.getPlantId())
+                .potName(potEntity.getName())
+                .imgPath(potEntity.getImgPath())
+                .plantKrName(potEntity.getPlantKrName())
+                .dates(calcPeriod(potEntity.getCreatedDate()))
+                .createdTime(potEntity.getCreatedDate())
+                .waterDate(calcNextWaterDate(potEntity.getWaterDate(), potEntity))
+                .nutrientsDate(calcNextDate(potEntity.getNutrientsDate(), 6))
+                .pruningDate(calcNextDate(potEntity.getPruningDate(), 12))
+                .survival(potEntity.getSurvival())
+                .level(expToLevel(potEntity.getExperience()))   // level?
+                .characterPNGPath(urls[0])
+                .characterGLBPath(urls[1])
+                .build();
+    }
+
+    /**
+     * Calculate next watering date - prototype
+     * @param lastDate
+     * @param potEntity
+     * @return
+     */
+    public LocalDateTime calcNextWaterDate(LocalDateTime lastDate, PotEntity potEntity) {
+        PlantEntity plantEntity = potEntity.getPlantEntity();
+        int[] waterPeriods = PlantCodeUtil.waterPeriods[plantEntity.getWaterCycle() % 53000];
+
+        int tempRange = inRange(potEntity.getTemperature(), plantEntity.getMinGrwTemp(), plantEntity.getMaxGrwTemp());
+        int humidRange = inRange(potEntity.getHumidity(), plantEntity.getMinHumidity(), plantEntity.getMaxHumidity());
+
+        int dateDiff = waterPeriods[1] - waterPeriods[0];
+        int dateAvg = (waterPeriods[0] + waterPeriods[1]) / 2;
+
+        int afterDate = (int)(dateAvg + 0.25*(-tempRange + humidRange) * dateDiff);
+        return lastDate.plusDays(afterDate);
+    }
+
+    /**
+     * Simply add month from date time
+     * @param lastDate
+     * @param month
+     * @return
+     */
+    public LocalDateTime calcNextDate(LocalDateTime lastDate, int month) {
+        return lastDate.plusMonths(month);
+    }
+
+    /**
+     * returns where target value is at
+     * @param target
+     * @param min
+     * @param max
+     * @return -1(smaller) 0(in range) +1(larger)
+     */
+    public int inRange(double target, double min, double max) {
+        return (min < target) ? ((target < max) ? 0 : 1) : -1;
     }
 }

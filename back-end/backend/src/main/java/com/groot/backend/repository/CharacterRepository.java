@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 public interface CharacterRepository extends JpaRepository<CharacterEntity, Long>{
     @Query(value = "select * from characters where type=:type and level=:level", nativeQuery = true)
     CharacterEntity findByTypeAndLevel(Long type, Integer level);
+
+    CharacterEntity findByType(Long type);
 }

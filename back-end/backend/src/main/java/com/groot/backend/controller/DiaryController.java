@@ -15,9 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RequestMapping("/diaries")
 @RestController
@@ -33,7 +32,7 @@ public class DiaryController {
     public ResponseEntity insertDiary(@RequestPart("postData") @Validated DiaryDTO diaryDTO, @RequestPart(value="image", required = false) MultipartFile file, HttpServletRequest request) throws Exception {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        if(diaryDTO.getBug() && diaryDTO.getNutrients() && diaryDTO.getPruning() && diaryDTO.getWater() && diaryDTO.getSun() && diaryDTO.getContent().isEmpty()){
+        if(diaryDTO.getBug()==null && diaryDTO.getNutrients()==null && diaryDTO.getPruning()==null && diaryDTO.getWater()==null && diaryDTO.getSun()==null && diaryDTO.getContent()==null){
             resultMap.put("msg", "다이어리에 추가할 내용이 없습니다.");
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
@@ -60,7 +59,7 @@ public class DiaryController {
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
-        if(diaryDTO.getBug() && diaryDTO.getNutrients() && diaryDTO.getPruning() && diaryDTO.getWater() && diaryDTO.getSun() && diaryDTO.getContent().isEmpty()){
+        if(diaryDTO.getBug()==null && diaryDTO.getNutrients()==null && diaryDTO.getPruning()==null && diaryDTO.getWater()==null && diaryDTO.getSun()==null && diaryDTO.getContent()==null){
             resultMap.put("msg", "다이어리를 수정할 내용이 없습니다.");
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);

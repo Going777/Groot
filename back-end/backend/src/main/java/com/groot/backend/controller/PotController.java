@@ -79,31 +79,14 @@ public class PotController {
 
     @GetMapping("")
     @Operation(summary = "Get list of pot", description = "")
-    public ResponseEntity<Map<String, Object>> potList(HttpServletRequest request) {
+    public ResponseEntity<Map<String, Object>> activePotList(HttpServletRequest request) {
+        return potList(request, false);
+    }
 
-        Long userPK;
-        try {
-            userPK = JwtTokenProvider.getIdByAccessToken(request);
-        } catch (NullPointerException | IndexOutOfBoundsException e) {
-            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
-            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-        }
-        logger.info("Get pot list of user : {}", userPK);
-        Map<String, Object> result = new HashMap<>();
-        HttpStatus status;
-
-        try {
-            List<PotListDTO> list = potService.potList(userPK);
-            status = HttpStatus.OK;
-            result.put("pots", list);
-            result.put("msg", "화분 목록 조회에 성공했습니다.");
-
-        } catch (NoSuchElementException e) {
-            logger.info("Failed to load pot list");
-            status = HttpStatus.NO_CONTENT;
-        }
-
-        return new ResponseEntity<>(result, status);
+    @GetMapping("/archive")
+    @Operation(summary = "Get all the list of pot", description = "")
+    public ResponseEntity<Map<String, Object>> potArchive(HttpServletRequest request) {
+        return potList(request, true);
     }
 
     @GetMapping("/{potId}")
@@ -127,7 +110,6 @@ public class PotController {
             result.put("msg", "화분 조회에 성공했습니다.");
             result.put("pot", potDetailDTO.getPot());
             result.put("plant", potDetailDTO.getPlant());
-            result.put("character", potDetailDTO.getCharacter());
             status = HttpStatus.OK;
         } catch (AccessDeniedException e) {
             status = HttpStatus.FORBIDDEN;
@@ -244,6 +226,39 @@ public class PotController {
         } catch (Exception e) {
             result.put("msg", e.getStackTrace());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    /**
+     * used for both active list and archive
+     * @param request
+     * @param isArchive
+     * @return
+     */
+    public ResponseEntity<Map<String, Object>> potList(HttpServletRequest request, Boolean isArchive) {
+
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
+        logger.info("Get pot list of user : {}", userPK);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            List<PotListDTO> list = potService.potList(userPK, isArchive);
+            status = HttpStatus.OK;
+            result.put("pots", list);
+            result.put("msg", "화분 목록 조회에 성공했습니다.");
+
+        } catch (NoSuchElementException e) {
+            logger.info("Failed to load pot list");
+            status = HttpStatus.NO_CONTENT;
         }
 
         return new ResponseEntity<>(result, status);

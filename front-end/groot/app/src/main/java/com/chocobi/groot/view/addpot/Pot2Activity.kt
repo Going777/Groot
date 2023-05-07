@@ -14,9 +14,9 @@ import androidx.core.net.toUri
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.RetrofitClient
-import com.chocobi.groot.view.addpot.model.PotRequest
-import com.chocobi.groot.view.addpot.model.PotResponse
-import com.chocobi.groot.view.addpot.model.PotService
+import com.chocobi.groot.view.addpot.model.AddPotRequest
+import com.chocobi.groot.view.addpot.model.AddPotResponse
+import com.chocobi.groot.view.addpot.model.AddPotService
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -29,13 +29,14 @@ import java.io.FileOutputStream
 class Pot2Activity : AppCompatActivity() {
     private val TAG = "Pot2Activity"
     private var plantId: Int = 0
+    private var plantNameSplit: String = ""
     private var isSuccessed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pot2)
 
-        val plantNameSplit = intent.getStringExtra("plantNameSplit")
+        plantNameSplit = intent.getStringExtra("plantNameSplit").toString()
         plantId = intent.getIntExtra("plantId", 0)
         val tempPotName = intent.getStringExtra("tempPotName")
         var imageUri = intent.getStringExtra("imageUri")
@@ -80,7 +81,7 @@ class Pot2Activity : AppCompatActivity() {
 
     private fun addPot(context: Context, plantId: Int, potName: String, file: File?) {
         var retrofit = RetrofitClient.getClient()!!
-        var potService = retrofit.create(PotService::class.java)
+        var AddPotService = retrofit.create(AddPotService::class.java)
 
         var filePart: MultipartBody.Part? = null
 
@@ -90,8 +91,8 @@ class Pot2Activity : AppCompatActivity() {
             filePart = MultipartBody.Part.createFormData("img", file.name, requestFile)
         }
 
-        potService.addPot(
-            PotRequest(
+        AddPotService.addPot(
+            AddPotRequest(
                 plantId = plantId,
                 potName = potName,
                 temperature = null,
@@ -99,10 +100,10 @@ class Pot2Activity : AppCompatActivity() {
                 humidity = null
             ), filePart
         )
-            .enqueue(object : Callback<PotResponse> {
+            .enqueue(object : Callback<AddPotResponse> {
                 override fun onResponse(
-                    call: Call<PotResponse>,
-                    response: Response<PotResponse>
+                    call: Call<AddPotResponse>,
+                    response: Response<AddPotResponse>
                 ) {
                     var body = response.body()
                     Log.d(TAG, "$body")
@@ -112,11 +113,13 @@ class Pot2Activity : AppCompatActivity() {
                         var intent = Intent(context, MainActivity::class.java)
                         intent.putExtra("toPage", "pot_detail")
                         intent.putExtra("potId", body.potId)
+                        intent.putExtra("potName", potName)
+                        intent.putExtra("potPlant", plantNameSplit)
                         startActivity(intent)
                     }
                 }
 
-                override fun onFailure(call: Call<PotResponse>, t: Throwable) {
+                override fun onFailure(call: Call<AddPotResponse>, t: Throwable) {
                     Log.d(TAG, "화분 등록 실패")
                 }
             })

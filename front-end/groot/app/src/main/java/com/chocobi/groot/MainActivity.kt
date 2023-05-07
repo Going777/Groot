@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
@@ -47,6 +48,25 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
     private var potId: Int = 0
+    private var potName: String = "화분 이름"
+    private var potPlant: String = "화분 식물"
+    private var potCharImg: String = "화분 이미지 URL"
+
+    fun setPotId(id:Int) {
+        potId = id
+    }
+
+    fun setPotName(name:String) {
+        potName = name
+    }
+
+    fun setPotPlant(plant:String) {
+        potPlant = plant
+    }
+
+    fun setPotCharImg(plant:String) {
+        potCharImg = plant
+    }
 
 
     //        fragment 조작
@@ -62,7 +82,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             "pot_diary_create" -> {
+                val bundle = Bundle()
+                bundle.putInt("potId", potId)
+                bundle.putString("potName", potName)
+                bundle.putString("potPlant", potPlant)
+                bundle.putString("potCharImg", potCharImg)
                 val potDiaryCreateFragment = PotDiaryCreateFragment()
+                potDiaryCreateFragment.arguments = bundle
+
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.fl_container, potDiaryCreateFragment)
@@ -72,6 +99,8 @@ class MainActivity : AppCompatActivity() {
             "pot_detail" -> {
                 val bundle = Bundle()
                 bundle.putInt("potId", potId)
+                bundle.putString("potName", potName)
+                bundle.putString("potPlant", potPlant)
                 val potDetailFragment = PotDetailFragment()
                 potDetailFragment.arguments = bundle
 
@@ -280,9 +309,8 @@ class MainActivity : AppCompatActivity() {
                         val potDiaryCreateFragment =
                             supportFragmentManager.findFragmentById(R.id.fl_container) as PotDiaryCreateFragment?
                         if (potDiaryCreateFragment != null) {
-                            photoImage = potDiaryCreateFragment.getPhotoImageView()
+                            potDiaryCreateFragment.attachPhoto(uri)
                         }
-                        photoImage?.setImageURI(uri)
                     }
 //                    var i = 0
 //                    while (i < data?.clipData!!.itemCount) {
@@ -305,6 +333,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         potId = intent.getIntExtra("potId", 0)
+        potName = intent.getStringExtra("potName").toString()
+        potPlant = intent.getStringExtra("potPlant").toString()
         var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
         if (refreshToken == "") {
             var intent = Intent(this, LoginActivity::class.java)

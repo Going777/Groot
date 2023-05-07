@@ -20,6 +20,8 @@ public class PlantCodeUtil {
             "화분 흙 대부분 말랐을때 충분히 관수함"
     };
 
+    public static int[][] waterPeriods = {{0, 0}, {2,4}, {5,10}, {15,25}, {30,40}};
+
     /**
      * Character codes for grw types
      */
@@ -27,7 +29,8 @@ public class PlantCodeUtil {
             entry("군생형", 1), entry("다육형", 2), entry("로제트형", 3),
             entry("포도송이형", 4), entry("불규칙형", 5), entry("탑형", 6),
             entry("관목형",7), entry("직립형", 8), entry("포복형",9),
-            entry("덩굴성", 10), entry("풀모양", 11), entry("", 12)
+            entry("덩굴성", 10), entry("풀모양", 11), entry("", 12),
+            entry("gone", 13)
     );
 
     /**

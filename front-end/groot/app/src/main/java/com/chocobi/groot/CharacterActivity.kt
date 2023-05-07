@@ -1,5 +1,6 @@
 package com.chocobi.groot
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -25,58 +27,37 @@ import io.github.sceneview.utils.setFullScreen
 class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     private val TAG = "CharacterActivity"
     lateinit var sceneView: ArSceneView
-    lateinit var loadingView: View
-    lateinit var statusText: TextView
-    lateinit var placeModelButton: ExtendedFloatingActionButton
-    lateinit var newModelButton: ExtendedFloatingActionButton
+
+    private lateinit var GLBfile: String
+    private lateinit var level: String
+    private lateinit var potName: String
+    private lateinit var potPlant: String
+
+    //    lateinit var loadingView: View
+    private lateinit var statusText: TextView
+
+    //    lateinit var placeModelButton: ExtendedFloatingActionButton
+//    lateinit var newModelButton: ExtendedFloatingActionButton
+    lateinit var changeAnimationButton: ExtendedFloatingActionButton
+    lateinit var stopAnimationButton: ExtendedFloatingActionButton
+    lateinit var resumeAnimationButton: ExtendedFloatingActionButton
+    private var animationIdx = 0
+//    private var time = System.currentTimeMillis()
 
     data class Model(
         val fileLocation: String,
         val scaleUnits: Float? = null,
-        val placementMode: PlacementMode = PlacementMode.BEST_AVAILABLE,
-        val applyPoseRotation: Boolean = true
+        val placementMode: PlacementMode? = PlacementMode.INSTANT,
+        val applyPoseRotation: Boolean? = true
     )
 
-    val models = listOf(
+    val models =
         Model(
-            fileLocation = "models/Whispa_A.glb",
-            // Display the Tiger with a size of 3 m long
-            scaleUnits = 0.1f,
-            placementMode = PlacementMode.PLANE_HORIZONTAL,
-            applyPoseRotation = false
-        ),
-//        Model(
-//            fileLocation = "https://storage.googleapis.com/ar-answers-in-search-models/static/Tiger/model.glb",
-//            // Display the Tiger with a size of 3 m long
-//            scaleUnits = 2.5f,
-//            placementMode = PlacementMode.BEST_AVAILABLE,
-//            applyPoseRotation = false
-//        ),
-//        Model(
-//            fileLocation = "https://sceneview.github.io/assets/models/DamagedHelmet.glb",
+            fileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/tree_2.glb",
 //            placementMode = PlacementMode.INSTANT,
-//            scaleUnits = 0.5f
-//        ),
-//        Model(
-//            fileLocation = "https://storage.googleapis.com/ar-answers-in-search-models/static/GiantPanda/model.glb",
-//            placementMode = PlacementMode.PLANE_HORIZONTAL,
-//            // Display the Tiger with a size of 1.5 m height
-//            scaleUnits = 1.5f
-//        ),
-//        Model(
-//            fileLocation = "https://sceneview.github.io/assets/models/Spoons.glb",
-//            placementMode = PlacementMode.PLANE_HORIZONTAL_AND_VERTICAL,
-//            // Keep original model size
-//            scaleUnits = null
-//        ),
-//        Model(
-//            fileLocation = "https://sceneview.github.io/assets/models/Halloween.glb",
-//            placementMode = PlacementMode.PLANE_HORIZONTAL,
-//            scaleUnits = 2.5f
-//        ),
-    )
+//            applyPoseRotation = false
+        )
 
-    var modelIndex = 0
     var modelNode: ArModelNode? = null
         //    var isLoading = false
         set(value) {
@@ -87,6 +68,12 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_character)
+
+        GLBfile = intent.getStringExtra("GLBfile").toString()
+        level = intent.getStringExtra("level").toString()
+        potName = intent.getStringExtra("potName").toString()
+        potPlant = intent.getStringExtra("potPlant").toString()
+
 
         setFullScreen(
             findViewById(R.id.rootView),
@@ -101,29 +88,54 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //            }
 //            title = ""
 //        })
-//        statusText = findViewById(R.id.statusText)
+        statusText = findViewById(R.id.statusText)
+        statusText.text = potName
         sceneView = findViewById<ArSceneView?>(R.id.sceneView).apply {
             onArTrackingFailureChanged = { reason ->
-                statusText.text = reason?.getDescription(context)
-                statusText.isGone = reason == null
+                Toast.makeText(context, "사물을 감지하지 못해 메인 화면으로 돌아갑니다", Toast.LENGTH_LONG).show()
+                val intent = Intent(context, MainActivity::class.java)
+                startActivity(intent)
+//                statusText.text = reason?.getDescription(context)
+//                statusText.isGone = reason == null
             }
+            isDepthOcclusionEnabled = false
         }
-        loadingView = findViewById(R.id.loadingView)
-        newModelButton = findViewById<ExtendedFloatingActionButton>(R.id.newModelButton).apply {
-            // Add system bar margins
+//        loadingView = findViewById(R.id.loadingView)
+//        newModelButton = findViewById<ExtendedFloatingActionButton>(R.id.newModelButton).apply {
+//            // Add system bar margins
+//        }
+//        placeModelButton = findViewById<ExtendedFloatingActionButton>(R.id.placeModelButton).apply {
+//            setOnClickListener { placeModelNode() }
+//        }
+        changeAnimationButton = findViewById(R.id.changeAnimation)
+        changeAnimationButton.apply {
             val bottomMargin = (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
             doOnApplyWindowInsets { systemBarsInsets ->
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
                     systemBarsInsets.bottom + bottomMargin
             }
-            setOnClickListener { newModelNode() }
+            setOnClickListener { changeAnimation() }
+
         }
-        placeModelButton = findViewById<ExtendedFloatingActionButton>(R.id.placeModelButton).apply {
-            setOnClickListener { placeModelNode() }
+
+        stopAnimationButton = findViewById(R.id.stopAnimation)
+        stopAnimationButton.apply {
+            val bottomMargin = (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+            doOnApplyWindowInsets { systemBarsInsets ->
+                (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
+                    systemBarsInsets.bottom + bottomMargin
+            }
+            setOnClickListener { stopAnimtion() }
+
+        }
+
+        resumeAnimationButton = findViewById(R.id.resumeAnimation)
+        resumeAnimationButton.setOnClickListener {
+            resumeAnimation()
         }
 
         newModelNode()
-        placeModelNode()
+//        placeModelNode()
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -131,12 +143,26 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //        return super.onCreateOptionsMenu(menu)
 //    }
 
-    fun placeModelNode() {
-        Log.d(TAG, "placeModelNode()")
-        modelNode?.anchor()
-        placeModelButton.isVisible = false
-        sceneView.planeRenderer.isVisible = false
+    fun changeAnimation() {
+        val count = modelNode?.animator?.animationCount!!
+        animationIdx = (0..count).random()
+        modelNode?.playAnimation(animationIdx)
     }
+
+    fun stopAnimtion() {
+        modelNode?.stopAnimation(animationIdx)
+    }
+
+    fun resumeAnimation() {
+        modelNode?.playAnimation(animationIdx)
+    }
+
+//    fun placeModelNode() {
+//        Log.d(TAG, "placeModelNode()")
+//        modelNode?.anchor()
+//        placeModelButton.isVisible = false
+//        sceneView.planeRenderer.isVisible = false
+//    }
 
     fun newModelNode() {
 //        isLoading = true
@@ -144,30 +170,41 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
             sceneView.removeChild(it)
             it.destroy()
         }
-        val model = models[modelIndex]
+        val model = models
 //        modelIndex = (modelIndex + 1) % models.size
-        modelNode = ArModelNode(model.placementMode).apply {
-            applyPoseRotation = model.applyPoseRotation
-            loadModelGlbAsync(
-                glbFileLocation = model.fileLocation,
-                autoAnimate = true,
-                scaleToUnits = model.scaleUnits,
-                // Place the model origin at the bottom center
-//                centerOrigin =
-            ) {
-                sceneView.planeRenderer.isVisible = true
-            }
-            position = Position(x = 0.0f, y = 0.0f, z = -4.0f)
-            rotation = Rotation(y = 0f)
+        modelNode = ArModelNode(
+            placementMode = PlacementMode.INSTANT,
+            instantAnchor = true,
+            followHitPosition = false,
 
-            onAnchorChanged = { anchor ->
-                placeModelButton.isGone = anchor != null
+        ).apply {
+//            applyPoseRotation = model.applyPoseRotation
+            loadModelGlbAsync(
+                glbFileLocation = GLBfile ?: model.fileLocation,
+                autoAnimate = false,
+                scaleToUnits = 0.2f,
+                centerOrigin = Position(x = 0f, y = 0.0f, z = 0f)
+                // Place the model origin at the bottom center
+            ) {
+                isPositionEditable = false
+//                sceneView.planeRenderer.isVisible = false
+//                followHitPosition = false
+//                instantAnchor = true
+//                isScaleEditable = false
+//                isRotationEditable = true
+//            playAnimation(0, true)
             }
-            onHitResult = { node, _ ->
-                placeModelButton.isGone = !node.isTracking
-            }
-            instantAnchor = true
+//            position = Position(x = 0.0f, y = 0f, z = 10f)
+//            rotation = Rotation(x=0.0f, y = 0f, z=0.0f)
+
+//            onAnchorChanged = { anchor ->
+//                placeModelButton.isGone = anchor != null
+//            }
+//            onHitResult = { node, _ ->
+//                placeModelButton.isGone = !node.isTracking
+//            }
         }
+        modelNode?.anchor()
 
 
         sceneView.addChild(modelNode!!)

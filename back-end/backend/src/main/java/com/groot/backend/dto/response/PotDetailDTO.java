@@ -13,6 +13,4 @@ public class PotDetailDTO {
     private PotListDTO pot;
 
     private PlantDetailDTO plant;
-
-    private CharacterDTO character;
 }
