@@ -106,23 +106,7 @@ public class PotServiceImpl implements PotService{
         List<PotListDTO> ret = new ArrayList<>(list.size());
 
         list.forEach(potEntity -> {
-            String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
-            ret.add(PotListDTO.builder()
-                            .potId(potEntity.getId())
-                            .plantId(potEntity.getPlantId())
-                            .potName(potEntity.getName())
-                            .imgPath(potEntity.getImgPath())
-                            .plantKrName(potEntity.getPlantKrName())
-                            .dates(calcPeriod(potEntity.getCreatedDate()))
-                            .createdTime(potEntity.getCreatedDate())
-                            .waterDate(potEntity.getWaterDate())    // calc
-                            .nutrientsDate(potEntity.getNutrientsDate())    // calc
-                            .pruningDate(potEntity.getPruningDate())    // calc
-                            .survival(potEntity.getSurvival())
-                            .level(expToLevel(potEntity.getExperience()))   // level?
-                            .characterPNGPath(urls[0])
-                            .characterGLBPath(urls[1])
-                            .build());
+            ret.add(buildListDTO(potEntity));
         });
 
         return ret;
@@ -135,24 +119,7 @@ public class PotServiceImpl implements PotService{
         PotEntity potEntity = potRepository.findById(potId).get();
         if (potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
 
-        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
-
-        PotListDTO potListDTO = PotListDTO.builder()
-                .potId(potEntity.getId())
-                .plantId(potEntity.getPlantId())
-                .potName(potEntity.getName())
-                .imgPath(potEntity.getImgPath())
-                .plantKrName(potEntity.getPlantKrName())
-                .dates(calcPeriod(potEntity.getCreatedDate()))
-                .createdTime(potEntity.getCreatedDate())
-                .waterDate(potEntity.getWaterDate())    // calc
-                .nutrientsDate(potEntity.getNutrientsDate())    // calc
-                .pruningDate(potEntity.getPruningDate())    // calc
-                .survival(potEntity.getSurvival())
-                .level(expToLevel(potEntity.getExperience()))   // level?
-                .characterPNGPath(urls[0])
-                .characterGLBPath(urls[1])
-                .build();
+        PotListDTO potListDTO = buildListDTO(potEntity);
 
         PlantEntity plantEntity = potEntity.getPlantEntity();
 
@@ -268,5 +235,30 @@ public class PotServiceImpl implements PotService{
             characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), expToLevel(exp));
         }
         return new String[] {characterEntity.getPngPath(), characterEntity.getGlbPath()};
+    }
+
+    /**
+     * Build PotListDTO by PotEntity
+     * @param potEntity
+     * @return PotListDTO
+     */
+    public PotListDTO buildListDTO(PotEntity potEntity) {
+        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
+        return PotListDTO.builder()
+                .potId(potEntity.getId())
+                .plantId(potEntity.getPlantId())
+                .potName(potEntity.getName())
+                .imgPath(potEntity.getImgPath())
+                .plantKrName(potEntity.getPlantKrName())
+                .dates(calcPeriod(potEntity.getCreatedDate()))
+                .createdTime(potEntity.getCreatedDate())
+                .waterDate(potEntity.getWaterDate())    // calc
+                .nutrientsDate(potEntity.getNutrientsDate())    // calc
+                .pruningDate(potEntity.getPruningDate())    // calc
+                .survival(potEntity.getSurvival())
+                .level(expToLevel(potEntity.getExperience()))   // level?
+                .characterPNGPath(urls[0])
+                .characterGLBPath(urls[1])
+                .build();
     }
 }
