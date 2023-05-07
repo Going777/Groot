@@ -1,22 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".view.community.CommunityPostFragment">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="40dp"
+        android:layout_weight="0">
 
         <androidx.cardview.widget.CardView
             android:layout_width="40dp"
@@ -30,8 +25,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/main"
-                android:src="@drawable/ic_back"/>
+                android:src="@drawable/ic_back" />
         </androidx.cardview.widget.CardView>
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="40dp"
@@ -45,6 +41,7 @@
                 app:tint="@color/grey" />
 
             <TextView
+                android:id="@+id/detailCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="자유"
@@ -54,229 +51,301 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
-
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/carousel_pager"
-            android:layout_width="wrap_content"
-            android:layout_height="230dp"
-            android:layout_marginTop="20dp"/>
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/carousel_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="10dp"
-            android:layout_marginBottom="5dp" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="제목이다ㅏㅏㅏㅏ"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <!-- ImageButton 정의 -->
-
-            <!-- Spinner 정의 -->
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:prompt="@null"
-                android:spinnerMode="dropdown"
-                android:paddingHorizontal="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="MissingConstraints" />
-
-            <ImageButton
-                android:id="@+id/spinnerButton"
-                android:layout_width="70dp"
-                android:layout_height="30dp"
-
-                android:layout_marginEnd="4dp"
-                android:background="@color/white"
-                android:paddingLeft="50dp"
-                android:src="@drawable/ic_vertical_dots"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                tools:ignore="MissingConstraints" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_plant" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="닉네임임ㅇ밍임"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:src="@drawable/ic_eye" />
-
-                <TextView
-                    android:layout_width="24dp"
-                    android:layout_height="match_parent"
-                    android:text="10"
-                    android:textColor="@color/grey"
-                    android:textSize="10sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="2023.04.28 09:23"
-                    android:textColor="@color/grey"
-                    android:textSize="10sp" />
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="3dp">
-
-            <ImageButton
-                android:id="@+id/bookmarkLine"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="#00000000"
-                android:src="@drawable/ic_bookmark"
-                android:layout_weight="0"
-                tools:ignore="MissingConstraints" />
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/boomarkFill"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:background="#00000000"-->
-<!--                android:src="@drawable/ic_bookmark_fill"-->
-<!--                android:layout_weight="0"-->
-<!--                tools:ignore="MissingConstraints" />-->
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <Button
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:padding="0dp"
-            android:text="채팅"
-            android:textSize="14sp"
-            android:layout_weight="0"/>
-
-
-    </LinearLayout>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="800dp"
-            android:text="@string/lorem_ipsum"
-            android:textColor="@color/grey"
-            android:textSize="14sp" />
-
-        <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/main"
-            android:layout_margin="2dp"
-            app:cardCornerRadius="8dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="# 산세베리아"
-                android:textSize="12sp"
-                android:paddingHorizontal="2dp"
-                android:layout_margin="3dp"
-                android:background="@color/main"
-                android:textColor="@color/white"/>
-
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/main"
-            android:layout_margin="2dp"
-            app:cardCornerRadius="8dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="# 다육이"
-                android:textSize="12sp"
-                android:paddingHorizontal="2dp"
-                android:layout_margin="3dp"
-                android:background="@color/main"
-                android:textColor="@color/white"/>
-        </androidx.cardview.widget.CardView>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="2dp"
-        android:background="@color/grey"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="댓글 (2)"
-        android:textStyle="bold"
-        android:layout_margin="3dp"/>
-
-    <ListView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/background"/>
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
-    </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/carousel_pager"
+                    android:layout_width="wrap_content"
+                    android:layout_height="230dp"
+                    android:layout_marginTop="20dp" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/carousel_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="10dp"
+                    android:layout_marginBottom="5dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/detailTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="제목이다ㅏㅏㅏㅏ"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <!-- Spinner 정의 -->
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:paddingHorizontal="5dp"
+                        android:prompt="@null"
+                        android:spinnerMode="dropdown"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="MissingConstraints" />
+
+                    <ImageButton
+                        android:id="@+id/spinnerButton"
+                        android:layout_width="70dp"
+                        android:layout_height="30dp"
+
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/white"
+                        android:paddingLeft="50dp"
+                        android:src="@drawable/ic_vertical_dots"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        tools:ignore="MissingConstraints" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/detailProfileImg"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/sample_plant_image" />
+
+                        <TextView
+                            android:id="@+id/detailNickName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="닉네임임ㅇ밍임"
+                            android:textSize="14sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="15dp"
+                            android:layout_height="15dp"
+                            android:src="@drawable/ic_eye" />
+
+                        <TextView
+                            android:id="@+id/detailViews"
+                            android:layout_width="24dp"
+                            android:layout_height="match_parent"
+                            android:text="10"
+                            android:textColor="@color/grey"
+                            android:textSize="10sp" />
+
+                        <TextView
+                            android:id="@+id/detailCreateTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="2023.04.28 09:23"
+                            android:textColor="@color/grey"
+                            android:textSize="10sp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="3dp">
+
+                    <ImageButton
+                        android:id="@+id/bookmarkLine"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:background="#00000000"
+                        android:src="@drawable/ic_bookmark"
+                        tools:ignore="MissingConstraints" />
+
+                    <!--            <ImageButton-->
+                    <!--                android:id="@+id/boomarkFill"-->
+                    <!--                android:layout_width="wrap_content"-->
+                    <!--                android:layout_height="match_parent"-->
+                    <!--                android:background="#00000000"-->
+                    <!--                android:src="@drawable/ic_bookmark_fill"-->
+                    <!--                android:layout_weight="0"-->
+                    <!--                tools:ignore="MissingConstraints" />-->
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:padding="0dp"
+                    android:text="채팅"
+                    android:textSize="14sp" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/detailContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:backgroundTint="@color/main"
+                    app:cardCornerRadius="8dp">
+
+                    <TextView
+                        android:id="@+id/detailTag"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:background="@color/main"
+                        android:paddingHorizontal="2dp"
+                        android:text="# 산세베리아"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="2dp"
+                    android:backgroundTint="@color/main"
+                    app:cardCornerRadius="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="3dp"
+                        android:background="@color/main"
+                        android:paddingHorizontal="2dp"
+                        android:text="# 다육이"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/underline"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_margin="2dp"
+                android:background="@color/grey" />
+
+            <TextView
+                android:id="@+id/detailCommentCnt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="댓글 (2)"
+                android:textStyle="bold" />
+
+            <fragment
+                android:id="@+id/communityCommentFragment"
+                android:name="com.chocobi.groot.view.community.CommunityCommentFragment"
+                android:layout_width="match_parent"
+                android:layout_height="202dp" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="5dp"
+        android:backgroundTint="@color/background"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:layout_weight="0"
+                android:src="@drawable/sample_plant_image" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                android:backgroundTint="@color/white"
+                app:cardCornerRadius="10dp">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/white"
+                    android:hint="댓글을 남겨보세요"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="0dp" />
+            </androidx.cardview.widget.CardView>
+
+            <Button
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp"
+                android:layout_weight="0"
+                android:background="@drawable/ic_plant" />
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
+

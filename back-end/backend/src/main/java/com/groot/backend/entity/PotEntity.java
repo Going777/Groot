@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -41,10 +42,7 @@ public class PotEntity extends BaseEntity{
 
     @Column(name = "sale_date", nullable = false)
     @CreationTimestamp
-    private Date saleDate;
-
-    @Column(name = "character_id")
-    private Long characterId;
+    private LocalDateTime saleDate;
 
     @Column
     private Double temperature;
@@ -56,19 +54,25 @@ public class PotEntity extends BaseEntity{
     private Double humidity;
 
     @Column(name = "water_date")
-    private Date waterDate;
+    @CreationTimestamp
+    private LocalDateTime waterDate;
 
     @Column(name = "pruning_date")
-    private Date pruningDate;
+    @CreationTimestamp
+    private LocalDateTime pruningDate;
 
     @Column(name = "nutrients_date")
-    private Date nutrientsDate;
+    @CreationTimestamp
+    private LocalDateTime nutrientsDate;
 
     @Column(nullable = true, columnDefinition = "TINYINT(1) DEFAULT FALSE")
     private Boolean share;
 
     @Column(nullable = true, columnDefinition = "TINYINT(1) DEFAULT TRUE")
     private Boolean survival;
+
+    @Column(name = "experience", columnDefinition = "INT DEFAULT 0")
+    private Integer experience;
 
     @Column(name = "plant_kr_name", nullable = false)
     private String plantKrName;
@@ -86,4 +90,17 @@ public class PotEntity extends BaseEntity{
     @JoinColumn(name = "plant_id")
     @JsonBackReference
     private PlantEntity plantEntity;
+
+    public void modify(String imgPath, String name, double temperature, int illuminance, double humidity) {
+        this.imgPath = imgPath;
+        this.name = name == null? this.name : name;
+        this.temperature = temperature == 0? this.temperature : temperature;
+        this.illuminance = illuminance == 0? this.illuminance : illuminance;
+        this.humidity = humidity == 0? this.humidity : humidity;
+    }
+
+    public boolean toggleSurvival() {
+        this.survival = !this.survival;
+        return this.survival;
+    }
 }

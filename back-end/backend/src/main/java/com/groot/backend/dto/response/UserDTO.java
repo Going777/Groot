@@ -12,7 +12,7 @@ import javax.persistence.Column;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
-    private Long id;
+    private Long userPK;
     private String userId;
     private String nickName;
     private String profile;

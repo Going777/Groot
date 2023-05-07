@@ -11,10 +11,6 @@ import retrofit2.http.Query
 interface SignupService {
 
     //    @FormUrlEncoded
-    @Headers(
-        "accept: application/json",
-        "content-type: application/json"
-    )
     @POST("/api/users")
     fun requestSignup(
 

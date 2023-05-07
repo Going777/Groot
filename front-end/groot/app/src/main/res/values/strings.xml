@@ -5,7 +5,10 @@
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>
     <string name="sync_header">Sync</string>
-
+    <!--calendar-->
+    <string name="example_7_title">Example 7</string>
+    <string name="example_7_subtitle">Week calendar with single selection, paged scroll and visible item observation.</string>
+    <string name="activity_title_view">Calendar View Sample</string>
     <!-- Messages Preferences -->
     <string name="signature_title">Your signature</string>
     <string name="reply_title">Default reply action</string>
@@ -19,8 +22,8 @@
 
     <!--    mlkit-->
     <!--    <string name="app_name" description="Application name [CHAR_LIMIT=NONE]">ARCore ML</string>-->
-    <string name="scan_busy" description="Button text to indicate that no scan can be started because scanning is already in progress [CHAR_LIMIT=NONE]">Scanning…</string>
-    <string name="scan_available" description="Button text to start scanning the current camera image [CHAR_LIMIT=NONE]">Scan</string>
+    <string name="scan_busy" description="Button text to indicate that no scan can be started because scanning is already in progress [CHAR_LIMIT=NONE]">찾는 중…</string>
+    <string name="scan_available" description="Button text to start scanning the current camera image [CHAR_LIMIT=NONE]">똑똑!</string>
     <string name="clear" description="Button text to clear detected objects from the camera view [CHAR_LIMIT=NONE]">Clear</string>
     <string name="use_cloud_ml" description="Label text displayed on a switch to toggle the Cloud ML model [CHAR_LIMIT=NONE]">Use Cloud ML</string>
     <string name="title_activity_camera">CameraActivity</string>
@@ -66,4 +69,14 @@
         libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
+
+    <!--  식물 검색 관련  -->
+    <string name="descriptionText"></string>
+    <string name="humidityText"></string>
+    <string name="tempText"></string>
+    <string name="tipText"></string>
+    <string name="placeText"></string>
+    <string name="insectInfoText"></string>
+
+
 </resources>

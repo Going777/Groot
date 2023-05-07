@@ -7,51 +7,109 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.adapter.RecyclerViewAdapter
-import com.chocobi.groot.adapter.item.ItemBean
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
+import com.chocobi.groot.view.community.model.Articles
+import com.chocobi.groot.view.community.model.CommunityArticleListResponse
+import com.chocobi.groot.view.community.model.ArticleContent
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CommunityTab2Fragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CommunityTab2Fragment : Fragment() {
-
+    private val TAG = "CommunityTab2Fragment"
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
     private lateinit var frameLayoutProgress: FrameLayout
+    private lateinit var getData: CommunityArticleListResponse
+    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
+    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_community_tab2, container, false)
+        Log.d("CommunityTab2Fragment", "onCreateView()")
         findViews(view)
         setListeners()
         initList()
-        reload()
+//        reload()
 
+        showProgress()
+
+//                retrofit 객체 만들기
+        var retrofit = RetrofitClient.getClient()!!
+
+
+        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
+        var communityArticleCategory = "자유"
+        var communityArticlePage = 0
+        var communityArticleSize = 10
+
+        communityArticleListService.requestCommunityArticleList(
+            communityArticleCategory,
+            communityArticlePage,
+            communityArticleSize
+        ).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "성공")
+                    val checkResponse = response.body()?.articles?.content
+                    getData = response.body()!!
+                    Log.d(TAG, "$checkResponse")
+
+                    val totalElements = getData.articles.total // 전체 데이터 수
+                    val currentPage = communityArticlePage // 현재 페이지 번호
+                    val pageSize = 10 // 페이지 당 아이템 수
+                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+
+                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                        isLastPage = true
+                    }
+
+                    val list = createDummyData(0, 10)
+                    ThreadUtil.startUIThread(1000) {
+                        adapter.reload(list)
+                        hideProgress()
+                    }
+                } else {
+                    Log.d(TAG, "실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+
+        })
 
         return view
     }
 
     private fun findViews(view: View) {
+        Log.d("CommunityTab2Fragment", "findViews()")
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
     }
 
     private fun setListeners() {
+        Log.d("CommunityTab2Fragment", "setListeners()")
         swipeRefreshLayout.setOnRefreshListener {
             reload()
             swipeRefreshLayout.isRefreshing = false
@@ -59,6 +117,7 @@ class CommunityTab2Fragment : Fragment() {
     }
 
     private fun initList() {
+        Log.d("CommunityTab2Fragment", "initList()")
         adapter = RecyclerViewAdapter()
         adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
@@ -70,61 +129,171 @@ class CommunityTab2Fragment : Fragment() {
     }
 
     private fun reload() {
-        showProgress()
+        Log.d("CommunityTab2Fragment", "reload()")
+        var retrofit = RetrofitClient.getClient()!!
 
-        // get data from server
 
-        ThreadUtil.startThread {
-            Log.d("???", "reload 10 items")
-            val list = createDummyData(0, 10)
-            ThreadUtil.startUIThread(1000) {
-                adapter.reload(list)
-                hideProgress()
+        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
+        var communityArticleCategory = "자유"
+        var communityArticlePage = 0
+        var communityArticleSize = 10
 
+        communityArticleListService.requestCommunityArticleList(
+            communityArticleCategory,
+            communityArticlePage,
+            communityArticleSize
+        ).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "성공")
+                    val checkResponse = response.body()?.articles?.content
+                    getData = response.body()!!
+                    Log.d(TAG, "$checkResponse")
+
+                    val list = createDummyData(0, 10)
+                    ThreadUtil.startUIThread(1000) {
+                        adapter.reload(list)
+                        hideProgress()
+                    }
+                } else {
+                    Log.d(TAG, "실패1")
+                }
             }
-        }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+
+        })
     }
+
+
+
 
     private fun loadMore() {
+        Log.d("CommunityTab2Fragment", "loadMore()")
+        if (isLastPage) { // 마지막 페이지라면, 로딩을 멈춥니다.
+            return
+        }
+
         showProgress()
 
-        // get data from server
+        // 페이지 번호를 1 증가시킵니다.
+        communityArticlePage++
 
-        ThreadUtil.startThread {
-            Log.d("???", "reload 10 items")
+        // Retrofit을 사용하여 새로운 데이터를 받아옵니다.
+        var retrofit = RetrofitClient.getClient()!!
 
-            val list = createDummyData(adapter.itemCount, 10)
-            ThreadUtil.startUIThread(1000) {
-                adapter.loadMore(list)
-                hideProgress()
 
+        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
+        var communityArticleCategory = "자유"
+        var communityArticleSize = 10
+
+        communityArticleListService.requestCommunityArticleList(
+            communityArticleCategory,
+            communityArticlePage,
+            communityArticleSize
+        ).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d("loadmore", "성공")
+                    val checkResponse = response.body()?.articles?.content
+                    getData = response.body()!!
+                    Log.d("loadmore", "$checkResponse")
+
+                    val totalElements = getData.articles.total // 전체 데이터 수
+                    val currentPage = communityArticlePage // 현재 페이지 번호
+                    val pageSize = 10 // 페이지 당 아이템 수
+                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+
+                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                        isLastPage = true
+                    }
+
+                    val list = createDummyData(0, 10)
+
+                    ThreadUtil.startUIThread(1000) {
+                        adapter.loadMore(list)
+                        hideProgress()
+                    }
+                } else {
+                    Log.d("loadmore", "실패1")
+                }
             }
-        }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d("loadmore", "실패2")
+            }
+
+        })
     }
 
+
     private fun showProgress() {
+        Log.d("CommunityTab2Fragment", "showProgress()")
         frameLayoutProgress.visibility = View.VISIBLE
     }
 
     private fun hideProgress() {
+        Log.d("CommunityTab2Fragment", "hideProgress()")
         frameLayoutProgress.visibility = View.GONE
     }
 
-    private fun createDummyData(offset: Int, limit: Int): MutableList<ItemBean> {
+    private fun createDummyData(
+        offset: Int,
+        limit: Int
+    ): MutableList<CommunityArticleListResponse> {
+        Log.d("CommunityTab2Fragment", "createDummyData()")
+        val list: MutableList<CommunityArticleListResponse> = mutableListOf()
 
-        val list: MutableList<ItemBean> = mutableListOf()
-
-        var itemBean: ItemBean
+        // API response를 이용하여 데이터 생성
+        val contents = getData.articles.content
         for (i in offset until (offset + limit)) {
-            itemBean = ItemBean()
-            itemBean.title = "title $i"
-            itemBean.content = "content, content, content, content, content, content, content, content, content, content, content, content"
-            itemBean.imageUrl = "https://cdn.wallpapersafari.com/15/87/kp4wAJ.jpg"
-            list.add(itemBean)
+            if (i >= contents.size) {
+                break
+            }
+            val article = contents[i]
+            // 이미지가 있을 때는 visibility를 visible로 설정하고, 없을 때는 gone으로 설정합니다.
+            val visibility = if (article.img.isNullOrEmpty()) View.GONE else View.VISIBLE
+
+            val communityArticleListResponse = CommunityArticleListResponse(
+                articles = Articles(
+                    content = listOf(
+                        ArticleContent(
+                            articleId = article.articleId,
+                            category = article.category,
+                            userPK = article.userPK,
+                            nickName = article.nickName,
+                            title = article.title,
+                            tags = article.tags,
+                            views = article.views,
+                            commentCnt = article.commentCnt,
+                            bookmark = article.bookmark,
+                            shareRegion = article.shareRegion,
+                            shareStatus = article.shareStatus,
+                            createTime = article.createTime,
+                            updateTime = article.updateTime,
+                            img = article.img
+                        )
+                    ),
+                    total = getData.articles.total,
+                    pageable = getData.articles.pageable
+                ),
+                result = getData.result,
+                msg = getData.msg
+            )
+            list.add(communityArticleListResponse)
         }
-
-
-
         return list
     }
+
+
 }

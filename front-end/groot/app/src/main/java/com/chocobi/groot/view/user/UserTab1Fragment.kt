@@ -5,12 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.view.search.DictRVAdapter
+import com.chocobi.groot.view.user.adapter.UserTab1RVAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -56,7 +55,7 @@ class UserTab1Fragment : Fragment() {
 
         rvAdapter.itemClick = object : UserTab1RVAdapter.ItemClick {
             override fun onClick(view: View, position: Int) {
-                mActivity.changeFragment("plant_detail")
+                mActivity.changeFragment("pot_detail")
             }
         }
 

@@ -1,13 +1,28 @@
 package com.chocobi.groot.view.user
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import com.chocobi.groot.view.intro.IntroActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.BasicResponse
+import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.user.model.PasswordRequest
+import com.chocobi.groot.view.user.model.UserService
+
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,6 +47,7 @@ class SettingFragment : Fragment() {
         }
     }
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -50,26 +66,107 @@ class SettingFragment : Fragment() {
         editPasswordText.setOnClickListener {
             bottomSheet.show(mActivity.supportFragmentManager, bottomSheet.tag)
         }
+
+//        로그아웃
+        val logoutText = rootView.findViewById<TextView>(R.id.logoutText)
+        logoutText.setOnClickListener {
+            logout()
+        }
+
+//        회원탈퇴
+        val deleteUserText = rootView.findViewById<TextView>(R.id.deleteUserText)
+        deleteUserText.setOnClickListener {
+            deleteUser()
+        }
+
         return rootView
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SettingFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SettingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
+    private fun logout() {
+//        var retrofit = Retrofit.Builder()
+//            .baseUrl(GlobalVariables.getBaseUrl())
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+        
+//        retrofit 객체 만들기
+        var retrofit = RetrofitClient.getClient()!!
+
+//        service 객체 만들기
+        var userService = retrofit.create(UserService::class.java)
+
+//        요청 보내기
+        val accessToken = GlobalVariables.prefs.getString("access_token", "")
+        if (accessToken != "") {
+            userService.logout().enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+//                    var m = response.code()
+//                    var b = response.errorBody()?.string()
+//
+//                    Log.d("SettingFragment", m.toString())
+//                    Log.d("SettingFragment", "$b")
+                    Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
+//                    토큰 초기화
+                    initializeAccessToken()
+//                    인트로 페이지로 이동
+                    goToIntro()
                 }
-            }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                    Toast.makeText(requireContext(), "로그아웃 실패", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(requireContext(), "액세스 토큰 없음", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun deleteUser() {
+        //        retrofit 객체 만들기
+        var retrofit = RetrofitClient.getClient()!!
+
+//        service 객체 만들기
+        var userService = retrofit.create(UserService::class.java)
+        
+//        요청 보내기
+        val accessToken = GlobalVariables.prefs.getString("access_token", "")
+        if (accessToken != "") {
+            userService.deleteUser(accessToken!!).enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+
+                    Toast.makeText(requireContext(), "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
+//                    토큰 초기화
+                    initializeAccessToken()
+//                    인트로 페이지로 이동
+                    goToIntro()
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                    Toast.makeText(requireContext(), "회원탈퇴 실패", Toast.LENGTH_SHORT).show()
+                }
+            })
+        } else {
+            Toast.makeText(requireContext(), "액세스 토큰 없음", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+//    토큰 초기화
+    private fun initializeAccessToken() {
+        val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
+        val editor = shared.edit()
+        editor.putString("access_token", "")
+        editor.commit()
+    }
+
+//    인트로 페이지 이동
+    private fun goToIntro() {
+        val intent = Intent(requireContext(), IntroActivity::class.java)
+        startActivity(intent)
     }
 }

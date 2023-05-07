@@ -92,6 +92,9 @@ public class PlantEntity extends BaseEntity{
     @Column(nullable = true, length = 2000)
     private String description;
 
+    @Column(length = 100)
+    private String img;
+
     @OneToMany(mappedBy = "plantEntity", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<PotEntity> potEntities;

@@ -3,56 +3,50 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- 카메라 권한 -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 갤러리 권한 -->
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"
-        tools:ignore="ScopedStorage" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" />
-
+        android:required="true" /> <!-- 인터넷 권한 -->
     <uses-permission android:name="android.permission.INTERNET" /> <!-- ar -->
     <uses-feature
         android:name="android.hardware.camera.ar"
         android:required="true" />
     <uses-feature
         android:glEsVersion="0x00020000"
-        android:required="true" /> <!-- Location 관련 -->
+        android:required="true" /> <!-- Location 관련 권한 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 센서 관련 권한 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
+        android:name=".data.GlobalVariables"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_app_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_app_logo_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Groot"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".view.community.CommunityDetailActivity"
+            android:name=".view.sensor.SensorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.addpot.Pot1Activity"
+            android:exported="false" />
+        <activity
+            android:name=".view.addpot.Pot2Activity"
             android:exported="false" />
         <activity
             android:name=".CharacterActivity"
             android:exported="false" />
-        <activity
-            android:name=".view.community.BaseActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.community.CommunityPostGalleryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".CameraActivity"
-            android:exported="false"
-            android:label="@string/title_activity_camera"
-            android:theme="@style/Theme.Groot" />
         <activity
             android:name=".view.search.SearchCameraActivity"
             android:exported="false" />
@@ -69,7 +63,7 @@
             android:name=".view.login.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".IntroActivity"
+            android:name=".view.intro.IntroActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

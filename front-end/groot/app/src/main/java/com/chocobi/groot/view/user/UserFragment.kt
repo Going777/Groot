@@ -7,16 +7,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.CommunityTab1Fragment
 import com.chocobi.groot.view.community.CommunityTab2Fragment
 import com.chocobi.groot.view.community.CommunityTab3Fragment
 import com.chocobi.groot.view.community.CommunityTab4Fragment
+import com.chocobi.groot.view.community.model.CommunityArticleListResponse
+import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import de.hdodenhof.circleimageview.CircleImageView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -31,8 +42,7 @@ private const val ARG_PARAM2 = "param2"
 class UserFragment : Fragment() {
 
 
-
-    // TODO: Rename and change types of parameters
+    private val TAG = "UserFragment"
     private var param1: String? = null
     private var param2: String? = null
 
@@ -44,8 +54,6 @@ class UserFragment : Fragment() {
         }
 
 
-
-
     }
 
     override fun onCreateView(
@@ -54,6 +62,27 @@ class UserFragment : Fragment() {
     ): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_user, container, false)
+
+        //        초기 화면 설정
+        var nicknameText = rootView.findViewById<TextView>(R.id.nickname)
+        nicknameText.text = UserData.getNickName()
+
+        var registerDateText = rootView.findViewById<TextView>(R.id.registerDate)
+        registerDateText.text = UserData.getRegisterDate().toString()
+
+        var totalArticleText = rootView.findViewById<TextView>(R.id.totalArticle)
+        getUserArticle(totalArticleText)
+
+        var totalBookmarkText = rootView.findViewById<TextView>(R.id.totalBookmark)
+        getUserBookmark(totalBookmarkText)
+
+        var profileImg = rootView.findViewById<CircleImageView>(R.id.profileImg)
+        var userProfile = UserData.getProfile()
+        if (userProfile != "" && userProfile != null) {
+            GlobalVariables.changeImgView(profileImg, userProfile, requireContext())
+        } else {
+            profileImg.setImageResource(R.drawable.basic_profile)
+        }
 
 //        Fragment 이동 조작
         val mActivity = activity as MainActivity
@@ -118,4 +147,64 @@ class UserFragment : Fragment() {
                 }
             }
     }
+
+
+    private fun getUserArticle(totalArticleText: TextView) {
+
+        var retrofit = RetrofitClient.getClient()!!
+        var userService = retrofit.create(UserService::class.java)
+
+        userService.requestUserArticleList(0, 1).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "성공")
+
+                    val checkTotal = response.body()?.articles?.total
+                    totalArticleText.text = checkTotal.toString()
+                    Log.d(TAG, "$checkTotal")
+
+                } else {
+                    Log.d(TAG, "실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+        })
+    }
+
+    private fun getUserBookmark(totalBookmarkText: TextView) {
+
+        var retrofit = RetrofitClient.getClient()!!
+        var userService = retrofit.create(UserService::class.java)
+
+        userService.requestUserBookmarkList(0, 1).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "성공")
+
+                    val checkTotal = response.body()?.articles?.total
+                    totalBookmarkText.text = checkTotal.toString()
+                    Log.d(TAG, "$checkTotal")
+
+                } else {
+                    Log.d(TAG, "실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+        })
+    }
+
 }
