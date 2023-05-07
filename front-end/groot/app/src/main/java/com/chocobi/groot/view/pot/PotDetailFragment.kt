@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.google.android.gms.common.internal.ImagesContract.URL
 import io.github.sceneview.SceneView
@@ -55,18 +56,33 @@ class PotDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var rootView = inflater.inflate(R.layout.fragment_pot_detail, container, false)
+        val mActivity = activity as MainActivity
+        val potId = arguments?.getInt("potId")
+        val potName = arguments?.getString("potName").toString()
+        val potPlant = arguments?.getString("potPlant").toString()
+        Log.d(TAG, potId.toString())
+        val potNameText = rootView.findViewById<TextView>(R.id.potName)
+        potNameText.text = potName
+
+        val potPlantText = rootView.findViewById<TextView>(R.id.potPlant)
+        potPlantText.text = potPlant
 
 
+//        다이어리 버튼 클릭시
+        val potPostDiaryBtn = rootView.findViewById<ImageButton>(R.id.potPostDiaryBtn)
+        potPostDiaryBtn.setOnClickListener {
+            if (potId is Int) {
+                mActivity.setPotId(potId)
+            }
+            mActivity.changeFragment("pot_diary_create")
+        }
         // Inflate the layout for this fragment
-        return rootView  }
+        return rootView
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val potId = arguments?.getInt("potId")
-        Log.d(TAG, potId.toString())
-        val potName = view.findViewById<TextView>(R.id.potName)
-        potName.text = potId.toString() + "번 화분"
 
 
         val characterSceneView = view.findViewById<SceneView>(R.id.characterSceneView)

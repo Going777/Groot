@@ -44,9 +44,6 @@ public class PotEntity extends BaseEntity{
     @CreationTimestamp
     private LocalDateTime saleDate;
 
-    @Column(name = "character_id",insertable = false, updatable = false)
-    private Long characterId;
-
     @Column
     private Double temperature;
 
@@ -102,8 +99,8 @@ public class PotEntity extends BaseEntity{
         this.humidity = humidity == 0? this.humidity : humidity;
     }
 
-    @ManyToOne(targetEntity = CharacterEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "character_id")
-    @JsonBackReference
-    private CharacterEntity characterEntity;
+    public boolean toggleSurvival() {
+        this.survival = !this.survival;
+        return this.survival;
+    }
 }
