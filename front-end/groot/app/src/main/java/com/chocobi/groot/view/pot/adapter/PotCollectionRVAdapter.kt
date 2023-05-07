@@ -1,19 +1,27 @@
 package com.chocobi.groot.view.pot.adapter
 
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.view.pot.model.Pot
+import java.lang.ref.WeakReference
 
 
-class PotCollectionRVAdapter(val items: MutableList<String>) :
+class PotCollectionRVAdapter(val items: List<Pot>) :
     RecyclerView.Adapter<PotCollectionRVAdapter.ViewHolder>() {
-    private val TAG = "IntroActivity"
+    private val TAG = "PotCollectionRVAdapter"
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -42,6 +50,8 @@ class PotCollectionRVAdapter(val items: MutableList<String>) :
     }
 
 
+
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindItems(items[position])
 
@@ -68,10 +78,50 @@ class PotCollectionRVAdapter(val items: MutableList<String>) :
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private var view: WeakReference<View> = WeakReference(itemView)
 
-        fun bindItems(item: String) {
-            val rv_text = itemView.findViewById<TextView>(R.id.potName)
-            rv_text.text = item
+        fun bindItems(item: Pot) {
+            val potNameText = itemView.findViewById<TextView>(R.id.potName)
+            val characterImg = itemView.findViewById<ImageView>(R.id.characterImage)
+            val potImg = itemView.findViewById<ImageView>(R.id.potImage)
+            val potMeetDayText = itemView.findViewById<TextView>(R.id.potMeetDay)
+            potNameText.text = item.potName
+            potMeetDayText.text = item.dates.toString()
+
+            characterImg.post {
+                view.get()?.let {
+                    ThreadUtil.startThread {
+                        val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                            .asBitmap()
+                            .load(item.characterPNGPath)
+                            .submit(characterImg.width, characterImg.height)
+
+                        val bitmap = futureTarget.get()
+
+                        ThreadUtil.startUIThread(0) {
+                            characterImg.setImageBitmap(bitmap)
+                        }
+                    }
+                }
+            }
+
+            potImg.post {
+                view.get()?.let {
+                    ThreadUtil.startThread {
+                        val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                            .asBitmap()
+                            .load(item.imgPath)
+                            .submit(potImg.width, potImg.height)
+
+                        val bitmap = futureTarget.get()
+
+                        ThreadUtil.startUIThread(0) {
+                            potImg.setImageBitmap(bitmap)
+                        }
+                    }
+                }
+            }
+
         }
     }
 

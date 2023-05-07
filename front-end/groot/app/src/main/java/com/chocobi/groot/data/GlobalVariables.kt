@@ -146,12 +146,12 @@ class GlobalVariables : Application() {
             imm.hideSoftInputFromWindow(activity.window.decorView.applicationWindowToken, 0)
         }
 
-        fun changeImgView(imgView: ImageView, userProfile: String, context: Context) {
+        fun changeImgView(imgView: ImageView, imgUrl: String, context: Context) {
             imgView.post {
                 ThreadUtil.startThread {
                     val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
                         .asBitmap()
-                        .load(userProfile)
+                        .load(imgUrl)
                         .submit(imgView.width, imgView.height)
 
                     val bitmap = futureTarget.get()

@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         potName = name
     }
 
-    fun setPlant(plant:String) {
+    fun setPotPlant(plant:String) {
         potPlant = plant
     }
 
