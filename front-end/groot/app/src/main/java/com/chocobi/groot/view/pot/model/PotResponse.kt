@@ -6,6 +6,11 @@ data class PotResponse(
     val plant: Plant
 )
 
+data class PotListResponse(
+    val msg: String,
+    val pots: List<Pot>,
+)
+
 data class Pot(
     val potId: Int,
     val plantId: Int,

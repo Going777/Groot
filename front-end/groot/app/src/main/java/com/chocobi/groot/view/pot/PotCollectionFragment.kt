@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.pot
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -11,33 +12,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
+import com.chocobi.groot.view.pot.model.Pot
+import com.chocobi.groot.view.pot.model.PotListResponse
+import com.chocobi.groot.view.pot.model.PotService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PotCollectionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PotCollectionFragment : Fragment() {
     private val TAG = "PotCollectionFragment"
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var potCollectionRv: RecyclerView
+    private var potRvAdapter : PotCollectionRVAdapter? = null
+    private var potList: List<Pot>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
-
-
     }
 
     override fun onCreateView(
@@ -46,32 +42,13 @@ class PotCollectionFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_pot_collection, container, false)
-        val potItems = mutableListOf<String>()
         val mactivity = activity as MainActivity
+        potCollectionRv =
+            rootView.findViewById<RecyclerView>(R.id.pot_collectioin_recycler_view)
 
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
+        getPotList()
 
-        Log.d(TAG, "onCreateView(), $potItems")
-
-        val potCollectionRv = rootView.findViewById<RecyclerView>(R.id.pot_collectioin_recycler_view)
-
-        val potRvAdapter = PotCollectionRVAdapter(potItems)
-        potCollectionRv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        potCollectionRv.adapter = potRvAdapter
-
-        potRvAdapter.setItemClickListener(object: PotCollectionRVAdapter.ItemClickListener{
+        potRvAdapter?.setItemClickListener(object : PotCollectionRVAdapter.ItemClickListener {
             override fun onPostBtnClick(view: View, position: Int) {
                 mactivity.changeFragment("pot_diary_create")
             }
@@ -89,4 +66,36 @@ class PotCollectionFragment : Fragment() {
         return rootView
     }
 
+    fun getPotList() {
+        var retrofit = RetrofitClient.getClient()!!
+        var potService = retrofit.create(PotService::class.java)
+        potService.getPotList().enqueue(object :
+            Callback<PotListResponse> {
+            override fun onResponse(
+                call: Call<PotListResponse>,
+                response: Response<PotListResponse>
+            ) {
+                val body = response.body()
+                if (body != null && response.code() == 200) {
+                    Log.d(TAG, "$body")
+                    Log.d(TAG, "body: $body")
+                    potList = body.pots
+                    setRecyclerView(potList!!)
+                } else {
+                    Log.d(TAG, "실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<PotListResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+        })
+    }
+
+    fun setRecyclerView(potList:List<Pot>) {
+        potRvAdapter = PotCollectionRVAdapter(potList)
+        potCollectionRv.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        potCollectionRv.adapter = potRvAdapter
+    }
 }

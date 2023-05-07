@@ -9,4 +9,8 @@ interface PotService {
     fun getPotDetail(
         @Path("potId") potId:Int
     ): Call<PotResponse>
+
+    @GET("/api/pots")
+    fun getPotList(
+    ): Call<PotListResponse>
 }

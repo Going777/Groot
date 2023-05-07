@@ -8,12 +8,23 @@
 
     <ImageView
         android:id="@+id/characterImage"
-        android:layout_width="105dp"
-        android:layout_height="105dp"
-        android:src="@drawable/sample_character"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        android:src="@drawable/char_sample"
         android:translationZ="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:layout_width="61dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="-5dp"
+        android:paddingHorizontal="5dp"
+        android:src="@drawable/char_shadow"
+        android:translationZ="1dp"
+        app:layout_constraintEnd_toEndOf="@+id/characterImage"
+        app:layout_constraintStart_toStartOf="@+id/characterImage"
+        app:layout_constraintTop_toBottomOf="@+id/characterImage" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="195dp"
@@ -35,11 +46,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/pot_image"
+                android:id="@+id/potImage"
                 android:layout_width="47dp"
                 android:layout_height="47dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/sample_plant_image"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -65,15 +75,34 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/potMeetDay"
+            android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:text="만난지 249일"
+            android:text="만난지 "
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pot_info_section" />
+
+        <TextView
+            android:id="@+id/potMeetDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/text1"
+            app:layout_constraintStart_toEndOf="@+id/text1"
+            app:layout_constraintTop_toTopOf="@+id/text1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="일"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/text1"
+            app:layout_constraintStart_toEndOf="@+id/potMeetDay"
+            app:layout_constraintTop_toTopOf="@+id/text1" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,9 +118,8 @@
                 android:layout_height="42dp"
                 android:background="@drawable/radius10"
                 android:backgroundTint="@color/button_sub"
-                app:tint="@color/button_main"
                 android:src="@drawable/ic_post"
-                 />
+                app:tint="@color/button_main" />
 
             <ImageButton
                 android:id="@+id/potScanBtn"
@@ -100,8 +128,8 @@
                 android:layout_marginLeft="12dp"
                 android:background="@drawable/radius10"
                 android:backgroundTint="@color/button_sub"
-                app:tint="@color/button_main"
-                android:src="@drawable/ic_scan"/>
+                android:src="@drawable/ic_scan"
+                app:tint="@color/button_main" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/potDetailBtn"
@@ -113,7 +141,7 @@
                 android:gravity="center"
                 android:text="DETAIL"
                 android:textColor="#fff"
-                android:textSize="14sp"/>
+                android:textSize="14sp" />
 
         </LinearLayout>
 
