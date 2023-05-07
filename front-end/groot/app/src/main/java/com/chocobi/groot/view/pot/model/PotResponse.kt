@@ -63,6 +63,14 @@ data class Plant(
     val mgmtTip: String,
     val insectInfo: String,
     val img: String
+)
 
-
+class DiaryRequest internal constructor(
+    val postId: Int,
+    val content: String?,
+    val water: Boolean?,
+    val pruning: Boolean?,
+    val bug: Boolean?,
+    val sun: Boolean?,
+    val nutrients: Boolean?
 )
