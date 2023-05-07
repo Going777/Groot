@@ -144,9 +144,19 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //    }
 
     fun changeAnimation() {
-        val count = modelNode?.animator?.animationCount!!
-        animationIdx = (0..count).random()
+        modelNode?.stopAnimation(animationIdx)
+        val maxIdx = modelNode?.animator?.animationCount!!
+        ++animationIdx
+        if (animationIdx == maxIdx) {
+            animationIdx = 0
+        }
+//        modelNode?.animator?.playbackSpeed =0.5f
         modelNode?.playAnimation(animationIdx)
+//        val duration = modelNode?.animator?.getAnimationDuration(animationIdx)
+//        val elapsedTimeInSeconds = duration?.times(2f) ?: 0f
+//        modelNode?.animator?.applyAnimation(animationIdx, duration?.times(1f)!!)
+//        Log.d("CharacterActivity", "changeAnimation() ${modelNode?.animator}")
+//        Log.d("CharacterActivity", "changeAnimation() ${elapsedTimeInSeconds} ${duration}")
     }
 
     fun stopAnimtion() {
@@ -177,7 +187,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
             instantAnchor = true,
             followHitPosition = false,
 
-        ).apply {
+            ).apply {
 //            applyPoseRotation = model.applyPoseRotation
             loadModelGlbAsync(
                 glbFileLocation = GLBfile ?: model.fileLocation,
@@ -187,15 +197,22 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
                 // Place the model origin at the bottom center
             ) {
                 isPositionEditable = false
-//                sceneView.planeRenderer.isVisible = false
-//                followHitPosition = false
-//                instantAnchor = true
+                isScaleEditable = false
+                isRotationEditable = true
+                followHitPosition = false
+                instantAnchor = true
+
+//                applyPosePosition = false
+
 //                isScaleEditable = false
-//                isRotationEditable = true
 //            playAnimation(0, true)
             }
 //            position = Position(x = 0.0f, y = 0f, z = 10f)
-//            rotation = Rotation(x=0.0f, y = 0f, z=0.0f)
+//            rotation = Rotation(x=10.0f, y = -10f, z=0f)
+//            scale = Scale(1f)
+            setReceiveShadows(false)
+            setCastShadows(false)
+            setScreenSpaceContactShadows(false)
 
 //            onAnchorChanged = { anchor ->
 //                placeModelButton.isGone = anchor != null
