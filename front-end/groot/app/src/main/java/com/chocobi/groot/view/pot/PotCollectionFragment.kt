@@ -42,31 +42,19 @@ class PotCollectionFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_pot_collection, container, false)
-        val mactivity = activity as MainActivity
+        val mActivity = activity as MainActivity
         potCollectionRv =
             rootView.findViewById<RecyclerView>(R.id.pot_collectioin_recycler_view)
+        getPotList(mActivity)
 
-        getPotList()
 
-        potRvAdapter?.setItemClickListener(object : PotCollectionRVAdapter.ItemClickListener {
-            override fun onPostBtnClick(view: View, position: Int) {
-                mactivity.changeFragment("pot_diary_create")
-            }
 
-            override fun onScanBtnClick(view: View, position: Int) {
-                val intent = Intent(context, ArActivity::class.java)
-                startActivity(intent)
-            }
 
-            override fun onDetailBtnClick(view: View, position: Int) {
-                mactivity.changeFragment("pot_detail")
-            }
-        })
 
         return rootView
     }
 
-    fun getPotList() {
+    fun getPotList(mActivity: MainActivity) {
         var retrofit = RetrofitClient.getClient()!!
         var potService = retrofit.create(PotService::class.java)
         potService.getPotList().enqueue(object :
@@ -80,7 +68,7 @@ class PotCollectionFragment : Fragment() {
                     Log.d(TAG, "$body")
                     Log.d(TAG, "body: $body")
                     potList = body.pots
-                    setRecyclerView(potList!!)
+                    setRecyclerView(potList!!, mActivity)
                 } else {
                     Log.d(TAG, "실패1")
                 }
@@ -92,10 +80,32 @@ class PotCollectionFragment : Fragment() {
         })
     }
 
-    fun setRecyclerView(potList:List<Pot>) {
+    fun setRecyclerView(potList:List<Pot>, mActivity:MainActivity) {
+
         potRvAdapter = PotCollectionRVAdapter(potList)
         potCollectionRv.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         potCollectionRv.adapter = potRvAdapter
+
+        potRvAdapter?.setItemClickListener(object : PotCollectionRVAdapter.ItemClickListener {
+            override fun onPostBtnClick(view: View, position: Int) {
+                mActivity.setPotId(potList?.get(position)?.potId ?: 0)
+                mActivity.changeFragment("pot_diary_create")
+            }
+
+            override fun onScanBtnClick(view: View, position: Int) {
+//                glb파일
+//                레벨
+//                화분 이름
+//                식물 이름
+                val intent = Intent(context, ArActivity::class.java)
+                startActivity(intent)
+            }
+
+            override fun onDetailBtnClick(view: View, position: Int) {
+                mActivity.setPotId(potList?.get(position)?.potId ?: 0)
+                mActivity.changeFragment("pot_detail")
+            }
+        })
     }
 }

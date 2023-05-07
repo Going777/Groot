@@ -50,6 +50,8 @@ class PotCollectionRVAdapter(val items: List<Pot>) :
     }
 
 
+
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindItems(items[position])
 

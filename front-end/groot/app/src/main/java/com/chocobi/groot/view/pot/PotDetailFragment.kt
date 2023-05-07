@@ -45,10 +45,10 @@ class PotDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        getPotDetail(24)
         var rootView = inflater.inflate(R.layout.fragment_pot_detail, container, false)
         val mActivity = activity as MainActivity
-        val potId = arguments?.getInt("potId")
+        val potId = arguments?.getInt("potId") ?: 0
+        getPotDetail(potId)
         characterSceneView = rootView.findViewById<SceneView>(R.id.characterSceneView)
 
         Log.d(TAG, "${pot}")
