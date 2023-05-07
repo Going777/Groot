@@ -49,10 +49,10 @@ public class DiaryServiceImpl implements DiaryService{
     private final S3Service s3Service;
 
 
-    @Override
-    public DiaryEntity isExistByCreatedDate(Long userPK) {
-        return diaryRepository.existsByUserCreatedDate(userPK);
-    }
+//    @Override
+//    public DiaryEntity isExistByCreatedDate(Long userPK) {
+//        return diaryRepository.existsByUserCreatedDate(userPK);
+//    }
 
     @Transactional
     @Override
