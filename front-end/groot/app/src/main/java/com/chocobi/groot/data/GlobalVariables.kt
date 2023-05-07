@@ -58,7 +58,6 @@ class GlobalVariables : Application() {
             val fetchGetUser = CoroutineScope(Dispatchers.Main).async {
                 getUser()
             }
-
         }
 
         fun getUser() {

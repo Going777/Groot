@@ -147,6 +147,10 @@ class PotCollectionFragment : Fragment() {
 //                화분 이름
 //                식물 이름
                 val intent = Intent(context, ArActivity::class.java)
+                intent.putExtra("GLBfile", potList?.get(position)?.characterGLBPath.toString())
+                intent.putExtra("level", potList?.get(position)?.level.toString())
+                intent.putExtra("potName", potList?.get(position)?.potName.toString())
+                intent.putExtra("potPlant", potList?.get(position)?.plantKrName.toString())
                 startActivity(intent)
             }
 
