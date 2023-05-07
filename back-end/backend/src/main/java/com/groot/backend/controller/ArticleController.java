@@ -13,6 +13,7 @@ import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.redis.RedisConnectionFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,15 +54,23 @@ public class ArticleController {
             imgPaths = s3Service.upload(images, "article");
         }
 
-        if(!articleService.createArticle(articleDTO, imgPaths)){
+        try {
+            articleService.createArticle(articleDTO, imgPaths);
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg","게시물이 등록되었습니다.");
+            return ResponseEntity.ok().body(resultMap);
+
+        }catch (RedisConnectionFailureException e){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","redis 연결 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        } catch (Exception e){
+            e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시물 등록 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
-
-        resultMap.put("result", SUCCESS);
-        resultMap.put("msg","게시물이 등록되었습니다.");
-        return ResponseEntity.ok().body(resultMap);
     }
 
 
@@ -135,14 +144,17 @@ public class ArticleController {
             resultMap.put("result", SUCCESS);
             resultMap.put("msg","게시글이 수정되었습니다.");
             return ResponseEntity.ok().body(resultMap);
-        }catch (Exception e){
+        }catch (RedisConnectionFailureException e){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","redis 연결 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        } catch (Exception e){
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시글 수정 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
-
-
     }
 
     // 개별 게시글 조회
@@ -285,10 +297,15 @@ public class ArticleController {
             resultMap.put("msg","인기 태그 조회 성공");
             resultMap.put("tags", result);
             return ResponseEntity.ok().body(resultMap);
-        }catch (Exception e){
+        }catch (RedisConnectionFailureException e){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","redis 연결 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        } catch (Exception e){
             e.printStackTrace();
             resultMap.put("result", FAIL);
-            resultMap.put("msg","인기 태그 조회 실패");
+            resultMap.put("msg","태그 랭킹 조회 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
 
