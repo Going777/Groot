@@ -45,9 +45,9 @@
             android:src="@drawable/ic_list"
             android:background="@drawable/circle_button_background"
             android:backgroundTint="@color/main"
-            android:tint="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/white" />
 
         <LinearLayout
             android:id="@+id/linearLayout3"
@@ -118,46 +118,6 @@
                         app:chipIconTint="@color/plant_chip_pill_checked_icon_color"
                         app:chipStrokeColor="@color/plant_chip_pill_checked_icon_color" />
                 </com.google.android.material.chip.ChipGroup>
-<!--                <ImageButton-->
-<!--                    android:id="@+id/tabBtn1"-->
-<!--                    style="@style/TAB_BTN_WATER"-->
-<!--                    android:layout_margin="10dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toStartOf="@+id/tabBtn2"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <ImageButton-->
-<!--                    android:id="@+id/tabBtn2"-->
-<!--                    style="@style/TAB_BTN_POT"-->
-<!--                    android:layout_margin="10dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toStartOf="@+id/tabBtn3"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <ImageButton-->
-<!--                    android:id="@+id/tabBtn3"-->
-<!--                    style="@style/TAB_BTN_BUG"-->
-<!--                    android:layout_margin="10dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toStartOf="@+id/tabBtn4"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <ImageButton-->
-<!--                    android:id="@+id/tabBtn4"-->
-<!--                    style="@style/TAB_BTN_SUN"-->
-<!--                    android:layout_margin="10dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toStartOf="@+id/tabBtn5"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
-
-<!--                <ImageButton-->
-<!--                    android:id="@+id/tabBtn5"-->
-<!--                    style="@style/TAB_BTN_PILL"-->
-<!--                    android:layout_margin="10dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
                 <TextView
                     android:id="@+id/potPlant"
                     android:layout_width="100dp"
@@ -252,47 +212,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-
-                    <ImageButton
-                        android:id="@+id/tabBtn1"
-                        style="@style/TAB_BTN_WATER"
-                        android:layout_margin="10dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/tabBtn2"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/tabBtn2"
-                        style="@style/TAB_BTN_POT"
-                        android:layout_margin="10dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/tabBtn3"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/tabBtn3"
-                        style="@style/TAB_BTN_BUG"
-                        android:layout_margin="10dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/tabBtn4"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/tabBtn4"
-                        style="@style/TAB_BTN_SUN"
-                        android:layout_margin="10dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/tabBtn5"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/tabBtn5"
-                        style="@style/TAB_BTN_PILL"
-                        android:layout_margin="10dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
