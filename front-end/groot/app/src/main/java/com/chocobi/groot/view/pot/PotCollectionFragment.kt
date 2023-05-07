@@ -1,17 +1,21 @@
 package com.chocobi.groot.view.pot
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
@@ -29,6 +33,7 @@ class PotCollectionFragment : Fragment() {
     private lateinit var potCollectionRv: RecyclerView
     private var potRvAdapter : PotCollectionRVAdapter? = null
     private var potList: List<Pot>? = null
+    private lateinit var potFirstView: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +50,40 @@ class PotCollectionFragment : Fragment() {
         val mActivity = activity as MainActivity
         potCollectionRv =
             rootView.findViewById<RecyclerView>(R.id.pot_collectioin_recycler_view)
+        potFirstView = rootView.findViewById(R.id.firstView)
         getPotList(mActivity)
+
+        potFirstView.setOnClickListener {
+            var dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("새 화분 등록하기")
+            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+
+            dialog.setItems(dialogArray) { _, which ->
+                when (which) {
+                    0 -> {
+                        mActivity.setCameraStatus("addPot")
+                        mActivity.requirePermissions(
+                            arrayOf(android.Manifest.permission.CAMERA),
+                            PERMISSION_CAMERA
+                        )
+                    }
+
+                    1 -> {
+                        val plantBottomSheet = PlantBottomSheet(requireContext())
+                        plantBottomSheet.show(
+                            mActivity.supportFragmentManager,
+                            plantBottomSheet.tag
+                        )
+                    }
+                }
+            }
+            dialog.setNegativeButton(
+                "취소",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            dialog.show()
+        }
 
 
 
@@ -69,8 +107,15 @@ class PotCollectionFragment : Fragment() {
                     Log.d(TAG, "body: $body")
                     potList = body.pots
                     setRecyclerView(potList!!, mActivity)
+
+                    if(body.pots.size == 0) {
+                        showFirstView()
+                    } else {
+                        hideFirstView()
+                    }
                 } else {
                     Log.d(TAG, "실패1")
+                    showFirstView()
                 }
             }
 
@@ -92,6 +137,7 @@ class PotCollectionFragment : Fragment() {
                 mActivity.setPotId(potList?.get(position)?.potId ?: 0)
                 mActivity.setPotName(potList?.get(position)?.potName.toString())
                 mActivity.setPotPlant(potList?.get(position)?.plantKrName.toString())
+                mActivity.setPotCharImg(potList?.get(position)?.characterPNGPath.toString())
                 mActivity.changeFragment("pot_diary_create")
             }
 
@@ -109,5 +155,13 @@ class PotCollectionFragment : Fragment() {
                 mActivity.changeFragment("pot_detail")
             }
         })
+    }
+
+    fun showFirstView() {
+        potFirstView.visibility = View.VISIBLE
+    }
+
+    fun hideFirstView() {
+        potFirstView.visibility = View.GONE
     }
 }
