@@ -20,6 +20,8 @@ public class PlantCodeUtil {
             "화분 흙 대부분 말랐을때 충분히 관수함"
     };
 
+    public static int[][] waterPeriods = {{0, 0}, {2,4}, {5,10}, {15,25}, {30,40}};
+
     /**
      * Character codes for grw types
      */
