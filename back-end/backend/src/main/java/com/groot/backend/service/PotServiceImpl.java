@@ -252,13 +252,54 @@ public class PotServiceImpl implements PotService{
                 .plantKrName(potEntity.getPlantKrName())
                 .dates(calcPeriod(potEntity.getCreatedDate()))
                 .createdTime(potEntity.getCreatedDate())
-                .waterDate(potEntity.getWaterDate())    // calc
-                .nutrientsDate(potEntity.getNutrientsDate())    // calc
-                .pruningDate(potEntity.getPruningDate())    // calc
+                .waterDate(calcNextWaterDate(potEntity.getWaterDate(), potEntity))
+                .nutrientsDate(calcNextDate(potEntity.getNutrientsDate(), 6))
+                .pruningDate(calcNextDate(potEntity.getPruningDate(), 12))
                 .survival(potEntity.getSurvival())
                 .level(expToLevel(potEntity.getExperience()))   // level?
                 .characterPNGPath(urls[0])
                 .characterGLBPath(urls[1])
                 .build();
+    }
+
+    /**
+     * Calculate next watering date - prototype
+     * @param lastDate
+     * @param potEntity
+     * @return
+     */
+    public LocalDateTime calcNextWaterDate(LocalDateTime lastDate, PotEntity potEntity) {
+        PlantEntity plantEntity = potEntity.getPlantEntity();
+        int[] waterPeriods = PlantCodeUtil.waterPeriods[plantEntity.getWaterCycle() % 53000];
+
+        int tempRange = inRange(potEntity.getTemperature(), plantEntity.getMinGrwTemp(), plantEntity.getMaxGrwTemp());
+        int humidRange = inRange(potEntity.getHumidity(), plantEntity.getMinHumidity(), plantEntity.getMaxHumidity());
+
+        int dateDiff = waterPeriods[1] - waterPeriods[0];
+        int dateAvg = (waterPeriods[0] + waterPeriods[1]) / 2;
+
+        int afterDate = (int)(dateAvg + 0.25*(-tempRange + humidRange) * dateDiff);
+        return lastDate.plusDays(afterDate);
+    }
+
+    /**
+     * Simply add month from date time
+     * @param lastDate
+     * @param month
+     * @return
+     */
+    public LocalDateTime calcNextDate(LocalDateTime lastDate, int month) {
+        return lastDate.plusMonths(month);
+    }
+
+    /**
+     * returns where target value is at
+     * @param target
+     * @param min
+     * @param max
+     * @return -1(smaller) 0(in range) +1(larger)
+     */
+    public int inRange(double target, double min, double max) {
+        return (min < target) ? ((target < max) ? 0 : 1) : -1;
     }
 }
