@@ -70,15 +70,6 @@ class PotDiaryCreateFragment : Fragment() {
 
     private var myImageView: ImageView? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
-
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -115,34 +106,36 @@ class PotDiaryCreateFragment : Fragment() {
 
         attachPhotoSection!!.setOnClickListener {
 //        사진 첨부 섹션
-        val attachPhotoSection = rootView.findViewById<LinearLayout>(R.id.attachPhotoSection)
+            val attachPhotoSection = rootView.findViewById<LinearLayout>(R.id.attachPhotoSection)
 //        첨부된 이미지 섹션
-        val attachedPhotoSection =
-            rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
-        val attachedPhoto = rootView.findViewById<ImageView>(R.id.attachedPhoto)
+            val attachedPhotoSection =
+                rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
+            val attachedPhoto = rootView.findViewById<ImageView>(R.id.attachedPhoto)
 
-        myImageView = rootView.findViewById(R.id.attachedPhoto)
+            myImageView = rootView.findViewById(R.id.attachedPhoto)
 
-        Log.d(TAG, "onCreateView() 포토 이니셜라이즈")
+            Log.d(TAG, "onCreateView() 포토 이니셜라이즈")
 //        사진 첨부하기
 //        attachPhotoSection.setOnClickListener {
 //            mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_GALLERY)
 ////            attachedPhotoSection.visibility = View.VISIBLE
 //        }
-        attachPhotoSection.setOnClickListener {
-            mActivity.setGalleryStatus("pot_diary_create")
-            mActivity.requirePermissions(
-                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
-                PERMISSION_GALLERY
-            )
-        }
-        attachCancleBtn.setOnClickListener {
-            attachPhotoSection!!.visibility = View.VISIBLE
-            attachedPhotoSection!!.visibility = View.GONE
-            imageFile = null
+            attachPhotoSection.setOnClickListener {
+                mActivity.setGalleryStatus("pot_diary_create")
+                mActivity.requirePermissions(
+                    arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
+                    PERMISSION_GALLERY
+                )
+            }
+            attachCancleBtn.setOnClickListener {
+                attachPhotoSection!!.visibility = View.VISIBLE
+                attachedPhotoSection!!.visibility = View.GONE
+                imageFile = null
+            }
         }
         return rootView
     }
+
 
     private fun findView(view: View) {
         //        사진 첨부 섹션
@@ -214,7 +207,6 @@ class PotDiaryCreateFragment : Fragment() {
             filePart = MultipartBody.Part.createFormData("image", imageFile!!.name, requestFile)
         }
 
-
         Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 아이디: $potId")
         Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 물: $water")
         Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 가지: $pruning")
@@ -245,8 +237,7 @@ class PotDiaryCreateFragment : Fragment() {
                             Log.d(TAG, "다이어리 작성 완료")
                             Toast.makeText(context, "다이어리가 작성되었습니다", Toast.LENGTH_SHORT).show()
                         }
-                    }
-                    else {
+                    } else {
                         Log.d("PotDiaryCreateFragment", "onResponse() 다이어리 작성 실패ㅜㅜㅜ $response")
                     }
                 }
