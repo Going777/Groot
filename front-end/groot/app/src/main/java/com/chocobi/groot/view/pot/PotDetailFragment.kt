@@ -71,30 +71,30 @@ class PotDetailFragment : Fragment() {
 
         val characterSceneView = view.findViewById<SceneView>(R.id.characterSceneView)
         characterSceneView.backgroundColor = Color(255.0f, 255.0f, 255.0f, 255.0f)
-        val imageUrl = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/tree_2.png"
-        Glide.with(this)
-            .load(imageUrl)
-            .into(object : CustomTarget<Drawable>() {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    transition: com.bumptech.glide.request.transition.Transition<in Drawable>?
-                ) {
-                    characterSceneView.setBackgroundDrawable(resource)
-                }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-                    // Optional, but can be used to null out references to avoid memory leaks
-                }
-            })
+//        val imageUrl = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/tree_2.png"
+//        Glide.with(this)
+//            .load(imageUrl)
+//            .into(object : CustomTarget<Drawable>() {
+//                override fun onResourceReady(
+//                    resource: Drawable,
+//                    transition: com.bumptech.glide.request.transition.Transition<in Drawable>?
+//                ) {
+//                    characterSceneView.setBackgroundDrawable(resource)
+//                }
+//
+//                override fun onLoadCleared(placeholder: Drawable?) {
+//                    // Optional, but can be used to null out references to avoid memory leaks
+//                }
+//            })
 //        characterSceneView.backgroundColor = Color(1.0f, 1.0f, 1.0f, 1.0f)
 //        characterSceneView.setBackgroundDrawable(drawable)
 
 
         val modelNode = ModelNode().apply {
             loadModelGlbAsync(
-                glbFileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/porin_2.glb",
+                glbFileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
                 autoAnimate = false,
-                scaleToUnits = 1.3f,
+                scaleToUnits = 1.0f,
                 centerOrigin = Position(x = 0f, y = 0f, z = 0f),
             )
         }
