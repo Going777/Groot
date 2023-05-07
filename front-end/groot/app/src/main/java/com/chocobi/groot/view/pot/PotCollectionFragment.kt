@@ -90,6 +90,8 @@ class PotCollectionFragment : Fragment() {
         potRvAdapter?.setItemClickListener(object : PotCollectionRVAdapter.ItemClickListener {
             override fun onPostBtnClick(view: View, position: Int) {
                 mActivity.setPotId(potList?.get(position)?.potId ?: 0)
+                mActivity.setPotName(potList?.get(position)?.potName.toString())
+                mActivity.setPotPlant(potList?.get(position)?.plantKrName.toString())
                 mActivity.changeFragment("pot_diary_create")
             }
 
