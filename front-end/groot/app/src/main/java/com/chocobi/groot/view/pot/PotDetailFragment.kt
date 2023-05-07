@@ -1,6 +1,10 @@
 package com.chocobi.groot.view.pot
 
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.transition.Transition
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,8 +12,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.google.android.gms.common.internal.ImagesContract.URL
+import io.github.sceneview.SceneView
+import io.github.sceneview.math.Position
+import io.github.sceneview.math.Rotation
+import io.github.sceneview.node.ModelNode
+import io.github.sceneview.utils.Color
+import java.io.BufferedInputStream
+import java.net.URL
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +36,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [PotDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+@Suppress("DEPRECATION")
 class PotDetailFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -66,6 +82,40 @@ class PotDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
+        val characterSceneView = view.findViewById<SceneView>(R.id.characterSceneView)
+        characterSceneView.backgroundColor = Color(255.0f, 255.0f, 255.0f, 255.0f)
+//        val imageUrl = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/tree_2.png"
+//        Glide.with(this)
+//            .load(imageUrl)
+//            .into(object : CustomTarget<Drawable>() {
+//                override fun onResourceReady(
+//                    resource: Drawable,
+//                    transition: com.bumptech.glide.request.transition.Transition<in Drawable>?
+//                ) {
+//                    characterSceneView.setBackgroundDrawable(resource)
+//                }
+//
+//                override fun onLoadCleared(placeholder: Drawable?) {
+//                    // Optional, but can be used to null out references to avoid memory leaks
+//                }
+//            })
+//        characterSceneView.backgroundColor = Color(1.0f, 1.0f, 1.0f, 1.0f)
+//        characterSceneView.setBackgroundDrawable(drawable)
+
+
+        val modelNode = ModelNode().apply {
+            loadModelGlbAsync(
+                glbFileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
+                autoAnimate = false,
+                scaleToUnits = 1.0f,
+                centerOrigin = Position(x = 0f, y = 0f, z = 0f),
+            )
+        }
+
+        characterSceneView.addChild(modelNode)
 
 
         val tab1 = PotDetailTab1Fragment()
