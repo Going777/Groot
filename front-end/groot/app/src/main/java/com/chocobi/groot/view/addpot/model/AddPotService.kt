@@ -6,19 +6,19 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 
-interface PotService {
+interface AddPotService {
 
     @Multipart
     @POST("api/pots")
     fun addPot(
-        @Part("pot") metadata: PotRequest,
+        @Part("pot") metadata: AddPotRequest,
         @Part filePart: MultipartBody.Part?
-    ): Call<PotResponse>
+    ): Call<AddPotResponse>
 }
 
 
 
-class PotRequest internal constructor(
+class AddPotRequest internal constructor(
     val plantId: Int,
     val potName: String,
     val temperature: Number?,
