@@ -43,10 +43,19 @@ class ArActivity : AppCompatActivity() {
     lateinit var renderer: AppRenderer
     lateinit var view: ArActivityView
 
+    private lateinit var GLBfile: String
+    private lateinit var level: String
+    private lateinit var potName: String
+    private lateinit var potPlant: String
+
     //    메세지 보내기
     fun goCharacter() {
         val intent = Intent(this, CharacterActivity::class.java)
         intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        intent.putExtra("GLBfile", GLBfile)
+        intent.putExtra("level", level)
+        intent.putExtra("potName", potName)
+        intent.putExtra("potPlant", potPlant)
         startActivity(intent)
     }
 
@@ -55,6 +64,12 @@ class ArActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        GLBfile = intent.getStringExtra("GLBfile").toString()
+        level = intent.getStringExtra("level").toString()
+        potName = intent.getStringExtra("potName").toString()
+        potPlant = intent.getStringExtra("potPlant").toString()
+
 
         arCoreSessionHelper = ARCoreSessionLifecycleHelper(this)
         // When session creation or session.resume fails, we display a message and log detailed

@@ -28,8 +28,13 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     private val TAG = "CharacterActivity"
     lateinit var sceneView: ArSceneView
 
+    private lateinit var GLBfile: String
+    private lateinit var level: String
+    private lateinit var potName: String
+    private lateinit var potPlant: String
+
     //    lateinit var loadingView: View
-//    lateinit var statusText: TextView
+    private lateinit var statusText: TextView
 
     //    lateinit var placeModelButton: ExtendedFloatingActionButton
 //    lateinit var newModelButton: ExtendedFloatingActionButton
@@ -64,6 +69,12 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_character)
 
+        GLBfile = intent.getStringExtra("GLBfile").toString()
+        level = intent.getStringExtra("level").toString()
+        potName = intent.getStringExtra("potName").toString()
+        potPlant = intent.getStringExtra("potPlant").toString()
+
+
         setFullScreen(
             findViewById(R.id.rootView),
             fullScreen = true,
@@ -77,7 +88,8 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //            }
 //            title = ""
 //        })
-//        statusText = findViewById(R.id.statusText)
+        statusText = findViewById(R.id.statusText)
+        statusText.text = potName
         sceneView = findViewById<ArSceneView?>(R.id.sceneView).apply {
             onArTrackingFailureChanged = { reason ->
                 Toast.makeText(context, "사물을 감지하지 못해 메인 화면으로 돌아갑니다", Toast.LENGTH_LONG).show()
@@ -168,7 +180,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         ).apply {
 //            applyPoseRotation = model.applyPoseRotation
             loadModelGlbAsync(
-                glbFileLocation = model.fileLocation,
+                glbFileLocation = GLBfile ?: model.fileLocation,
                 autoAnimate = false,
                 scaleToUnits = 0.2f,
                 centerOrigin = Position(x = 0f, y = 0.0f, z = 0f)

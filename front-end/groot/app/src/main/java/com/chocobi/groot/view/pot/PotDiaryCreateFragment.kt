@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.pot
 
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +16,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
+import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.RetrofitClient
@@ -33,7 +37,6 @@ import retrofit2.Call
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
-
 
 class PotDiaryCreateFragment : Fragment() {
 
@@ -62,6 +65,19 @@ class PotDiaryCreateFragment : Fragment() {
     private var bug: Boolean = false
     private var sun: Boolean = false
     private var content: String? = null
+    private var potCharImg: String? = null
+
+
+    private var myImageView: ImageView? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+
+        }
+
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -79,15 +95,41 @@ class PotDiaryCreateFragment : Fragment() {
         filterChipGroup()
         postDiaryBtnClick()
 
+        potCharImg = arguments?.getString("potCharImg")
+
+//        화면 구성
         var potNameText = rootView.findViewById<TextView>(R.id.potNameText)
+        var potNameText2 = rootView.findViewById<TextView>(R.id.potNameText2)
         potNameText.text = potName
+        potNameText2.text = potName
         var potPlantText = rootView.findViewById<TextView>(R.id.potPlantText)
         potPlantText.text = potPlant
+        var potCharImage = rootView.findViewById<ImageView>(R.id.characterImg)
+        if (potCharImg is String) {
+            GlobalVariables.changeImgView(potCharImage, potCharImg.toString(), requireContext())
+        }
+
 
 //        사진 첨부 취소 버튼
         val attachCancleBtn = rootView.findViewById<ImageButton>(R.id.attachCancleBtn)
 
         attachPhotoSection!!.setOnClickListener {
+//        사진 첨부 섹션
+        val attachPhotoSection = rootView.findViewById<LinearLayout>(R.id.attachPhotoSection)
+//        첨부된 이미지 섹션
+        val attachedPhotoSection =
+            rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
+        val attachedPhoto = rootView.findViewById<ImageView>(R.id.attachedPhoto)
+
+        myImageView = rootView.findViewById(R.id.attachedPhoto)
+
+        Log.d(TAG, "onCreateView() 포토 이니셜라이즈")
+//        사진 첨부하기
+//        attachPhotoSection.setOnClickListener {
+//            mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_GALLERY)
+////            attachedPhotoSection.visibility = View.VISIBLE
+//        }
+        attachPhotoSection.setOnClickListener {
             mActivity.setGalleryStatus("pot_diary_create")
             mActivity.requirePermissions(
                 arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),

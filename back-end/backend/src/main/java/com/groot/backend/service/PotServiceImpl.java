@@ -106,23 +106,7 @@ public class PotServiceImpl implements PotService{
         List<PotListDTO> ret = new ArrayList<>(list.size());
 
         list.forEach(potEntity -> {
-            String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
-            ret.add(PotListDTO.builder()
-                            .potId(potEntity.getId())
-                            .plantId(potEntity.getPlantId())
-                            .potName(potEntity.getName())
-                            .imgPath(potEntity.getImgPath())
-                            .plantKrName(potEntity.getPlantKrName())
-                            .dates(calcPeriod(potEntity.getCreatedDate()))
-                            .createdTime(potEntity.getCreatedDate())
-                            .waterDate(potEntity.getWaterDate())    // calc
-                            .nutrientsDate(potEntity.getNutrientsDate())    // calc
-                            .pruningDate(potEntity.getPruningDate())    // calc
-                            .survival(potEntity.getSurvival())
-                            .level(expToLevel(potEntity.getExperience()))   // level?
-                            .characterPNGPath(urls[0])
-                            .characterGLBPath(urls[1])
-                            .build());
+            ret.add(buildListDTO(potEntity));
         });
 
         return ret;
@@ -135,24 +119,7 @@ public class PotServiceImpl implements PotService{
         PotEntity potEntity = potRepository.findById(potId).get();
         if (potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
 
-        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
-
-        PotListDTO potListDTO = PotListDTO.builder()
-                .potId(potEntity.getId())
-                .plantId(potEntity.getPlantId())
-                .potName(potEntity.getName())
-                .imgPath(potEntity.getImgPath())
-                .plantKrName(potEntity.getPlantKrName())
-                .dates(calcPeriod(potEntity.getCreatedDate()))
-                .createdTime(potEntity.getCreatedDate())
-                .waterDate(potEntity.getWaterDate())    // calc
-                .nutrientsDate(potEntity.getNutrientsDate())    // calc
-                .pruningDate(potEntity.getPruningDate())    // calc
-                .survival(potEntity.getSurvival())
-                .level(expToLevel(potEntity.getExperience()))   // level?
-                .characterPNGPath(urls[0])
-                .characterGLBPath(urls[1])
-                .build();
+        PotListDTO potListDTO = buildListDTO(potEntity);
 
         PlantEntity plantEntity = potEntity.getPlantEntity();
 
@@ -268,5 +235,71 @@ public class PotServiceImpl implements PotService{
             characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), expToLevel(exp));
         }
         return new String[] {characterEntity.getPngPath(), characterEntity.getGlbPath()};
+    }
+
+    /**
+     * Build PotListDTO by PotEntity
+     * @param potEntity
+     * @return PotListDTO
+     */
+    public PotListDTO buildListDTO(PotEntity potEntity) {
+        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
+        return PotListDTO.builder()
+                .potId(potEntity.getId())
+                .plantId(potEntity.getPlantId())
+                .potName(potEntity.getName())
+                .imgPath(potEntity.getImgPath())
+                .plantKrName(potEntity.getPlantKrName())
+                .dates(calcPeriod(potEntity.getCreatedDate()))
+                .createdTime(potEntity.getCreatedDate())
+                .waterDate(calcNextWaterDate(potEntity.getWaterDate(), potEntity))
+                .nutrientsDate(calcNextDate(potEntity.getNutrientsDate(), 6))
+                .pruningDate(calcNextDate(potEntity.getPruningDate(), 12))
+                .survival(potEntity.getSurvival())
+                .level(expToLevel(potEntity.getExperience()))   // level?
+                .characterPNGPath(urls[0])
+                .characterGLBPath(urls[1])
+                .build();
+    }
+
+    /**
+     * Calculate next watering date - prototype
+     * @param lastDate
+     * @param potEntity
+     * @return
+     */
+    public LocalDateTime calcNextWaterDate(LocalDateTime lastDate, PotEntity potEntity) {
+        PlantEntity plantEntity = potEntity.getPlantEntity();
+        int[] waterPeriods = PlantCodeUtil.waterPeriods[plantEntity.getWaterCycle() % 53000];
+
+        int tempRange = inRange(potEntity.getTemperature(), plantEntity.getMinGrwTemp(), plantEntity.getMaxGrwTemp());
+        int humidRange = inRange(potEntity.getHumidity(), plantEntity.getMinHumidity(), plantEntity.getMaxHumidity());
+
+        int dateDiff = waterPeriods[1] - waterPeriods[0];
+        int dateAvg = (waterPeriods[0] + waterPeriods[1]) / 2;
+
+        int afterDate = (int)(dateAvg + 0.25*(-tempRange + humidRange) * dateDiff);
+        return lastDate.plusDays(afterDate);
+    }
+
+    /**
+     * Simply add month from date time
+     * @param lastDate
+     * @param month
+     * @return
+     */
+    public LocalDateTime calcNextDate(LocalDateTime lastDate, int month) {
+        return lastDate.plusMonths(month);
+    }
+
+    /**
+     * returns where target value is at
+     * @param target
+     * @param min
+     * @param max
+     * @return -1(smaller) 0(in range) +1(larger)
+     */
+    public int inRange(double target, double min, double max) {
+        return (min < target) ? ((target < max) ? 0 : 1) : -1;
     }
 }

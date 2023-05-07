@@ -22,8 +22,8 @@
 
     <!--    mlkit-->
     <!--    <string name="app_name" description="Application name [CHAR_LIMIT=NONE]">ARCore ML</string>-->
-    <string name="scan_busy" description="Button text to indicate that no scan can be started because scanning is already in progress [CHAR_LIMIT=NONE]">Scanning…</string>
-    <string name="scan_available" description="Button text to start scanning the current camera image [CHAR_LIMIT=NONE]">Scan</string>
+    <string name="scan_busy" description="Button text to indicate that no scan can be started because scanning is already in progress [CHAR_LIMIT=NONE]">찾는 중…</string>
+    <string name="scan_available" description="Button text to start scanning the current camera image [CHAR_LIMIT=NONE]">똑똑!</string>
     <string name="clear" description="Button text to clear detected objects from the camera view [CHAR_LIMIT=NONE]">Clear</string>
     <string name="use_cloud_ml" description="Label text displayed on a switch to toggle the Cloud ML model [CHAR_LIMIT=NONE]">Use Cloud ML</string>
     <string name="title_activity_camera">CameraActivity</string>
