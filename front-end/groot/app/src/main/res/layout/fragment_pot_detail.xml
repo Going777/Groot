@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".view.pot.PotDetailFragment">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/potNameContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="40dp"
+        android:layout_marginTop="40dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
@@ -48,27 +49,29 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="20dp"
             android:text="만나러 가기"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_margin="20dp"/>
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-
-
-
-    <ImageView
-        android:id="@+id/imageView"
+    <io.github.sceneview.SceneView
+        android:id="@+id/characterSceneView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:src="@drawable/sample_character" />
+        android:layout_height="300dp"/>
+
+
+<!--    <ImageView-->
+<!--        android:id="@+id/imageView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:src="@drawable/sample_character" />-->
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -78,7 +81,7 @@
         android:layout_marginHorizontal="100dp"
         android:progress="60"
         android:progressBackgroundTint="@color/grey"
-        android:progressTint="@color/point"/>
+        android:progressTint="@color/point" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -158,8 +161,7 @@
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/toDiaryBtn"
         style="@style/GO_TO_DIARY_BTN"
-        android:layout_marginTop="15dp"
-        />
+        android:layout_marginTop="15dp" />
 
 
 </LinearLayout>

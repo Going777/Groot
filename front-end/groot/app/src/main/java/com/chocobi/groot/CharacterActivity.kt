@@ -86,6 +86,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //                statusText.text = reason?.getDescription(context)
 //                statusText.isGone = reason == null
             }
+            isDepthOcclusionEnabled = false
         }
 //        loadingView = findViewById(R.id.loadingView)
 //        newModelButton = findViewById<ExtendedFloatingActionButton>(R.id.newModelButton).apply {
@@ -167,12 +168,15 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
                 scaleToUnits = 0.2f,
                 centerOrigin = Position(x = 0f, y = 0.0f, z = 0f)
                 // Place the model origin at the bottom center
-//                centerOrigin =
             ) {
                 sceneView.planeRenderer.isVisible = false
+                followHitPosition = false
+                instantAnchor = true
+                isScaleEditable = false
+                isRotationEditable = true
 //            playAnimation(0, true)
             }
-            position = Position(x = 0.0f, y = 0f, z = 10f)
+//            position = Position(x = 0.0f, y = 0f, z = 10f)
             rotation = Rotation(x=0.0f, y = 0f, z=0.0f)
 
 //            onAnchorChanged = { anchor ->
@@ -181,7 +185,6 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //            onHitResult = { node, _ ->
 //                placeModelButton.isGone = !node.isTracking
 //            }
-            instantAnchor = true
         }
         modelNode?.anchor()
 
