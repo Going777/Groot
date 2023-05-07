@@ -21,6 +21,7 @@ import com.chocobi.groot.view.pot.model.Plant
 import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotResponse
 import com.chocobi.groot.view.pot.model.PotService
+import com.google.android.material.chip.Chip
 import io.github.sceneview.SceneView
 import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
@@ -98,11 +99,11 @@ class PotDetailFragment : Fragment() {
         val tab4 = PotDetailTab4Fragment()
         val tab5 = PotDetailTab5Fragment()
 
-        var tabBtn1 = view.findViewById<ImageButton>(R.id.tabBtn1)
-        var tabBtn2 = view.findViewById<ImageButton>(R.id.tabBtn2)
-        var tabBtn3 = view.findViewById<ImageButton>(R.id.tabBtn3)
-        var tabBtn4 = view.findViewById<ImageButton>(R.id.tabBtn4)
-        var tabBtn5 = view.findViewById<ImageButton>(R.id.tabBtn5)
+        var tabBtn1 = view.findViewById<Chip>(R.id.tabBtn1)
+        var tabBtn2 = view.findViewById<Chip>(R.id.tabBtn2)
+        var tabBtn3 = view.findViewById<Chip>(R.id.tabBtn3)
+        var tabBtn4 = view.findViewById<Chip>(R.id.tabBtn4)
+        var tabBtn5 = view.findViewById<Chip>(R.id.tabBtn5)
         tabBtn1.setOnClickListener {
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab1).commit()
         }

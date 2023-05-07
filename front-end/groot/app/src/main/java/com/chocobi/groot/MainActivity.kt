@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
@@ -308,9 +309,8 @@ class MainActivity : AppCompatActivity() {
                         val potDiaryCreateFragment =
                             supportFragmentManager.findFragmentById(R.id.fl_container) as PotDiaryCreateFragment?
                         if (potDiaryCreateFragment != null) {
-                            photoImage = potDiaryCreateFragment.getPhotoImageView()
+                            potDiaryCreateFragment.attachPhoto(uri)
                         }
-                        photoImage?.setImageURI(uri)
                     }
 //                    var i = 0
 //                    while (i < data?.clipData!!.itemCount) {
