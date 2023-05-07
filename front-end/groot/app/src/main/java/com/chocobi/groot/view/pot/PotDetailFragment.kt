@@ -1,12 +1,14 @@
 package com.chocobi.groot.view.pot
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -14,6 +16,7 @@ import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.pot.model.Plant
 import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotResponse
@@ -68,6 +71,17 @@ class PotDetailFragment : Fragment() {
                 mActivity.setPotId(potId)
             }
             mActivity.changeFragment("pot_diary_create")
+        }
+
+//        만나러가기 버튼 클릭시
+        val toArBtn = rootView.findViewById<Button>(R.id.toArBtn)
+        toArBtn.setOnClickListener {
+            val intent = Intent(context, ArActivity::class.java)
+            intent.putExtra("GLBfile", pot?.characterGLBPath.toString())
+            intent.putExtra("level", pot?.level.toString())
+            intent.putExtra("potName", pot?.potName.toString())
+            intent.putExtra("potPlant", pot?.plantKrName.toString())
+            startActivity(intent)
         }
         // Inflate the layout for this fragment
         return rootView
