@@ -259,13 +259,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_STORAGE)
     }
 
-//    private fun openGallery() {
-//    val maxNumPhotosAndVideos = 3
-//    val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
-//    intent.type="images/*"
-//    intent.putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, maxNumPhotosAndVideos)
-//    startActivityForResult(intent, REQUEST_STORAGE)
-//    }
+
 
     private fun newFileName(): String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")

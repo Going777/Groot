@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
@@ -17,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.R
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.CommentAdapter
@@ -26,13 +29,19 @@ import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class CommunityDetailFragment : Fragment() {
     private lateinit var bookmarkButton: ImageButton
     private val TAG = "CommunityDetailFragment"
+    private lateinit var postCommentBtn: Button
+    private lateinit var postCommentInput: EditText
 
 //    private var commentList = arrayListOf<CommunityCommentResponse>()
 
@@ -45,7 +54,7 @@ class CommunityDetailFragment : Fragment() {
 
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "MissingInflatedId")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_community_detail, container, false)
         val articleId = arguments?.getInt("articleId")
@@ -61,6 +70,16 @@ class CommunityDetailFragment : Fragment() {
         var detailTag = view.findViewById<TextView>(R.id.detailTag)
         var detailCommentCnt = view.findViewById<TextView>(R.id.detailCommentCnt)
         var bookmarkStatus = false
+        var postCommentBtn = view.findViewById<Button>(R.id.postCommentBtn)
+        var postCommnetInput = view.findViewById<EditText>(R.id.postCommentInput)
+
+        postCommentBtn.setOnClickListener {
+
+            var content = "content"
+            if (articleId != null) {
+                postComment(articleId, content)
+            }
+        }
 
 //                retrofit 객체 만들기
         val retrofit = RetrofitClient.getClient()!!
@@ -232,6 +251,30 @@ class CommunityDetailFragment : Fragment() {
                 else -> CommunityTab1Fragment()
             }
         }
+    }
+
+    private fun postComment(
+        articleId: Int,
+        content: String,
+    ) {
+        val retrofit = RetrofitClient.getClient()!!
+        val communityCommentPostService = retrofit.create(CommunityCommentPostService::class.java)
+
+
+        communityCommentPostService.requestCommentPost(articleId, content)
+            .enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    val body = response.body()
+                    Log.d("CommunityPostFragmentBody", "$body")
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+            })
     }
 
 }
