@@ -13,4 +13,7 @@ interface CommunityService {
         @Query("page") pageInput: Int,
         @Query("size") sizeInput: Int,
     ): Call<CommunityArticleListResponse>
+
+    @GET("/api/articles/tag")
+    fun requestPopularTags(): Call<PopularTagResponse>
 }

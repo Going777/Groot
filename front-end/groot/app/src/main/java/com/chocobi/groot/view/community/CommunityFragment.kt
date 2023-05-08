@@ -11,11 +11,16 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
+import com.chocobi.groot.view.community.model.CommunityService
+import com.chocobi.groot.view.community.model.PopularTagResponse
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,10 +42,8 @@ class CommunityFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-
-            param2 = it.getString(ARG_PARAM2)
-        }
+//        인기 태그 조회
+        getPopularTag()
     }
 
     override fun onCreateView(
@@ -85,6 +88,31 @@ class CommunityFragment : Fragment() {
         }.attach()
 
 
+    }
+
+    private fun getPopularTag() {
+        val retrofit = RetrofitClient.basicClient()!!
+        val communityService = retrofit.create(CommunityService::class.java)
+        communityService.requestPopularTags().enqueue(object : retrofit2.Callback<PopularTagResponse> {
+            override fun onResponse(
+                call: Call<PopularTagResponse>,
+                response: Response<PopularTagResponse>
+            ) {
+                if(response.code() == 200) {
+                    val body = response.body()
+                    Log.d("CommunityFragment","onResponse() 조회 성공 $body")
+                }
+                else {
+                Log.d("CommunityFragment","onFailure() 인기태그 조회 실패1")
+
+                }
+            }
+
+            override fun onFailure(call: Call<PopularTagResponse>, t: Throwable) {
+                Log.d("CommunityFragment","onFailure() 인기태그 조회 실패2")
+            }
+
+        })
     }
 
     private inner class CommunityTabAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

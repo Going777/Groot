@@ -1,7 +1,12 @@
 package com.chocobi.groot.view.community.model
 
-data class RegionFilterResponse(
+data class PopularTagResponse (
     val result: String,
     val msg: String,
-    val articles: Articles
-)
+    val tags: ArrayList<Tag>
+    )
+
+data class Tag (
+    val tag: String,
+    val count: Int
+        )
