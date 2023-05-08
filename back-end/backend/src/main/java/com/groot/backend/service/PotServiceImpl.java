@@ -155,8 +155,10 @@ public class PotServiceImpl implements PotService{
         String newImgPath = "";
 
         try {
-            newImgPath = s3Service.upload(multipartFile, "pot");
-            logger.info("Successfully uploaded : {}", newImgPath);
+            if(multipartFile != null) {
+                newImgPath = s3Service.upload(multipartFile, "pot");
+                logger.info("Successfully uploaded : {}", newImgPath);
+            }
             if(potModifyDTO != null) potEntity.modify(newImgPath, potModifyDTO.getPotName(),
                         potModifyDTO.getTemperature(), potModifyDTO.getIlluminance(), potModifyDTO.getHumidity());
             else potEntity.modify(newImgPath, null, 0, 0, 0);
@@ -183,7 +185,7 @@ public class PotServiceImpl implements PotService{
 
         logger.info("pot {} found, delete it", potId);
 
-        if(potEntity.getUserId() != userPK) throw new IllegalAccessException("Unauthorized");
+        if(potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
 
         potRepository.delete(potEntity); // IllegalArgumentException
 
@@ -196,7 +198,7 @@ public class PotServiceImpl implements PotService{
 
         PotEntity potEntity = potRepository.findById(potId).get(); // NoSuchElementException
 
-        if(potEntity.getUserId() != userPK) throw new IllegalAccessException("Unauthorized");
+        if(potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
 
         logger.info("pot {} found with status : {}", potId, potEntity.getSurvival());
 
@@ -206,6 +208,11 @@ public class PotServiceImpl implements PotService{
         return ret;
     }
 
+    /**
+     * calculate days
+     * @param from
+     * @return count
+     */
     private int calcPeriod(LocalDateTime from) {
         LocalDateTime now = LocalDateTime.now();
 
@@ -213,6 +220,11 @@ public class PotServiceImpl implements PotService{
         return period.getDays() + 1;
     }
 
+    /**
+     * Convert experience to level
+     * @param exp
+     * @return level
+     */
     private int expToLevel(int exp) {
         int ret = exp/10;
         return (ret > 2) ? 2 : ret;

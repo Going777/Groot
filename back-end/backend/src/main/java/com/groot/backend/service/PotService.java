@@ -61,7 +61,7 @@ public interface PotService {
      * @param potId
      * @return 1 for success
      * @throws NoSuchElementException when pot not found
-     * @throws IllegalArgumentException for unauthorized access
+     * @throws AccessDeniedException for unauthorized access
      */
     public int deletePot(Long userPK, Long potId) throws Exception;
 
@@ -71,7 +71,7 @@ public interface PotService {
      * @param potId
      * @return next status (survival or not)
      * @throws NoSuchElementException when pot not found
-     * @throws IllegalArgumentException for unauthorized access
+     * @throws AccessDeniedException for unauthorized access
      */
     public boolean toggleStatus(Long userPK, Long potId) throws Exception;
 }
