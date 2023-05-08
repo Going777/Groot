@@ -29,7 +29,7 @@ class CommunityCommentFragment  : Fragment() {
     private lateinit var adapter: CommentAdapter
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityCommentResponse
-
+    private var articleId: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_community_comment, container, false)
@@ -39,6 +39,16 @@ class CommunityCommentFragment  : Fragment() {
         reload()
 
         showProgress()
+
+        val args = arguments
+        if (args != null) {
+            articleId = args.getInt("articleId")
+            Log.d("CommunityCommentFragment", "$articleId")
+        }
+
+        Log.d("CommunityCommentFragmentArguments", "$arguments")
+
+        Log.d("CommunityCommentFragment", "$articleId")
 
 
 
@@ -51,7 +61,7 @@ class CommunityCommentFragment  : Fragment() {
         var communityCommentPage = 0
         var communityCommentSize = 10
 
-        communityCommentService.requestCommunityComment(communityArticleId,communityCommentPage,communityCommentSize).enqueue(object :
+        communityCommentService.requestCommunityComment(articleId,communityCommentPage,communityCommentSize).enqueue(object :
             Callback<CommunityCommentResponse>  {
             override fun onResponse(call: Call<CommunityCommentResponse>, response: Response<CommunityCommentResponse>) {
                 if (response.code() == 200) {
@@ -110,10 +120,18 @@ class CommunityCommentFragment  : Fragment() {
     }
 
     private fun initList() {
-        adapter = CommentAdapter()
+        adapter = CommentAdapter(recyclerView)
         adapter.delegate = object : CommentAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
                 loadMore()
+            }
+
+            fun reload(mutableList: MutableList<CommunityCommentResponse>) {
+                TODO("Not yet implemented")
+            }
+
+            fun loadMore(mutableList: MutableList<CommunityCommentResponse>) {
+                TODO("Not yet implemented")
             }
         }
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -125,14 +143,17 @@ class CommunityCommentFragment  : Fragment() {
 
         var communityCommentService = retrofit.create(CommunityCommentService::class.java)
 
-        val articleId = arguments?.getInt("articleId")
-
         var communityArticleId = 37
         var communityCommentPage = 0
         var communityCommentSize = 10
 
+        val args = arguments
+        if (args != null) {
+            articleId = args.getInt("articleId")
+            Log.d("CommunityCommentFragment", "$articleId")
+        }
 
-        communityCommentService.requestCommunityComment(communityArticleId,communityCommentPage,communityCommentSize).enqueue(object :
+        communityCommentService.requestCommunityComment(articleId,communityCommentPage,communityCommentSize).enqueue(object :
             Callback<CommunityCommentResponse> {
             override fun onResponse(call: Call<CommunityCommentResponse>, response: Response<CommunityCommentResponse>) {
                 if (response.code() == 200) {
@@ -181,7 +202,7 @@ class CommunityCommentFragment  : Fragment() {
         var communityCommentPage = 0
         var communityCommentSize = 10
 
-        communityCommentService.requestCommunityComment(communityArticleId, communityCommentPage, communityCommentSize).enqueue(object :
+        communityCommentService.requestCommunityComment(articleId, communityCommentPage, communityCommentSize).enqueue(object :
             Callback<CommunityCommentResponse> {
             override fun onResponse(call: Call<CommunityCommentResponse>, response: Response<CommunityCommentResponse>) {
                 if (response.code() == 200) {
@@ -262,3 +283,4 @@ class CommunityCommentFragment  : Fragment() {
 
 
 }
+

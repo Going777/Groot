@@ -1,12 +1,14 @@
 package com.chocobi.groot.view.community
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -42,6 +44,7 @@ class CommunityDetailFragment : Fragment() {
     private val TAG = "CommunityDetailFragment"
     private lateinit var postCommentBtn: Button
     private lateinit var postCommentInput: EditText
+    private lateinit var commentAdapter: CommentAdapter
 
 //    private var commentList = arrayListOf<CommunityCommentResponse>()
 
@@ -52,6 +55,8 @@ class CommunityDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
+
     }
 
     @SuppressLint("NotifyDataSetChanged", "MissingInflatedId")
@@ -59,6 +64,17 @@ class CommunityDetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_detail, container, false)
         val articleId = arguments?.getInt("articleId")
         Log.d("CommunityDetailFragmentArticleId", articleId.toString())
+
+        val args = Bundle()
+        if (articleId != null) {
+            args.putInt("articleId", articleId)
+        }
+        val communityCommentFragment = CommunityCommentFragment()
+        Log.d("CommunityCommentFragment", "$args")
+        communityCommentFragment.arguments = args
+        childFragmentManager.beginTransaction()
+            .add(R.id.communityCommentFragment, communityCommentFragment)
+            .commit()
 
         var detailCategory = view.findViewById<TextView>(R.id.detailCategory)
         var detailTitle = view.findViewById<TextView>(R.id.detailTitle)
@@ -71,14 +87,27 @@ class CommunityDetailFragment : Fragment() {
         var detailCommentCnt = view.findViewById<TextView>(R.id.detailCommentCnt)
         var bookmarkStatus = false
         var postCommentBtn = view.findViewById<Button>(R.id.postCommentBtn)
-        var postCommnetInput = view.findViewById<EditText>(R.id.postCommentInput)
+        var postCommentInput = view.findViewById<EditText>(R.id.postCommentInput)
 
         postCommentBtn.setOnClickListener {
 
-            var content = "content"
+            var content =  postCommentInput?.text.toString()
             if (articleId != null) {
                 postComment(articleId, content)
             }
+
+            Log.d("CommunityDetailFragmentArticleId", articleId.toString())
+            Log.d("CommunityDetailFragmentArticleId", content.toString())
+
+            // 입력창 리셋 및 키보드 닫기
+            postCommentInput?.setText("")
+            val inputMethodManager =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(
+                view?.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS
+            )
+
         }
 
 //                retrofit 객체 만들기
@@ -216,7 +245,10 @@ class CommunityDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        // RecyclerView에 CommentAdapter 객체 연결
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        commentAdapter = CommentAdapter(recyclerView)
+        recyclerView.adapter = commentAdapter
 
 
         Log.d("CommunityDetailFragment_childFragmentManager", CommunityCommentFragment().toString())
@@ -261,7 +293,7 @@ class CommunityDetailFragment : Fragment() {
         val communityCommentPostService = retrofit.create(CommunityCommentPostService::class.java)
 
 
-        communityCommentPostService.requestCommentPost(articleId, content)
+        communityCommentPostService.requestCommentPost(CommentPostRequest(articleId, content))
             .enqueue(object : Callback<BasicResponse> {
                 override fun onResponse(
                     call: Call<BasicResponse>,
@@ -269,12 +301,15 @@ class CommunityDetailFragment : Fragment() {
                 ) {
                     val body = response.body()
                     Log.d("CommunityPostFragmentBody", "$body")
+                    Log.d("CommunityDetailFragmentArticleId", response.code().toString())
                 }
 
                 override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
                     TODO("Not yet implemented")
                 }
             })
+
+
     }
 
 }

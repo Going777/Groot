@@ -19,7 +19,7 @@ import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import java.lang.ref.WeakReference
 
 
-class CommentAdapter: RecyclerView.Adapter<ItemViewHolder>() {
+class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapter<ItemViewHolder>() {
 
     interface RecyclerViewAdapterDelegate {
         fun onLoadMore()
@@ -65,6 +65,20 @@ class CommentAdapter: RecyclerView.Adapter<ItemViewHolder>() {
         notifyItemRangeChanged(this.mutableList.size - mutableList.size, mutableList.size)
     }
 
+
+    fun addItem(communityCommentResponse: CommunityCommentResponse) {
+        val isScrollAtBottom = (recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollOffset() - recyclerView.height) <= 0
+
+        this.mutableList.add(communityCommentResponse)
+        notifyItemInserted(mutableList.size - 1)
+
+        // 새로운 아이템이 추가된 후 스크롤을 가장 아래로 이동합니다.
+        if (isScrollAtBottom) {
+            recyclerView.postDelayed({
+                recyclerView.scrollToPosition(mutableList.size - 1)
+            }, 100)
+        }
+    }
 }
 
 
