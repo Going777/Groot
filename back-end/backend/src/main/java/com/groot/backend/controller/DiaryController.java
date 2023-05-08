@@ -42,7 +42,7 @@ public class DiaryController {
 //        SimpleDateFormat sDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 //        String nowFormat = sDate.format(now);
         // 오늘 다이어리를 작성한 이력이 있을 경우
-        DiaryCheckEntity find = diaryService.isExistByCreatedDate(diaryDTO.getPotId());
+        DiaryDTO find = diaryService.isExistByCreatedDate(diaryDTO.getPotId());
         if(find!=null){
             if(diaryService.saveAndUpdateDiary(userId, file, diaryDTO, find)==null){
                 resultMap.put("msg", "다이어리 추가 및 수정 실패");
@@ -127,7 +127,7 @@ public class DiaryController {
     @GetMapping("/check/{potId}")
     public ResponseEntity checkDiary(@PathVariable Long potId){
         Map resultMap = new HashMap();
-        DiaryCheckEntity result = diaryService.isExistByCreatedDate(potId);
+        DiaryDTO result = diaryService.isExistByCreatedDate(potId);
         // 없든 있든 결과 보내줌
         resultMap.put("diary", result==null?null:result);
         resultMap.put("result", SUCCESS);

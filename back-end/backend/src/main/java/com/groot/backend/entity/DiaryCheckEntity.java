@@ -69,11 +69,9 @@ public class DiaryCheckEntity extends BaseEntity{
                 .sun(diaryEntity.getSun())
                 .userPK(diaryEntity.getUserPK())
                 .water(diaryEntity.getWater())
-                .content(diaryEntity.getContent())
                 .nutrients(diaryEntity.getNutrients())
                 .pruning(diaryEntity.getPruning())
                 .potId(diaryEntity.getPotId())
-                .diaryId(diaryEntity.getId())
                 .build();
         return result;
     }
