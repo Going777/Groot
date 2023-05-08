@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     private var potName: String = "화분 이름"
     private var potPlant: String = "화분 식물"
     private var potCharImg: String = "화분 이미지 URL"
+    private lateinit var bnv_main: BottomNavigationView
 
     fun setPotId(id:Int) {
         potId = id
@@ -72,6 +73,9 @@ class MainActivity : AppCompatActivity() {
     //        fragment 조작
     fun changeFragment(index: String) {
         when (index) {
+            "pot" -> {
+                bnv_main.run { selectedItemId = R.id.potFragment }
+            }
 
             "pot_diary" -> {
                 val potDiaryFragment = PotDiaryFragment()
@@ -357,7 +361,7 @@ class MainActivity : AppCompatActivity() {
 
 //        네비게이션 바 조작
         // 하단 탭이 눌렸을 때 화면을 전환하기 위해선 이벤트 처리하기 위해 BottomNavigationView 객체 생성
-        var bnv_main = findViewById(R.id.bottom_navigation) as BottomNavigationView
+        bnv_main = findViewById(R.id.bottom_navigation) as BottomNavigationView
 
         // OnNavigationItemSelectedListener를 통해 탭 아이템 선택 시 이벤트를 처리
         // navi_menu.xml 에서 설정했던 각 아이템들의 id를 통해 알맞은 프래그먼트로 변경하게 한다.
