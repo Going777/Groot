@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ArticleRepositoryCustom {
     Page<ArticleEntity> filterRegion(String[] region, PageRequest pageRequest);
-    Page<ArticleEntity> search(String category, String keyword, PageRequest pageRequest);
+    Page<ArticleEntity> search(String category, String[] region, String keyword, PageRequest pageRequest);
     List<ArticleEntity> findUserSharedArticle(Long userPK, Long articleId);
     Page<ArticleEntity> findAllByUserPK(Long userPK, PageRequest pageRequest);
     List<Long> findBookmarkByUserPK(Long userPK);

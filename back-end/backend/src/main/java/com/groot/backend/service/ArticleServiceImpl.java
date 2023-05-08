@@ -473,9 +473,9 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public Page<ArticleListDTO> searchArticle(String category, String keyword, Long userPK, Integer page, Integer size) {
+    public Page<ArticleListDTO> searchArticle(String category, String[] region, String keyword, Long userPK, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<ArticleEntity> articleEntities = articleRepository.search(category, keyword, pageRequest);
+        Page<ArticleEntity> articleEntities = articleRepository.search(category, region, keyword,  pageRequest);
         Page<ArticleListDTO> result = toDtoList(articleEntities, userPK);
         return result;
     }
@@ -581,6 +581,9 @@ public class ArticleServiceImpl implements ArticleService{
     public List<String> findTagsByArticleEntity(ArticleEntity articleEntity){
         List<String> tags = new ArrayList<>();
         List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleEntity.getId());
+
+        if (articleTagEntityList.size() == 0) return tags;
+
         for(ArticleTagEntity entity : articleTagEntityList){
             tags.add(tagRepository.findById(entity.getTagId()).orElseThrow().getName());
         }

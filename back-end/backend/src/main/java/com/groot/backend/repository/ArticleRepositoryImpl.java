@@ -32,19 +32,20 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
     // 제목 + 내용 + 태그 검색
     @Override
-    public Page<ArticleEntity> search(String category, String keyword, PageRequest pageRequest) {
+    public Page<ArticleEntity> search(String category, String[] region, String keyword, PageRequest pageRequest) {
         articleEntity = QArticleEntity.articleEntity;
         QTagEntity tag = QTagEntity.tagEntity;
         QArticleTagEntity articleTag = QArticleTagEntity.articleTagEntity;
 
         List<ArticleEntity> articles = queryFactory
                 .selectFrom(articleEntity)
-                .join(articleTag).on(articleEntity.id.eq(articleTag.articleId))
-                .join(tag).on(articleTag.tagId.eq(tag.id))
-                .where(articleEntity.category.eq(category)
-                        .and(tag.name.eq(keyword)
+                .where(articleEntity.category.eq(category),
+                        eqRegions(region))
+                .leftJoin(articleTag).on(articleEntity.id.eq(articleTag.articleId))
+                .leftJoin(tag).on(articleTag.tagId.eq(tag.id))
+                .where(tag.name.eq(keyword)
                                 .or(articleEntity.title.contains(keyword))
-                                .or(articleEntity.content.contains(keyword)))
+                                .or(articleEntity.content.contains(keyword))
                 )
                 .orderBy(articleEntity.createdDate.desc())
                 .fetch().stream().distinct().collect(Collectors.toList());
