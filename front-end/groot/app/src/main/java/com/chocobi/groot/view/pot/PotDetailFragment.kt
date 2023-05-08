@@ -35,7 +35,8 @@ import retrofit2.Response
 
 
 @Suppress("DEPRECATION")
-class PotDetailFragment : Fragment() {
+class PotDetailFragment : Fragment(), PotBottomSheetListener {
+
 
     private val TAG = "PotDetailFragment"
     private var pot: Pot? = null
@@ -44,13 +45,17 @@ class PotDetailFragment : Fragment() {
     private lateinit var potNameText: TextView
     private lateinit var potPlantText: TextView
     private lateinit var potPlantImg: ImageView
+    private var potId:Int = 0
 
-
+    override fun onGetDetailRequested() {
+        getPotDetail(potId)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
+
 
     }
 
@@ -58,9 +63,10 @@ class PotDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(TAG, "onCreate")
         var rootView = inflater.inflate(R.layout.fragment_pot_detail, container, false)
         val mActivity = activity as MainActivity
-        val potId = arguments?.getInt("potId") ?: 0
+        potId = arguments?.getInt("potId") ?: 0
         getPotDetail(potId)
         potPlantImg = rootView.findViewById(R.id.potPlantImg)
         characterSceneView = rootView.findViewById(R.id.characterSceneView)
@@ -72,7 +78,7 @@ class PotDetailFragment : Fragment() {
 
         val settingBtn = rootView.findViewById<ImageButton>(R.id.settingBtn)
         settingBtn.setOnClickListener {
-            val potBottomSheet = PotBottomSheet(requireContext())
+            val potBottomSheet = PotBottomSheet(requireContext(), this)
             potBottomSheet.setPotId(potId)
             potBottomSheet.show(
                 mActivity.supportFragmentManager,
@@ -101,6 +107,8 @@ class PotDetailFragment : Fragment() {
         // Inflate the layout for this fragment
         return rootView
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -186,4 +194,8 @@ class PotDetailFragment : Fragment() {
         GlobalVariables.changeImgView(potPlantImg, pot?.imgPath.toString(), requireContext())
     }
 
+}
+
+interface PotBottomSheetListener {
+    fun onGetDetailRequested()
 }

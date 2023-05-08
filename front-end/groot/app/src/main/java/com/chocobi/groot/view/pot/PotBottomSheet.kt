@@ -39,7 +39,7 @@ import java.io.File
 import java.io.FileOutputStream
 
 
-class PotBottomSheet(context: Context) : BottomSheetDialogFragment() {
+class PotBottomSheet(context: Context, private val listener: PotBottomSheetListener) : BottomSheetDialogFragment() {
     private val TAG = "PotBottomSheet"
 
     private var potId: Int = 0
@@ -176,7 +176,9 @@ class PotBottomSheet(context: Context) : BottomSheetDialogFragment() {
                     Log.d("CommunityPostFragmentABCD", filePart.toString())
                     Log.d(TAG, "$body")
                     if (body != null) {
-                        Toast.makeText(context, "화분 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show()
+                        listener.onGetDetailRequested()
+                        Toast.makeText(requireContext(), "화분 이미지가 변경되었습니다.", Toast.LENGTH_SHORT).show()
+
                         dismiss()
                     }
                 }
