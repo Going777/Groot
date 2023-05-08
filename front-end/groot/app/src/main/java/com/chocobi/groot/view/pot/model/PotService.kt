@@ -31,6 +31,7 @@ interface PotService {
     @PUT("/api/pots/{potId}")
     fun changePotImg(
         @Path("potId") potId:Int,
+        @Part("pot") metaData: PotNameRequest?,
         @Part filePart: MultipartBody.Part?
     ): Call<PotImgResponse>
 
@@ -41,3 +42,7 @@ interface PotService {
         @Part filePart: MultipartBody.Part?
     ): Call<BasicResponse>
 }
+
+class PotNameRequest internal constructor(
+    val potName: String?,
+)

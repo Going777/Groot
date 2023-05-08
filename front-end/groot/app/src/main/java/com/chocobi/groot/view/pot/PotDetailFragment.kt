@@ -80,6 +80,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         settingBtn.setOnClickListener {
             val potBottomSheet = PotBottomSheet(requireContext(), this)
             potBottomSheet.setPotId(potId)
+            potBottomSheet.setPotName(pot?.potName.toString())
             potBottomSheet.show(
                 mActivity.supportFragmentManager,
                 potBottomSheet.tag
