@@ -333,9 +333,9 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public List<PlanDTO> weeklyDiaries(Long userId, LocalDateTime start, LocalDateTime end) {
         // 해당날짜에 해당하는 plan들 가져오기
-        List<PlanEntity> result = planRepository.findAllByDateTime(start, end);
-
-        return check;
+        List<PlanEntity> plans = planRepository.findAllByDateTime(start, end);
+        List<PlanDTO> result = new PlanEntity().toPlanDTOList(plans);
+        return result;
     }
 
     private void addPlan(UserEntity user, PotEntity pot, Integer code){

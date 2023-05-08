@@ -22,17 +22,17 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
 
         List<PlanEntity> plans = queryFactory.selectFrom(qPlan)
                 .where(qPlan.dateTime.between(start, end))
-                .execute();
+                .fetch();
         return plans;
     }
 
     @Override
-    public int updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId) {
+    public long updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId) {
         QPlanEntity qPlan = QPlanEntity.planEntity;
 
         long updateCnt = queryFactory.update(qPlan)
-                .set(qPlan.Done, true)
-                .set(qPlan.DateTime, LocalDateTime.now())
+                .set(qPlan.done, true)
+                .set(qPlan.dateTime, LocalDateTime.now())
                 .where(qPlan.code.eq(code), qPlan.potId.eq(potId))
                 .execute();
         return updateCnt;

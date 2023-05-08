@@ -8,5 +8,5 @@ import java.util.List;
 public interface PlanRepositoryCustom {
     List<PlanEntity> findAllByDateTime(LocalDateTime start, LocalDateTime end);
 
-    int updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId);
+    long updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId);
 }

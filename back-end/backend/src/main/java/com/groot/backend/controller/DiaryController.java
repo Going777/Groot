@@ -2,6 +2,7 @@ package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.dto.response.DiaryResponseDTO;
+import com.groot.backend.dto.response.PlanDTO;
 import com.groot.backend.entity.DiaryCheckEntity;
 import com.groot.backend.entity.DiaryEntity;
 import com.groot.backend.service.DiaryService;
@@ -187,7 +188,7 @@ public class DiaryController {
         LocalDateTime temp = LocalDateTime.now();
         LocalDateTime now = LocalDateTime.of(temp.getYear(), temp.getMonthValue(), temp.getDayOfMonth(), 0, 0, 0);
 
-        List<DiaryCheckEntity> result = diaryService.weeklyDiaries(userId, start, end);
+        List<PlanDTO> result = diaryService.weeklyDiaries(userId, start, end);
         if(result.isEmpty()){
             resultMap.put("msg", "주간 다이어리 리스트 조회를 실패하였습니다.");
             resultMap.put("result", FAIL);

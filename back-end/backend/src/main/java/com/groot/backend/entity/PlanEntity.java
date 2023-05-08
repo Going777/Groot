@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="plans")
@@ -47,15 +49,21 @@ public class PlanEntity {
     @JsonManagedReference
     private UserEntity userEntity;
 
-    public PlanDTO toPlanDTO(){
-        PlanDTO result = PlanDTO.builder()
-                .code(this.code)
-                .imgPath(this.potEntity.getImgPath())
-                .potName(this.potEntity.getName())
-                .dateTime(this.dateTime)
-                .potId(this.potId)
-                .userPK(this.userPK)
-                .build();
-        return result;
+    public List<PlanDTO> toPlanDTOList(List<PlanEntity> planEntities){
+        List<PlanDTO> dtoList = new ArrayList<>();
+        for(PlanEntity plan: planEntities){
+            PlanDTO result = PlanDTO.builder()
+                    .code(plan.getCode())
+                    .imgPath(plan.getPotEntity().getImgPath())
+                    .potName(plan.getPotEntity().getName())
+                    .dateTime(plan.getDateTime())
+                    .potId(plan.getPotId())
+                    .done(plan.isDone())
+                    .userPK(plan.getUserPK())
+                    .build();
+            dtoList.add(result);
+        }
+
+        return dtoList;
     }
 }

@@ -2,6 +2,7 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.dto.response.DiaryResponseDTO;
+import com.groot.backend.dto.response.PlanDTO;
 import com.groot.backend.entity.DiaryCheckEntity;
 import com.groot.backend.entity.DiaryEntity;
 import org.springframework.data.domain.Page;
@@ -33,5 +34,5 @@ public interface DiaryService {
 
     Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size);
 
-    List<DiaryCheckEntity> weeklyDiaries(Long userId, LocalDateTime start, LocalDateTime end);
+    List<PlanDTO> weeklyDiaries(Long userId, LocalDateTime start, LocalDateTime end);
 }

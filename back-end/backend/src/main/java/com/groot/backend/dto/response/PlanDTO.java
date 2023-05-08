@@ -16,4 +16,5 @@ public class PlanDTO {
     private LocalDateTime dateTime;
     private String potName;
     private String imgPath;
+    private boolean done;
 }
