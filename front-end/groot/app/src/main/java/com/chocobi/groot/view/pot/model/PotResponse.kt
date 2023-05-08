@@ -79,3 +79,19 @@ class DiaryRequest internal constructor(
     val sun: Boolean?,
     val nutrients: Boolean?
 )
+
+data class DiaryCheckStatusResponse(
+    val result: String,
+    val msg: String,
+    val diary: DiaryCheckStatus,
+)
+
+data class DiaryCheckStatus(
+    val potId: Int,
+    val userPK: Int,
+    val water: Boolean?,
+    val pruning: Boolean?,
+    val nutrients: Boolean?,
+    val bug: Boolean?,
+    val sun: Boolean?,
+)
