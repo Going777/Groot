@@ -259,6 +259,14 @@ class CommunityPostFragment : Fragment() {
             openGallery()
         } else {
             requestPermissions(
+//                권한 설정 수정
+                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+//                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
+                PERMISSION_GALLERY
+            )
+            requestPermissions(
+//                권한 설정 수정
+//                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
                 arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                 PERMISSION_GALLERY
             )
@@ -266,7 +274,11 @@ class CommunityPostFragment : Fragment() {
     }
 
     private fun allPermissionsGranted(): Boolean {
-        return arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES).all {
+        return arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE).all {
+            ContextCompat.checkSelfPermission(
+                requireContext(), it
+            ) == PackageManager.PERMISSION_GRANTED
+        } || arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES).all {
             ContextCompat.checkSelfPermission(
                 requireContext(), it
             ) == PackageManager.PERMISSION_GRANTED
