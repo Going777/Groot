@@ -445,6 +445,8 @@ class CommunityPostFragment : Fragment() {
 //
 //        Log.d("CommunityPostFragmentImageParts", "$imageParts")
 
+
+//        파일 첨부
         val imageParts = MultipartBody.Builder().setType(MultipartBody.FORM)
 
         if (files != null && files.size > 0) {
