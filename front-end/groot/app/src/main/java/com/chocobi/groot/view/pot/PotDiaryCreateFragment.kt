@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.pot
 
+import android.app.Activity
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
@@ -47,6 +48,8 @@ class PotDiaryCreateFragment : Fragment() {
     private var potPlant: String? = null
     private var imageFile: File? = null
 
+    private lateinit var mActivity: MainActivity
+
     private lateinit var attachedPhoto: ImageView
     private lateinit var attachPhotoSection: LinearLayout
     private lateinit var attachedPhotoSection: ConstraintLayout
@@ -74,7 +77,7 @@ class PotDiaryCreateFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
         val rootView = inflater.inflate(R.layout.fragment_pot_diary_create, container, false)
 
 //        변수 받기
@@ -110,16 +113,9 @@ class PotDiaryCreateFragment : Fragment() {
 //        첨부된 이미지 섹션
             val attachedPhotoSection =
                 rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
-            val attachedPhoto = rootView.findViewById<ImageView>(R.id.attachedPhoto)
 
             myImageView = rootView.findViewById(R.id.attachedPhoto)
 
-            Log.d(TAG, "onCreateView() 포토 이니셜라이즈")
-//        사진 첨부하기
-//        attachPhotoSection.setOnClickListener {
-//            mActivity.requirePermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_GALLERY)
-////            attachedPhotoSection.visibility = View.VISIBLE
-//        }
             attachPhotoSection.setOnClickListener {
                 mActivity.setGalleryStatus("pot_diary_create")
                 mActivity.requirePermissions(
@@ -157,13 +153,6 @@ class PotDiaryCreateFragment : Fragment() {
     }
 
     private fun filterChipGroup() {
-//        water = changeChipStatus(waterChip)
-//        pruning = changeChipStatus(potChip)
-//        bug = changeChipStatus(bugChip)
-//        sun = changeChipStatus(sunChip)
-//        nutrients = changeChipStatus(pillChip)
-//
-//        Log.d("PotDiaryCreateFragment", "filterChipGroup() $water $pruning $bug $sun $nutrients")
         waterChip.setOnCheckedChangeListener { buttonView, isChecked ->
             water = isChecked
         }
@@ -179,15 +168,6 @@ class PotDiaryCreateFragment : Fragment() {
         pillChip.setOnCheckedChangeListener { buttonView, isChecked ->
             nutrients = isChecked
         }
-    }
-
-    private fun changeChipStatus(chip: Chip): Boolean {
-        var targetStatus = false
-        chip.setOnCheckedChangeListener { buttonView, isChecked ->
-            targetStatus = isChecked
-        }
-        Log.d("PotDiaryCreateFragment", "changeChipStatus() $chip $targetStatus")
-        return targetStatus
     }
 
     private fun postDiaryBtnClick() {
@@ -207,13 +187,6 @@ class PotDiaryCreateFragment : Fragment() {
             filePart = MultipartBody.Part.createFormData("image", imageFile!!.name, requestFile)
         }
 
-        Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 아이디: $potId")
-        Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 물: $water")
-        Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 가지: $pruning")
-        Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 해충: $bug")
-        Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 해: $sun")
-        Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 영양: $nutrients")
-        Log.d("PotDiaryCreateFragment", "postDiary()작성할게요 이미지 파일: $imageFile")
         potService.requestPostDiary(
             DiaryRequest(
                 potId!!,
@@ -234,8 +207,9 @@ class PotDiaryCreateFragment : Fragment() {
                         var body = response.body()
                         Log.d(TAG, "$body")
                         if (body != null) {
-                            Log.d(TAG, "다이어리 작성 완료")
-                            Toast.makeText(context, "다이어리가 작성되었습니다", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "$potName 다이어리가 작성되었습니다", Toast.LENGTH_SHORT).show()
+//                            다이어리 페이지로 이동
+                            mActivity.changeFragment("pot_diary")
                         }
                     } else {
                         Log.d("PotDiaryCreateFragment", "onResponse() 다이어리 작성 실패ㅜㅜㅜ $response")
@@ -246,7 +220,6 @@ class PotDiaryCreateFragment : Fragment() {
                     Log.d(TAG, "다이어리 작성 실패")
                 }
             })
-
     }
 
     fun attachPhoto(uri: Uri) {

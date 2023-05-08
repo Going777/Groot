@@ -20,9 +20,18 @@ interface SearchService {
     @GET("/api/plants")
     fun requestSearchPlants(
         @Query("name") name: String? = null,
-        @Query("difficulty") difficulty: String? = null,
-        @Query("lux") lux: String? = null,
-        @Query("growth") growth: String? = null,
+        @Query("difficulty") difficulty1: String? = null,
+        @Query("difficulty") difficulty2: String? = null,
+        @Query("difficulty") difficulty3: String? = null,
+        @Query("lux") lux1: String? = null,
+        @Query("lux") lux2: String? = null,
+        @Query("lux") lux3: String? = null,
+        @Query("growth") growth1: String? = null,
+        @Query("growth") growth2: String? = null,
+        @Query("growth") growth3: String? = null,
+        @Query("growth") growth4: String? = null,
+        @Query("growth") growth5: String? = null,
+        @Query("growth") growth6: String? = null,
         @Query("page") page: Int? = null,
     ): Call<PlantSearchResponse>
 
