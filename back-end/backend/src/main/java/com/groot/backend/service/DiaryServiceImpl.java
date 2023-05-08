@@ -5,7 +5,7 @@ import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.dto.response.DiaryResponseDTO;
 import com.groot.backend.entity.DiaryEntity;
 import com.groot.backend.entity.DiaryCheckEntity;
-import com.groot.backend.entity.PlanEntity;
+//import com.groot.backend.entity.PlanEntity;
 import com.groot.backend.entity.PotEntity;
 import com.groot.backend.repository.DiaryCheckRepository;
 import com.groot.backend.repository.DiaryRepository;
