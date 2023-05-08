@@ -171,7 +171,6 @@ class ProfileBottomSheet(context: Context) : BottomSheetDialogFragment() {
                 basicImg.borderWidth = 0
                 profileImg.setImageURI(imageUri)
                 imgFile = uriToFile(imageUri)
-
             }
         }
     }

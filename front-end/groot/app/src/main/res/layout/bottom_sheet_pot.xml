@@ -7,11 +7,12 @@
     android:backgroundTint="@color/white"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingVertical="25dp"
-    android:paddingHorizontal="15dp">
+    android:paddingHorizontal="15dp"
+    android:paddingVertical="25dp">
 
 
     <TextView
+        android:id="@+id/sheetTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
@@ -21,10 +22,39 @@
         android:textStyle="bold" />
 
     <LinearLayout
+        android:id="@+id/settingPotSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:clickable="true"
+                android:text="화분 이미지 변경"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/editPotImg"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@color/white"
+                android:src="@drawable/ic_chevron_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View style="@style/BASIC_LINE" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -56,9 +86,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-
-            android:clickable="true">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:layout_width="match_parent"
@@ -86,13 +114,73 @@
 
 
     </LinearLayout>
-    <!--    <androidx.appcompat.widget.AppCompatButton-->
-    <!--        android:id="@+id/button_bottom_sheet"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:text="이 식물로 할래요"-->
-    <!--        android:backgroundTint="@color/main"-->
-    <!--        android:textColor="@color/white" />-->
+
+
+    <LinearLayout
+        android:id="@+id/potImgSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/attachPhotoSection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:gravity="center_vertical">
+
+            <ImageButton
+                android:id="@+id/potScanBtn"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@drawable/radius10"
+                android:backgroundTint="@color/background"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:src="@drawable/ic_camera" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:clickable="false"
+                android:duplicateParentState="true"
+                android:text="사진 첨부하기" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/potImg"
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:layout_marginVertical="10dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_rectangle"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_plant_image" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/editImgBottomBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/main"
+            android:text="식물 이미지 변경하기"
+            android:textColor="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/editImgCancelBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/grey"
+            android:text="취소"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
 
 
 </LinearLayout>
