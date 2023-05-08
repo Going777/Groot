@@ -48,6 +48,21 @@ public class ArticleController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
+        // 카테고리 확인
+        String category = articleDTO.getCategory();
+        if(!(category.equals("나눔") || category.equals("자유") || category.equals("QnA") || category.equals("Tip"))){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 카테고리입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // title, content 확인
+        if(articleDTO.getTitle().equals("") || articleDTO.getContent().equals("")){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","title 또는 content 내용이 존재하지 않습니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
         // 이미지 업로드
         String[] imgPaths = null;
         if(images != null) {
@@ -129,6 +144,14 @@ public class ArticleController {
         if(!userService.isExistedId(articleDTO.getUserPK())){
             resultMap.put("result", FAIL);
             resultMap.put("msg","존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 카테고리 확인
+        String category = articleDTO.getCategory();
+        if(!(category.equals("나눔") || category.equals("자유") || category.equals("QnA") || category.equals("Tip"))){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 카테고리입니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
 

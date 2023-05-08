@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Display.Mode
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +36,8 @@ import retrofit2.Response
 
 
 @Suppress("DEPRECATION")
-class PotDetailFragment : Fragment() {
+class PotDetailFragment : Fragment(), PotBottomSheetListener {
+
 
     private val TAG = "PotDetailFragment"
     private var pot: Pot? = null
@@ -44,13 +46,18 @@ class PotDetailFragment : Fragment() {
     private lateinit var potNameText: TextView
     private lateinit var potPlantText: TextView
     private lateinit var potPlantImg: ImageView
+    private var potId: Int = 0
+    private var modelNode: ModelNode? = null
 
-
+    override fun onGetDetailRequested() {
+        getPotDetail(potId)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
+
 
     }
 
@@ -58,9 +65,10 @@ class PotDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d(TAG, "onCreate")
         var rootView = inflater.inflate(R.layout.fragment_pot_detail, container, false)
         val mActivity = activity as MainActivity
-        val potId = arguments?.getInt("potId") ?: 0
+        potId = arguments?.getInt("potId") ?: 0
         getPotDetail(potId)
         potPlantImg = rootView.findViewById(R.id.potPlantImg)
         characterSceneView = rootView.findViewById(R.id.characterSceneView)
@@ -72,8 +80,9 @@ class PotDetailFragment : Fragment() {
 
         val settingBtn = rootView.findViewById<ImageButton>(R.id.settingBtn)
         settingBtn.setOnClickListener {
-            val potBottomSheet = PotBottomSheet(requireContext())
+            val potBottomSheet = PotBottomSheet(requireContext(), this)
             potBottomSheet.setPotId(potId)
+            potBottomSheet.setPotName(pot?.potName.toString())
             potBottomSheet.show(
                 mActivity.supportFragmentManager,
                 potBottomSheet.tag
@@ -101,6 +110,7 @@ class PotDetailFragment : Fragment() {
         // Inflate the layout for this fragment
         return rootView
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -166,9 +176,13 @@ class PotDetailFragment : Fragment() {
     }
 
     fun setCharacterSceneView() {
+        if (modelNode != null) {
+            characterSceneView.removeChild(modelNode!!)
+        }
+
         characterSceneView.backgroundColor = Color(255.0f, 255.0f, 255.0f, 255.0f)
 
-        val modelNode = ModelNode().apply {
+        modelNode = ModelNode().apply {
             loadModelGlbAsync(
                 glbFileLocation = pot?.characterGLBPath
                     ?: "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
@@ -177,8 +191,12 @@ class PotDetailFragment : Fragment() {
                 centerOrigin = Position(x = 0f, y = 0f, z = 0f),
             )
         }
-        characterSceneView.addChild(modelNode)
+        if (modelNode != null) {
+
+            characterSceneView.addChild(modelNode!!)
+        }
     }
+
 
     fun setPlantContent() {
         potNameText.text = pot?.potName
@@ -186,4 +204,8 @@ class PotDetailFragment : Fragment() {
         GlobalVariables.changeImgView(potPlantImg, pot?.imgPath.toString(), requireContext())
     }
 
+}
+
+interface PotBottomSheetListener {
+    fun onGetDetailRequested()
 }

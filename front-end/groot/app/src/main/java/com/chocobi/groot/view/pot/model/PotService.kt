@@ -4,17 +4,19 @@ import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.MsgResponse
 import okhttp3.MultipartBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface PotService {
     @GET("/api/pots/{potId}")
     fun getPotDetail(
-        @Path("potId") potId:Int
+        @Path("potId") potId: Int
     ): Call<PotResponse>
 
     @GET("/api/pots")
@@ -23,8 +25,22 @@ interface PotService {
 
     @DELETE("/api/pots/{potId}")
     fun deletePot(
-        @Path("potId") potId:Int
+        @Path("potId") potId: Int
     ): Call<MsgResponse>
+
+    @PUT("/api/pots/{potId}/status")
+    fun gonePot(
+        @Path("potId") potId: Int,
+        @Body params: PotStatusRequest
+    ): Call<MsgResponse>
+
+    @Multipart
+    @PUT("/api/pots/{potId}")
+    fun changePotImg(
+        @Path("potId") potId: Int,
+        @Part("pot") metaData: PotNameRequest?,
+        @Part filePart: MultipartBody.Part?
+    ): Call<PotImgResponse>
 
     @Multipart
     @POST("/api/diaries")
@@ -33,3 +49,11 @@ interface PotService {
         @Part filePart: MultipartBody.Part?
     ): Call<BasicResponse>
 }
+
+class PotNameRequest internal constructor(
+    val potName: String?,
+)
+
+class PotStatusRequest internal constructor(
+    val status: String
+)

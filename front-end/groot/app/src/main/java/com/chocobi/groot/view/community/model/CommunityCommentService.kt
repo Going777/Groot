@@ -5,6 +5,7 @@ import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -25,9 +26,13 @@ interface CommunityCommentService {
 }
 
 interface CommunityCommentPostService {
-    @POST("api/comments/")
+    @POST("api/comments")
     fun requestCommentPost(
-        @Query("articleId") articleId: Int,
-        @Query("content") content: String
+        @Body params: CommentPostRequest
     ) : Call<BasicResponse>
 }
+
+class CommentPostRequest internal constructor(
+    val articleId: Int,
+    val content: String,
+)

@@ -129,7 +129,7 @@ public class PotController {
     @Operation(summary = "Modify pot info", description = "Image only")
     public ResponseEntity<Map<String, Object>> modifyPot(
             HttpServletRequest request, @PathVariable Long potId,
-            @RequestPart("img") @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
+            @RequestPart(value = "img", required = false) @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
             @RequestPart(value = "pot", required = false) @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) PotModifyDTO potModifyDTO) {
 
         Long userPK;
@@ -149,6 +149,12 @@ public class PotController {
             result.put("msg", "화분 정보 변경에 성공했습니다.");
             result.put("img", imgPath);
             status = HttpStatus.OK;
+        } catch (AccessDeniedException e) {
+            status = HttpStatus.FORBIDDEN;
+            result.put("msg", "허가되지 않은 접근입니다.");
+        } catch (NoSuchElementException e) {
+            status = HttpStatus.NOT_FOUND;
+            result.put("msg", "존재하지 않는 화분입니다.");
         } catch (IOException e) {
             result.put("msg", "파일 업로드에 실패했습니다.");
             status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -180,9 +186,9 @@ public class PotController {
             int ret = potService.deletePot(userPK, potId);
             result.put("msg", "성공적으로 삭제 되었습니다.");
             status = HttpStatus.OK;
-        } catch (IllegalAccessException e) {
-            result.put("msg", "UNAUTHORIZED");
+        } catch (AccessDeniedException e) {
             status = HttpStatus.FORBIDDEN;
+            result.put("msg", "허가되지 않은 접근입니다.");
         } catch (NoSuchElementException e) {
             result.put("msg", "존재하지 않는 화분입니다.");
             status = HttpStatus.NOT_FOUND;
@@ -217,9 +223,9 @@ public class PotController {
             result.put("msg", "상태 변경에 성공했습니다.");
             result.put("status", potStatus);
             status = HttpStatus.OK;
-        } catch (IllegalAccessException e) {
-            result.put("msg", "UNAUTHORIZED");
+        } catch (AccessDeniedException e) {
             status = HttpStatus.FORBIDDEN;
+            result.put("msg", "허가되지 않은 접근입니다.");
         } catch (NoSuchElementException e) {
             result.put("msg", "존재하지 않는 화분입니다.");
             status = HttpStatus.NOT_FOUND;

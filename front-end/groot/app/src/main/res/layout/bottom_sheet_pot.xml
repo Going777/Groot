@@ -37,7 +37,35 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
                 android:clickable="true"
-                android:text="화분 이미지 변경"
+                android:text="이름 변경"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/editPotName"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@color/white"
+                android:src="@drawable/ic_chevron_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View style="@style/BASIC_LINE" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:clickable="true"
+                android:text="이미지 변경"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
                 android:clickable="true"
-                android:text="화분 위치 추천"
+                android:text="화분 위치 추천 받기"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -101,6 +129,34 @@
 
             <ImageButton
                 android:id="@+id/deletePot"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@color/white"
+                android:src="@drawable/ic_chevron_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View style="@style/BASIC_LINE" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:clickable="true"
+                android:text="화분 떠나보내기"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/gonePot"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
@@ -157,19 +213,20 @@
             android:id="@+id/potImg"
             android:layout_width="wrap_content"
             android:layout_height="300dp"
+            android:layout_gravity="center"
             android:layout_marginVertical="10dp"
             android:adjustViewBounds="true"
             android:background="@drawable/round_rectangle"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_plant_image" />
+            android:visibility="gone" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/editImgBottomBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/main"
-            android:text="식물 이미지 변경하기"
+            android:text="화분 이미지 변경하기"
             android:textColor="@color/white" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -180,6 +237,44 @@
             android:text="취소"
             android:textColor="@color/white" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/potNameSection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="화분 이름"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/nameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/point"
+            android:ems="20"
+            android:inputType="text" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/editNameBottomBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/main"
+            android:text="화분 이름 변경하기"
+            android:textColor="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/editNameCancelBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/grey"
+            android:text="취소"
+            android:textColor="@color/white" />
     </LinearLayout>
 
 
