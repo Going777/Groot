@@ -30,4 +30,6 @@ public class DiaryDTO {
     private Boolean bug;
 
     private Boolean sun;
+
+    private Long diaryId;
 }

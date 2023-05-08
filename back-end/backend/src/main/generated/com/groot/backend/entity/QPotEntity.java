@@ -42,6 +42,8 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
+    public final NumberPath<Integer> level = createNumber("level", Integer.class);
+
     public final StringPath name = createString("name");
 
     public final DateTimePath<java.time.LocalDateTime> nutrientsDate = createDateTime("nutrientsDate", java.time.LocalDateTime.class);

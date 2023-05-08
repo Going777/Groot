@@ -2,6 +2,7 @@ package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.dto.response.DiaryResponseDTO;
+import com.groot.backend.entity.DiaryCheckEntity;
 import com.groot.backend.entity.DiaryEntity;
 import com.groot.backend.service.DiaryService;
 import com.groot.backend.util.JwtTokenProvider;
@@ -37,13 +38,28 @@ public class DiaryController {
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
+//        Date now = new Date();
+//        SimpleDateFormat sDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//        String nowFormat = sDate.format(now);
+        // 오늘 다이어리를 작성한 이력이 있을 경우
+        DiaryCheckEntity find = diaryService.isExistByCreatedDate(diaryDTO.getPotId());
+        if(find!=null){
+            if(diaryService.saveAndUpdateDiary(userId, file, diaryDTO, find)==null){
+                resultMap.put("msg", "다이어리 추가 및 수정 실패");
+                resultMap.put("result", FAIL);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
+            }
+            resultMap.put("msg","다이어리 추가 및 수정 완료");
+            resultMap.put("result", SUCCESS);
+            return ResponseEntity.ok().body(resultMap);
+        }
 
         if(diaryService.saveDiary(userId, file, diaryDTO)==null){
-            resultMap.put("msg", "다이어리 작성 실패");
+            resultMap.put("msg", "다이어리 추가 및 작성 실패");
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
-        resultMap.put("msg","다이어리 작성 완료");
+        resultMap.put("msg","다이어리 추가 및 작성 완료");
         resultMap.put("result", SUCCESS);
         return ResponseEntity.ok().body(resultMap);
 
@@ -108,7 +124,19 @@ public class DiaryController {
         return ResponseEntity.ok().body(resultMap);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/check/{potId}")
+    public ResponseEntity checkDiary(@PathVariable Long potId){
+        Map resultMap = new HashMap();
+        DiaryCheckEntity result = diaryService.isExistByCreatedDate(potId);
+        // 없든 있든 결과 보내줌
+        resultMap.put("diary", result==null?null:result);
+        resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "해당 사용자의 다이어리 조회에 성공하였습니다.");
+        return ResponseEntity.ok().body(resultMap);
+    }
+
+
+    @GetMapping("/list") // 해당 사용자의 모든 다이어리 리스트
     public ResponseEntity diaryList(@RequestParam Integer page, @RequestParam Integer size, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
@@ -140,10 +168,11 @@ public class DiaryController {
         return ResponseEntity.ok().body(resultMap);
     }
 
-    @GetMapping("/weekly")
-    public ResponseEntity weeklyDiary(){
+    @GetMapping("/weekly")  // 주간 다이어리 리스트
+    public ResponseEntity weeklyDiary(HttpServletRequest request){
         Map resultMap = new HashMap();
-        List<DiaryEntity> result = diaryService.weeklyDiaries();
+        Long userId = JwtTokenProvider.getIdByAccessToken(request);
+        List<DiaryCheckEntity> result = diaryService.weeklyDiaries(userId);
         if(result.isEmpty()){
             resultMap.put("msg", "주간 다이어리 리스트 조회를 실패하였습니다.");
             resultMap.put("result", FAIL);
