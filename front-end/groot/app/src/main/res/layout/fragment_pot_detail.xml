@@ -69,55 +69,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/potDetailChipGroup"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:translationZ="100dp"
-                    app:chipSpacingHorizontal="15dp"
-                    app:singleSelection="true">
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tabBtn1"
-                        style="@style/PLANT_CHIP"
-                        app:chipBackgroundColor="@color/plant_chip_water_checked_bg_color"
-                        app:chipIcon="@drawable/ic_water"
-                        app:chipIconTint="@color/plant_chip_water_checked_icon_color"
-                        app:chipStrokeColor="@color/plant_chip_water_checked_icon_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tabBtn2"
-                        style="@style/PLANT_CHIP"
-                        app:chipBackgroundColor="@color/plant_chip_pot_checked_bg_color"
-                        app:chipIcon="@drawable/ic_pot"
-                        app:chipIconTint="@color/plant_chip_pot_checked_icon_color"
-                        app:chipStrokeColor="@color/plant_chip_pot_checked_icon_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tabBtn3"
-                        style="@style/PLANT_CHIP"
-                        app:chipBackgroundColor="@color/plant_chip_bug_checked_bg_color"
-                        app:chipIcon="@drawable/ic_bug"
-                        app:chipIconTint="@color/plant_chip_bug_checked_icon_color"
-                        app:chipStrokeColor="@color/plant_chip_bug_checked_icon_color"
-                        app:chipStrokeWidth="0dp" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tabBtn4"
-                        style="@style/PLANT_CHIP"
-                        app:chipBackgroundColor="@color/plant_chip_sun_checked_bg_color"
-                        app:chipIcon="@drawable/ic_sunny"
-                        app:chipIconTint="@color/plant_chip_sun_checked_icon_color"
-                        app:chipStrokeColor="@color/plant_chip_sun_checked_icon_color" />
-
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/tabBtn5"
-                        style="@style/PLANT_CHIP"
-                        app:chipBackgroundColor="@color/plant_chip_pill_checked_bg_color"
-                        app:chipIcon="@drawable/ic_pill"
-                        app:chipIconTint="@color/plant_chip_pill_checked_icon_color"
-                        app:chipStrokeColor="@color/plant_chip_pill_checked_icon_color" />
-                </com.google.android.material.chip.ChipGroup>
                 <TextView
                     android:id="@+id/potPlant"
                     android:layout_width="100dp"
@@ -199,6 +151,58 @@
                 android:progress="60"
                 android:progressBackgroundTint="@color/grey"
                 android:progressTint="@color/point" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/potDetailChipGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center"
+                android:translationZ="100dp"
+                app:chipSpacingHorizontal="15dp"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/tabBtn1"
+                    style="@style/PLANT_CHIP"
+                    app:chipBackgroundColor="@color/plant_chip_water_checked_bg_color"
+                    app:chipIcon="@drawable/ic_water"
+                    app:chipIconTint="@color/plant_chip_water_checked_icon_color"
+                    app:chipStrokeColor="@color/plant_chip_water_checked_icon_color" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/tabBtn2"
+                    style="@style/PLANT_CHIP"
+                    app:chipBackgroundColor="@color/plant_chip_pot_checked_bg_color"
+                    app:chipIcon="@drawable/ic_pot"
+                    app:chipIconTint="@color/plant_chip_pot_checked_icon_color"
+                    app:chipStrokeColor="@color/plant_chip_pot_checked_icon_color" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/tabBtn3"
+                    style="@style/PLANT_CHIP"
+                    app:chipBackgroundColor="@color/plant_chip_bug_checked_bg_color"
+                    app:chipIcon="@drawable/ic_bug"
+                    app:chipIconTint="@color/plant_chip_bug_checked_icon_color"
+                    app:chipStrokeColor="@color/plant_chip_bug_checked_icon_color"
+                    app:chipStrokeWidth="0dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/tabBtn4"
+                    style="@style/PLANT_CHIP"
+                    app:chipBackgroundColor="@color/plant_chip_sun_checked_bg_color"
+                    app:chipIcon="@drawable/ic_sunny"
+                    app:chipIconTint="@color/plant_chip_sun_checked_icon_color"
+                    app:chipStrokeColor="@color/plant_chip_sun_checked_icon_color" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/tabBtn5"
+                    style="@style/PLANT_CHIP"
+                    app:chipBackgroundColor="@color/plant_chip_pill_checked_bg_color"
+                    app:chipIcon="@drawable/ic_pill"
+                    app:chipIconTint="@color/plant_chip_pill_checked_icon_color"
+                    app:chipStrokeColor="@color/plant_chip_pill_checked_icon_color" />
+            </com.google.android.material.chip.ChipGroup>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
