@@ -4,6 +4,7 @@ import com.groot.backend.dto.request.PlantSearchDTO;
 import com.groot.backend.dto.response.PlantDetailDTO;
 import com.groot.backend.dto.response.PlantIdentificationDTO;
 import com.groot.backend.dto.response.PlantThumbnailDTO;
+import com.groot.backend.dto.response.PotListDTO;
 import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.repository.PlantRepository;
 import com.groot.backend.util.JsonParserUtil;
@@ -127,7 +128,7 @@ public class PlantServiceImpl implements PlantService{
         file.delete();
 
         if(response.getStatusCode() == HttpStatus.OK) {
-            logger.info("Failed to get response. URL : {}, API_KEY : {}", plantNetUrl, plantNetApiKey);
+//            logger.info("Failed to get response. URL : {}, API_KEY : {}", plantNetUrl, plantNetApiKey);
             String[][] result = JsonParserUtil.plantNameParser(response.getBody());
             return searchFromDB(result);
         }
@@ -203,22 +204,53 @@ public class PlantServiceImpl implements PlantService{
      */
     private PlantIdentificationDTO searchFromDB(String[][] result) {
         logger.info("search {} from database", result[0][0]);
-        PlantEntity plantEntity = plantRepository.findBySciNameStartsWith(result[0][0]);
+        String regex = "";
+        for(int i=0; i< result.length; i++) {
+//            regex += result[i][0].split(" ")[0];
+            // 2 depth searching
+            regex += result[i][0];
+            if(i != result.length - 1) regex += "|";
+        };
+        logger.info("[2 depth] select REGEXP : {}", regex);
+        List<PlantEntity> plantEntities = plantRepository.findBySciNameRegex(regex);
 
-        if (plantEntity != null) {
-            return PlantIdentificationDTO.builder()
-                    .plantId(plantEntity.getId())
-                    .krName(plantEntity.getKrName())
-                    .sciName(plantEntity.getSciName())
-                    .score((int)(Float.parseFloat(result[0][1]) * 100))
-                    .build();
+        logger.info("plants found : {}", plantEntities.size());
+        if(plantEntities.size() == 0) {
+            regex = "";
+            for(int i=0; i<result.length; i++) {
+                regex += result[i][0].split(" ")[0];
+                if(i != result.length - 1) regex += "|";
+            }
+            logger.info("[1 depth] select REGEXP : {}", regex);
+            plantEntities = plantRepository.findBySciNameRegex(regex);
+        }
 
+        if(plantEntities.size() > 0) {
+            logger.info("1 depth searching found : {}", plantEntities.size());
+            PlantEntity plantEntity = plantEntities.get(0);
+            return buildIdentificationDTO(plantEntity, result[0][1]);
         }
         // return for not found
         else {
+            logger.info("Failed to find plant from db (1 depth)");
             return defaultReturn(11);
         }
 //        return null;
+    }
+
+    /**
+     * Build PlantIdentificationDTO by PlantEntity
+     * @param plantEntity
+     * @param score as String, will parse as integer automatically
+     * @return PlantIdentificationDTO
+     */
+    private PlantIdentificationDTO buildIdentificationDTO(PlantEntity plantEntity, String score) {
+        return PlantIdentificationDTO.builder()
+                .plantId(plantEntity.getId())
+                .krName(plantEntity.getKrName())
+                .sciName(plantEntity.getSciName())
+                .score((int)(Float.parseFloat(score) * 100))
+                .build();
     }
 
     private PlantIdentificationDTO defaultReturn(int score) {
