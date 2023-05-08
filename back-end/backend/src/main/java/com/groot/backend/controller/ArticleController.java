@@ -239,9 +239,10 @@ public class ArticleController {
         }
     }
 
-    // 게시글 검색 (제목 검색)
+    // 게시글 검색 (지역+카테고리 필터링, 제목+내용+태그 검색)
     @GetMapping("/search")
     public ResponseEntity searchArticle(HttpServletRequest request,
+                                        @RequestParam String[] region,
                                         @RequestParam String category,
                                         @RequestParam String keyword,
                                         @RequestParam Integer page,
@@ -263,7 +264,7 @@ public class ArticleController {
         }
 
         try{
-            Page<ArticleListDTO> result = articleService.searchArticle(category, keyword, userPK, page, size);
+            Page<ArticleListDTO> result = articleService.searchArticle(category, region, keyword, userPK, page, size);
             if(result == null){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg","존재하지 않는 page 번호 입니다.");
