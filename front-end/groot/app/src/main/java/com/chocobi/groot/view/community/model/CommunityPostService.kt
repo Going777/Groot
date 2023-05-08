@@ -13,7 +13,9 @@ interface CommunityPostService {
     fun requestCommunityPost(
 //        input 정의
         @Part("articleDTO") metadata: ArticlePostRequest,
-        @Part images: MutableList<MultipartBody.Part>?
+        @Part images1: MultipartBody.Part?,
+        @Part images2: MultipartBody.Part?,
+        @Part images3: MultipartBody.Part?,
     ) : Call<CommunityPostResponse> // output 정의
 }
 
