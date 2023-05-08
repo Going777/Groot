@@ -1,6 +1,8 @@
 package com.chocobi.groot.view.pot
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,11 +11,21 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.ModelDiary
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
+import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
 import com.chocobi.groot.view.pot.adapter.PotDiaryListRVAdapter
 import com.chocobi.groot.view.pot.adapter.PotListRVAdapter
+import com.chocobi.groot.view.pot.model.Pot
+import com.chocobi.groot.view.pot.model.PotListResponse
+import com.chocobi.groot.view.pot.model.PotService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,21 +38,21 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class PotDiaryFragment : Fragment() {
+    private val TAG = "PotDiaryFragment"
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
+    private lateinit var potListRV: RecyclerView
+    private var potRvAdapter : PotListRVAdapter? = null
     private lateinit var adapter: PotDiaryListRVAdapter
     private lateinit var frameLayoutProgress: FrameLayout
+    private var potList: List<Pot>? = null
 
 
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
         }
     }
 
@@ -49,31 +61,12 @@ class PotDiaryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_pot_diary, container, false)
+        val mActivity = activity as MainActivity
         findViews(rootView)
         setListeners()
         initList()
         reload()
-
-        val potItems = mutableListOf<String>()
-
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-        potItems.add("산세산세")
-
-        val potListRV = rootView.findViewById<RecyclerView>(R.id.potListRecyclerView)
-        val potListRvAdapter = PotListRVAdapter(potItems)
-        potListRV.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        potListRV.adapter = potListRvAdapter
+        getPotList(mActivity)
 
         return rootView
     }
@@ -82,6 +75,7 @@ class PotDiaryFragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+        potListRV = view.findViewById(R.id.potListRecyclerView)
     }
 
     private fun setListeners() {
@@ -155,5 +149,45 @@ class PotDiaryFragment : Fragment() {
         }
 
         return list
+    }
+
+    fun getPotList(mActivity: MainActivity) {
+        var retrofit = RetrofitClient.getClient()!!
+        var potService = retrofit.create(PotService::class.java)
+        potService.getPotList().enqueue(object :
+            Callback<PotListResponse> {
+            override fun onResponse(
+                call: Call<PotListResponse>,
+                response: Response<PotListResponse>
+            ) {
+                val body = response.body()
+                if (body != null && response.code() == 200) {
+                    Log.d(TAG, "$body")
+                    Log.d(TAG, "body: $body")
+                    Log.d(TAG, "body: ${body.pots.size}")
+                    potList = body.pots
+                    setRecyclerView(potList!!, mActivity)
+
+
+                } else {
+                    Log.d(TAG, "실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<PotListResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+        })
+    }
+
+    fun setRecyclerView(potList:List<Pot>, mActivity:MainActivity) {
+
+        potRvAdapter = PotListRVAdapter(potList)
+        potListRV.layoutManager =
+            LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false)
+        potListRV.adapter = potRvAdapter
+
+//        potRvAdapter?.setItemClickListener(object : PotCollectionRVAdapter.ItemClickListener {})
+
     }
 }

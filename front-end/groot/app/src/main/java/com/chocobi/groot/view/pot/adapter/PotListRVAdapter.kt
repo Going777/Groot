@@ -1,14 +1,21 @@
 package com.chocobi.groot.view.pot.adapter
 
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.view.pot.model.Pot
+import java.lang.ref.WeakReference
 
-class PotListRVAdapter(val items: MutableList<String>) :
+class PotListRVAdapter(val items: List<Pot>) :
     RecyclerView.Adapter<PotListRVAdapter.ViewHolder>() {
 
     private val TAG = "PotListRVAdapter"
@@ -49,10 +56,28 @@ class PotListRVAdapter(val items: MutableList<String>) :
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private var view: WeakReference<View> = WeakReference(itemView)
 
-        fun bindItems(item: String) {
+        fun bindItems(item: Pot) {
             val rv_text = itemView.findViewById<TextView>(R.id.potName)
-            rv_text.text = item
+            rv_text.text = item.potName
+            val potImg = itemView.findViewById<ImageView>(R.id.potImage)
+            potImg.post {
+                view.get()?.let {
+                    ThreadUtil.startThread {
+                        val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                            .asBitmap()
+                            .load(item.imgPath)
+                            .submit(potImg.width, potImg.height)
+
+                        val bitmap = futureTarget.get()
+
+                        ThreadUtil.startUIThread(0) {
+                            potImg.setImageBitmap(bitmap)
+                        }
+                    }
+                }
+            }
         }
     }
 
