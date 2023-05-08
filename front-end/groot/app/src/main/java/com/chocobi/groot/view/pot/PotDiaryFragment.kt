@@ -20,9 +20,12 @@ import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
 import com.chocobi.groot.view.pot.adapter.PotDiaryListRVAdapter
 import com.chocobi.groot.view.pot.adapter.PotListRVAdapter
+import com.chocobi.groot.view.pot.model.Date
+import com.chocobi.groot.view.pot.model.DateTime
 import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotListResponse
 import com.chocobi.groot.view.pot.model.PotService
+import com.chocobi.groot.view.pot.model.Time
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,12 +45,26 @@ class PotDiaryFragment : Fragment() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var potListRV: RecyclerView
-    private var potRvAdapter : PotListRVAdapter? = null
+    private var potRvAdapter: PotListRVAdapter? = null
     private lateinit var adapter: PotDiaryListRVAdapter
     private lateinit var frameLayoutProgress: FrameLayout
-    private var potList: List<Pot>? = null
-
-
+    private var potList: MutableList<Pot>? = null
+    private val firstItem: Pot = Pot(
+        0,
+        0,
+        "",
+        "",
+        "",
+        0,
+        DateTime(Date(0, 0, 0), Time(0, 0, 0, 0)),
+        null,
+        null,
+        null,
+        false,
+        0,
+        "",
+        "",
+    )
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,7 +182,10 @@ class PotDiaryFragment : Fragment() {
                     Log.d(TAG, "$body")
                     Log.d(TAG, "body: $body")
                     Log.d(TAG, "body: ${body.pots.size}")
-                    potList = body.pots
+                    potList = body.pots.toMutableList()
+                    potList!!.add(0, firstItem)
+
+
                     setRecyclerView(potList!!, mActivity)
 
 
@@ -180,14 +200,35 @@ class PotDiaryFragment : Fragment() {
         })
     }
 
-    fun setRecyclerView(potList:List<Pot>, mActivity:MainActivity) {
+    fun setRecyclerView(potList: List<Pot>, mActivity: MainActivity) {
 
         potRvAdapter = PotListRVAdapter(potList)
         potListRV.layoutManager =
             LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false)
         potListRV.adapter = potRvAdapter
+        potRvAdapter!!.itemClick = object : PotListRVAdapter.ItemClick {
+            override fun onClick(view: View, position: Int) {
+                clickDiaryPot(potList[position].potId)
+            }
+        }
+    }
 
-//        potRvAdapter?.setItemClickListener(object : PotCollectionRVAdapter.ItemClickListener {})
+    private fun clickDiaryPot(potId: Int) {
+        if (potId == 0) {
+//            전체 다이어리 조회
+            getAllDiary()
+        } else {
+//            화분 다이어리 조회
+            getPotDiary(potId)
+        }
+
+    }
+
+    private fun getAllDiary() {
+
+    }
+
+    private fun getPotDiary(potId: Int) {
 
     }
 }
