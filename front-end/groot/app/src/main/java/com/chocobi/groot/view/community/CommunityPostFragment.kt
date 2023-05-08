@@ -33,6 +33,7 @@ import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -46,6 +47,8 @@ import java.io.FileOutputStream
 @Suppress("DEPRECATION")
 class CommunityPostFragment : Fragment() {
 
+    private val TAG = "CommunityPostFragment"
+
     private lateinit var postImageAdapter: PostImageAdapter
     private val imageList: ArrayList<File?> = ArrayList()
     private val maxImageCnt = 3
@@ -53,22 +56,25 @@ class CommunityPostFragment : Fragment() {
     private var imgFile: File? = null
     private var imageFiles: ArrayList<File> = ArrayList()
     private var imageArray: Array<File?>? = null
+    private var thelist: MutableList<MultipartBody.Part?> = mutableListOf(null, null, null)
 
     private lateinit var tagRecyclerView: RecyclerView
     private lateinit var tagInput: EditText
 
 
-
-
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_community_post, container, false)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         val context: Context = requireContext()
         postImageAdapter = PostImageAdapter(imageList, context)
         recyclerView.adapter = postImageAdapter
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
 
 
         // 태그를 보여줄 RecyclerView와 입력을 받을 EditText를 레이아웃에서 참조합니다.
@@ -152,11 +158,9 @@ class CommunityPostFragment : Fragment() {
 //        }
 
 
-
         // 등록 버튼 클릭 시 제목과 내용 입력값
-        toPostListBtn.setOnClickListener(View.OnClickListener{
-            postArticle(category, title, content, imageArray)
-
+        toPostListBtn.setOnClickListener(View.OnClickListener {
+            postArticle(category, title, content, imageList)
         })
 
         // 뒤로가기 버튼 클릭시 게시판 목록으로 돌아가기
@@ -170,7 +174,6 @@ class CommunityPostFragment : Fragment() {
         }
 
 
-
         // 제목과 내용 글자 수 체크 및 제한
         var titleCnt = view.findViewById<TextView>(R.id.titleCnt)
         var contentCnt = view.findViewById<TextView>(R.id.contentCnt)
@@ -179,21 +182,20 @@ class CommunityPostFragment : Fragment() {
         var contentCntValue = 0
 
 
-
-
         val titleInput = view.findViewById<EditText>(R.id.titleInput)
         val contentInput = view.findViewById<EditText>(R.id.contentInput)
 
         // 글자 수 체크 및 제한
         fun textWatcher() {
-            titleInput.addTextChangedListener(object: TextWatcher {
+            titleInput.addTextChangedListener(object : TextWatcher {
                 @SuppressLint("SetTextI18n")
                 override fun afterTextChanged(s: Editable?) {
                     titleCntValue = titleInput.length()
                     titleCnt.text = "$titleCntValue / 30"
 
-                    if(titleInput.text.length >= 30) {
-                        Toast.makeText(requireContext(),"제목은 30자까지 입력 가능합니다.", Toast.LENGTH_LONG).show()
+                    if (titleInput.text.length >= 30) {
+                        Toast.makeText(requireContext(), "제목은 30자까지 입력 가능합니다.", Toast.LENGTH_LONG)
+                            .show()
                     }
 //                    Alert 코드
 //                    if (titleInput.text.length >= 30) {
@@ -201,21 +203,29 @@ class CommunityPostFragment : Fragment() {
 //                        builder.setMessage("30자 이내로 입력해주세요.").setPositiveButton("확인", null).show()
 //                    }
                 }
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                     // 입력하기 전에 호출됩니다.
                 }
+
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     // 입력 중에 호출됩니다.
                 }
             })
-            contentInput.addTextChangedListener(object: TextWatcher {
+            contentInput.addTextChangedListener(object : TextWatcher {
                 @SuppressLint("SetTextI18n")
                 override fun afterTextChanged(s: Editable?) {
                     contentCntValue = contentInput.length()
                     contentCnt.text = "$contentCntValue / 1500"
 
-                    if(contentInput.text.length >= 1500) {
-                        Toast.makeText(requireContext(),"내용은 1500자까지 입력 가능합니다.", Toast.LENGTH_LONG).show()
+                    if (contentInput.text.length >= 1500) {
+                        Toast.makeText(requireContext(), "내용은 1500자까지 입력 가능합니다.", Toast.LENGTH_LONG)
+                            .show()
                     }
 //                    Alert 코드
 //                    if (titleInput.text.length >= 30) {
@@ -223,9 +233,16 @@ class CommunityPostFragment : Fragment() {
 //                        builder.setMessage("30자 이내로 입력해주세요.").setPositiveButton("확인", null).show()
 //                    }
                 }
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
                     // 입력하기 전에 호출됩니다.
                 }
+
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     // 입력 중에 호출됩니다.
                 }
@@ -236,6 +253,7 @@ class CommunityPostFragment : Fragment() {
 
         return view
     }
+
     private fun requestPermissions() {
         if (allPermissionsGranted()) {
             openGallery()
@@ -277,6 +295,7 @@ class CommunityPostFragment : Fragment() {
         startActivityForResult(intent, REQUEST_STORAGE)
 
     }
+
     @SuppressLint("NotifyDataSetChanged")
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -384,7 +403,7 @@ class CommunityPostFragment : Fragment() {
         category: String,
         title: String,
         content: String,
-        files: Array<File?>?
+        files: ArrayList<File?>?
     ) {
         val retrofit = RetrofitClient.getClient()!!
         val communityPostService = retrofit.create(CommunityPostService::class.java)
@@ -394,37 +413,68 @@ class CommunityPostFragment : Fragment() {
         var file: File?
         val mediaType = "image/*".toMediaTypeOrNull()
 
-        val imageParts = mutableListOf<MultipartBody.Part>()
+//        val imageParts = mutableListOf<MultipartBody.Part>()
+//
+//        Log.d("CommunityPostFragmentFiles", "$imageList")
+//        if (imageList.size >= 1) {
+//            if (imageList?.get(0) != null) {
+//                val requestFile = imageList[0]?.let { RequestBody.create(mediaType, it) }
+//                filePart =
+//                    MultipartBody.Part.createFormData("image", imageList[0]!!.name, requestFile!!)
+//                Log.d("CommunityPostFragmentFilePart", "$filePart")
+//
+//                imageParts.add(filePart)
+//            }
+//        }
+//        if (imageList.size >= 2) {
+//            if (imageList?.get(1) != null) {
+//                val requestFile = imageList[1]?.let { RequestBody.create(mediaType, it) }
+//                filePart =
+//                    MultipartBody.Part.createFormData("image", imageList[1]!!.name, requestFile!!)
+//                imageParts.add(filePart)
+//            }
+//        }
+//        if (imageList.size == 3) {
+//            if (imageList?.get(2) != null) {
+//                val requestFile = imageList[2]?.let { RequestBody.create(mediaType, it) }
+//                filePart =
+//                    MultipartBody.Part.createFormData("image", imageList[2]!!.name, requestFile!!)
+//                imageParts.add(filePart)
+//            }
+//        }
+//
+//        Log.d("CommunityPostFragmentImageParts", "$imageParts")
 
-        Log.d("CommunityPostFragmentFiles", "$imageList")
-        if (imageList.size >= 1) {
-            if (imageList?.get(0) != null) {
-                val requestFile = imageList[0]?.let { RequestBody.create(mediaType, it) }
-                filePart = MultipartBody.Part.createFormData("image", imageList[0]!!.name, requestFile!!)
-                Log.d("CommunityPostFragmentFilePart", "$filePart")
+        val imageParts = MultipartBody.Builder().setType(MultipartBody.FORM)
 
-                imageParts.add(filePart)
+        if (files != null && files.size > 0) {
+            for ((i, imageFile) in files.withIndex()) {
+                imageParts.addFormDataPart(
+                    "images",
+                    imageFile?.name,
+                    RequestBody.create("image/*".toMediaTypeOrNull(), imageFile!!)
+                )
+            }
+            val imageMultiPart = imageParts.build()
+            if (files != null && files.size > 0) {
+                for (i in 1..files.size) {
+                    thelist[i - 1] = imageMultiPart.part(i - 1)
+                }
             }
         }
-        if (imageList.size >= 2) {
-            if (imageList?.get(1) != null) {
-                val requestFile = imageList[1]?.let { RequestBody.create(mediaType, it) }
-                filePart = MultipartBody.Part.createFormData("image", imageList[1]!!.name, requestFile!!)
-                imageParts.add(filePart)
-            }
-        }
-        if (imageList.size == 3) {
-            if (imageList?.get(2) != null) {
-                val requestFile = imageList[2]?.let { RequestBody.create(mediaType, it) }
-                filePart = MultipartBody.Part.createFormData("image", imageList[2]!!.name, requestFile!!)
-                imageParts.add(filePart)
-            }
-        }
-
-        Log.d("CommunityPostFragmentImageParts", "$imageParts")
 
 
-        communityPostService.requestCommunityPost(ArticlePostRequest(userPK, category, title, content), imageParts)
+
+
+
+        communityPostService.requestCommunityPost(
+            ArticlePostRequest(
+                userPK,
+                category,
+                title,
+                content
+            ), thelist[0], thelist[1], thelist[2]
+        )
             .enqueue(object : Callback<CommunityPostResponse> {
                 override fun onResponse(
                     call: Call<CommunityPostResponse>,
