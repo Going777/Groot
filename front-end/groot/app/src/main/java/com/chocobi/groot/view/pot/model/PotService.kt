@@ -8,6 +8,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 
@@ -25,6 +26,13 @@ interface PotService {
     fun deletePot(
         @Path("potId") potId:Int
     ): Call<MsgResponse>
+
+    @Multipart
+    @PUT("/api/pots/{potId}")
+    fun changePotImg(
+        @Path("potId") potId:Int,
+        @Part filePart: MultipartBody.Part?
+    ): Call<PotImgResponse>
 
     @Multipart
     @POST("/api/diaries")

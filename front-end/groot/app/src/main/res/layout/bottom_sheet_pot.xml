@@ -162,7 +162,8 @@
             android:background="@drawable/round_rectangle"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_plant_image" />
+            android:layout_gravity="center"
+            android:visibility="gone"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/editImgBottomBtn"
