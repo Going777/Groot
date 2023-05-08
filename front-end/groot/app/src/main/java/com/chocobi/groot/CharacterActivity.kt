@@ -196,7 +196,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
                 centerOrigin = Position(x = 0f, y = 0.0f, z = 0f)
                 // Place the model origin at the bottom center
             ) {
-                isPositionEditable = false
+                isPositionEditable = true
                 isScaleEditable = false
                 isRotationEditable = true
                 followHitPosition = false

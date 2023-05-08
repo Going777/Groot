@@ -1,17 +1,32 @@
 package com.chocobi.groot.view.pot.adapter
 
+import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.view.pot.model.Date
+import com.chocobi.groot.view.pot.model.DateTime
+import com.chocobi.groot.view.pot.model.Pot
+import com.chocobi.groot.view.pot.model.Time
+import de.hdodenhof.circleimageview.CircleImageView
+import java.lang.ref.WeakReference
 
-class PotListRVAdapter(val items: MutableList<String>) :
+class PotListRVAdapter(val items: List<Pot>) :
     RecyclerView.Adapter<PotListRVAdapter.ViewHolder>() {
 
     private val TAG = "PotListRVAdapter"
+    private var selectedPosition = 0
+
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -23,23 +38,36 @@ class PotListRVAdapter(val items: MutableList<String>) :
         return ViewHolder(view)
     }
 
-    //    아이템 클릭 리스터 인터페이스
-//        interface ItemClickListener {
-//            fun onPostBtnClick(view: View, position: Int)
-//            fun onScanBtnClick(view: View, position: Int)
-//            fun onDetailBtnClick(view: View, position: Int)
+    interface ItemClick {
+        fun onClick(view: View, position: Int)
+    }
 
-//        private lateinit var postBtnClickListner: ItemClickListener
-//        private lateinit var scanBtnClickListner: ItemClickListener
-//        private lateinit var detailBtnClickListner: ItemClickListener
-//        fun setItemClickListener(itemClickListener: ItemClickListener) {
-//            this.postBtnClickListner = itemClickListener
-//            this.scanBtnClickListner = itemClickListener
-//            this.detailBtnClickListner = itemClickListener
-//        }
+    var itemClick: ItemClick? = null
 
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
+
+        if (selectedPosition == position) {
+            holder.itemView.findViewById<CircleImageView>(R.id.potImage).borderWidth = 10
+        } else {
+            holder.itemView.findViewById<CircleImageView>(R.id.potImage).borderWidth = 0
+        }
+
+        if (itemClick != null) {
+//            리스너와 연결
+            holder.itemView.setOnClickListener { v ->
+                itemClick?.onClick(v, position)
+
+//                border 설정
+                holder.itemView.findViewById<CircleImageView>(R.id.potImage).borderWidth = 10
+
+                if (selectedPosition != position && selectedPosition != -1) {
+                    notifyItemChanged(selectedPosition)
+                }
+                selectedPosition = position
+                Log.d(TAG, "$selectedPosition")
+            }
+        }
         holder.bindItems(items[position])
     }
 
@@ -49,11 +77,35 @@ class PotListRVAdapter(val items: MutableList<String>) :
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private var view: WeakReference<View> = WeakReference(itemView)
 
-        fun bindItems(item: String) {
+        fun bindItems(item: Pot) {
             val rv_text = itemView.findViewById<TextView>(R.id.potName)
-            rv_text.text = item
+            val potImg = itemView.findViewById<CircleImageView>(R.id.potImage)
+
+            if (item.potId == 0) {
+                rv_text.text = ""
+                potImg.setImageResource(R.drawable.all_button)
+            } else {
+                rv_text.text = item.potName
+
+                potImg.post {
+                    view.get()?.let {
+                        ThreadUtil.startThread {
+                            val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                                .asBitmap()
+                                .load(item.imgPath)
+                                .submit(potImg.width, potImg.height)
+
+                            val bitmap = futureTarget.get()
+
+                            ThreadUtil.startUIThread(0) {
+                                potImg.setImageBitmap(bitmap)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
-
 }

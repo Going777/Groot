@@ -12,13 +12,6 @@
         android:id="@+id/topCategoryNavbar"
         layout="@layout/top_category_navbar" />
 
-    <HorizontalScrollView
-        android:id="@+id/potSection"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/potListRecyclerView"
@@ -26,7 +19,6 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/background" />
 
-    </HorizontalScrollView>
 
     <View
         android:layout_width="wrap_content"
