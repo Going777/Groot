@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -151,7 +152,7 @@ public class ArticleServiceImpl implements ArticleService{
 
     // 게시글 작성
     @Override
-    public boolean createArticle(ArticleDTO articleDTO, String[] imgPaths) {
+    public boolean createArticle(Long userPK, ArticleDTO articleDTO, String[] imgPaths) {
         String[] tags = articleDTO.getTags();
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
 
@@ -192,7 +193,7 @@ public class ArticleServiceImpl implements ArticleService{
         // article 테이블에 insert
         ArticleEntity articleEntity = ArticleEntity.builder()
                 .category(articleDTO.getCategory())
-                .userEntity(userRepository.findById(articleDTO.getUserPK()).orElseThrow())
+                .userEntity(userRepository.findById(userPK).orElseThrow())
                 .title(articleDTO.getTitle())
                 .content(articleDTO.getContent())
                 .views(0L)
@@ -425,7 +426,12 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void deleteArticle(Long articleId) {
+    public void deleteArticle(Long userPK, Long articleId) {
+        // 권한 체크
+        ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow();
+
+        if(articleEntity.getUserPK() != userPK) throw new AccessDeniedException("삭제 권한 없음");
+
         // s3 이미지 삭제
         List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleId);
         if(articleImageEntityList != null){

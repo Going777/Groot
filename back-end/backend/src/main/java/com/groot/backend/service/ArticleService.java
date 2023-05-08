@@ -14,11 +14,11 @@ import java.util.List;
 public interface ArticleService {
     List<String> readRegion();
     boolean existedArticleId(Long articleId);
-    boolean createArticle(ArticleDTO articleDTO, String[] imgPaths);
+    boolean createArticle(Long userPK, ArticleDTO articleDTO, String[] imgPaths);
     ArticleResponseDTO readArticle(Long articleId, Long userPK);
     @Transactional
     boolean updateArticle(ArticleDTO articleDTO, String[] imgPaths);
-    void deleteArticle(Long articleId);
+    void deleteArticle(Long userPK, Long articleId);
     Page<ArticleListDTO> readArticleList(String category, Long userPK, Integer page, Integer size);
     void updateBookMark(BookmarkDTO bookmarkDTO);
     Page<ArticleListDTO> filterRegion(String[] region, Long userPK,Integer page, Integer size);
