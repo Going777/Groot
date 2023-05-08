@@ -332,28 +332,32 @@ public class ArticleServiceImpl implements ArticleService{
         List<String> newTags = new ArrayList<>();
 
         // 태그가 redis에 존재하는지 탐색
-        for(String tag : tags) {
-            // key와 value(tag)로 tag가 redis에 있는지 확인
-            Double score = ZSetOperations.score(key, tag);
-            if(score == null){
-                // 없으면 redis에 저장하고 score 1증가
-                ZSetOperations.add(key, tag, 1);
-                // 새 태그 리스트에 추가
-                newTags.add(tag);
-            }else {
-                // 있으면 score만 1증가
-                ZSetOperations.incrementScore(key, tag, 1);
+        if(tags != null){
+            for(String tag : tags) {
+                // key와 value(tag)로 tag가 redis에 있는지 확인
+                Double score = ZSetOperations.score(key, tag);
+                if(score == null){
+                    // 없으면 redis에 저장하고 score 1증가
+                    ZSetOperations.add(key, tag, 1);
+                    // 새 태그 리스트에 추가
+                    newTags.add(tag);
+                }else {
+                    // 있으면 score만 1증가
+                    ZSetOperations.incrementScore(key, tag, 1);
+                }
             }
-
         }
 
+
         // 태그테이블에 태그 insert
-        for(String tag : newTags){
-            if(tagRepository.findByName(tag) == null){
-                TagEntity tagEntity = TagEntity.builder()
-                        .name(tag)
-                        .build();
-                tagRepository.save(tagEntity);
+        if(newTags != null){
+            for(String tag : newTags){
+                if(tagRepository.findByName(tag) == null){
+                    TagEntity tagEntity = TagEntity.builder()
+                            .name(tag)
+                            .build();
+                    tagRepository.save(tagEntity);
+                }
             }
         }
 
@@ -385,13 +389,15 @@ public class ArticleServiceImpl implements ArticleService{
         ArticleEntity savedArticleEntity = articleRepository.save(newArticleEntity);
 
         // 태그-게시물 테이블에 insert
-        for(String tag : articleDTO.getTags()){
-            ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
-                    .articleEntity(articleRepository.findById(savedArticleEntity.getId()).orElseThrow())
-                    .tagEntity(tagRepository.findByName(tag))
-                    .build();
+        if(articleDTO.getTags() != null){
+            for(String tag : articleDTO.getTags()){
+                ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
+                        .articleEntity(articleRepository.findById(savedArticleEntity.getId()).orElseThrow())
+                        .tagEntity(tagRepository.findByName(tag))
+                        .build();
 
-            articleTagRepository.save(articleTagEntity);
+                articleTagRepository.save(articleTagEntity);
+            }
         }
 
         // 이미지 테이블에 insert
