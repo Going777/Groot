@@ -18,7 +18,6 @@ import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.view.pot.model.Pot
 import java.lang.ref.WeakReference
 
-
 class PotCollectionRVAdapter(val items: List<Pot>) :
     RecyclerView.Adapter<PotCollectionRVAdapter.ViewHolder>() {
     private val TAG = "PotCollectionRVAdapter"
@@ -48,9 +47,6 @@ class PotCollectionRVAdapter(val items: List<Pot>) :
         this.scanBtnClickListner = itemClickListener
         this.detailBtnClickListner = itemClickListener
     }
-
-
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindItems(items[position])
@@ -124,6 +120,4 @@ class PotCollectionRVAdapter(val items: List<Pot>) :
 
         }
     }
-
-
 }
