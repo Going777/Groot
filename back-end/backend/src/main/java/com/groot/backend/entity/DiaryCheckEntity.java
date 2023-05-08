@@ -12,12 +12,12 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "diaries")
+@Table(name = "diary_check")
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DiaryEntity extends BaseEntity{
+public class DiaryCheckEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,10 +26,7 @@ public class DiaryEntity extends BaseEntity{
     private Long potId;
 
     @Column(name = "user_id", insertable = false, updatable = false)
-    private Long userId;
-
-    @Column(name = "diary_check_id", insertable = false, updatable = false)
-    private Long diaryId;
+    private Long userPK;
 
     @Column(name = "img_path")
     private String imgPath;
@@ -62,16 +59,15 @@ public class DiaryEntity extends BaseEntity{
     @JsonBackReference
     private PotEntity potEntity;
 
-    @ManyToOne(targetEntity = DiaryCheckEntity.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_check_id")
-    @JsonBackReference
-    private DiaryCheckEntity diaryCheckEntity;
+    @OneToMany(mappedBy = "diaryCheckEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<DiaryEntity> diaryEntities;
 
-    public DiaryEntity addCheckId (DiaryCheckEntity diaryEntity){
-        DiaryEntity result = DiaryEntity.builder()
+    public DiaryDTO toDTO (DiaryCheckEntity diaryEntity){
+        DiaryDTO result = DiaryDTO.builder()
                 .bug(diaryEntity.getBug())
                 .sun(diaryEntity.getSun())
-                .userId(diaryEntity.getUserPK())
+                .userPK(diaryEntity.getUserPK())
                 .water(diaryEntity.getWater())
                 .content(diaryEntity.getContent())
                 .nutrients(diaryEntity.getNutrients())
