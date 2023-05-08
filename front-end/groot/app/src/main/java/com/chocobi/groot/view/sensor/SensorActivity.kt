@@ -39,17 +39,10 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         // 조도 센서 인스턴스 생성
         lightSensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_LIGHT)
 
-        // 습도 센서 인스턴스 생성
-        humiditySensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
-
-        // 온도 센서 인스턴스 생성
-        temperatureSensor = sensorManager!!.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
 
         // 센서 등록
         sensorManager!!.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
-        sensorManager!!.registerListener(this, humiditySensor, SensorManager.SENSOR_DELAY_NORMAL)
-        sensorManager!!.registerListener(this, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL)
-    }
+ }
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
@@ -66,15 +59,7 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
                 lightValueText.text = lightValue.toString()
             }
 
-            Sensor.TYPE_RELATIVE_HUMIDITY -> {
-                val humidityValue = event.values[0]
-                Log.d(TAG, "습도: $humidityValue")
-            }
 
-            Sensor.TYPE_AMBIENT_TEMPERATURE -> {
-                val temperatureValue = event.values[0]
-                Log.d(TAG, "온도: $temperatureValue")
-            }
         }
     }
 
@@ -93,8 +78,6 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         super.onResume()
         // 센서 등록
         sensorManager!!.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
-        sensorManager!!.registerListener(this, humiditySensor, SensorManager.SENSOR_DELAY_NORMAL)
-        sensorManager!!.registerListener(this, temperatureSensor, SensorManager.SENSOR_DELAY_NORMAL)
-    }
+ }
 }
 
