@@ -66,7 +66,7 @@ class CommunityTab1Fragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_tab1, container, false)
         val mActivity = activity as MainActivity
 
-/** 지역 필터 버튼 눌렀을 때 처리 **/
+        /** 지역 필터 버튼 눌렀을 때 처리 **/
         val regionFilterBtn = view.findViewById<MaterialButton>(R.id.regionFilterBtn)
         val regionFilterBottomSheet = RegionFilterBottomSheet(requireContext())
         regionFilterBtn.setOnClickListener {
@@ -212,10 +212,15 @@ class CommunityTab1Fragment : Fragment() {
         isFiltered = !regionFilterList.isNullOrEmpty()
         if (isFiltered) {
             for (item in regionFilterList!!) {
-                chipRegionGroup.addView(Chip(requireContext(), null, R.style.REGION_CHIP_ICON).apply {
-                    text = item
-                    isCloseIconVisible = false
-                })
+                chipRegionGroup.addView(
+                    Chip(
+                        requireContext(),
+                        null,
+                        R.style.REGION_CHIP_ICON
+                    ).apply {
+                        text = item
+                        isCloseIconVisible = false
+                    })
             }
             Log.d("CommunityTab1Fragment", "onViewCreated()/필터 값: $regionFullFilterList")
         }
@@ -263,8 +268,10 @@ class CommunityTab1Fragment : Fragment() {
             var communityArticleSize = 10
             val regionFilterService = retrofit.create(CommunityService::class.java)
             val regions = arrayListOf<String?>(null, null, null)
-            for (idx in 0..regionFullFilterList!!.count() - 1) {
-                regions[idx] = regionFullFilterList!![idx]
+            if (regionFullFilterList != null) {
+                for (idx in 0..regionFullFilterList!!.count() - 1) {
+                    regions[idx] = regionFullFilterList!![idx]
+                }
             }
 
             regionFilterService.requestSearchArticle(
@@ -343,10 +350,7 @@ class CommunityTab1Fragment : Fragment() {
             })
         }
     }
-
-
     private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
-
     private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     private fun loadMore() {
@@ -366,8 +370,10 @@ class CommunityTab1Fragment : Fragment() {
 
             val regionFilterService = retrofit.create(CommunityService::class.java)
             val regions = arrayListOf<String?>(null, null, null)
-            for (idx in 0..regionFullFilterList!!.count() - 1) {
-                regions[idx] = regionFullFilterList!![idx]
+            if (regionFullFilterList != null) {
+                for (idx in 0..regionFullFilterList!!.count() - 1) {
+                    regions[idx] = regionFullFilterList!![idx]
+                }
             }
             var communityArticleSize = 10
 
@@ -529,21 +535,149 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun createPopularTagData(): List<String> {
-        val popularTagList = GlobalVariables.prefs.getString("popular_tags", "")?.split(", ")?: emptyList()
+        val popularTagList =
+            GlobalVariables.prefs.getString("popular_tags", "")?.split(", ") ?: emptyList()
         return popularTagList
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun searchViewListner() {
-//        communitySearchView.isSubmitButtonEnabled = true
-        communitySearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+        communitySearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("CommunityTab1Fragment","onQueryTextSubmit() ${communitySearchView.query.toString()}")
+                Log.d(
+                    "CommunityTab1Fragment",
+                    "onQueryTextSubmit() ${communitySearchView.query.toString()}"
+                )
+                isFiltered = true
+                if (communitySearchView.query.toString() == "") {
+                    Log.d("CommunityTab1Fragment", "onQueryTextSubmit() 검색어가 비었어요")
+                }
+
                 keyword = communitySearchView.query.toString()
                 overlayView.visibility = View.GONE
                 popularTagSection.visibility = View.GONE
                 communitySearchView.clearFocus()
 
+
+                if (isFiltered) {
+                    val retrofit = RetrofitClient.getClient()!!
+                    var communityArticlePage = 0
+                    var communityArticleSize = 10
+                    val regionFilterService = retrofit.create(CommunityService::class.java)
+                    val regions = arrayListOf<String?>(null, null, null)
+                    if (regionFullFilterList != null) {
+                        for (idx in 0..regionFullFilterList!!.count() - 1) {
+                            regions[idx] = regionFullFilterList!![idx]
+                        }
+                    }
+                    Log.d("CommunityTab1Fragment", "onCreateView() 넘기는 필터값 $regions")
+
+                    regionFilterService.requestSearchArticle(
+                        category = "나눔",
+                        region1 = regions[0],
+                        region2 = regions[1],
+                        region3 = regions[2],
+                        keyword,
+                        pageInput = communityArticlePage,
+                        sizeInput = communityArticleSize
+                    ).enqueue(object :
+                        Callback<CommunityArticleListResponse> {
+                        override fun onResponse(
+                            call: Call<CommunityArticleListResponse>,
+                            response: Response<CommunityArticleListResponse>
+                        ) {
+                            if (response.code() == 200) {
+                                Log.d(TAG, "요청 성공")
+                                val checkResponse = response.body()?.articles?.content
+                                val checkTotal = response.body()?.articles?.total
+                                getData = response.body()!!
+                                Log.d(TAG, "$checkResponse")
+                                Log.d(TAG, "$checkTotal")
+
+                                val totalElements = getData.articles.total // 전체 데이터 수
+                                val currentPage = communityArticlePage // 현재 페이지 번호
+                                val pageSize = 10 // 페이지 당 아이템 수
+                                val isLast =
+                                    (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+
+                                if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                                    isLastPage = true
+                                }
+                                val list = createDummyData(0, 10)
+                                ThreadUtil.startUIThread(1000) {
+                                    adapter.reload(list)
+                                    hideProgress()
+                                }
+                            } else {
+                                Log.d(TAG, "실패1 $response")
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<CommunityArticleListResponse>,
+                            t: Throwable
+                        ) {
+                            Log.d("RegionFilterBottomSheet", "onFailure() 지역 필터링 게시글 요청 실패")
+                        }
+                    })
+
+                } else {
+                    Toast.makeText(requireContext(), "모든 게시글을 검색합니다", Toast.LENGTH_SHORT).show()
+//                retrofit 객체 만들기
+                    var retrofit = RetrofitClient.getClient()!!
+
+
+                    var communityArticleListService =
+                        retrofit.create(CommunityArticleListService::class.java)
+                    var communityArticleCategory = "나눔"
+                    var communityArticlePage = 0
+                    var communityArticleSize = 10
+
+                    communityArticleListService.requestCommunityArticleList(
+                        communityArticleCategory,
+                        communityArticlePage,
+                        communityArticleSize
+                    ).enqueue(object :
+                        Callback<CommunityArticleListResponse> {
+                        override fun onResponse(
+                            call: Call<CommunityArticleListResponse>,
+                            response: Response<CommunityArticleListResponse>
+                        ) {
+                            if (response.code() == 200) {
+                                Log.d(TAG, "성공")
+                                val checkResponse = response.body()?.articles?.content
+                                getData = response.body()!!
+                                Log.d(TAG, "$checkResponse")
+
+
+                                val totalElements = getData.articles.total // 전체 데이터 수
+                                val currentPage = communityArticlePage // 현재 페이지 번호
+                                val pageSize = 10 // 페이지 당 아이템 수
+                                val isLast =
+                                    (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+
+                                if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                                    isLastPage = true
+                                }
+                                val list = createDummyData(0, 10)
+                                ThreadUtil.startUIThread(1000) {
+                                    adapter.reload(list)
+                                    hideProgress()
+                                }
+                            } else {
+                                Log.d(TAG, "실패1 $response")
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<CommunityArticleListResponse>,
+                            t: Throwable
+                        ) {
+                            Log.d(TAG, "실패2")
+                        }
+
+                    })
+                }
                 return false
             }
 
