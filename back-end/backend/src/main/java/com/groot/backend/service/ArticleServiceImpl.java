@@ -160,31 +160,34 @@ public class ArticleServiceImpl implements ArticleService{
         // redis에 새로 insert된 태그 리스트
         List<String> newTags = new ArrayList<>();
 
-        // 태그가 redis에 존재하는지 탐색
-        for(String tag : tags) {
-            // key와 value(tag)로 tag가 redis에 있는지 확인
-            Double score = ZSetOperations.score(key, tag);
-            if(score == null){
-                // 없으면 redis에 저장하고 score 1증가
-                ZSetOperations.add(key, tag, 1);
-                // 새 태그 리스트에 추가
-                newTags.add(tag);
-            }else {
-                // 있으면 score만 1증가
-                ZSetOperations.incrementScore(key, tag, 1);
+        if(tags != null){
+            // 태그가 redis에 존재하는지 탐색
+            for(String tag : tags) {
+                // key와 value(tag)로 tag가 redis에 있는지 확인
+                Double score = ZSetOperations.score(key, tag);
+                if(score == null){
+                    // 없으면 redis에 저장하고 score 1증가
+                    ZSetOperations.add(key, tag, 1);
+                    // 새 태그 리스트에 추가
+                    newTags.add(tag);
+                }else {
+                    // 있으면 score만 1증가
+                    ZSetOperations.incrementScore(key, tag, 1);
+                }
+
             }
 
-        }
-
-        // 태그테이블에 태그 insert
-        for(String tag : newTags){
-            if(tagRepository.findByName(tag) == null){
-                TagEntity tagEntity = TagEntity.builder()
-                        .name(tag)
-                        .build();
-                tagRepository.save(tagEntity);
+            // 태그테이블에 태그 insert
+            for(String tag : newTags){
+                if(tagRepository.findByName(tag) == null){
+                    TagEntity tagEntity = TagEntity.builder()
+                            .name(tag)
+                            .build();
+                    tagRepository.save(tagEntity);
+                }
             }
         }
+
 
         // article 테이블에 insert
         ArticleEntity articleEntity = ArticleEntity.builder()
@@ -199,14 +202,16 @@ public class ArticleServiceImpl implements ArticleService{
 
         ArticleEntity savedArticleEntity = articleRepository.save(articleEntity);
 
-        // 태크-게시물 테이블에 insert
-        for(String tag : articleDTO.getTags()){
-            ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
-                    .articleEntity(savedArticleEntity)
-                    .tagEntity(tagRepository.findByName(tag))
-                    .build();
+        if(tags != null){
+            // 태크-게시물 테이블에 insert
+            for(String tag : articleDTO.getTags()){
+                ArticleTagEntity articleTagEntity = ArticleTagEntity.builder()
+                        .articleEntity(savedArticleEntity)
+                        .tagEntity(tagRepository.findByName(tag))
+                        .build();
 
-            articleTagRepository.save(articleTagEntity);
+                articleTagRepository.save(articleTagEntity);
+            }
         }
 
         // 이미지 테이블에 게시글PK + 이미지주소 insert
