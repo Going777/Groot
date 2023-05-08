@@ -45,6 +45,8 @@ class PotDetailFragment : Fragment() {
     private lateinit var potPlantText: TextView
     private lateinit var potPlantImg: ImageView
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -71,6 +73,7 @@ class PotDetailFragment : Fragment() {
         val settingBtn = rootView.findViewById<ImageButton>(R.id.settingBtn)
         settingBtn.setOnClickListener {
             val potBottomSheet = PotBottomSheet(requireContext())
+            potBottomSheet.setPotId(potId)
             potBottomSheet.show(
                 mActivity.supportFragmentManager,
                 potBottomSheet.tag
