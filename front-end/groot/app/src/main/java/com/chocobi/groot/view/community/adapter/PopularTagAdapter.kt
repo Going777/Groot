@@ -19,7 +19,7 @@ class PopularTagAdapter(var items: List<String>) :
     }
 
     interface ItemClick {
-        fun onClick(view: View, position: Int)
+        fun onClick(view: View, position: Int, item: String)
     }
 
     var itemClick: ItemClick? = null
@@ -27,7 +27,7 @@ class PopularTagAdapter(var items: List<String>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (itemClick != null) {
             holder.itemView.setOnClickListener { v ->
-                itemClick?.onClick(v, position)
+                itemClick?.onClick(v, position, items[position])
             }
         }
         holder.bindItems(items[position], position)
