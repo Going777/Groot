@@ -31,7 +31,8 @@
             android:completionThreshold="1"
             android:gravity="center_vertical"
             android:hint="식물 이름을 입력해 주세요"
-            android:textColorHint="@color/grey" />
+            android:textColorHint="@color/grey"
+            />
 
         <ImageButton
             android:id="@+id/searchPlantBtn"
