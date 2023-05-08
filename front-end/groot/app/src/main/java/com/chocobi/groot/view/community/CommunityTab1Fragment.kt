@@ -559,7 +559,7 @@ class CommunityTab1Fragment : Fragment() {
                 communitySearchView.clearFocus()
 
 
-                if (isFiltered) {
+//                if (isFiltered) {
                     val retrofit = RetrofitClient.getClient()!!
                     var communityArticlePage = 0
                     var communityArticleSize = 10
@@ -574,7 +574,7 @@ class CommunityTab1Fragment : Fragment() {
 
                     regionFilterService.requestSearchArticle(
                         category = "나눔",
-                        region1 = regions[0],
+                        region1 = "정자동",
                         region2 = regions[1],
                         region3 = regions[2],
                         keyword,
@@ -621,63 +621,64 @@ class CommunityTab1Fragment : Fragment() {
                         }
                     })
 
-                } else {
-                    Toast.makeText(requireContext(), "모든 게시글을 검색합니다", Toast.LENGTH_SHORT).show()
-//                retrofit 객체 만들기
-                    var retrofit = RetrofitClient.getClient()!!
-
-
-                    var communityArticleListService =
-                        retrofit.create(CommunityArticleListService::class.java)
-                    var communityArticleCategory = "나눔"
-                    var communityArticlePage = 0
-                    var communityArticleSize = 10
-
-                    communityArticleListService.requestCommunityArticleList(
-                        communityArticleCategory,
-                        communityArticlePage,
-                        communityArticleSize
-                    ).enqueue(object :
-                        Callback<CommunityArticleListResponse> {
-                        override fun onResponse(
-                            call: Call<CommunityArticleListResponse>,
-                            response: Response<CommunityArticleListResponse>
-                        ) {
-                            if (response.code() == 200) {
-                                Log.d(TAG, "성공")
-                                val checkResponse = response.body()?.articles?.content
-                                getData = response.body()!!
-                                Log.d(TAG, "$checkResponse")
-
-
-                                val totalElements = getData.articles.total // 전체 데이터 수
-                                val currentPage = communityArticlePage // 현재 페이지 번호
-                                val pageSize = 10 // 페이지 당 아이템 수
-                                val isLast =
-                                    (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                                if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                                    isLastPage = true
-                                }
-                                val list = createDummyData(0, 10)
-                                ThreadUtil.startUIThread(1000) {
-                                    adapter.reload(list)
-                                    hideProgress()
-                                }
-                            } else {
-                                Log.d(TAG, "실패1 $response")
-                            }
-                        }
-
-                        override fun onFailure(
-                            call: Call<CommunityArticleListResponse>,
-                            t: Throwable
-                        ) {
-                            Log.d(TAG, "실패2")
-                        }
-
-                    })
-                }
+//                }
+//            else {
+//                    Toast.makeText(requireContext(), "모든 게시글을 검색합니다", Toast.LENGTH_SHORT).show()
+////                retrofit 객체 만들기
+//                    var retrofit = RetrofitClient.getClient()!!
+//
+//
+//                    var communityArticleListService =
+//                        retrofit.create(CommunityArticleListService::class.java)
+//                    var communityArticleCategory = "나눔"
+//                    var communityArticlePage = 0
+//                    var communityArticleSize = 10
+//
+//                    communityArticleListService.requestCommunityArticleList(
+//                        communityArticleCategory,
+//                        communityArticlePage,
+//                        communityArticleSize
+//                    ).enqueue(object :
+//                        Callback<CommunityArticleListResponse> {
+//                        override fun onResponse(
+//                            call: Call<CommunityArticleListResponse>,
+//                            response: Response<CommunityArticleListResponse>
+//                        ) {
+//                            if (response.code() == 200) {
+//                                Log.d(TAG, "성공")
+//                                val checkResponse = response.body()?.articles?.content
+//                                getData = response.body()!!
+//                                Log.d(TAG, "$checkResponse")
+//
+//
+//                                val totalElements = getData.articles.total // 전체 데이터 수
+//                                val currentPage = communityArticlePage // 현재 페이지 번호
+//                                val pageSize = 10 // 페이지 당 아이템 수
+//                                val isLast =
+//                                    (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
+//
+//                                if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+//                                    isLastPage = true
+//                                }
+//                                val list = createDummyData(0, 10)
+//                                ThreadUtil.startUIThread(1000) {
+//                                    adapter.reload(list)
+//                                    hideProgress()
+//                                }
+//                            } else {
+//                                Log.d(TAG, "실패1 $response")
+//                            }
+//                        }
+//
+//                        override fun onFailure(
+//                            call: Call<CommunityArticleListResponse>,
+//                            t: Throwable
+//                        ) {
+//                            Log.d(TAG, "실패2")
+//                        }
+//
+//                    })
+//                }
                 return false
             }
 
