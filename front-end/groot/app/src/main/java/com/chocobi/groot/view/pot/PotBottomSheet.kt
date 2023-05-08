@@ -30,6 +30,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.pot.model.PotImgResponse
 import com.chocobi.groot.view.pot.model.PotNameRequest
 import com.chocobi.groot.view.pot.model.PotService
+import com.chocobi.groot.view.pot.model.PotStatusRequest
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -140,6 +141,27 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
                 })
             dialog.show()
         }
+
+        //        화분 떠나보내기
+        val gonePotBtn = view.findViewById<ImageButton>(R.id.gonePot)
+        gonePotBtn.setOnClickListener {
+            dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("화분 떠나보내기")
+            dialog.setMessage("화분이 죽었나요?")
+            dialog.setPositiveButton(
+                "네",
+                DialogInterface.OnClickListener { dialog, which ->
+                    gonePot(potId)
+                    dialog.dismiss()
+                })
+            dialog.setNegativeButton(
+                "아니오",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            dialog.show()
+        }
+
         return view
     }
 
@@ -170,6 +192,37 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
                     ).show()
                     mActivity.changeFragment("pot")
 
+                } else {
+                    Log.d(TAG, "실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<MsgResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+        })
+
+    }
+
+    private fun gonePot(potId: Int) {
+        var retrofit = RetrofitClient.getClient()!!
+        var potService = retrofit.create(PotService::class.java)
+        potService.gonePot(potId, PotStatusRequest("gone")).enqueue(object :
+            Callback<MsgResponse> {
+            override fun onResponse(
+                call: Call<MsgResponse>,
+                response: Response<MsgResponse>
+            ) {
+                val body = response.body()
+                if (body != null && response.code() == 200) {
+                    Log.d(TAG, "body: $body")
+                    dismiss()
+                    Toast.makeText(
+                        requireContext(),
+                        "화분을 떠나보냈습니다. 다음에는 더 잘할 수 있을 거예요!",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    listener.onGetDetailRequested()
                 } else {
                     Log.d(TAG, "실패1")
                 }
