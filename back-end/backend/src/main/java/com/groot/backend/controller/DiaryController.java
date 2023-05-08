@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RequestMapping("/diaries")
@@ -169,10 +170,24 @@ public class DiaryController {
     }
 
     @GetMapping("/weekly")  // 주간 다이어리 리스트
-    public ResponseEntity weeklyDiary(HttpServletRequest request){
+    public ResponseEntity weeklyDiary(@RequestParam String date, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        List<DiaryCheckEntity> result = diaryService.weeklyDiaries(userId);
+        String[] dates = date.split("-");
+        if(dates.length<3){
+            resultMap.put("msg", "날짜 표현이 유효하지 않습니다.");
+            resultMap.put("result", FAIL);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
+        }
+        int year = Integer.parseInt(dates[0]);
+        int month = Integer.parseInt(dates[1]);
+        int day = Integer.parseInt(dates[2]);
+        LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0, 0);
+        LocalDateTime end = LocalDateTime.of(year, month, day, 23, 59, 59);
+        LocalDateTime temp = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.of(temp.getYear(), temp.getMonthValue(), temp.getDayOfMonth(), 0, 0, 0);
+
+        List<DiaryCheckEntity> result = diaryService.weeklyDiaries(userId, start, end);
         if(result.isEmpty()){
             resultMap.put("msg", "주간 다이어리 리스트 조회를 실패하였습니다.");
             resultMap.put("result", FAIL);
