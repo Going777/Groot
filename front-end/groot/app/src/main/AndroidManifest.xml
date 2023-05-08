@@ -67,7 +67,8 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".view.signup.SignupActivity"
             android:exported="false" /> <!-- ar -->

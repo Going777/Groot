@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.community
 
 import android.os.Bundle
+import android.provider.Settings.Global
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,10 +12,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.community.model.PopularTagResponse
+import com.chocobi.groot.view.community.model.Tag
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -40,10 +43,11 @@ class CommunityFragment : Fragment() {
     private var regionList: ArrayList<String>? = null
     private var regionFullList: ArrayList<String>? = null
 
+    private lateinit var popularTags: ArrayList<Tag>
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        인기 태그 조회
-        getPopularTag()
     }
 
     override fun onCreateView(
@@ -88,31 +92,6 @@ class CommunityFragment : Fragment() {
         }.attach()
 
 
-    }
-
-    private fun getPopularTag() {
-        val retrofit = RetrofitClient.basicClient()!!
-        val communityService = retrofit.create(CommunityService::class.java)
-        communityService.requestPopularTags().enqueue(object : retrofit2.Callback<PopularTagResponse> {
-            override fun onResponse(
-                call: Call<PopularTagResponse>,
-                response: Response<PopularTagResponse>
-            ) {
-                if(response.code() == 200) {
-                    val body = response.body()
-                    Log.d("CommunityFragment","onResponse() 조회 성공 $body")
-                }
-                else {
-                Log.d("CommunityFragment","onFailure() 인기태그 조회 실패1")
-
-                }
-            }
-
-            override fun onFailure(call: Call<PopularTagResponse>, t: Throwable) {
-                Log.d("CommunityFragment","onFailure() 인기태그 조회 실패2")
-            }
-
-        })
     }
 
     private inner class CommunityTabAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

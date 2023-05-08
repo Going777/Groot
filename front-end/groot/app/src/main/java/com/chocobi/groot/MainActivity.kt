@@ -19,9 +19,12 @@ import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
+import com.chocobi.groot.view.community.model.CommunityService
+import com.chocobi.groot.view.community.model.PopularTagResponse
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
@@ -33,6 +36,8 @@ import com.chocobi.groot.view.search.SearchFragment
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import retrofit2.Call
+import retrofit2.Response
 import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
@@ -53,19 +58,19 @@ class MainActivity : AppCompatActivity() {
     private var potCharImg: String = "화분 이미지 URL"
     private lateinit var bnv_main: BottomNavigationView
 
-    fun setPotId(id:Int) {
+    fun setPotId(id: Int) {
         potId = id
     }
 
-    fun setPotName(name:String) {
+    fun setPotName(name: String) {
         potName = name
     }
 
-    fun setPotPlant(plant:String) {
+    fun setPotPlant(plant: String) {
         potPlant = plant
     }
 
-    fun setPotCharImg(plant:String) {
+    fun setPotCharImg(plant: String) {
         potCharImg = plant
     }
 
@@ -264,7 +269,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     private fun newFileName(): String {
         val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
         val filename = sdf.format(System.currentTimeMillis())
@@ -326,9 +330,10 @@ class MainActivity : AppCompatActivity() {
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate()")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+//        인기태그 가져오기
+        getPopularTag()
 
         potId = intent.getIntExtra("potId", 0)
         potName = intent.getStringExtra("potName").toString()
@@ -345,8 +350,6 @@ class MainActivity : AppCompatActivity() {
 //                .add(R.id.imageInput, CommunityPostFragment())
 //                .commit()
 //        }
-
-
 
 
 //      main에서만 날씨 fragment 보여주기
@@ -426,6 +429,42 @@ class MainActivity : AppCompatActivity() {
             }
             changeFragment(toPage)
         }
+    }
+
+    private fun getPopularTag() {
+        val retrofit = RetrofitClient.basicClient()!!
+        val communityService = retrofit.create(CommunityService::class.java)
+        communityService.requestPopularTags()
+            .enqueue(object : retrofit2.Callback<PopularTagResponse> {
+                override fun onResponse(
+                    call: Call<PopularTagResponse>,
+                    response: Response<PopularTagResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val body = response.body()
+                        if (body != null) {
+                            val popularTags = body.tags
+                            val popularTagsList = ArrayList<String>()
+                            for (tag in popularTags) {
+                                popularTagsList.add(tag.tag)
+                            }
+                            GlobalVariables.prefs.setString(
+                                "popular_tags",
+                                popularTagsList.joinToString()
+                            )
+                            Log.d("CommunityFragment", "onResponse() 조회 성공 $popularTags")
+                        }
+                    } else {
+                        Log.d("CommunityFragment", "onFailure() 인기태그 조회 실패1")
+
+                    }
+                }
+
+                override fun onFailure(call: Call<PopularTagResponse>, t: Throwable) {
+                    Log.d("CommunityFragment", "onFailure() 인기태그 조회 실패2")
+                }
+
+            })
     }
 }
 
