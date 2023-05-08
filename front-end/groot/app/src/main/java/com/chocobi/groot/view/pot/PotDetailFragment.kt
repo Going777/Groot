@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Display.Mode
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,7 +46,8 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     private lateinit var potNameText: TextView
     private lateinit var potPlantText: TextView
     private lateinit var potPlantImg: ImageView
-    private var potId:Int = 0
+    private var potId: Int = 0
+    private var modelNode: ModelNode? = null
 
     override fun onGetDetailRequested() {
         getPotDetail(potId)
@@ -80,6 +82,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         settingBtn.setOnClickListener {
             val potBottomSheet = PotBottomSheet(requireContext(), this)
             potBottomSheet.setPotId(potId)
+            potBottomSheet.setPotName(pot?.potName.toString())
             potBottomSheet.show(
                 mActivity.supportFragmentManager,
                 potBottomSheet.tag
@@ -107,7 +110,6 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         // Inflate the layout for this fragment
         return rootView
     }
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -174,9 +176,13 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     }
 
     fun setCharacterSceneView() {
+        if (modelNode != null) {
+            characterSceneView.removeChild(modelNode!!)
+        }
+
         characterSceneView.backgroundColor = Color(255.0f, 255.0f, 255.0f, 255.0f)
 
-        val modelNode = ModelNode().apply {
+        modelNode = ModelNode().apply {
             loadModelGlbAsync(
                 glbFileLocation = pot?.characterGLBPath
                     ?: "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
@@ -185,8 +191,12 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                 centerOrigin = Position(x = 0f, y = 0f, z = 0f),
             )
         }
-        characterSceneView.addChild(modelNode)
+        if (modelNode != null) {
+
+            characterSceneView.addChild(modelNode!!)
+        }
     }
+
 
     fun setPlantContent() {
         potNameText.text = pot?.potName
