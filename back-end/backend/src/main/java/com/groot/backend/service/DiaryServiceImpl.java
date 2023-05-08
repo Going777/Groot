@@ -5,6 +5,7 @@ import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.dto.response.DiaryResponseDTO;
 import com.groot.backend.entity.DiaryEntity;
 import com.groot.backend.entity.DiaryCheckEntity;
+import com.groot.backend.entity.PlanEntity;
 import com.groot.backend.entity.PotEntity;
 import com.groot.backend.repository.DiaryCheckRepository;
 import com.groot.backend.repository.DiaryRepository;
@@ -23,6 +24,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -44,8 +47,8 @@ public class DiaryServiceImpl implements DiaryService{
 
 
     @Override
-    public DiaryCheckEntity isExistByCreatedDate(Long potId) {
-        return diaryCheckRepository.existsByPotIdCreatedDate(potId);
+    public DiaryDTO isExistByCreatedDate(Long potId) {
+        return new DiaryCheckEntity().toDTO(diaryCheckRepository.existsByPotIdCreatedDate(potId));
     }
 
     @Transactional
@@ -106,18 +109,18 @@ public class DiaryServiceImpl implements DiaryService{
         return diaryRepository.save(diary);
     }
 
-    public DiaryEntity saveAndUpdateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO, DiaryCheckEntity diaryCheck) throws IOException {
+    public DiaryEntity saveAndUpdateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO, DiaryDTO diaryCheck) throws IOException {
 //        DiaryCheckEntity diaryCheck = diaryCheckRepository.findById(diaryDTO.getDiaryId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "당일 다이어리 정보를 찾을 수 없습니다."));
         String storedFileName = null;
 
         if(image != null){
             storedFileName = s3Service.upload(image, "diary");
         }
-        PotEntity pot = diaryCheck.getPotEntity();
+        PotEntity pot = potRepository.findById(diaryCheck.getPotId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 화분의 정보를 찾을 수 없습니다."));
         // check 테이블 업데이트
         DiaryCheckEntity newCheckDiary = DiaryCheckEntity.builder()
                 .id(diaryCheck.getId())
-                .userEntity(diaryCheck.getUserEntity())
+                .userEntity(userRepository.findById(diaryCheck.getUserPK()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자 정보를 찾을 수 없습니다.")))
                 .potEntity(pot)
                 .bug(diaryDTO.getBug()!=null && diaryDTO.getBug()?diaryDTO.getBug():diaryCheck.getBug())
                 .sun(diaryDTO.getSun()!=null && diaryDTO.getSun()?diaryDTO.getSun():diaryCheck.getSun())

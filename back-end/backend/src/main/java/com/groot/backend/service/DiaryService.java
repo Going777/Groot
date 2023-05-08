@@ -15,11 +15,11 @@ import java.util.List;
 
 public interface DiaryService {
 
-    DiaryCheckEntity isExistByCreatedDate(Long potId);
+    DiaryDTO isExistByCreatedDate(Long potId);
 
     DiaryEntity saveDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException;
 
-    DiaryEntity saveAndUpdateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO, DiaryCheckEntity check) throws IOException;
+    DiaryEntity saveAndUpdateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO, DiaryDTO check) throws IOException;
 
     DiaryEntity updateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException;
 
