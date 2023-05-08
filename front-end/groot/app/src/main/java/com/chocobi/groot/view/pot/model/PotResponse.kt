@@ -66,7 +66,7 @@ data class Plant(
 )
 
 class DiaryRequest internal constructor(
-    val postId: Int,
+    val potId: Int,
     val content: String?,
     val water: Boolean?,
     val pruning: Boolean?,

@@ -2,6 +2,7 @@ package com.chocobi.groot.view.search
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_ENTER
@@ -54,6 +55,8 @@ class SearchFragment : Fragment() {
     private lateinit var plants: Array<PlantMetaData>
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 
+
+    private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var difficultyChipGroup: ChipGroup
     private lateinit var luxChipGroup: ChipGroup
     private lateinit var growthChipGroup: ChipGroup
@@ -69,6 +72,19 @@ class SearchFragment : Fragment() {
     private lateinit var growthFleshy: Chip
     private lateinit var growthCrawl: Chip
     private lateinit var growthGrass: Chip
+
+    private var difficulty1: String? = null
+    private var difficulty2: String? = null
+    private var difficulty3: String? = null
+    private var lux1: String? = null
+    private var lux2: String? = null
+    private var lux3: String? = null
+    private var growth1: String? = null
+    private var growth2: String? = null
+    private var growth3: String? = null
+    private var growth4: String? = null
+    private var growth5: String? = null
+    private var growth6: String? = null
 
     private fun setupRecyclerView() {
         // RecyclerView 설정
@@ -129,8 +145,8 @@ class SearchFragment : Fragment() {
             GlobalVariables.prefs.getString("plant_names", "")?.split(", ") ?: emptyList()
         val items = plantNames.toTypedArray() // 괄호 제거하고 쉼표로 분리
 
-        var autoCompleteTextView =
-            rootView.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
+        autoCompleteTextView =
+            rootView.findViewById(R.id.autoCompleteTextView)
         var adapter = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_dropdown_item_1line,
@@ -143,33 +159,36 @@ class SearchFragment : Fragment() {
             AdapterView.OnItemClickListener { parent, view, position, id ->
 //                키보드 내리기
                 GlobalVariables.hideKeyboard(requireActivity())
+                autoCompleteTextView.clearFocus()
 
                 // 클릭한 아이템에 대한 처리를 여기에 작성합니다.
                 plantName = parent.getItemAtPosition(position).toString()
+
                 // 예를 들어 선택된 아이템에 대한 처리를 하거나, 선택한 항목을 다른 뷰에 보여주는 등의 작업을 할 수 있습니다.
                 requestSearchPlant()
             }
 
 //        엔터키 클릭 -> 검색
-        autoCompleteTextView.setOnKeyListener { v, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
-                // 엔터 눌렀을때 행동
-                // 엔터 눌렀을 때 필터 닫기
-                autoCompleteTextView.dismissDropDown()
-                // 키보드 내리기
-                GlobalVariables.hideKeyboard(requireActivity())
-                // 검색 api 요청
-                val inputText = autoCompleteTextView.text.toString()
-                search(inputText)
-            }
-            true
-        }
-
-//        돋보기 버튼 클릭 -> 검색
+//        autoCompleteTextView.setOnKeyListener { v, keyCode, event ->
+//            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
+//                // 엔터 눌렀을때 행동
+//                // 엔터 눌렀을 때 필터 닫기
+////                autoCompleteTextView.dismissDropDown()
+//                // 키보드 내리기
+//                GlobalVariables.hideKeyboard(requireActivity())
+//                // 검색 api 요청
+//                val inputText = autoCompleteTextView.text.toString()
+//                search(inputText)
+//            }
+//            true
+//        }
+//
+////        돋보기 버튼 클릭 -> 검색
         val searchPlantBtn = rootView.findViewById<ImageButton>(R.id.searchPlantBtn)
         searchPlantBtn.setOnClickListener {
 //            키보드 내리기
             GlobalVariables.hideKeyboard(requireActivity())
+            autoCompleteTextView.clearFocus()
 
 //            검색 api 요청
             plantName = autoCompleteTextView.text.toString()
@@ -201,46 +220,62 @@ class SearchFragment : Fragment() {
 
     private fun filterChipGroup() {
         difficultyEasy.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            difficulty1 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         difficultyMedium.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            difficulty2 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         difficultyHard.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            difficulty3 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         luxLow.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            lux1 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         luxMedium.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            lux2 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         luxHigh.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            lux3 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         growthStraight.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            growth1 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         growthTree.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            growth2 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         growthVine.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            growth3 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         growthFleshy.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            growth4 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         growthCrawl.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            growth5 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
         growthGrass.setOnCheckedChangeListener { buttonView, isChecked ->
-            Log.d("SearchFragment", "onCreateView() 눌림 $isChecked ${buttonView.text}")
+            growth6 = if (isChecked) buttonView.text.toString() else null
+            requestSearchPlant()
         }
     }
 
-
-
     private fun requestSearchPlant() {
+        plantName = autoCompleteTextView.text.toString()
+
+        Log.d("SearchFragment","requestSearchPlant() api 호출 식물이름 $plantName")
+        Log.d("SearchFragment","requestSearchPlant() api 호출 난이도 $difficulty1 $difficulty2 $difficulty3")
+        Log.d("SearchFragment","requestSearchPlant() api 호출 빛 $lux1 $lux2 $lux3")
+        Log.d("SearchFragment","requestSearchPlant() api 호출 생육 $growth1 $growth2 $growth3")
         val retrofit = Retrofit.Builder()
             .baseUrl(GlobalVariables.getBaseUrl())
             .addConverterFactory(GsonConverterFactory.create())
@@ -248,7 +283,20 @@ class SearchFragment : Fragment() {
 
         val plantSearchService = retrofit.create(SearchService::class.java)
 
-        plantSearchService.requestSearchPlants(name = plantName)
+        plantSearchService.requestSearchPlants(
+            plantName,
+            difficulty1,
+            difficulty2,
+            difficulty3,
+            lux1,
+            lux2,
+            lux3,
+            growth1,
+            growth2,
+            growth3,
+            growth4,
+            growth5
+        )
             .enqueue(object : Callback<PlantSearchResponse> {
                 override fun onResponse(
                     call: Call<PlantSearchResponse>,
@@ -263,6 +311,7 @@ class SearchFragment : Fragment() {
 
                     }
                 }
+
                 override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
                     TODO("Not yet implemented")
                 }
