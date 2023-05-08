@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.community
 
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
@@ -21,4 +22,12 @@ interface CommunityCommentService {
         @Query("page") pageInput:Int,
         @Query("size") sizeInput:Int
         ) : Call<CommunityCommentResponse> // output 정의
+}
+
+interface CommunityCommentPostService {
+    @POST("api/comments/")
+    fun requestCommentPost(
+        @Query("articleId") articleId: Int,
+        @Query("content") content: String
+    ) : Call<BasicResponse>
 }

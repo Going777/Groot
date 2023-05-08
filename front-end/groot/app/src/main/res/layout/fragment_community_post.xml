@@ -9,6 +9,16 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context=".view.community.CommunityPostFragment"
     android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
 `   <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="40dp">
@@ -94,6 +104,14 @@
                 android:hint="0 / 30" />
         </androidx.cardview.widget.CardView>
 
+<!--        <Button-->
+<!--            android:layout_width="65dp"-->
+<!--            android:layout_height="65dp"-->
+<!--            android:layout_weight="0"-->
+<!--            android:layout_marginTop="12dp"-->
+<!--            android:drawableLeft="@drawable/ic_camera"-->
+
+
         <androidx.cardview.widget.CardView
             android:id="@+id/imageInput"
             android:layout_width="65dp"
@@ -104,12 +122,29 @@
             card_view:cardElevation="0dp"
             card_view:cardCornerRadius="7dp">
             <ImageButton
+                android:id="@+id/postCameraBtn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_camera"
                 android:background="#E9F3ED"/>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/fragment_community_post_image_item"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -163,6 +198,11 @@
                 android:layout_weight="0"
                 android:src="@drawable/ic_hashtag" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tagRecyclerView"/>
+
             <EditText
                 android:id="@+id/tagInput"
                 android:layout_width="fill_parent"
@@ -175,18 +215,23 @@
                 android:hint="태그 입력" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        card_view:cardCornerRadius="7dp"
-        android:layout_marginTop="12dp"
-        app:cardBackgroundColor="@color/main">
-        <Button
-            android:id="@+id/toPostListBtn"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="등록" />
-    </androidx.cardview.widget.CardView>
+            android:layout_height="50dp"
+            card_view:cardCornerRadius="7dp"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="@color/main">
+            <Button
+                android:id="@+id/toPostListBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="등록" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+    </ScrollView>
+
+
+
+
 
 </LinearLayout>

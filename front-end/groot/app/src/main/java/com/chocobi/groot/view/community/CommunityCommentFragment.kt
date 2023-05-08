@@ -124,6 +124,9 @@ class CommunityCommentFragment  : Fragment() {
         var retrofit = RetrofitClient.getClient()!!
 
         var communityCommentService = retrofit.create(CommunityCommentService::class.java)
+
+        val articleId = arguments?.getInt("articleId")
+
         var communityArticleId = 37
         var communityCommentPage = 0
         var communityCommentSize = 10

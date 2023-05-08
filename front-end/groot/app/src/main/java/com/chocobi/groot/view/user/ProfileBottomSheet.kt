@@ -162,6 +162,8 @@ class ProfileBottomSheet(context: Context) : BottomSheetDialogFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_STORAGE && resultCode == Activity.RESULT_OK && data != null) {
+            val dataCheck = data.data
+            Log.d("CommunityPostFragmentData", "$dataCheck")
             val imageUri = data.data
             if (imageUri != null) {
                 isChanged = true
@@ -173,6 +175,8 @@ class ProfileBottomSheet(context: Context) : BottomSheetDialogFragment() {
                 imgFile = uriToFile(imageUri)
 
             }
+            Log.d("CommunityPostFragmentImgFile", "$imgFile")
+
         }
     }
 
@@ -215,6 +219,7 @@ class ProfileBottomSheet(context: Context) : BottomSheetDialogFragment() {
                     response: Response<BasicResponse>
                 ) {
                     var body = response.body()
+                    Log.d("CommunityPostFragmentABCD", filePart.toString())
                     Log.d(TAG, "$body")
                     if (body != null) {
                         Toast.makeText(context, "프로필이 변경되었습니다.", Toast.LENGTH_SHORT).show()
