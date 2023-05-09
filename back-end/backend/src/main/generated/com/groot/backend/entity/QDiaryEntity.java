@@ -39,7 +39,9 @@ public class QDiaryEntity extends EntityPathBase<DiaryEntity> {
 
     public final StringPath imgPath = createString("imgPath");
 
-    public final BooleanPath isLast = createBoolean("isLast");
+    public final BooleanPath isPotLast = createBoolean("isPotLast");
+
+    public final BooleanPath isUserLast = createBoolean("isUserLast");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
@@ -56,7 +58,7 @@ public class QDiaryEntity extends EntityPathBase<DiaryEntity> {
 
     public final QUserEntity userEntity;
 
-    public final NumberPath<Long> userId = createNumber("userId", Long.class);
+    public final NumberPath<Long> userPK = createNumber("userPK", Long.class);
 
     public final BooleanPath water = createBoolean("water");
 
