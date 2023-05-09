@@ -92,7 +92,6 @@ public class PlantCustomRepositoryImpl implements PlantCustomRepository{
     }
 
     private BooleanExpression eqGrwType(String[] type) {
-        logger.info("{} types", type.length);
         if(type == null || type.length == 0) {
             return null;
         }
