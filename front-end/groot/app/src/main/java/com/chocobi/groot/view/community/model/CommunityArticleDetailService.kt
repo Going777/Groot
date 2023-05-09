@@ -3,6 +3,7 @@ package com.chocobi.groot.view.community
 import com.chocobi.groot.view.community.model.BookmarkResponse
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
+import com.chocobi.groot.view.community.model.CommunityShareItemResponse
 import com.chocobi.groot.view.login.LoginResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -36,3 +37,12 @@ class BookmarkRequest internal constructor(
     val userPK: Int,
     val bookmarkStatus: Boolean,
 )
+
+interface CommunityShareItemService {
+
+    @GET("/api/articles/share/{articleId}") // 요청 url
+    fun requestCommunityShareItem(
+//        input 정의
+        @Path("articleId") articleIdInput:Int,
+    ) : Call<CommunityShareItemResponse> // output 정의
+}

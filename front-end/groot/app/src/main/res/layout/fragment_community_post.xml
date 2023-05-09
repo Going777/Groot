@@ -181,38 +181,46 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="60dp"
         android:layout_marginTop="12dp"
         app:cardBackgroundColor="@color/white"
+        android:paddingHorizontal="10dp"
         card_view:cardCornerRadius="70dp">
-
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="left|center"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="45dp"
-                android:layout_marginLeft="10dp"
+                android:layout_width="15dp"
+                android:layout_height="33dp"
+                android:layout_marginHorizontal="10dp"
                 android:layout_weight="0"
                 android:src="@drawable/ic_hashtag" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.google.android.flexbox.FlexboxLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tagRecyclerView"/>
+                app:flexWrap="wrap"
+                android:layout_weight="1">
+                <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tagRecyclerView"/>
+                    <EditText
+                        android:id="@+id/tagInput"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_weight="1"
+                        android:background="@color/white"
+                        android:gravity="left|center_vertical"
+                        android:outlineProvider="none"
+                        android:hint="태그 입력" />
 
-            <EditText
-                android:id="@+id/tagInput"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginHorizontal="10dp"
-                android:layout_weight="1"
-                android:background="@color/white"
-                android:gravity="left|center_vertical"
-                android:outlineProvider="none"
-                android:hint="태그 입력" />
+            </com.google.android.flexbox.FlexboxLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
         <androidx.cardview.widget.CardView
