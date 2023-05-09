@@ -49,9 +49,6 @@ class GlobalVariables : Application() {
             return BASE_URL
         }
 
-        fun setBaseUrl(url: String) {
-            BASE_URL = url
-        }
 
 
         fun fetchUserData() {

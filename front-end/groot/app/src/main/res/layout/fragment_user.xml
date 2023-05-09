@@ -63,7 +63,7 @@
                     android:translationZ="-5dp"
                     app:cardBackgroundColor="@color/background"
                     app:cardCornerRadius="30dp"
-                    app:layout_constraintStart_toEndOf="@id/profile_image"
+                    app:layout_constraintStart_toEndOf="@id/profileImg"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -168,19 +168,22 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/layout_tab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:backgroundTint="@color/white"
         app:tabGravity="center"
         app:tabIndicatorColor="@color/main"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/main"
         app:tabTextColor="@color/grey" />
+
+    <View
+        style="@style/BASIC_LINE"
+        android:layout_marginTop="-20dp"
+        android:layout_marginBottom="20dp" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/user_pager"

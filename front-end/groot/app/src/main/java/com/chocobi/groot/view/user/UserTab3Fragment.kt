@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -28,9 +29,10 @@ class UserTab3Fragment : Fragment() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
+    private lateinit var potFirstView: ConstraintLayout
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityArticleListResponse
-    private var communityArticleSize = 10
+    private var REQUESTPAGESIZE = 10
     private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
     private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
@@ -46,54 +48,65 @@ class UserTab3Fragment : Fragment() {
 
         showProgress()
 
-        var communityArticlePage = 0
-        requestUserBookmarkList(communityArticlePage,communityArticleSize)
+        requestUserBookmarkList("load")
 
         return view    }
 
-    private fun requestUserBookmarkList(communityArticlePage:Int, communityArticleSize:Int) {
-
+    private fun requestUserBookmarkList(usage:String) {
+        if (usage == "loadMore") {
+            communityArticlePage++
+        } else {
+            communityArticlePage = 0
+        }
 //                retrofit 객체 만들기
         var retrofit = RetrofitClient.getClient()!!
         var userService = retrofit.create(UserService::class.java)
 
-        userService.requestUserBookmarkList(communityArticlePage,communityArticleSize).enqueue(object :
+        userService.requestUserBookmarkList(communityArticlePage,REQUESTPAGESIZE).enqueue(object :
             Callback<CommunityArticleListResponse> {
             override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
                 if (response.code() == 200) {
                     Log.d(TAG, "성공")
-                    val checkResponse =  response.body()?.articles?.content
-                    val checkTotal =  response.body()?.articles?.total
                     getData = response.body()!!
-                    Log.d(TAG, "$checkResponse")
-                    Log.d(TAG, "$checkTotal")
-
-                    val totalElements = getData.articles.total // 전체 데이터 수
-                    val currentPage = communityArticlePage // 현재 페이지 번호
-                    val pageSize = 10 // 페이지 당 아이템 수
-                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                        isLastPage = true
+                    val list = createDummyData(0, REQUESTPAGESIZE)
+                    if (usage != "reload") {
+                        val totalElements = getData.articles.total // 전체 데이터 수
+                        if (totalElements == 0) {
+                            showFirstView()
+                        }
+                        val currentPage = communityArticlePage // 현재 페이지 번호
+                        val isLast =
+                            (currentPage + 1) * REQUESTPAGESIZE >= totalElements // 마지막 페이지 여부를 판단합니다.
+                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                            isLastPage = true
+                        }
                     }
-
-                    val list = createDummyData(0, 10)
-                    ThreadUtil.startUIThread(1000) {
-                        adapter.reload(list)
-                        hideProgress()
+                    if (usage == "loadMore") {
+                        ThreadUtil.startUIThread(1000) {
+                            adapter.loadMore(list)
+                            hideProgress()
+                        }
+                    } else {
+                        ThreadUtil.startUIThread(1000) {
+                            adapter.reload(list)
+                            hideProgress()
+                        }
                     }
                 } else {
+                    showFirstView()
                     Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
                 Log.d(TAG, "실패2")
+                showFirstView()
             }
         })
     }
 
     private fun findViews(view: View) {
+        potFirstView = view.findViewById(R.id.firstView)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
@@ -118,8 +131,7 @@ class UserTab3Fragment : Fragment() {
     }
 
     private fun reload() {
-        var communityArticlePage = 0
-        requestUserBookmarkList(communityArticlePage,communityArticleSize)
+        requestUserBookmarkList("reload")
     }
 
 
@@ -129,10 +141,7 @@ class UserTab3Fragment : Fragment() {
         }
 
         showProgress()
-
-        // 페이지 번호를 1 증가시킵니다.
-        communityArticlePage++
-        requestUserBookmarkList(communityArticlePage, communityArticleSize)
+        requestUserBookmarkList("loadMore")
     }
 
 
@@ -186,5 +195,12 @@ class UserTab3Fragment : Fragment() {
             list.add(communityArticleListResponse)
         }
         return list
+    }
+    private fun showFirstView() {
+        potFirstView.visibility = View.VISIBLE
+    }
+
+    private fun hideFirstView() {
+        potFirstView.visibility = View.GONE
     }
 }
