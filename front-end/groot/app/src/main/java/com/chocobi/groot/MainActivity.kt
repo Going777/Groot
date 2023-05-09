@@ -339,7 +339,7 @@ class MainActivity : AppCompatActivity() {
         potName = intent.getStringExtra("potName").toString()
         potPlant = intent.getStringExtra("potPlant").toString()
         var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
-        if (refreshToken == "") {
+        if (refreshToken == "" || refreshToken == null) {
             var intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
