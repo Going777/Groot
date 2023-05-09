@@ -45,7 +45,7 @@ public class PlantCustomRepositoryImpl implements PlantCustomRepository{
                     .limit(30)
                     .fetch();
             return ret;
-        } catch (NullPointerException e) {
+        } catch (NullPointerException | IllegalArgumentException e) {
             logger.info("NullPointer Exception : {}", e.getStackTrace());
             throw new InvalidRequestStateException();
         }
