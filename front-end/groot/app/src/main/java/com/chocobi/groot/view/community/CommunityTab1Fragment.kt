@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.SearchView
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -23,11 +22,9 @@ import com.chocobi.groot.view.community.adapter.PopularTagAdapter
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
-import com.chocobi.groot.view.user.ProfileBottomSheet
 import com.google.android.material.button.MaterialButton
 import com.chocobi.groot.view.community.model.ArticleContent
 import com.chocobi.groot.view.community.model.CommunityService
-import com.chocobi.groot.view.community.model.Tag
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import retrofit2.Call
@@ -47,7 +44,6 @@ class CommunityTab1Fragment : Fragment() {
     private lateinit var popularTagAdapter: PopularTagAdapter
     private lateinit var popularTagSection: LinearLayout
     private lateinit var overlayView: View
-
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
@@ -72,22 +68,28 @@ class CommunityTab1Fragment : Fragment() {
 
         /** 지역 필터 버튼 눌렀을 때 처리 **/
         val regionFilterBtn = view.findViewById<MaterialButton>(R.id.regionFilterBtn)
-        val regionFilterBottomSheet = RegionFilterBottomSheet(requireContext())
         regionFilterBtn.setOnClickListener {
+            val keyword = getLatestKeyword() // 최신의 keyword 값을 가져옴
+            GlobalVariables.prefs.setString("share_keyword", keyword) // 전역변수로 저장
+            val regionFilterBottomSheet =
+                RegionFilterBottomSheet(requireContext())
             regionFilterBottomSheet.show(
                 mActivity.supportFragmentManager,
                 regionFilterBottomSheet.tag
             )
         }
 
+        keyword = GlobalVariables.prefs.getString("share_keyword", "")
+        GlobalVariables.prefs.setString("share_keyword", "")
+
 //        뷰 초기화
         findViews(view)
 //        태그 데이터 세팅
         createPopularTagData()
-//        서치뷰 제어
-        searchViewListner()
 //        지역 필터 데이터 받아오기
         getFilterData()
+//        서치뷰 제어
+        searchViewListner()
         setListeners()
         initList()
 //        reload()
@@ -115,7 +117,6 @@ class CommunityTab1Fragment : Fragment() {
                         isCloseIconVisible = false
                     })
             }
-            Log.d("CommunityTab1Fragment", "onViewCreated()/필터 값: $regionFullFilterList")
         }
     }
 
@@ -291,6 +292,11 @@ class CommunityTab1Fragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun searchViewListner() {
+        Log.d("CommunityTab1Fragment", "searchViewListner()")
+        if (keyword != null) {
+            communitySearchView.setQuery(keyword, false)
+        }
+
         communitySearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 Log.d(
@@ -329,12 +335,18 @@ class CommunityTab1Fragment : Fragment() {
             }
         }
 
+//        검색창 제외 구간 클릭했을 때
         overlayView.setOnTouchListener { _, _ ->
             overlayView.visibility = View.GONE
             popularTagSection.visibility = View.GONE
             communitySearchView.setQuery("", false)
+            communitySearchView.clearFocus()
             GlobalVariables.hideKeyboard(requireActivity())
             true
         }
+    }
+
+    private fun getLatestKeyword(): String {
+        return keyword
     }
 }

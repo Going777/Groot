@@ -30,7 +30,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Suppress("DEPRECATION")
 class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
-
     private lateinit var chipRegionGroup: ChipGroup
     private lateinit var regionList: ArrayList<String>
     private lateinit var regionFullList: ArrayList<String>
