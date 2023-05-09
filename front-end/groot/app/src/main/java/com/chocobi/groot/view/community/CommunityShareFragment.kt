@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -72,6 +73,7 @@ class CommunityShareFragment : Fragment() {
     private lateinit var tagInput: EditText
     private lateinit var regionFilterBtn: Button
     private lateinit var chipRegionGroup: ChipGroup
+    private lateinit var articleSection: LinearLayout
 
 
     override fun onCreateView(
@@ -276,6 +278,15 @@ class CommunityShareFragment : Fragment() {
         super.onResume()
         region = arguments?.getStringArrayList("region_full_list")?.get(0)
         addChip(region)
+    }
+
+    private fun alertRegionFilterFirst() {
+//        articleSection.setOnClickListener {
+//            if(region == null) {
+//                Toast.makeText(requireContext(), "지역을 먼저 선택해주세요", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
     }
 
     private fun addChip(test: String?) {
