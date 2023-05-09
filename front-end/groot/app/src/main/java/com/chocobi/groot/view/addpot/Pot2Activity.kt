@@ -17,6 +17,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.addpot.model.AddPotRequest
 import com.chocobi.groot.view.addpot.model.AddPotResponse
 import com.chocobi.groot.view.addpot.model.AddPotService
+import io.github.sceneview.SceneView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -31,6 +32,9 @@ class Pot2Activity : AppCompatActivity() {
     private var plantId: Int = 0
     private var plantNameSplit: String = ""
     private var isSuccessed = false
+
+    private lateinit var characterSceneView: SceneView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +67,9 @@ class Pot2Activity : AppCompatActivity() {
 
             }
         }
+
+        characterSceneView = findViewById(R.id.characterSceneView)
+
     }
 
     private fun uriToFile(uri: Uri): File? {

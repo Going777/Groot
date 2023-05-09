@@ -23,6 +23,7 @@ import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.search.adapter.DictRVAdapter
 import com.chocobi.groot.view.search.model.PlantMetaData
 import com.chocobi.groot.view.search.model.PlantSearchResponse
@@ -51,7 +52,7 @@ class SearchFragment : Fragment() {
     private var param2: String? = null
 
 
-    private var plantName: String = ""
+    private var plantName: String? = null
     private lateinit var plants: Array<PlantMetaData>
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 
@@ -276,10 +277,7 @@ class SearchFragment : Fragment() {
         Log.d("SearchFragment","requestSearchPlant() api 호출 난이도 $difficulty1 $difficulty2 $difficulty3")
         Log.d("SearchFragment","requestSearchPlant() api 호출 빛 $lux1 $lux2 $lux3")
         Log.d("SearchFragment","requestSearchPlant() api 호출 생육 $growth1 $growth2 $growth3")
-        val retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        val retrofit = RetrofitClient.basicClient()!!
 
         val plantSearchService = retrofit.create(SearchService::class.java)
 
@@ -304,21 +302,25 @@ class SearchFragment : Fragment() {
                 ) {
                     if (response.code() == 200) {
                         val searchBody = response.body()
+                        Log.d("SearchFragment","requestSearchPlant() api 성공 $searchBody")
                         if (searchBody != null) {
                             plants = searchBody.plants
                             rvAdapter.setData(plants)
                         }
 
-                    }
+                    }else
+                        Log.d("SearchFragment","requestSearchPlant() api 실패1 ")
+
                 }
 
                 override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
+                        Log.d("SearchFragment","requestSearchPlant() api 실패2 ")
                     TODO("Not yet implemented")
                 }
             })
     }
 
-    private fun search(targetText: String) {
+    private fun search(targetText: String?) {
         if (targetText == "") {
             Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
         }
