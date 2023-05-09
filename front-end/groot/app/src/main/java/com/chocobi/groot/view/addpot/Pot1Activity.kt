@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.utils.widget.ImageFilterButton
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.chocobi.groot.R
@@ -81,7 +82,7 @@ class Pot1Activity : AppCompatActivity() {
                     Chip(this, null, R.style.REGION_CHIP_ICON).apply {
                         text = type
                         setTextColor(ContextCompat.getColor(context, R.color.white))
-                        setChipBackgroundColorResource(R.color.main)
+                        setChipBackgroundColorResource(R.color.sub)
                         chipStrokeWidth = 0f
                     }
                 )
@@ -89,15 +90,15 @@ class Pot1Activity : AppCompatActivity() {
         }
 
 
-        Log.d("Pot1Activity", "onCreate() $growType")
-        Log.d("Pot1Activity", "onCreate() $mgmtLevel")
-        Log.d("Pot1Activity", "onCreate() $characterGlbPath")
+        Log.d("Pot1Activity", "onCreate() 111 $growType")
+        Log.d("Pot1Activity", "onCreate() 111 $mgmtLevel")
+        Log.d("Pot1Activity", "onCreate() 111 $characterGlbPath")
 
         //        image 띄우기
         var potPhoto = findViewById<ImageView>(R.id.potPhoto)
         potPhoto.setImageURI(imageUri?.toUri())
 
-        val add1Btn = findViewById<Button>(R.id.add1Btn)
+        val add1Btn = findViewById<ImageFilterButton>(R.id.add1Btn)
         add1Btn.setOnClickListener {
             var intent = Intent(this, Pot2Activity::class.java)
 //            intent.putExtra("toPage", "plant_add1")
@@ -105,7 +106,6 @@ class Pot1Activity : AppCompatActivity() {
             intent.putExtra("plantNameSplit", plantNameSplit)
             intent.putExtra("plantId", plantId)
             intent.putExtra("imageUri", imageUri)
-
             intent.putExtra("growType", growType)
             intent.putExtra("mgmtLevel", mgmtLevel)
             intent.putExtra("characterGlbPath", characterGlbPath)
