@@ -49,7 +49,7 @@ class PotCollectionFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_pot_collection, container, false)
         val mActivity = activity as MainActivity
         potCollectionRv =
-            rootView.findViewById<RecyclerView>(R.id.pot_collectioin_recycler_view)
+            rootView.findViewById(R.id.pot_collectioin_recycler_view)
         potFirstView = rootView.findViewById(R.id.firstView)
         getPotList(mActivity)
 
@@ -141,10 +141,6 @@ class PotCollectionFragment : Fragment() {
             }
 
             override fun onScanBtnClick(view: View, position: Int) {
-//                glb파일
-//                레벨
-//                화분 이름
-//                식물 이름
                 val intent = Intent(context, ArActivity::class.java)
                 intent.putExtra("GLBfile", potList?.get(position)?.characterGLBPath.toString())
                 intent.putExtra("level", potList?.get(position)?.level.toString())

@@ -10,6 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.databinding.CalendarDayBinding
@@ -46,6 +47,7 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
 
     private val TAG = "PotCalendarFragment"
 
+    private lateinit var mActivity: MainActivity
     private lateinit var rv: RecyclerView
     private var rvAdapter: PotCalendarRVAdapter? = null
 
@@ -66,7 +68,7 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_pot_calendar, container, false)
 //        val rootView = super.onCreateView(inflater, container, savedInstanceState)
-
+        mActivity = activity as MainActivity
         val items = mutableListOf<Diary>()
         items.add(
             Diary(
@@ -90,7 +92,7 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
         )
         items.add(
             Diary(
-                8,
+                20,
                 8,
                 0,
                 "콜라",
@@ -100,7 +102,7 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
         )
         items.add(
             Diary(
-                8,
+                20,
                 8,
                 1,
                 "콜라",
@@ -109,9 +111,7 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
             )
         )
         rv = rootView.findViewById(R.id.potCalendarRecyclerView)
-        rvAdapter = PotCalendarRVAdapter(items)
-        rv.layoutManager = LinearLayoutManager(activity)
-        rv.adapter = rvAdapter
+        setRecyclerView(items)
 
         return rootView
     }
@@ -198,5 +198,15 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
         rvAdapter = PotCalendarRVAdapter(diaryList)
         rv.layoutManager = LinearLayoutManager(activity)
         rv.adapter = rvAdapter
+
+        rvAdapter?.setItemClickListener(object : PotCalendarRVAdapter.ItemClickListener {
+            override fun onPotImgClick(view: View, position: Int) {
+                mActivity.setPotId(diaryList?.get(position)?.potId ?: 0)
+                mActivity.changeFragment("pot_detail")
+            }
+
+            override fun onCheckClick(view: View, position: Int) {
+            }
+        })
     }
 }
