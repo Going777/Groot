@@ -7,5 +7,4 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PlanRepository extends JpaRepository<PlanEntity, Long>, PlanRepositoryCustom {
-    void deleteAllByCodeAndPotId(Integer code, Long potId);
 }

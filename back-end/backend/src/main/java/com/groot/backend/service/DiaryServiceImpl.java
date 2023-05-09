@@ -46,8 +46,8 @@ public class DiaryServiceImpl implements DiaryService{
     private static int[] monthDate = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     @Override
-    public DiaryDTO isExistByCreatedDate(Long potId) {
-        return new DiaryCheckEntity().toDTO(diaryCheckRepository.existsByPotIdCreatedDate(potId));
+    public DiaryCheckEntity isExistByCreatedDate(Long potId) {
+        return diaryCheckRepository.existsByPotIdCreatedDate(potId);
     }
 
     @Transactional
@@ -107,8 +107,32 @@ public class DiaryServiceImpl implements DiaryService{
             tempExp -= tempLevel*100;
             tempLevel+=1;
         }
-        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
 
+        // pot entity 수정본 만들기
+        LocalDateTime now = LocalDateTime.now();
+        PotEntity newPot = PotEntity.builder()
+                        .id(pot.getId())
+                .humidity(pot.getHumidity())
+                .illuminance(pot.getIlluminance())
+                .imgPath(pot.getImgPath())
+                .name(pot.getName())
+                .diaryEntities(pot.getDiaryEntities())
+                .plantId(pot.getPlantId())
+                .plantKrName(pot.getPlantKrName())
+                .temperature(pot.getTemperature())
+                .share(pot.getShare())
+                .nutrientsDate(diary.getNutrients()?now:pot.getNutrientsDate())
+                .pruningDate(diary.getPruning()?now:pot.getPruningDate())
+                .saleDate(pot.getSaleDate())
+                .level(tempLevel)
+                .experience(tempExp)
+                .waterDate(diary.getWater()?now:pot.getWaterDate())
+                .survival(pot.getSurvival())
+                .plantEntity(pot.getPlantEntity())
+                .planEntities(pot.getPlanEntities())
+                                .build();
+//        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+        potRepository.save(newPot);
         return diaryRepository.save(diary);
     }
 
@@ -159,8 +183,7 @@ public class DiaryServiceImpl implements DiaryService{
         // 점수 계산
         Integer score = 0;
         int[] checkList = {diary.getWater()&&!diaryCheck.getWater()?10:0, diary.getSun()&&!diaryCheck.getSun()?10:0, diary.getPruning()&&!diaryCheck.getPruning()?30:0, diary.getNutrients()&&!diaryCheck.getNutrients()?30:0, diary.getBug()?10:0, diary.getContent()!=null?10:0, image!=null?10:0};
-        for(int i: checkList){
-            score += i;
+        for(int i: checkList){            score += i;
         }
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
@@ -172,6 +195,7 @@ public class DiaryServiceImpl implements DiaryService{
             tempExp += tempLevel*100;
         }
         potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+        diaryCheckRepository.save(newCheckDiary);
         return diaryRepository.save(diary);
     }
 
@@ -345,19 +369,17 @@ public class DiaryServiceImpl implements DiaryService{
         // 이후의 미션 중 false 인 미션 삭제
         planRepository.deleteAllByCodeAndPotId(code, pot.getId());
         LocalDateTime now = LocalDateTime.now();
-        int addPoint = 6;
-        if(code==0){
-            log.info("plant"+pot.getPlantId());
-            addPoint = plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
-
-        }
         // 새로운 미션 추가
         List<PlanEntity> planList = new ArrayList<>();
         int day = now.getDayOfMonth();
         int month = now.getMonthValue();
         int year = now.getYear();
+        if(code==0){
+            day += plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
+        }else{
+            month += 6;
+        }
         for (int i = 0; i < 3; i++) {
-            day += addPoint;
             if (day > monthDate[month]) {
                 day -= monthDate[month];
                 month += 1;
@@ -366,12 +388,13 @@ public class DiaryServiceImpl implements DiaryService{
                     month %= 12;
                 }
             }
-            LocalDateTime newDate = LocalDateTime.of(year, month, day, 0, 0, 0);
+            LocalDateTime newDate = LocalDateTime.of(year, month, day, 9, 0, 0);
             PlanEntity newOne = PlanEntity.builder()
                     .userEntity(user)
                     .potEntity(pot)
                     .dateTime(newDate)
                     .code(code)
+                    .done(false)
                     .build();
 //            planList.add(newOne);
             planRepository.save(newOne);

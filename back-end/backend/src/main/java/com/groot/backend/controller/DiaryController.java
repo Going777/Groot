@@ -44,8 +44,10 @@ public class DiaryController {
 //        SimpleDateFormat sDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 //        String nowFormat = sDate.format(now);
         // 오늘 다이어리를 작성한 이력이 있을 경우
-        DiaryDTO find = diaryService.isExistByCreatedDate(diaryDTO.getPotId());
-        if(find!=null){
+        DiaryCheckEntity result = diaryService.isExistByCreatedDate(diaryDTO.getPotId());
+
+        if(result!=null){
+            DiaryDTO find = new DiaryCheckEntity().toDTO(result);
             if(diaryService.saveAndUpdateDiary(userId, file, diaryDTO, find)==null){
                 resultMap.put("msg", "다이어리 추가 및 수정 실패");
                 resultMap.put("result", FAIL);
@@ -129,9 +131,15 @@ public class DiaryController {
     @GetMapping("/check/{potId}")
     public ResponseEntity checkDiary(@PathVariable Long potId){
         Map resultMap = new HashMap();
-        DiaryDTO result = diaryService.isExistByCreatedDate(potId);
+        DiaryCheckEntity result = diaryService.isExistByCreatedDate(potId);
+        if(result == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "해당 사용자의 다이어리 조회를 실패하였습니다.");
+            return ResponseEntity.ok().body(resultMap);
+        }
+        DiaryDTO diaryDTO = new DiaryCheckEntity().toDTO(result);
         // 없든 있든 결과 보내줌
-        resultMap.put("diary", result==null?null:result);
+        resultMap.put("diary", diaryDTO==null?null:diaryDTO);
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "해당 사용자의 다이어리 조회에 성공하였습니다.");
         return ResponseEntity.ok().body(resultMap);

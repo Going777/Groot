@@ -56,7 +56,7 @@ public class PlanEntity {
                     .code(plan.getCode())
                     .imgPath(plan.getPotEntity().getImgPath())
                     .potName(plan.getPotEntity().getName())
-                    .dateTime(plan.getDateTime())
+//                    .dateTime(plan.getDateTime())
                     .potId(plan.getPotId())
                     .done(plan.isDone())
                     .userPK(plan.getUserPK())

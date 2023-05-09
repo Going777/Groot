@@ -16,7 +16,7 @@ import java.util.List;
 
 public interface DiaryService {
 
-    DiaryDTO isExistByCreatedDate(Long potId);
+    DiaryCheckEntity isExistByCreatedDate(Long potId);
 
     DiaryEntity saveDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException;
 

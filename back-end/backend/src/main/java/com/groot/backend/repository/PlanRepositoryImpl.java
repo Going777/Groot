@@ -15,6 +15,15 @@ import java.util.List;
 public class PlanRepositoryImpl implements PlanRepositoryCustom{
 
     private final JPAQueryFactory queryFactory;
+
+    @Override
+    public void deleteAllByCodeAndPotId(Integer code, Long potId) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+        queryFactory.delete(qPlan)
+                .where(qPlan.code.eq(code), qPlan.potId.eq(potId), qPlan.done.eq(false))
+                .execute();
+    }
+
     @Override
     public List<PlanEntity> findAllByDateTime(LocalDateTime start, LocalDateTime end) {
         QPlanEntity qPlan = QPlanEntity.planEntity;
