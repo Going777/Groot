@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface DiaryRepository extends JpaRepository<DiaryEntity, Long> {
+public interface DiaryRepository extends JpaRepository<DiaryEntity, Long>, DiaryRepositoryCustom {
     Page<DiaryEntity> findAllByPotId(Long potId, PageRequest pageRequest);
 
-    Page<DiaryEntity> findAllByUserId(Long userId, PageRequest pageRequest);
+    Page<DiaryEntity> findAllByUserPK(Long userPK, PageRequest pageRequest);
     @Query(value = "select * from diary where :now<=created_date", nativeQuery = true)
     List<DiaryEntity> findAllByDate(String now);
 }

@@ -48,23 +48,26 @@ public class DiaryController {
 
         if(result!=null){
             DiaryDTO find = new DiaryCheckEntity().toDTO(result);
-            if(diaryService.saveAndUpdateDiary(userId, file, diaryDTO, find)==null){
+            DiaryEntity diaryUpdate = diaryService.saveAndUpdateDiary(userId, file, diaryDTO, find);
+            if(diaryUpdate==null){
                 resultMap.put("msg", "다이어리 추가 및 수정 실패");
                 resultMap.put("result", FAIL);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
             }
             resultMap.put("msg","다이어리 추가 및 수정 완료");
             resultMap.put("result", SUCCESS);
+            resultMap.put("diaryId", diaryUpdate.getId());
             return ResponseEntity.ok().body(resultMap);
         }
-
-        if(diaryService.saveDiary(userId, file, diaryDTO)==null){
+        DiaryEntity diarySave = diaryService.saveDiary(userId, file, diaryDTO);
+        if(diarySave==null){
             resultMap.put("msg", "다이어리 추가 및 작성 실패");
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
         resultMap.put("msg","다이어리 추가 및 작성 완료");
         resultMap.put("result", SUCCESS);
+        resultMap.put("diaryId", diarySave.getId());
         return ResponseEntity.ok().body(resultMap);
 
     }
@@ -158,8 +161,21 @@ public class DiaryController {
     }
 
     @GetMapping("/{potId}")   // 화분 아이디로 다이어리 목록 조회
-    public ResponseEntity potDiary(@PathVariable Long potId, @RequestParam Integer page, @RequestParam Integer size){
+    public ResponseEntity potDiary(@PathVariable Long potId, @RequestParam Integer page, @RequestParam Integer size, HttpServletRequest request){
         Map resultMap = new HashMap();
+        if(potId==0){
+            Long userId = JwtTokenProvider.getIdByAccessToken(request);
+            Page<DiaryResponseDTO> result = diaryService.diaryList(userId, page, size);
+            if(result.isEmpty()){
+                resultMap.put("msg", "해당 사용자의 다이어리를 찾을 수 없습니다.");
+                resultMap.put("result", FAIL);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
+            }
+            resultMap.put("diary", result);
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg", "해당 사용자의 다이어리 조회에 성공하였습니다.");
+            return ResponseEntity.ok().body(resultMap);
+        }
         Page<DiaryResponseDTO> result = diaryService.diaryListByPotId(potId, page, size);
 
         if(result.isEmpty()){

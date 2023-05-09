@@ -43,7 +43,7 @@ public class DiaryServiceImpl implements DiaryService{
 
     private final S3Service s3Service;
 
-    private static int[] monthDate = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private static int[] monthDate = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     @Override
     public DiaryCheckEntity isExistByCreatedDate(Long potId) {
@@ -86,9 +86,12 @@ public class DiaryServiceImpl implements DiaryService{
                 .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():false)
                 .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
-                .isLast(true)
+                .isPotLast(true)
+                .isUserLast(true)
                 .build();
 
+//        diaryRepository.updateIsLastByPotId(pot.getId(), LocalDateTime.now());
+        diaryRepository.updateIsLastByUserId(user.getId(), LocalDateTime.now());
 //        DiaryCheckEntity result = diaryCheckRepository.save(checkdiary);
 //        log.info("result: "+result.getId());
 
@@ -174,9 +177,11 @@ public class DiaryServiceImpl implements DiaryService{
                 .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():false)
                 .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
-                .isLast(true)
+                .isPotLast(true)
+                .isUserLast(true)
                 .build();
-
+        diaryRepository.updateIsLastByPotId(pot.getId(), LocalDateTime.now());
+        diaryRepository.updateIsLastByUserId(user.getId(), LocalDateTime.now());
         log.info("result: "+newCheckDiary.getId());
 
         // 물주기 일정 추가
@@ -187,7 +192,8 @@ public class DiaryServiceImpl implements DiaryService{
         // 점수 계산
         Integer score = 0;
         int[] checkList = {diary.getWater()&&!diaryCheck.getWater()?10:0, diary.getSun()&&!diaryCheck.getSun()?10:0, diary.getPruning()&&!diaryCheck.getPruning()?30:0, diary.getNutrients()&&!diaryCheck.getNutrients()?30:0, diary.getBug()?10:0, diary.getContent()!=null?10:0, image!=null?10:0};
-        for(int i: checkList){            score += i;
+        for(int i: checkList){
+            score += i;
         }
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
@@ -198,7 +204,30 @@ public class DiaryServiceImpl implements DiaryService{
             tempLevel -= 1;
             tempExp += tempLevel*100;
         }
-        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+        LocalDateTime now = LocalDateTime.now();
+        PotEntity newPot = PotEntity.builder()
+                .id(pot.getId())
+                .humidity(pot.getHumidity())
+                .illuminance(pot.getIlluminance())
+                .imgPath(pot.getImgPath())
+                .name(pot.getName())
+                .diaryEntities(pot.getDiaryEntities())
+                .plantId(pot.getPlantId())
+                .plantKrName(pot.getPlantKrName())
+                .temperature(pot.getTemperature())
+                .share(pot.getShare())
+                .nutrientsDate(diary.getNutrients()?now:pot.getNutrientsDate())
+                .pruningDate(diary.getPruning()?now:pot.getPruningDate())
+                .saleDate(pot.getSaleDate())
+                .level(tempLevel)
+                .experience(tempExp)
+                .waterDate(diary.getWater()?now:pot.getWaterDate())
+                .survival(pot.getSurvival())
+                .plantEntity(pot.getPlantEntity())
+                .planEntities(pot.getPlanEntities())
+                .build();
+//        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+        potRepository.save(newPot);
         diaryCheckRepository.save(newCheckDiary);
         return diaryRepository.save(diary);
     }
@@ -344,7 +373,7 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public Page<DiaryResponseDTO> diaryList(Long userId, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
-        Page<DiaryEntity> diaryEntities = diaryRepository.findAllByUserId(userId, pageRequest);
+        Page<DiaryEntity> diaryEntities = diaryRepository.findAllByUserPK(userId, pageRequest);
         Page<DiaryResponseDTO> result = new DiaryResponseDTO().toDtoList(diaryEntities);
         return result;
     }
@@ -370,28 +399,37 @@ public class DiaryServiceImpl implements DiaryService{
 
         // 해당 미션 완료 표시 및 실행 날짜 업데이트
         planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
+        log.info("plan에 미션 완료 표시");
         // 이후의 미션 중 false 인 미션 삭제
         planRepository.deleteAllByCodeAndPotId(code, pot.getId());
+        log.info("미션 중 false인 미션 삭제");
         LocalDateTime now = LocalDateTime.now();
         // 새로운 미션 추가
         List<PlanEntity> planList = new ArrayList<>();
         int day = now.getDayOfMonth();
         int month = now.getMonthValue();
         int year = now.getYear();
-        if(code==0){
-            day += plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
-        }else{
-            month += 6;
-        }
+        int waterCycle = plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
         for (int i = 0; i < 3; i++) {
-            while (day <= monthDate[month]) {
+            if(code==0){
+                day += waterCycle;
+            }else{
+                month += 6;
+                if (month > 12) {
+                    year += month / 12;
+                    month %= 12;
+                }
+            }
+            while (day >= monthDate[month]) {
                 day -= monthDate[month];
                 month += 1;
                 if (month > 12) {
                     year += month / 12;
                     month %= 12;
                 }
+                log.info("day "+day);
             }
+
             LocalDateTime newDate = LocalDateTime.of(year, month, day, 9, 0, 0);
             PlanEntity newOne = PlanEntity.builder()
                     .userEntity(user)
@@ -401,7 +439,10 @@ public class DiaryServiceImpl implements DiaryService{
                     .done(false)
                     .build();
 //            planList.add(newOne);
-            planRepository.save(newOne);
+            PlanEntity result = planRepository.save(newOne);
+            if(result != null) {
+                log.info("plan 저장 " + i + "번째 완료 " +result.getId());
+            }
         }
 //        planRepository.saveAll(planList);
     }

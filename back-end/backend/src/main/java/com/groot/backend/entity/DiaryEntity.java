@@ -26,7 +26,7 @@ public class DiaryEntity extends BaseEntity{
     private Long potId;
 
     @Column(name = "user_id", insertable = false, updatable = false)
-    private Long userId;
+    private Long userPK;
 
     @Column(name = "diary_check_id", insertable = false, updatable = false)
     private Long diaryId;
@@ -53,7 +53,10 @@ public class DiaryEntity extends BaseEntity{
     private Boolean sun;
 
     @Column
-    private Boolean isLast;
+    private Boolean isPotLast;
+
+    @Column
+    private Boolean isUserLast;
 
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -74,7 +77,7 @@ public class DiaryEntity extends BaseEntity{
         DiaryEntity result = DiaryEntity.builder()
                 .bug(diaryEntity.getBug())
                 .sun(diaryEntity.getSun())
-                .userId(diaryEntity.getUserPK())
+                .userPK(diaryEntity.getUserPK())
                 .water(diaryEntity.getWater())
                 .content(diaryEntity.getContent())
                 .nutrients(diaryEntity.getNutrients())
