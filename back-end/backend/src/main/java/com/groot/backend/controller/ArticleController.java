@@ -66,6 +66,15 @@ public class ArticleController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
+        // 나눔일 경우 shareState와 shareRegion 존재 여부 확인
+        if(category.equals("나눔")){
+            if((articleDTO.getShareStatus() == null || articleDTO.getShareRegion() == null || articleDTO.getShareRegion().equals(""))){
+                resultMap.put("result", FAIL);
+                resultMap.put("msg","shareStatus 또는 shareRegion 값이 존재하지 않습니다.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
+        }
+
         // title, content 확인
         if(articleDTO.getTitle().equals("") || articleDTO.getContent().equals("")){
             resultMap.put("result", FAIL);
@@ -185,6 +194,15 @@ public class ArticleController {
             resultMap.put("result", FAIL);
             resultMap.put("msg","존재하지 않는 카테고리입니다.");
             return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 나눔일 경우 shareState와 shareRegion 존재 여부 확인
+        if(category.equals("나눔")){
+            if((articleDTO.getShareStatus() == null || articleDTO.getShareRegion() == null || articleDTO.getShareRegion().equals(""))){
+                resultMap.put("result", FAIL);
+                resultMap.put("msg","shareStatus 또는 shareRegion 값이 존재하지 않습니다.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
         }
 
         // 새 이미지 업로드
