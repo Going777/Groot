@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_STORAGE
@@ -62,7 +63,7 @@ class CommunityShareFragment : Fragment() {
 
     private lateinit var tagRecyclerView: RecyclerView
     private lateinit var tagInput: EditText
-
+    private lateinit var regionFilterBtn: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -128,7 +129,6 @@ class CommunityShareFragment : Fragment() {
         }
 
 
-
         // 이미지 업로드
         val postCameraBtn = view.findViewById<ImageButton>(R.id.postCameraBtn)
 
@@ -191,7 +191,6 @@ class CommunityShareFragment : Fragment() {
 
         var titleCntValue = 0
         var contentCntValue = 0
-
 
 
         // 글자 수 체크 및 제한
@@ -259,8 +258,23 @@ class CommunityShareFragment : Fragment() {
         }
         textWatcher()
 
+        regionFilter(view)
 
         return view
+    }
+
+    private fun regionFilter(view: View) {
+        val mActivity = activity as MainActivity
+        regionFilterBtn = view.findViewById(R.id.regionFilterBtn)
+
+        regionFilterBtn.setOnClickListener {
+            val regionFilterBottomSheet =
+                RegionFilterBottomSheet(requireContext())
+            regionFilterBottomSheet.show(
+                mActivity.supportFragmentManager,
+                regionFilterBottomSheet.tag
+            )
+        }
     }
 
     private fun requestPermissions() {
