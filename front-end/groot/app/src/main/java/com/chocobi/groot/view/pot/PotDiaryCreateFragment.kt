@@ -159,11 +159,11 @@ class PotDiaryCreateFragment : Fragment() {
                     sunStatus = res?.diary?.sun!!
                     nutrientsStatus = res?.diary?.nutrients!!
                     Log.d("PotDiaryCreateFragment", "onResponse() 성공 $res")
-                    alertConstraintChip(waterChip, waterStatus)
-                    alertConstraintChip(potChip, potStatus)
-                    alertConstraintChip(bugChip, bugStatus)
-                    alertConstraintChip(sunChip, sunStatus)
-                    alertConstraintChip(waterChip, waterStatus)
+                    alertConstraintChip(waterChip, waterStatus, "물 주기")
+                    alertConstraintChip(potChip, potStatus, "분갈이")
+                    alertConstraintChip(bugChip, bugStatus, "해충 퇴치")
+                    alertConstraintChip(sunChip, sunStatus, "햇빛 쬐기")
+                    alertConstraintChip(pillChip, nutrientsStatus, "영양제 주기")
                 }
                 else {
                     Log.d("PotDiaryCreateFragment", "onResponse() 실패1")
@@ -218,14 +218,13 @@ class PotDiaryCreateFragment : Fragment() {
             nutrients = isChecked
         }
     }
-    
-    private fun alertConstraintChip(targetChip: Chip, targetStatus: Boolean) {
-        Log.d("PotDiaryCreateFragment", "alertConstraintChip() 해 $sunStatus")
+
+//    비활성화 칩 처리
+    private fun alertConstraintChip(targetChip: Chip, targetStatus: Boolean, action: String) {
         if(targetStatus == true) {
-            targetChip.isEnabled = false
-            targetChip.setOnTouchListener { _, _ ->
-                Toast.makeText(requireContext(), "오늘 이미 완료한 활동입니다!", Toast.LENGTH_SHORT).show()
-                true // true를 반환하여 클릭 이벤트가 소비되었음을 나타냄
+            targetChip.setOnClickListener {
+                targetChip.isChecked = false
+                Toast.makeText(requireContext(), "오늘은 이미 ${action}를 완료했어요", Toast.LENGTH_SHORT).show()
             }
         }
     }
