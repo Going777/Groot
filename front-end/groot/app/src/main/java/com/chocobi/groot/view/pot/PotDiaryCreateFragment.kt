@@ -26,6 +26,7 @@ import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.pot.model.DiaryCheckStatusResponse
 import com.chocobi.groot.view.pot.model.DiaryRequest
 import com.chocobi.groot.view.pot.model.PotService
 import com.google.android.filament.ToneMapper.Linear
@@ -61,6 +62,12 @@ class PotDiaryCreateFragment : Fragment() {
     private lateinit var bugChip: Chip
     private lateinit var sunChip: Chip
     private lateinit var pillChip: Chip
+    
+    private var waterStatus = false
+    private var potStatus = false
+    private var bugStatus = false
+    private var sunStatus = false
+    private var nutrientsStatus = false
 
     private var water: Boolean = false
     private var pruning: Boolean = false
@@ -73,6 +80,14 @@ class PotDiaryCreateFragment : Fragment() {
 
     private var myImageView: ImageView? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+//        변수 받기
+        potId = arguments?.getInt("potId")
+        potName = arguments?.getString("potName")
+        potPlant = arguments?.getString("potPlant")
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -80,11 +95,7 @@ class PotDiaryCreateFragment : Fragment() {
         mActivity = activity as MainActivity
         val rootView = inflater.inflate(R.layout.fragment_pot_diary_create, container, false)
 
-//        변수 받기
-        potId = arguments?.getInt("potId")
-        potName = arguments?.getString("potName")
-        potPlant = arguments?.getString("potPlant")
-
+        requestDiaryCheck()
         findView(rootView)
         filterChipGroup()
         postDiaryBtnClick()
@@ -132,6 +143,40 @@ class PotDiaryCreateFragment : Fragment() {
         return rootView
     }
 
+    private fun requestDiaryCheck() {
+        val retrofit = RetrofitClient.getClient()!!
+        val potService = retrofit.create(PotService::class.java)
+        potService.requestDiaryCheckState(potId!!).enqueue(object : retrofit2.Callback<DiaryCheckStatusResponse>{
+            override fun onResponse(
+                call: Call<DiaryCheckStatusResponse>,
+                response: Response<DiaryCheckStatusResponse>
+            ) {
+                if(response.code() == 200) {
+                    val res = response.body()
+                    waterStatus = res?.diary?.water!!
+                    potStatus = res?.diary?.pruning!!
+                    bugStatus = res?.diary?.bug!!
+                    sunStatus = res?.diary?.sun!!
+                    nutrientsStatus = res?.diary?.nutrients!!
+                    Log.d("PotDiaryCreateFragment", "onResponse() 성공 $res")
+                    alertConstraintChip(waterChip, waterStatus)
+                    alertConstraintChip(potChip, potStatus)
+                    alertConstraintChip(bugChip, bugStatus)
+                    alertConstraintChip(sunChip, sunStatus)
+                    alertConstraintChip(waterChip, waterStatus)
+                }
+                else {
+                    Log.d("PotDiaryCreateFragment", "onResponse() 실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<DiaryCheckStatusResponse>, t: Throwable) {
+                    Log.d("PotDiaryCreateFragment", "onResponse() 실패2")
+            }
+
+        })
+
+    }
 
     private fun findView(view: View) {
         //        사진 첨부 섹션
@@ -153,6 +198,9 @@ class PotDiaryCreateFragment : Fragment() {
     }
 
     private fun filterChipGroup() {
+        if(waterStatus == true) {
+            Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show()
+        }
         waterChip.setOnCheckedChangeListener { buttonView, isChecked ->
             water = isChecked
         }
@@ -164,9 +212,21 @@ class PotDiaryCreateFragment : Fragment() {
         }
         sunChip.setOnCheckedChangeListener { buttonView, isChecked ->
             sun = isChecked
+            Log.d("PotDiaryCreateFragment", "filterChipGroup() 해해ㅐ $isChecked")
         }
         pillChip.setOnCheckedChangeListener { buttonView, isChecked ->
             nutrients = isChecked
+        }
+    }
+    
+    private fun alertConstraintChip(targetChip: Chip, targetStatus: Boolean) {
+        Log.d("PotDiaryCreateFragment", "alertConstraintChip() 해 $sunStatus")
+        if(targetStatus == true) {
+            targetChip.isEnabled = false
+            targetChip.setOnTouchListener { _, _ ->
+                Toast.makeText(requireContext(), "오늘 이미 완료한 활동입니다!", Toast.LENGTH_SHORT).show()
+                true // true를 반환하여 클릭 이벤트가 소비되었음을 나타냄
+            }
         }
     }
 

@@ -37,6 +37,10 @@ import retrofit2.Response
 class CommunityTab1Fragment : Fragment() {
 
     private val TAG = "CommunityTab1Fragment"
+    private val CATEGORY = "나눔"
+    private val REQUESTPAGESIZE = 10
+    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
+    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     private lateinit var communitySearchView: SearchView
     private lateinit var communityRecyclerView: RecyclerView
@@ -89,118 +93,7 @@ class CommunityTab1Fragment : Fragment() {
 //        reload()
         showProgress()
 
-        if (isFiltered) {
-            val retrofit = RetrofitClient.getClient()!!
-            var communityArticlePage = 0
-            var communityArticleSize = 10
-            val regionFilterService = retrofit.create(CommunityService::class.java)
-            val regions = arrayListOf<String?>(null, null, null)
-            for (idx in 0..regionFullFilterList!!.count() - 1) {
-                regions[idx] = regionFullFilterList!![idx]
-            }
-            Log.d("CommunityTab1Fragment", "onCreateView() 넘기는 필터값 $regions")
-
-            regionFilterService.requestSearchArticle(
-                category = "나눔",
-                region1 = regions[0],
-                region2 = regions[1],
-                region3 = regions[2],
-                keyword,
-                pageInput = communityArticlePage,
-                sizeInput = communityArticleSize
-            ).enqueue(object :
-                Callback<CommunityArticleListResponse> {
-                override fun onResponse(
-                    call: Call<CommunityArticleListResponse>,
-                    response: Response<CommunityArticleListResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.d(TAG, "요청 성공")
-                        val checkResponse = response.body()?.articles?.content
-                        val checkTotal = response.body()?.articles?.total
-                        getData = response.body()!!
-                        Log.d(TAG, "$checkResponse")
-                        Log.d(TAG, "$checkTotal")
-
-                        val totalElements = getData.articles.total // 전체 데이터 수
-                        val currentPage = communityArticlePage // 현재 페이지 번호
-                        val pageSize = 10 // 페이지 당 아이템 수
-                        val isLast =
-                            (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                            isLastPage = true
-                        }
-                        val list = createDummyData(0, 10)
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.reload(list)
-                            hideProgress()
-                        }
-                    } else {
-                        Log.d(TAG, "실패1 $response")
-                    }
-                }
-
-                override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                    Log.d("RegionFilterBottomSheet", "onFailure() 지역 필터링 게시글 요청 실패")
-                }
-            })
-
-        } else {
-            Toast.makeText(requireContext(), "모든 게시글을 검색합니다", Toast.LENGTH_SHORT).show()
-//                retrofit 객체 만들기
-            var retrofit = RetrofitClient.getClient()!!
-
-
-            var communityArticleListService =
-                retrofit.create(CommunityArticleListService::class.java)
-            var communityArticleCategory = "나눔"
-            var communityArticlePage = 0
-            var communityArticleSize = 10
-
-            communityArticleListService.requestCommunityArticleList(
-                communityArticleCategory,
-                communityArticlePage,
-                communityArticleSize
-            ).enqueue(object :
-                Callback<CommunityArticleListResponse> {
-                override fun onResponse(
-                    call: Call<CommunityArticleListResponse>,
-                    response: Response<CommunityArticleListResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.d(TAG, "성공")
-                        val checkResponse = response.body()?.articles?.content
-                        getData = response.body()!!
-                        Log.d(TAG, "$checkResponse")
-
-
-                        val totalElements = getData.articles.total // 전체 데이터 수
-                        val currentPage = communityArticlePage // 현재 페이지 번호
-                        val pageSize = 10 // 페이지 당 아이템 수
-                        val isLast =
-                            (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                            isLastPage = true
-                        }
-                        val list = createDummyData(0, 10)
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.reload(list)
-                            hideProgress()
-                        }
-                    } else {
-                        Log.d(TAG, "실패1 $response")
-                    }
-                }
-
-                override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                    Log.d(TAG, "실패2")
-                }
-
-            })
-        }
-
+        requestSearchAricle("load")
         return view
     }
 
@@ -262,225 +155,17 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun reload() {
-        if (isFiltered) {
-            val retrofit = RetrofitClient.getClient()!!
-            var communityArticlePage = 0
-            var communityArticleSize = 10
-            val regionFilterService = retrofit.create(CommunityService::class.java)
-            val regions = arrayListOf<String?>(null, null, null)
-            if (regionFullFilterList != null) {
-                for (idx in 0..regionFullFilterList!!.count() - 1) {
-                    regions[idx] = regionFullFilterList!![idx]
-                }
-            }
-
-            regionFilterService.requestSearchArticle(
-                category = "나눔",
-                region1 = regions[0],
-                region2 = regions[1],
-                region3 = regions[2],
-                keyword,
-                pageInput = communityArticlePage,
-                sizeInput = communityArticleSize
-            ).enqueue(object :
-                Callback<CommunityArticleListResponse> {
-                override fun onResponse(
-                    call: Call<CommunityArticleListResponse>,
-                    response: Response<CommunityArticleListResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.d(TAG, "성공")
-                        val checkResponse = response.body()?.articles?.content
-                        getData = response.body()!!
-                        Log.d(TAG, "$checkResponse")
-
-                        val list = createDummyData(0, 10)
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.reload(list)
-                            hideProgress()
-                        }
-                    } else {
-                        Log.d(TAG, "실패1 $response")
-                    }
-                }
-
-                override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                    Log.d("RegionFilterBottomSheet", "onFailure() 지역 필터링 게시글 요청 실패")
-                }
-            })
-        } else {
-
-            var retrofit = RetrofitClient.getClient()!!
-            var communityArticleListService =
-                retrofit.create(CommunityArticleListService::class.java)
-            var communityArticleCategory = "나눔"
-            var communityArticlePage = 0
-            var communityArticleSize = 10
-
-            communityArticleListService.requestCommunityArticleList(
-                communityArticleCategory,
-                communityArticlePage,
-                communityArticleSize
-            ).enqueue(object :
-                Callback<CommunityArticleListResponse> {
-                override fun onResponse(
-                    call: Call<CommunityArticleListResponse>,
-                    response: Response<CommunityArticleListResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.d(TAG, "성공")
-                        val checkResponse = response.body()?.articles?.content
-                        getData = response.body()!!
-                        Log.d(TAG, "$checkResponse")
-
-                        val list = createDummyData(0, 10)
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.reload(list)
-                            hideProgress()
-                        }
-                    } else {
-                        Log.d(TAG, "실패1 $response")
-                    }
-                }
-
-                override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                    Log.d(TAG, "실패2")
-                }
-
-            })
-        }
+        requestSearchAricle("reload")
     }
-    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
-    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
+
 
     private fun loadMore() {
         if (isLastPage) { // 마지막 페이지라면, 로딩을 멈춥니다.
             return
         }
-
         showProgress()
-
-        // 페이지 번호를 1 증가시킵니다.
-        communityArticlePage++
-
-        if (isFiltered) {
-            Log.d("CommunityTab1Fragment", "loadMore() $isFiltered 필터있을 때 실행")
-            // Retrofit을 사용하여 새로운 데이터를 받아옵니다.
-            var retrofit = RetrofitClient.getClient()!!
-
-            val regionFilterService = retrofit.create(CommunityService::class.java)
-            val regions = arrayListOf<String?>(null, null, null)
-            if (regionFullFilterList != null) {
-                for (idx in 0..regionFullFilterList!!.count() - 1) {
-                    regions[idx] = regionFullFilterList!![idx]
-                }
-            }
-            var communityArticleSize = 10
-
-            regionFilterService.requestSearchArticle(
-                category = "나눔",
-                region1 = regions[0],
-                region2 = regions[1],
-                region3 = regions[2],
-                keyword,
-                pageInput = communityArticlePage,
-                sizeInput = communityArticleSize
-            ).enqueue(object :
-                Callback<CommunityArticleListResponse> {
-                override fun onResponse(
-                    call: Call<CommunityArticleListResponse>,
-                    response: Response<CommunityArticleListResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.d("loadmore", "성공")
-                        val checkResponse = response.body()?.articles?.content
-                        getData = response.body()!!
-                        Log.d("loadmore", "$checkResponse")
-
-                        val totalElements = getData.articles.total // 전체 데이터 수
-                        val currentPage = communityArticlePage // 현재 페이지 번호
-                        val pageSize = 10 // 페이지 당 아이템 수
-                        val isLast =
-                            (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                            isLastPage = true
-                        }
-
-                        val list = createDummyData(0, 10)
-
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.loadMore(list)
-                            hideProgress()
-                        }
-                    } else {
-                        Log.d("loadmore", "실패1 $response")
-                    }
-                }
-
-                override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                    Log.d("loadmore", "실패2")
-                }
-
-            }
-            )
-        } else {
-            Log.d("CommunityTab1Fragment", "loadMore() $isFiltered 필터없을 때 실행")
-
-            // Retrofit을 사용하여 새로운 데이터를 받아옵니다.
-            var retrofit = RetrofitClient.getClient()!!
-
-            var communityArticleListService =
-                retrofit.create(CommunityArticleListService::class.java)
-            var communityArticleCategory = "나눔"
-            var communityArticleSize = 10
-
-            communityArticleListService.requestCommunityArticleList(
-                communityArticleCategory,
-                communityArticlePage,
-                communityArticleSize
-            ).enqueue(object :
-                Callback<CommunityArticleListResponse> {
-                override fun onResponse(
-                    call: Call<CommunityArticleListResponse>,
-                    response: Response<CommunityArticleListResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.d("loadmore", "성공")
-                        val checkResponse = response.body()?.articles?.content
-                        getData = response.body()!!
-                        Log.d("loadmore", "$checkResponse")
-
-                        val totalElements = getData.articles.total // 전체 데이터 수
-                        val currentPage = communityArticlePage // 현재 페이지 번호
-                        val pageSize = 10 // 페이지 당 아이템 수
-                        val isLast =
-                            (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                            isLastPage = true
-                        }
-
-                        val list = createDummyData(0, 10)
-
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.loadMore(list)
-                            hideProgress()
-                        }
-                    } else {
-                        Log.d("loadmore", "실패1 $response")
-                    }
-                }
-
-                override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                    Log.d("loadmore", "실패2")
-                }
-
-            })
-        }
-
+        requestSearchAricle("loadMore")
     }
-
 
     private fun showProgress() {
         frameLayoutProgress.visibility = View.VISIBLE
@@ -488,6 +173,70 @@ class CommunityTab1Fragment : Fragment() {
 
     private fun hideProgress() {
         frameLayoutProgress.visibility = View.GONE
+    }
+
+    private fun requestSearchAricle(usage: String) {
+        if (usage == "loadMore") {
+            communityArticlePage++
+        } else {
+            communityArticlePage = 0
+        }
+        val retrofit = RetrofitClient.getClient()!!
+        val regionFilterService = retrofit.create(CommunityService::class.java)
+        val regions = arrayListOf("", null, null)
+        if (regionFullFilterList != null) {
+            for (idx in 0..regionFullFilterList!!.count() - 1) {
+                regions[idx] = regionFullFilterList!![idx]
+            }
+        }
+
+        regionFilterService.requestSearchArticle(
+            category = CATEGORY,
+            region1 = regions[0],
+            region2 = regions[1],
+            region3 = regions[2],
+            keyword = keyword,
+            pageInput = communityArticlePage,
+            sizeInput = REQUESTPAGESIZE
+        ).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
+                if (response.code() == 200) {
+                    getData = response.body()!!
+                    val list = createDummyData(0, REQUESTPAGESIZE)
+                    if (usage != "reload") {
+                        val totalElements = getData.articles.total // 전체 데이터 수
+                        val currentPage = communityArticlePage // 현재 페이지 번호
+                        val isLast =
+                            (currentPage + 1) * REQUESTPAGESIZE >= totalElements // 마지막 페이지 여부를 판단합니다.
+                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                            isLastPage = true
+                        }
+                    }
+                    if (usage == "loadMore") {
+                        ThreadUtil.startUIThread(1000) {
+                            adapter.loadMore(list)
+                            hideProgress()
+                        }
+                    } else {
+                        ThreadUtil.startUIThread(1000) {
+                            adapter.reload(list)
+                            hideProgress()
+                        }
+
+                    }
+                } else {
+                    Log.d(TAG, "실패1 $response")
+                }
+            }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d("RegionFilterBottomSheet", "onFailure() 지역 필터링 게시글 요청 실패")
+            }
+        })
     }
 
     private fun createDummyData(
@@ -558,126 +307,7 @@ class CommunityTab1Fragment : Fragment() {
                 popularTagSection.visibility = View.GONE
                 communitySearchView.clearFocus()
 
-
-                if (isFiltered) {
-                    val retrofit = RetrofitClient.getClient()!!
-                    var communityArticlePage = 0
-                    var communityArticleSize = 10
-                    val regionFilterService = retrofit.create(CommunityService::class.java)
-                    val regions = arrayListOf<String?>(null, null, null)
-                    if (regionFullFilterList != null) {
-                        for (idx in 0..regionFullFilterList!!.count() - 1) {
-                            regions[idx] = regionFullFilterList!![idx]
-                        }
-                    }
-                    Log.d("CommunityTab1Fragment", "onCreateView() 넘기는 필터값 $regions")
-
-                    regionFilterService.requestSearchArticle(
-                        category = "나눔",
-                        region1 = regions[0],
-                        region2 = regions[1],
-                        region3 = regions[2],
-                        keyword,
-                        pageInput = communityArticlePage,
-                        sizeInput = communityArticleSize
-                    ).enqueue(object :
-                        Callback<CommunityArticleListResponse> {
-                        override fun onResponse(
-                            call: Call<CommunityArticleListResponse>,
-                            response: Response<CommunityArticleListResponse>
-                        ) {
-                            if (response.code() == 200) {
-                                Log.d(TAG, "요청 성공")
-                                val checkResponse = response.body()?.articles?.content
-                                val checkTotal = response.body()?.articles?.total
-                                getData = response.body()!!
-                                Log.d(TAG, "$checkResponse")
-                                Log.d(TAG, "$checkTotal")
-
-                                val totalElements = getData.articles.total // 전체 데이터 수
-                                val currentPage = communityArticlePage // 현재 페이지 번호
-                                val pageSize = 10 // 페이지 당 아이템 수
-                                val isLast =
-                                    (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                                if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                                    isLastPage = true
-                                }
-                                val list = createDummyData(0, 10)
-                                ThreadUtil.startUIThread(1000) {
-                                    adapter.reload(list)
-                                    hideProgress()
-                                }
-                            } else {
-                                Log.d(TAG, "실패1 $response")
-                            }
-                        }
-
-                        override fun onFailure(
-                            call: Call<CommunityArticleListResponse>,
-                            t: Throwable
-                        ) {
-                            Log.d("RegionFilterBottomSheet", "onFailure() 지역 필터링 게시글 요청 실패")
-                        }
-                    })
-
-                } else {
-                    Toast.makeText(requireContext(), "모든 게시글을 검색합니다", Toast.LENGTH_SHORT).show()
-//                retrofit 객체 만들기
-                    var retrofit = RetrofitClient.getClient()!!
-
-
-                    var communityArticleListService =
-                        retrofit.create(CommunityArticleListService::class.java)
-                    var communityArticleCategory = "나눔"
-                    var communityArticlePage = 0
-                    var communityArticleSize = 10
-
-                    communityArticleListService.requestCommunityArticleList(
-                        communityArticleCategory,
-                        communityArticlePage,
-                        communityArticleSize
-                    ).enqueue(object :
-                        Callback<CommunityArticleListResponse> {
-                        override fun onResponse(
-                            call: Call<CommunityArticleListResponse>,
-                            response: Response<CommunityArticleListResponse>
-                        ) {
-                            if (response.code() == 200) {
-                                Log.d(TAG, "성공")
-                                val checkResponse = response.body()?.articles?.content
-                                getData = response.body()!!
-                                Log.d(TAG, "$checkResponse")
-
-
-                                val totalElements = getData.articles.total // 전체 데이터 수
-                                val currentPage = communityArticlePage // 현재 페이지 번호
-                                val pageSize = 10 // 페이지 당 아이템 수
-                                val isLast =
-                                    (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                                if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                                    isLastPage = true
-                                }
-                                val list = createDummyData(0, 10)
-                                ThreadUtil.startUIThread(1000) {
-                                    adapter.reload(list)
-                                    hideProgress()
-                                }
-                            } else {
-                                Log.d(TAG, "실패1 $response")
-                            }
-                        }
-
-                        override fun onFailure(
-                            call: Call<CommunityArticleListResponse>,
-                            t: Throwable
-                        ) {
-                            Log.d(TAG, "실패2")
-                        }
-
-                    })
-                }
+                requestSearchAricle("load")
                 return false
             }
 
@@ -706,13 +336,7 @@ class CommunityTab1Fragment : Fragment() {
             GlobalVariables.hideKeyboard(requireActivity())
             true
         }
-
-
     }
 
-    private fun filterList(query: String?) {
-        if (query != null) {
 
-        }
-    }
 }

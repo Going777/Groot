@@ -48,6 +48,11 @@ interface PotService {
         @Part("postData") metaData: DiaryRequest,
         @Part filePart: MultipartBody.Part?
     ): Call<BasicResponse>
+
+    @GET("/api/diaries/check/{potId}")
+    fun requestDiaryCheckState(
+        @Path("potId") potId: Int
+    ): Call<DiaryCheckStatusResponse>
 }
 
 class PotNameRequest internal constructor(
