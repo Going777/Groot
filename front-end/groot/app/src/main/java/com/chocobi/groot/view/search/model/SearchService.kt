@@ -35,6 +35,7 @@ interface SearchService {
         @Query("page") page: Int? = null,
     ): Call<PlantSearchResponse>
 
+
     @Headers(
         "accept: application/json",
         "content-type: application/json"
