@@ -70,6 +70,7 @@
                 <ImageView
                     android:id="@+id/imageView"
                     android:scaleType="centerCrop"
+                    android:src="@drawable/plant_default"
                     android:layout_width="100dp"
                     android:layout_height="100dp"/>
             </androidx.cardview.widget.CardView>

@@ -100,10 +100,7 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         }
 
 
-//        이미지 없으면 공간차지 X
-        if (communityArticleListResponse.articles.content[0].img.isNullOrEmpty()) {
-            imageView.visibility = View.GONE
-        } else {
+
             imageView.post {
                 view.get()?.let {
                     ThreadUtil.startThread {
@@ -120,6 +117,5 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
                     }
                 }
             }
-        }
     }
 }
