@@ -34,5 +34,5 @@ public interface DiaryService {
 
     Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size);
 
-    List<PlanDTO> weeklyDiaries(Long userId, LocalDateTime start, LocalDateTime end);
+    List<PlanDTO> weeklyDiaries(Long userId, String[] dates);
 }

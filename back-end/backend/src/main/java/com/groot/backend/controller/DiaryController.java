@@ -199,15 +199,8 @@ public class DiaryController {
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
         }
-        int year = Integer.parseInt(dates[0]);
-        int month = Integer.parseInt(dates[1]);
-        int day = Integer.parseInt(dates[2]);
-        LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0, 0);
-        LocalDateTime end = LocalDateTime.of(year, month, day, 23, 59, 59);
-        LocalDateTime temp = LocalDateTime.now();
-        LocalDateTime now = LocalDateTime.of(temp.getYear(), temp.getMonthValue(), temp.getDayOfMonth(), 0, 0, 0);
 
-        List<PlanDTO> result = diaryService.weeklyDiaries(userId, start, end);
+        List<PlanDTO> result = diaryService.weeklyDiaries(userId, dates);
         if(result.isEmpty()){
             resultMap.put("msg", "주간 다이어리 리스트 조회 결과가 없습니다.");
             resultMap.put("result", FAIL);

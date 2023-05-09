@@ -25,12 +25,11 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
     }
 
     @Override
-    public List<PlanEntity> findAllByDateTime(LocalDateTime start, LocalDateTime end) {
+    public List<PlanEntity> findAllByDateTimeAndUserPK(LocalDateTime start, LocalDateTime end, Long userPK) {
         QPlanEntity qPlan = QPlanEntity.planEntity;
-//        JPAUpdateClause update = new JPAUpdateClause(entityManager, qNotification);
 
         List<PlanEntity> plans = queryFactory.selectFrom(qPlan)
-                .where(qPlan.dateTime.between(start, end))
+                .where(qPlan.dateTime.between(start, end), qPlan.userPK.eq(userPK))
                 .fetch();
         return plans;
     }
@@ -45,5 +44,16 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
                 .where(qPlan.code.eq(code), qPlan.potId.eq(potId))
                 .execute();
         return updateCnt;
+    }
+
+    @Override
+    public LocalDateTime findLastDateTimeByDoneAndPotIdAndCode(boolean done, Long potId, Integer code) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        LocalDateTime date = queryFactory.select(qPlan.dateTime.max())
+                .from(qPlan)
+                .where(qPlan.done.eq(done), qPlan.potId.eq(potId), qPlan.code.eq(code))
+                .fetchOne();
+        return date;
     }
 }
