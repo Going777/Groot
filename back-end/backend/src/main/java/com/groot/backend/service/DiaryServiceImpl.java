@@ -73,7 +73,6 @@ public class DiaryServiceImpl implements DiaryService{
                 .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
                 .build();
-        DiaryCheckEntity result = diaryCheckRepository.save(checkdiary);
 
         // check 테이블에 저장 후 해당 id를 가져와 diary 테이블에 함께 저장
         DiaryEntity diary = DiaryEntity.builder()
@@ -87,9 +86,11 @@ public class DiaryServiceImpl implements DiaryService{
                 .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():false)
                 .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
+                .isLast(true)
                 .build();
 
-        log.info("result: "+result.getId());
+//        DiaryCheckEntity result = diaryCheckRepository.save(checkdiary);
+//        log.info("result: "+result.getId());
 
         // 물주기 일정 추가
         if(diary.getWater()) addPlan(user, pot, 0);
@@ -133,6 +134,7 @@ public class DiaryServiceImpl implements DiaryService{
                                 .build();
 //        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
         potRepository.save(newPot);
+        diaryCheckRepository.save(checkdiary);
         return diaryRepository.save(diary);
     }
 
@@ -172,7 +174,9 @@ public class DiaryServiceImpl implements DiaryService{
                 .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():false)
                 .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
+                .isLast(true)
                 .build();
+
         log.info("result: "+newCheckDiary.getId());
 
         // 물주기 일정 추가
@@ -380,7 +384,7 @@ public class DiaryServiceImpl implements DiaryService{
             month += 6;
         }
         for (int i = 0; i < 3; i++) {
-            if (day > monthDate[month]) {
+            while (day <= monthDate[month]) {
                 day -= monthDate[month];
                 month += 1;
                 if (month > 12) {

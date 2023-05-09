@@ -132,12 +132,7 @@ public class DiaryController {
     public ResponseEntity checkDiary(@PathVariable Long potId){
         Map resultMap = new HashMap();
         DiaryCheckEntity result = diaryService.isExistByCreatedDate(potId);
-        if(result == null){
-            resultMap.put("result", FAIL);
-            resultMap.put("msg", "해당 사용자의 다이어리 조회를 실패하였습니다.");
-            return ResponseEntity.ok().body(resultMap);
-        }
-        DiaryDTO diaryDTO = new DiaryCheckEntity().toDTO(result);
+        DiaryDTO diaryDTO = result==null?null:new DiaryCheckEntity().toDTO(result);
         // 없든 있든 결과 보내줌
         resultMap.put("diary", diaryDTO==null?null:diaryDTO);
         resultMap.put("result", SUCCESS);
@@ -198,7 +193,7 @@ public class DiaryController {
 
         List<PlanDTO> result = diaryService.weeklyDiaries(userId, start, end);
         if(result.isEmpty()){
-            resultMap.put("msg", "주간 다이어리 리스트 조회를 실패하였습니다.");
+            resultMap.put("msg", "주간 다이어리 리스트 조회 결과가 없습니다.");
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
         }

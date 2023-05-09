@@ -52,6 +52,9 @@ public class DiaryEntity extends BaseEntity{
     @Column
     private Boolean sun;
 
+    @Column
+    private Boolean isLast;
+
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
