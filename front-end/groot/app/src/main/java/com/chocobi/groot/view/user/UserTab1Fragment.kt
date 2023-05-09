@@ -1,27 +1,33 @@
 package com.chocobi.groot.view.user
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
+import com.chocobi.groot.view.pot.model.Pot
+import com.chocobi.groot.view.pot.model.PotListResponse
+import com.chocobi.groot.view.pot.model.PotService
 import com.chocobi.groot.view.user.adapter.UserTab1RVAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [UserTab1Fragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UserTab1Fragment : Fragment() {
+    private val TAG = "UserTab1Fragment"
+    private var potList: List<Pot>? = null
+    private lateinit var potFirstView: ConstraintLayout
+    private lateinit var rv: RecyclerView
+    private var rvAdapter : UserTab1RVAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,25 +43,66 @@ class UserTab1Fragment : Fragment() {
         // Inflate the layout for this fragment
         val rootView = inflater.inflate(R.layout.fragment_user_tab1, container, false)
         val mActivity = activity as MainActivity
-//        리사이클 뷰
-        val items = mutableListOf<String>()
-        items.add("산세베리아")
-        items.add("산세베리아")
-        items.add("산세베리아")
+        potFirstView = rootView.findViewById(R.id.firstView)
+        rv = rootView.findViewById(R.id.useTab1RecyclerView)
 
-        val rv = rootView.findViewById<RecyclerView>(R.id.useTab1RecyclerView)
+        getPotArchive(mActivity)
 
-        val rvAdapter = UserTab1RVAdapter(items)
+        return rootView
+    }
+
+    private fun getPotArchive(mActivity: MainActivity) {
+        var retrofit = RetrofitClient.getClient()!!
+        var potService = retrofit.create(PotService::class.java)
+        potService.getPotList().enqueue(object :
+            Callback<PotListResponse> {
+            override fun onResponse(
+                call: Call<PotListResponse>,
+                response: Response<PotListResponse>
+            ) {
+                val body = response.body()
+                if (body != null && response.code() == 200) {
+                    Log.d(TAG, "$body")
+                    Log.d(TAG, "body: $body")
+                    potList = body.pots
+                    setRecyclerView(potList!!, mActivity)
+
+                    if(body.pots.size == 0) {
+                        showFirstView()
+                    } else {
+                        hideFirstView()
+                    }
+                } else {
+                    Log.d(TAG, "실패1")
+                    showFirstView()
+                }
+            }
+
+            override fun onFailure(call: Call<PotListResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+        })
+
+    }
+    fun showFirstView() {
+        potFirstView.visibility = View.VISIBLE
+    }
+
+    fun hideFirstView() {
+        potFirstView.visibility = View.GONE
+    }
+
+    fun setRecyclerView(potList:List<Pot>, mActivity:MainActivity) {
+        rvAdapter = UserTab1RVAdapter(potList)
         rv.layoutManager = LinearLayoutManager(activity)
         rv.adapter = rvAdapter
 
-        rvAdapter.itemClick = object : UserTab1RVAdapter.ItemClick {
+        rvAdapter?.itemClick = object : UserTab1RVAdapter.ItemClick {
             override fun onClick(view: View, position: Int) {
+                mActivity.setPotId(potList?.get(position)?.potId ?: 0)
                 mActivity.changeFragment("pot_detail")
             }
         }
-
-        return rootView
     }
 
 
