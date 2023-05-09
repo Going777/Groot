@@ -81,6 +81,22 @@
                     android:layout_marginBottom="5dp" />
             </LinearLayout>
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/shareStateSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="3dp"
+                    android:paddingHorizontal="5dp"
+                    android:text="나눔완료"
+                    android:backgroundTint="@color/dark_grey"
+                    android:textColor="@color/white"
+                    android:background="@drawable/radius5"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -125,6 +141,25 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/sharePositionSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/sharePosition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="3dp"
+                    android:paddingHorizontal="5dp"
+                    android:text="역삼동"
+                    android:textSize="12dp"
+                    android:backgroundTint="@color/sub"
+                    android:textColor="@color/white"
+                    android:background="@drawable/radius5"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -222,7 +257,6 @@
                 android:id="@+id/detailContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/grey"
                 android:textSize="14sp" />
 
             <LinearLayout
@@ -270,6 +304,7 @@
 
             </LinearLayout>
 
+
             <View
                 android:id="@+id/underline"
                 android:layout_width="match_parent"
@@ -277,19 +312,47 @@
                 android:layout_margin="2dp"
                 android:background="@color/grey" />
 
-            <TextView
-                android:id="@+id/detailCommentCnt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dp"
-                android:text="댓글 (2)"
-                android:textStyle="bold" />
-
-            <fragment
-                android:id="@+id/communityCommentFragment"
-                android:name="com.chocobi.groot.view.community.CommunityCommentFragment"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/shareSection"
                 android:layout_width="match_parent"
-                android:layout_height="202dp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/shareListTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:text="사용자가 나눔 중인 다른 식물"
+                    android:textStyle="bold" />
+                <fragment
+                    android:id="@+id/communityUserShareFragment"
+                    android:name="com.chocobi.groot.view.community.CommunityUserShareFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/commentSection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/detailCommentCnt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="3dp"
+                    android:text="댓글 (2)"
+                    android:textStyle="bold" />
+
+                <fragment
+                    android:id="@+id/communityCommentFragment"
+                    android:name="com.chocobi.groot.view.community.CommunityCommentFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="800dp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 
         </LinearLayout>
 
@@ -297,6 +360,7 @@
 
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/commentInputSection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

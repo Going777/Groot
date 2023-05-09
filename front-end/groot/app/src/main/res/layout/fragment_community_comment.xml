@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:backgroundTint="@color/grey"
     android:padding="10dp"
     tools:context=".view.community.CommunityCommentFragment">
@@ -10,13 +10,14 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/commentRecycleView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none" />
+
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

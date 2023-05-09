@@ -34,6 +34,7 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private lateinit var bookmarkLine: ImageView
     private lateinit var position: TextView
     private lateinit var shareStatus: TextView
+    private lateinit var tags: Array<String?>
 
     var delegate: ItemViewHolderDelegate? = null
     lateinit var communityArticleListResponse: CommunityArticleListResponse

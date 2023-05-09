@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
@@ -20,15 +21,18 @@ import com.chocobi.groot.view.community.model.ArticleContent
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class CommunityTab4Fragment : Fragment() {
-
     private val TAG = "CommunityTab4Fragment"
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityArticleListResponse
+    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
+    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,10 +40,11 @@ class CommunityTab4Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community_tab4, container, false)
+        Log.d("CommunityTab4Fragment", "onCreateView()")
         findViews(view)
         setListeners()
         initList()
-        reload()
+//        reload()
 
         showProgress()
 
@@ -97,12 +102,14 @@ class CommunityTab4Fragment : Fragment() {
     }
 
     private fun findViews(view: View) {
+        Log.d("CommunityTab4Fragment", "findViews()")
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
     }
 
     private fun setListeners() {
+        Log.d("CommunityTab4Fragment", "setListeners()")
         swipeRefreshLayout.setOnRefreshListener {
             reload()
             swipeRefreshLayout.isRefreshing = false
@@ -110,6 +117,7 @@ class CommunityTab4Fragment : Fragment() {
     }
 
     private fun initList() {
+        Log.d("CommunityTab4Fragment", "initList()")
         adapter = RecyclerViewAdapter()
         adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
@@ -121,11 +129,12 @@ class CommunityTab4Fragment : Fragment() {
     }
 
     private fun reload() {
+        Log.d("CommunityTab4Fragment", "reload()")
         var retrofit = RetrofitClient.getClient()!!
 
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "Tip"
+        var communityArticleCategory = "자유"
         var communityArticlePage = 0
         var communityArticleSize = 10
 
@@ -163,11 +172,10 @@ class CommunityTab4Fragment : Fragment() {
     }
 
 
-    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
 
-    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
     private fun loadMore() {
+        Log.d("CommunityTab4Fragment", "loadMore()")
         if (isLastPage) { // 마지막 페이지라면, 로딩을 멈춥니다.
             return
         }
@@ -182,7 +190,7 @@ class CommunityTab4Fragment : Fragment() {
 
 
         var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "Tip"
+        var communityArticleCategory = "자유"
         var communityArticleSize = 10
 
         communityArticleListService.requestCommunityArticleList(
@@ -230,10 +238,12 @@ class CommunityTab4Fragment : Fragment() {
 
 
     private fun showProgress() {
+        Log.d("CommunityTab4Fragment", "showProgress()")
         frameLayoutProgress.visibility = View.VISIBLE
     }
 
     private fun hideProgress() {
+        Log.d("CommunityTab4Fragment", "hideProgress()")
         frameLayoutProgress.visibility = View.GONE
     }
 
@@ -241,6 +251,7 @@ class CommunityTab4Fragment : Fragment() {
         offset: Int,
         limit: Int
     ): MutableList<CommunityArticleListResponse> {
+        Log.d("CommunityTab4Fragment", "createDummyData()")
         val list: MutableList<CommunityArticleListResponse> = mutableListOf()
 
         // API response를 이용하여 데이터 생성
@@ -250,6 +261,9 @@ class CommunityTab4Fragment : Fragment() {
                 break
             }
             val article = contents[i]
+            // 이미지가 있을 때는 visibility를 visible로 설정하고, 없을 때는 gone으로 설정합니다.
+            val visibility = if (article.img.isNullOrEmpty()) View.GONE else View.VISIBLE
+
             val communityArticleListResponse = CommunityArticleListResponse(
                 articles = Articles(
                     content = listOf(

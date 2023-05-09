@@ -16,6 +16,7 @@ class PostImageAdapter(private val imageList: ArrayList<File?>, private val cont
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater: LayoutInflater = LayoutInflater.from(parent.context)
+
         val view: View =
             inflater.inflate(R.layout.fragment_community_post_image_item, parent, false)
         return ViewHolder(view)
@@ -23,6 +24,7 @@ class PostImageAdapter(private val imageList: ArrayList<File?>, private val cont
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val imageUri = imageList[position]
+
         Log.d("PostImageAdapter-ImageList", imageUri.toString())
         val listener = object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {

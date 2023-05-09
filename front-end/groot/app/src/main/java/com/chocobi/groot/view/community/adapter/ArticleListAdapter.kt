@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.adapter.item.ItemViewHolder
-import com.chocobi.groot.view.community.CommunityCommentFragment
 import com.chocobi.groot.view.community.CommunityDetailFragment
 
 

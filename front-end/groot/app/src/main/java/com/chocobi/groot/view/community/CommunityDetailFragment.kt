@@ -14,8 +14,11 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -25,6 +28,8 @@ import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.CommentAdapter
+import com.chocobi.groot.view.community.adapter.ShareItemAdapter
+import com.chocobi.groot.view.community.adapter.ShareItemViewHolder
 import com.chocobi.groot.view.community.model.Article
 import com.chocobi.groot.view.community.model.BookmarkResponse
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
@@ -44,11 +49,12 @@ class CommunityDetailFragment : Fragment() {
     private val TAG = "CommunityDetailFragment"
     private lateinit var postCommentBtn: Button
     private lateinit var postCommentInput: EditText
-    private lateinit var commentAdapter: CommentAdapter
 
 //    private var commentList = arrayListOf<CommunityCommentResponse>()
 
     val commentFragment = CommunityCommentFragment()
+
+    private val imagesList:MutableList<String?> = arrayListOf()
 
     private lateinit var getData: CommunityArticleDetailResponse
 
@@ -68,13 +74,21 @@ class CommunityDetailFragment : Fragment() {
         val args = Bundle()
         if (articleId != null) {
             args.putInt("articleId", articleId)
+
         }
         val communityCommentFragment = CommunityCommentFragment()
+        val communityUserShareFragment = CommunityUserShareFragment()
+
         Log.d("CommunityCommentFragment", "$args")
         communityCommentFragment.arguments = args
+        communityUserShareFragment.arguments = args
+        childFragmentManager.beginTransaction()
+            .add(R.id.communityUserShareFragment, communityUserShareFragment)
+            .commit()
         childFragmentManager.beginTransaction()
             .add(R.id.communityCommentFragment, communityCommentFragment)
             .commit()
+
 
         var detailCategory = view.findViewById<TextView>(R.id.detailCategory)
         var detailTitle = view.findViewById<TextView>(R.id.detailTitle)
@@ -88,6 +102,14 @@ class CommunityDetailFragment : Fragment() {
         var bookmarkStatus = false
         var postCommentBtn = view.findViewById<Button>(R.id.postCommentBtn)
         var postCommentInput = view.findViewById<EditText>(R.id.postCommentInput)
+        var sharePosition = view.findViewById<TextView>(R.id.sharePosition)
+
+        var sharePositionSection = view.findViewById<LinearLayoutCompat>(R.id.sharePositionSection)
+        var shareStateSection = view.findViewById<LinearLayoutCompat>(R.id.shareStateSection)
+        var shareSection = view.findViewById<LinearLayoutCompat>(R.id.shareSection)
+        var commentSection = view.findViewById<LinearLayoutCompat>(R.id.commentSection)
+        var commentInputSection = view.findViewById<CardView>(R.id.commentInputSection)
+
 
         postCommentBtn.setOnClickListener {
 
@@ -98,6 +120,7 @@ class CommunityDetailFragment : Fragment() {
 
             Log.d("CommunityDetailFragmentArticleId", articleId.toString())
             Log.d("CommunityDetailFragmentArticleId", content.toString())
+
 
             // 입력창 리셋 및 키보드 닫기
             postCommentInput?.setText("")
@@ -152,7 +175,37 @@ class CommunityDetailFragment : Fragment() {
                         detailCreateTime.text = articleDetailData.article.createTime.date.year.toString() + '.'+ articleDetailData.article.createTime.date.month.toString() + '.' + articleDetailData.article.createTime.date.day.toString() + ' ' + koreahour + ':'+ articleDetailData.article.createTime.time.minute.toString()
                         detailContent.text = articleDetailData.article.content
                         detailTag.text = articleDetailData.article.tags.toString()
+                        sharePosition.text = articleDetailData.article.shareRegion
                         detailCommentCnt.text = "댓글 (" + articleDetailData.article.commentCnt.toString() + ")"
+
+                        Log.d("CommunityDetailFragmentImgs", articleDetailData.article.imgs.toString())
+                        Log.d("CommunityDetailFragmentImgs", articleDetailData.article.imgs?.size.toString())
+
+                        if (articleDetailData.article.imgs!!.isNotEmpty()){
+                            for (i in 1..articleDetailData.article.imgs.size) {
+                                imagesList.add(articleDetailData.article.imgs[i-1])
+                            }
+                        }
+
+
+                        // 카테고리별 섹션 구별
+                        if (detailCategory.text == "나눔") {
+                            if (articleDetailData.article.shareStatus == true) {
+                                shareStateSection.visibility = View.VISIBLE
+                            } else if (articleDetailData.article.shareStatus == false ){
+                                shareStateSection.visibility = View.GONE
+                            }
+                            sharePositionSection.visibility = View.VISIBLE
+                            shareSection.visibility = View.VISIBLE
+                            commentSection.visibility = View.GONE
+                            commentInputSection.visibility = View.GONE
+                        } else {
+                            shareStateSection.visibility = View.GONE
+                            sharePositionSection.visibility = View.GONE
+                            shareSection.visibility = View.GONE
+                            commentSection.visibility = View.VISIBLE
+                            commentInputSection.visibility = View.VISIBLE
+                        }
 
 
                         bookmarkStatus = articleDetailData.article.bookmark
@@ -239,26 +292,26 @@ class CommunityDetailFragment : Fragment() {
             spinner.performClick()
         }
 
-        return view
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // RecyclerView에 CommentAdapter 객체 연결
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
-        commentAdapter = CommentAdapter(recyclerView)
-        recyclerView.adapter = commentAdapter
-
+        Log.d("CommunityDetailFragmentImgs", imagesList.toString())
 
         Log.d("CommunityDetailFragment_childFragmentManager", CommunityCommentFragment().toString())
 
         val viewPager: ViewPager2 = view.findViewById(R.id.carousel_pager)
-        val adapter = CommunityTabAdapter(this)
-        viewPager.adapter = adapter
+        Log.d("CommunityDetailFragmentCount중", imagesList.size.toString())
 
-        val tabList = listOf<String>("", "", "")
+        val imageAdapter = CommunityTabAdapter(this)
+        viewPager.adapter = imageAdapter
         val tabLayout: TabLayout = view.findViewById(R.id.carousel_layout)
+
+        var tabList = listOf<String>()
+
+        when (imagesList.size) {
+            0 -> {tabList = listOf<String>()}
+            1 -> {tabList = listOf<String>("")}
+            2 -> {tabList = listOf<String>("", "")}
+            3 -> {tabList = listOf<String>("", "", "")}
+        }
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabList[position]
@@ -266,21 +319,54 @@ class CommunityDetailFragment : Fragment() {
         }.attach()
 
 
+
+
+        return view
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
     }
 
     private var nowTab: Int = 0
     private inner class CommunityTabAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int {
-            return 3
+            return imagesList.size
         }
 
         override fun createFragment(position: Int): Fragment {
-            nowTab = position
-            return when (position) {
-                0 -> CommunityDetailImg1Fragment()
-                1 -> CommunityDetailImg2Fragment()
-                2 -> CommunityDetailImg3Fragment()
-                else -> CommunityTab1Fragment()
+            Log.d("CommunityDetailFragmentCount중", imagesList.size.toString())
+            when (imagesList.size) {
+                1 -> {
+                    nowTab = position
+                    return when (position) {
+                        0 -> CommunityDetailImg1Fragment()
+                        else -> CommunityTab1Fragment()
+                    }
+                }
+                2 -> {
+                    nowTab = position
+                    return when (position) {
+                        0 -> CommunityDetailImg1Fragment()
+                        1 -> CommunityDetailImg2Fragment()
+                        else -> CommunityTab1Fragment()
+                    }
+                }
+                3 -> {
+                    nowTab = position
+                    return when (position) {
+                        0 -> CommunityDetailImg1Fragment()
+                        1 -> CommunityDetailImg2Fragment()
+                        2 -> CommunityDetailImg3Fragment()
+                        else -> CommunityTab1Fragment()
+                    }
+                }
+                else -> {
+                    return CommunityTab1Fragment()
+                }
             }
         }
     }
@@ -308,8 +394,6 @@ class CommunityDetailFragment : Fragment() {
                     TODO("Not yet implemented")
                 }
             })
-
-
     }
 
 }

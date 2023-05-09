@@ -33,6 +33,8 @@ import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -70,6 +72,7 @@ class CommunityPostFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_post, container, false)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
+
         val context: Context = requireContext()
         postImageAdapter = PostImageAdapter(imageList, context)
         recyclerView.adapter = postImageAdapter
@@ -79,14 +82,18 @@ class CommunityPostFragment : Fragment() {
 
         // 태그를 보여줄 RecyclerView와 입력을 받을 EditText를 레이아웃에서 참조합니다.
         tagRecyclerView = view.findViewById(R.id.tagRecyclerView)
+        val flexboxLayoutManager = FlexboxLayoutManager(context)
+        flexboxLayoutManager.justifyContent = JustifyContent.FLEX_START
+//        recyclerView.layoutManager = flexboxLayoutManager
+
         tagInput = view.findViewById(R.id.tagInput)
 
         // RecyclerView에 사용할 레이아웃 매니저와 어댑터를 생성합니다.
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+//        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         val tagAdapter = TagAdapter()
 
         // RecyclerView에 레이아웃 매니저와 어댑터를 설정합니다.
-        tagRecyclerView.layoutManager = layoutManager
+        tagRecyclerView.layoutManager = flexboxLayoutManager
         tagRecyclerView.adapter = tagAdapter
 
         // EditText의 키보드 액션을 설정합니다.
@@ -121,7 +128,6 @@ class CommunityPostFragment : Fragment() {
         }
 
 
-        val toPostListBtn = view.findViewById<Button>(R.id.toPostListBtn)
 
         // 이미지 업로드
         val postCameraBtn = view.findViewById<ImageButton>(R.id.postCameraBtn)
@@ -140,9 +146,7 @@ class CommunityPostFragment : Fragment() {
 //        var retrofit = RetrofitClient.getClient()!!
 //        var communityPostService = retrofit.create(CommunityPostService::class.java)
 //        val userPK = UserData.getUserPK()
-        val category = "자유"
-        val title = "test"
-        val content = "test"
+
 //        var filePart: MultipartBody.Part? = null
 //
 //        if (file != null) {
@@ -157,9 +161,16 @@ class CommunityPostFragment : Fragment() {
 //            imageParts[i] = MultipartBody.Part.createFormData("image[]", imageFile.name, requestFile)
 //        }
 
+        val toPostListBtn = view.findViewById<Button>(R.id.toPostListBtn)
+        var titleInput = view.findViewById<EditText>(R.id.titleInput)
+        var contentInput = view.findViewById<EditText>(R.id.contentInput)
 
         // 등록 버튼 클릭 시 제목과 내용 입력값
         toPostListBtn.setOnClickListener(View.OnClickListener {
+
+            val category = "자유"
+            var title = titleInput?.text.toString()
+            var content = contentInput?.text.toString()
             postArticle(category, title, content, imageList)
         })
 
@@ -182,8 +193,6 @@ class CommunityPostFragment : Fragment() {
         var contentCntValue = 0
 
 
-        val titleInput = view.findViewById<EditText>(R.id.titleInput)
-        val contentInput = view.findViewById<EditText>(R.id.contentInput)
 
         // 글자 수 체크 및 제한
         fun textWatcher() {
