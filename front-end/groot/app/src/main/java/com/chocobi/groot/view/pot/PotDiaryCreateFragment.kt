@@ -153,11 +153,13 @@ class PotDiaryCreateFragment : Fragment() {
             ) {
                 if(response.code() == 200) {
                     val res = response.body()
-                    waterStatus = res?.diary?.water!!
-                    potStatus = res?.diary?.pruning!!
-                    bugStatus = res?.diary?.bug!!
-                    sunStatus = res?.diary?.sun!!
-                    nutrientsStatus = res?.diary?.nutrients!!
+                    if (res?.diary != null) {
+                        waterStatus = res?.diary?.water!!
+                        potStatus = res?.diary?.pruning!!
+                        bugStatus = res?.diary?.bug!!
+                        sunStatus = res?.diary?.sun!!
+                        nutrientsStatus = res?.diary?.nutrients!!
+                    }
                     Log.d("PotDiaryCreateFragment", "onResponse() 성공 $res")
                     alertConstraintChip(waterChip, waterStatus, "물 주기")
                     alertConstraintChip(potChip, potStatus, "분갈이")
