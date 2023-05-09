@@ -17,13 +17,12 @@ import java.util.stream.Collectors;
 @Repository
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
     private final JPAQueryFactory queryFactory;
-    private QArticleEntity articleEntity;
     @Override
     public Page<ArticleEntity> filterRegion(String[] region, PageRequest pageRequest) {
-        articleEntity = QArticleEntity.articleEntity;
+        QArticleEntity articleEntity = QArticleEntity.articleEntity;
         List<ArticleEntity> articles = queryFactory
                 .selectFrom(articleEntity)
-                .where(eqRegions(region))
+                .where(eqRegions(articleEntity, region))
                 .orderBy(articleEntity.createdDate.desc())
                 .fetch();
 
@@ -33,14 +32,14 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
     // 제목 + 내용 + 태그 검색
     @Override
     public Page<ArticleEntity> search(String category, String[] region, String keyword, PageRequest pageRequest) {
-        articleEntity = QArticleEntity.articleEntity;
+        QArticleEntity articleEntity = QArticleEntity.articleEntity;
         QTagEntity tag = QTagEntity.tagEntity;
         QArticleTagEntity articleTag = QArticleTagEntity.articleTagEntity;
 
         List<ArticleEntity> articles = queryFactory
                 .selectFrom(articleEntity)
                 .where(articleEntity.category.eq(category),
-                        eqRegions(region))
+                        eqRegions(articleEntity, region))
                 .leftJoin(articleTag).on(articleEntity.id.eq(articleTag.articleId))
                 .leftJoin(tag).on(articleTag.tagId.eq(tag.id))
                 .where(tag.name.eq(keyword)
@@ -48,7 +47,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
                                 .or(articleEntity.content.contains(keyword))
                 )
                 .orderBy(articleEntity.createdDate.desc())
-                .fetch().stream().distinct().collect(Collectors.toList());
+                .fetch();
 
         return convertListToPage(articles, pageRequest);
     }
@@ -56,7 +55,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
     // 사용자 이름 + 나눔 카테고리 글 조회
     @Override
     public List<ArticleEntity> findUserSharedArticle(Long userPK, Long articleId) {
-        articleEntity = QArticleEntity.articleEntity;
+        QArticleEntity articleEntity = QArticleEntity.articleEntity;
         QUserEntity user = QUserEntity.userEntity;
         List<ArticleEntity> result = queryFactory
                 .selectFrom(articleEntity)
@@ -69,7 +68,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
     @Override
     public Page<ArticleEntity> findAllByUserPK(Long userPK, PageRequest pageRequest) {
-        articleEntity = QArticleEntity.articleEntity;
+        QArticleEntity articleEntity = QArticleEntity.articleEntity;
         List<ArticleEntity> result = queryFactory
                 .selectFrom(articleEntity)
                 .where(articleEntity.userPK.eq(userPK))
@@ -92,7 +91,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
     @Override
     public Page<ArticleEntity> findAllById(List<Long> bookmarkList, PageRequest pageRequest) {
-        articleEntity = QArticleEntity.articleEntity;
+        QArticleEntity articleEntity = QArticleEntity.articleEntity;
         List<ArticleEntity> result = queryFactory
                 .selectFrom(articleEntity)
                 .where(articleEntity.id.in(bookmarkList))
@@ -114,17 +113,17 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
 
     // 키워드로 게시글 제목 검색
-    private BooleanExpression eqTitle(String keyword){
+    private BooleanExpression eqTitle(QArticleEntity articleEntity, String keyword){
         return keyword == null ? null : articleEntity.title.contains(keyword);
     }
 
     // 키워드로 게시글 내용 검색
-    private BooleanExpression eqContent(String keyword){
+    private BooleanExpression eqContent(QArticleEntity articleEntity, String keyword){
         return keyword == null ? null : articleEntity.content.contains(keyword);
     }
 
     // 필터링 복수 검색
-    private BooleanBuilder eqRegions(String[] regions){
+    private BooleanBuilder eqRegions(QArticleEntity articleEntity, String[] regions){
         if(regions ==null){
             return null;
         }
