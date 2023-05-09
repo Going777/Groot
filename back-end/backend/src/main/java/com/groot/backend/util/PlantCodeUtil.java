@@ -15,6 +15,13 @@ public class PlantCodeUtil {
      */
     public static String[] mgmtLevelCode = {"", "초보자", "경험자", "전문가"};
 
+    /**
+     * management level to code
+     */
+    public static Map<String, Integer> mgmtLevel = Map.ofEntries(
+            entry("쉬움", 1), entry("보통", 2), entry("어려움", 3)
+    );
+
     public static String[] waterCycleCode = {"", "항상 흙을 축축하게 유지함(물에 잠김)",
             "흙을 촉촉하게 유지함(물에 잠기지 않도록 주의)", "토양 표면이 말랐을때 충분히 관수함",
             "화분 흙 대부분 말랐을때 충분히 관수함"
@@ -32,6 +39,11 @@ public class PlantCodeUtil {
             entry("덩굴성", 10), entry("풀모양", 11), entry("", 12),
             entry("gone", 13)
     );
+
+    /**
+     * Succulent plants Except 다육형
+     */
+    public static String[] succulents = {"군생형", "로제트형", "포도송이형", "불규칙형", "탑형"};
 
     /**
      * Returns single character

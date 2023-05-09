@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface PlantRepository extends JpaRepository<PlantEntity, Long> {
+public interface PlantRepository extends JpaRepository<PlantEntity, Long>, PlantCustomRepository {
 
     public List<PlantEntity> findByKrNameContains(String name, Pageable pageable);
 

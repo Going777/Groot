@@ -11,11 +11,11 @@ public class PlantSearchDTO {
 
     private String name;
 
-    private String difficulty;
+    private String[] difficulty;
 
-    private String lux;
+    private String[] lux;
 
-    private String growth;
+    private String[] growth;
 
     private int page;
 }

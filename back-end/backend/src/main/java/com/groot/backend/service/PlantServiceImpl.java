@@ -105,7 +105,9 @@ public class PlantServiceImpl implements PlantService{
         List<PlantThumbnailDTO> ret = new ArrayList<>(12);
         Pageable pageable = PageRequest.of(plantSearchDTO.getPage(), 12);
 
-        List<PlantEntity> list = plantRepository.findByKrNameContains(plantSearchDTO.getName(), pageable);
+        List<PlantEntity> list = plantRepository.search(plantSearchDTO);
+
+        logger.info("{} plants found", list.size());
 
         list.forEach(plantEntity -> {
             ret.add(PlantThumbnailDTO.builder()
