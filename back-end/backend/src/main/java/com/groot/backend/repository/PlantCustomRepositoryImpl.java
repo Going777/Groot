@@ -68,9 +68,6 @@ public class PlantCustomRepositoryImpl implements PlantCustomRepository{
         }
 
         BooleanExpression ret = Expressions.numberTemplate(Integer.class, "function('bitand', {0}, {1})", plantEntity.lightDemand, 1).gt(0);
-        for(int i=0; i<demand.length; i++) {
-            
-        }
        return ret;
     }
 
