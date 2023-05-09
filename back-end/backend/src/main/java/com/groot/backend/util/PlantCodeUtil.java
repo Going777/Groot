@@ -22,6 +22,8 @@ public class PlantCodeUtil {
 
     public static int[][] waterPeriods = {{0, 0}, {2,4}, {5,10}, {15,25}, {30,40}};
 
+    public static int[] waterCycle =  {0, 3, 7, 20, 35};
+
     /**
      * Character codes for grw types
      */

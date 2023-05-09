@@ -7,6 +7,7 @@ import com.groot.backend.dto.response.PlanDTO;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
 //import com.groot.backend.util.S3Uploader;
+import com.groot.backend.util.PlantCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -501,7 +502,8 @@ public class DiaryServiceImpl implements DiaryService{
         int day = start.getDayOfMonth();
         int month = start.getMonthValue();
         int year = start.getYear();
-        int waterCycle = plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
+        int waterCyclenum = plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
+        int waterCycle = PlantCodeUtil.waterCycle[waterCyclenum%53000];
         for (int i = 0; i < 3; i++) {
             if(code==0){
                 day += waterCycle;
