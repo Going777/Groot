@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.appcompat.widget.Toolbar
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,16 +34,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PotCalendarFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calendar), HasToolbar,
     HasBackButton {
 
@@ -50,6 +43,8 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
     private lateinit var mActivity: MainActivity
     private lateinit var rv: RecyclerView
     private var rvAdapter: PotCalendarRVAdapter? = null
+    private lateinit var potFirstView: ConstraintLayout
+    private lateinit var missionComplete: Button
 
     override val titleRes: Int = R.string.example_7_title
 
@@ -69,6 +64,8 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
         val rootView = inflater.inflate(R.layout.fragment_pot_calendar, container, false)
 //        val rootView = super.onCreateView(inflater, container, savedInstanceState)
         mActivity = activity as MainActivity
+        potFirstView = rootView.findViewById(R.id.firstView)
+        missionComplete = rootView.findViewById(R.id.missionComplete)
         val items = mutableListOf<Diary>()
         items.add(
             Diary(
@@ -111,7 +108,9 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
             )
         )
         rv = rootView.findViewById(R.id.potCalendarRecyclerView)
-        setRecyclerView(items)
+        val currentDate = LocalDate.now()
+        getDateDiary(currentDate.toString())
+//        setRecyclerView(items)
 
         return rootView
     }
@@ -182,9 +181,13 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
                 if (body != null) {
                     Log.d(TAG, "$body")
                     setRecyclerView(body.diary)
-                }
+                    hideFirstView()
+                } else {
 
-                Log.d(TAG, "일일 다이어리 가져오기 body 없음")
+                    Log.d(TAG, "일일 다이어리 가져오기 body 없음")
+                    showFirstView()
+
+                }
             }
 
             override fun onFailure(call: Call<DateDiaryResponse>, t: Throwable) {
@@ -208,5 +211,16 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
             override fun onCheckClick(view: View, position: Int) {
             }
         })
+    }
+    private fun showFirstView() {
+        potFirstView.visibility = View.VISIBLE
+        rv.visibility = View.GONE
+        missionComplete.visibility = View.GONE
+    }
+
+    private fun hideFirstView() {
+        potFirstView.visibility = View.GONE
+        rv.visibility = View.VISIBLE
+        missionComplete.visibility = View.VISIBLE
     }
 }
