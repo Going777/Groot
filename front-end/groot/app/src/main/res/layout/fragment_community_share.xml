@@ -119,7 +119,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="65dp"
                     android:layout_weight="1"
-                    android:layout_marginTop="12dp"
                     android:layout_marginRight="12dp"
                     card_view:cardBackgroundColor="#E9F3ED"
                     card_view:cardElevation="0dp"

@@ -45,9 +45,9 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/regionInfoText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="* 최대 3개 지역까지 선택 가능합니다"
         android:textColor="@color/grey"
         android:textSize="12sp"
         android:textStyle="bold"

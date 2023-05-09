@@ -36,6 +36,8 @@ import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -45,12 +47,17 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.log
 
 
 @Suppress("DEPRECATION")
 class CommunityShareFragment : Fragment() {
 
     private val TAG = "CommunityShareFragment"
+    private val LIMITREGIONCNT = 1
+
+    private var region: String? = null
+    private var isFiltered = false // 필터가 걸려있는 상황인지 체크
 
     private lateinit var postImageAdapter: PostImageAdapter
     private val imageList: ArrayList<File?> = ArrayList()
@@ -64,6 +71,8 @@ class CommunityShareFragment : Fragment() {
     private lateinit var tagRecyclerView: RecyclerView
     private lateinit var tagInput: EditText
     private lateinit var regionFilterBtn: Button
+    private lateinit var chipRegionGroup: ChipGroup
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -263,13 +272,34 @@ class CommunityShareFragment : Fragment() {
         return view
     }
 
+    override fun onResume() {
+        super.onResume()
+        region = arguments?.getStringArrayList("region_full_list")?.get(0)
+        addChip(region)
+    }
+
+    private fun addChip(test: String?) {
+        if (test != null) {
+            chipRegionGroup.addView(
+                Chip(
+                    requireContext(),
+                    null,
+                    R.style.REGION_CHIP_ICON
+                ).apply {
+                    text = test
+                    isCloseIconVisible = false
+                })
+        }
+    }
+
     private fun regionFilter(view: View) {
         val mActivity = activity as MainActivity
         regionFilterBtn = view.findViewById(R.id.regionFilterBtn)
+        chipRegionGroup = view.findViewById(R.id.chipRegionGroup)
 
         regionFilterBtn.setOnClickListener {
             val regionFilterBottomSheet =
-                RegionFilterBottomSheet(requireContext())
+                RegionFilterBottomSheet(requireContext(), LIMITREGIONCNT)
             regionFilterBottomSheet.show(
                 mActivity.supportFragmentManager,
                 regionFilterBottomSheet.tag
