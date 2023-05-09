@@ -94,6 +94,10 @@ public class PotEntity extends BaseEntity{
     @JsonBackReference
     private PlantEntity plantEntity;
 
+    @OneToMany(mappedBy = "potEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<PlanEntity> planEntities;
+
     public void modify(String imgPath, String name, double temperature, int illuminance, double humidity) {
         this.imgPath = imgPath==""? this.imgPath : imgPath;
         this.name = name == null? this.name : name;

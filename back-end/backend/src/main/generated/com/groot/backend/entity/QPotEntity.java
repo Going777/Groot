@@ -48,6 +48,8 @@ public class QPotEntity extends EntityPathBase<PotEntity> {
 
     public final DateTimePath<java.time.LocalDateTime> nutrientsDate = createDateTime("nutrientsDate", java.time.LocalDateTime.class);
 
+    public final ListPath<PlanEntity, QPlanEntity> planEntities = this.<PlanEntity, QPlanEntity>createList("planEntities", PlanEntity.class, QPlanEntity.class, PathInits.DIRECT2);
+
     public final QPlantEntity plantEntity;
 
     public final NumberPath<Long> plantId = createNumber("plantId", Long.class);

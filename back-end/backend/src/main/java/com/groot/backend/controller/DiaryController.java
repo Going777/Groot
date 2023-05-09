@@ -2,6 +2,7 @@ package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.dto.response.DiaryResponseDTO;
+import com.groot.backend.dto.response.PlanDTO;
 import com.groot.backend.entity.DiaryCheckEntity;
 import com.groot.backend.entity.DiaryEntity;
 import com.groot.backend.service.DiaryService;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @RequestMapping("/diaries")
@@ -42,8 +44,10 @@ public class DiaryController {
 //        SimpleDateFormat sDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 //        String nowFormat = sDate.format(now);
         // 오늘 다이어리를 작성한 이력이 있을 경우
-        DiaryDTO find = diaryService.isExistByCreatedDate(diaryDTO.getPotId());
-        if(find!=null){
+        DiaryCheckEntity result = diaryService.isExistByCreatedDate(diaryDTO.getPotId());
+
+        if(result!=null){
+            DiaryDTO find = new DiaryCheckEntity().toDTO(result);
             if(diaryService.saveAndUpdateDiary(userId, file, diaryDTO, find)==null){
                 resultMap.put("msg", "다이어리 추가 및 수정 실패");
                 resultMap.put("result", FAIL);
@@ -127,9 +131,15 @@ public class DiaryController {
     @GetMapping("/check/{potId}")
     public ResponseEntity checkDiary(@PathVariable Long potId){
         Map resultMap = new HashMap();
-        DiaryDTO result = diaryService.isExistByCreatedDate(potId);
+        DiaryCheckEntity result = diaryService.isExistByCreatedDate(potId);
+        if(result == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "해당 사용자의 다이어리 조회를 실패하였습니다.");
+            return ResponseEntity.ok().body(resultMap);
+        }
+        DiaryDTO diaryDTO = new DiaryCheckEntity().toDTO(result);
         // 없든 있든 결과 보내줌
-        resultMap.put("diary", result==null?null:result);
+        resultMap.put("diary", diaryDTO==null?null:diaryDTO);
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "해당 사용자의 다이어리 조회에 성공하였습니다.");
         return ResponseEntity.ok().body(resultMap);
@@ -169,10 +179,24 @@ public class DiaryController {
     }
 
     @GetMapping("/weekly")  // 주간 다이어리 리스트
-    public ResponseEntity weeklyDiary(HttpServletRequest request){
+    public ResponseEntity weeklyDiary(@RequestParam String date, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        List<DiaryCheckEntity> result = diaryService.weeklyDiaries(userId);
+        String[] dates = date.split("-");
+        if(dates.length<3){
+            resultMap.put("msg", "날짜 표현이 유효하지 않습니다.");
+            resultMap.put("result", FAIL);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
+        }
+        int year = Integer.parseInt(dates[0]);
+        int month = Integer.parseInt(dates[1]);
+        int day = Integer.parseInt(dates[2]);
+        LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0, 0);
+        LocalDateTime end = LocalDateTime.of(year, month, day, 23, 59, 59);
+        LocalDateTime temp = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.of(temp.getYear(), temp.getMonthValue(), temp.getDayOfMonth(), 0, 0, 0);
+
+        List<PlanDTO> result = diaryService.weeklyDiaries(userId, start, end);
         if(result.isEmpty()){
             resultMap.put("msg", "주간 다이어리 리스트 조회를 실패하였습니다.");
             resultMap.put("result", FAIL);

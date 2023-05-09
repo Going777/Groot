@@ -59,12 +59,13 @@ public class DiaryCheckEntity extends BaseEntity{
     @JsonBackReference
     private PotEntity potEntity;
 
-    @OneToMany(mappedBy = "diaryCheckEntity", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "diaryCheckEntity", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<DiaryEntity> diaryEntities;
 
     public DiaryDTO toDTO (DiaryCheckEntity diaryEntity){
         DiaryDTO result = DiaryDTO.builder()
+                .id(diaryEntity.getId())
                 .bug(diaryEntity.getBug())
                 .sun(diaryEntity.getSun())
                 .userPK(diaryEntity.getUserPK())

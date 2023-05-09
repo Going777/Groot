@@ -2,6 +2,7 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.dto.response.DiaryResponseDTO;
+import com.groot.backend.dto.response.PlanDTO;
 import com.groot.backend.entity.DiaryCheckEntity;
 import com.groot.backend.entity.DiaryEntity;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,7 @@ import java.util.List;
 
 public interface DiaryService {
 
-    DiaryDTO isExistByCreatedDate(Long potId);
+    DiaryCheckEntity isExistByCreatedDate(Long potId);
 
     DiaryEntity saveDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException;
 
@@ -33,5 +34,5 @@ public interface DiaryService {
 
     Page<DiaryResponseDTO> diaryListByPotId(Long potId, Integer page, Integer size);
 
-    List<DiaryCheckEntity> weeklyDiaries(Long userId);
+    List<PlanDTO> weeklyDiaries(Long userId, LocalDateTime start, LocalDateTime end);
 }

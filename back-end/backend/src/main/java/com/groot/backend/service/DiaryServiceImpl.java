@@ -3,15 +3,10 @@ package com.groot.backend.service;
 import com.groot.backend.controller.exception.CustomException;
 import com.groot.backend.dto.request.DiaryDTO;
 import com.groot.backend.dto.response.DiaryResponseDTO;
-import com.groot.backend.entity.DiaryEntity;
-import com.groot.backend.entity.DiaryCheckEntity;
-//import com.groot.backend.entity.PlanEntity;
-import com.groot.backend.entity.PotEntity;
-import com.groot.backend.repository.DiaryCheckRepository;
-import com.groot.backend.repository.DiaryRepository;
+import com.groot.backend.dto.response.PlanDTO;
+import com.groot.backend.entity.*;
+import com.groot.backend.repository.*;
 //import com.groot.backend.util.S3Uploader;
-import com.groot.backend.repository.PotRepository;
-import com.groot.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -35,6 +31,8 @@ import java.util.List;
 @Transactional
 @Slf4j
 public class DiaryServiceImpl implements DiaryService{
+    private final PlanRepository planRepository;
+    private final PlantRepository plantRepository;
     private final DiaryRepository diaryRepository;
 
     private final UserRepository userRepository;
@@ -45,10 +43,11 @@ public class DiaryServiceImpl implements DiaryService{
 
     private final S3Service s3Service;
 
+    private static int[] monthDate = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     @Override
-    public DiaryDTO isExistByCreatedDate(Long potId) {
-        return new DiaryCheckEntity().toDTO(diaryCheckRepository.existsByPotIdCreatedDate(potId));
+    public DiaryCheckEntity isExistByCreatedDate(Long potId) {
+        return diaryCheckRepository.existsByPotIdCreatedDate(potId);
     }
 
     @Transactional
@@ -61,12 +60,12 @@ public class DiaryServiceImpl implements DiaryService{
         }
         log.info("potId: "+diaryDTO.getPotId());
         PotEntity pot = potRepository.findById(diaryDTO.getPotId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 화분을 찾을 수 없습니다."));
-
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
         // check 테이블에 저장
         DiaryCheckEntity checkdiary = DiaryCheckEntity.builder()
                 .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():false)
                 .potEntity(pot)
-                .userEntity(userRepository.findById(userId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다.")))
+                .userEntity(user)
                 .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():false)
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():null)
                 .imgPath(storedFileName)
@@ -80,7 +79,7 @@ public class DiaryServiceImpl implements DiaryService{
         DiaryEntity diary = DiaryEntity.builder()
                 .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():false)
                 .potEntity(pot)
-                .userEntity(userRepository.findById(userId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다.")))
+                .userEntity(user)
                 .diaryCheckEntity(checkdiary)
                 .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():false)
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():null)
@@ -92,6 +91,10 @@ public class DiaryServiceImpl implements DiaryService{
 
         log.info("result: "+result.getId());
 
+        // 물주기 일정 추가
+        if(diary.getWater()) addPlan(user, pot, 0);
+        //영양제 일정 추가
+        if(diary.getNutrients()) addPlan(user, pot, 1);
 
         // 화분 경험치 계산
         int[] checkList = {diaryDTO.getWater()!=null?10:0, diaryDTO.getSun()!=null?10:0, diaryDTO.getPruning()!=null?30:0, diaryDTO.getNutrients()!=null?30:0, diaryDTO.getBug()!=null?10:0, diaryDTO.getContent()!=null?10:0, image!=null?10:0};
@@ -104,8 +107,32 @@ public class DiaryServiceImpl implements DiaryService{
             tempExp -= tempLevel*100;
             tempLevel+=1;
         }
-        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
 
+        // pot entity 수정본 만들기
+        LocalDateTime now = LocalDateTime.now();
+        PotEntity newPot = PotEntity.builder()
+                        .id(pot.getId())
+                .humidity(pot.getHumidity())
+                .illuminance(pot.getIlluminance())
+                .imgPath(pot.getImgPath())
+                .name(pot.getName())
+                .diaryEntities(pot.getDiaryEntities())
+                .plantId(pot.getPlantId())
+                .plantKrName(pot.getPlantKrName())
+                .temperature(pot.getTemperature())
+                .share(pot.getShare())
+                .nutrientsDate(diary.getNutrients()?now:pot.getNutrientsDate())
+                .pruningDate(diary.getPruning()?now:pot.getPruningDate())
+                .saleDate(pot.getSaleDate())
+                .level(tempLevel)
+                .experience(tempExp)
+                .waterDate(diary.getWater()?now:pot.getWaterDate())
+                .survival(pot.getSurvival())
+                .plantEntity(pot.getPlantEntity())
+                .planEntities(pot.getPlanEntities())
+                                .build();
+//        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+        potRepository.save(newPot);
         return diaryRepository.save(diary);
     }
 
@@ -117,10 +144,12 @@ public class DiaryServiceImpl implements DiaryService{
             storedFileName = s3Service.upload(image, "diary");
         }
         PotEntity pot = potRepository.findById(diaryCheck.getPotId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 화분의 정보를 찾을 수 없습니다."));
+        UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
+
         // check 테이블 업데이트
         DiaryCheckEntity newCheckDiary = DiaryCheckEntity.builder()
                 .id(diaryCheck.getId())
-                .userEntity(userRepository.findById(diaryCheck.getUserPK()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자 정보를 찾을 수 없습니다.")))
+                .userEntity(user)
                 .potEntity(pot)
                 .bug(diaryDTO.getBug()!=null && diaryDTO.getBug()?diaryDTO.getBug():diaryCheck.getBug())
                 .sun(diaryDTO.getSun()!=null && diaryDTO.getSun()?diaryDTO.getSun():diaryCheck.getSun())
@@ -135,7 +164,7 @@ public class DiaryServiceImpl implements DiaryService{
         DiaryEntity diary = DiaryEntity.builder()
                 .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():false)
                 .potEntity(pot)
-                .userEntity(userRepository.findById(userId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다.")))
+                .userEntity(user)
                 .diaryCheckEntity(newCheckDiary)
                 .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():false)
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():null)
@@ -145,11 +174,16 @@ public class DiaryServiceImpl implements DiaryService{
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
                 .build();
         log.info("result: "+newCheckDiary.getId());
+
+        // 물주기 일정 추가
+        if(diary.getWater()) addPlan(user, pot, 0);
+        //영양제 일정 추가
+        if(diary.getNutrients()) addPlan(user, pot, 1);
+
         // 점수 계산
         Integer score = 0;
         int[] checkList = {diary.getWater()&&!diaryCheck.getWater()?10:0, diary.getSun()&&!diaryCheck.getSun()?10:0, diary.getPruning()&&!diaryCheck.getPruning()?30:0, diary.getNutrients()&&!diaryCheck.getNutrients()?30:0, diary.getBug()?10:0, diary.getContent()!=null?10:0, image!=null?10:0};
-        for(int i: checkList){
-            score += i;
+        for(int i: checkList){            score += i;
         }
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
@@ -161,6 +195,7 @@ public class DiaryServiceImpl implements DiaryService{
             tempExp += tempLevel*100;
         }
         potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+        diaryCheckRepository.save(newCheckDiary);
         return diaryRepository.save(diary);
     }
 
@@ -320,21 +355,51 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public List<DiaryCheckEntity> weeklyDiaries(Long userId) {
-        Calendar cal = Calendar.getInstance();
-        Date now = new Date();
-        cal.setTime(now);
-        cal.add(Calendar.DATE, -7);
-        SimpleDateFormat sDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String nowFormat = sDate.format(now);
-        String pastFormat = sDate.format(cal.getTime());
-
-        log.info(nowFormat);
-
-        List<DiaryEntity> result = diaryRepository.findAllByDate(nowFormat);
-        List<DiaryCheckEntity> check = diaryCheckRepository.findAllByDate(userId);
-        return check;
+    public List<PlanDTO> weeklyDiaries(Long userId, LocalDateTime start, LocalDateTime end) {
+        // 해당날짜에 해당하는 plan들 가져오기
+        List<PlanEntity> plans = planRepository.findAllByDateTime(start, end);
+        List<PlanDTO> result = new PlanEntity().toPlanDTOList(plans);
+        return result;
     }
 
+    private void addPlan(UserEntity user, PotEntity pot, Integer code){
+
+        // 해당 미션 완료 표시 및 실행 날짜 업데이트
+        planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
+        // 이후의 미션 중 false 인 미션 삭제
+        planRepository.deleteAllByCodeAndPotId(code, pot.getId());
+        LocalDateTime now = LocalDateTime.now();
+        // 새로운 미션 추가
+        List<PlanEntity> planList = new ArrayList<>();
+        int day = now.getDayOfMonth();
+        int month = now.getMonthValue();
+        int year = now.getYear();
+        if(code==0){
+            day += plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
+        }else{
+            month += 6;
+        }
+        for (int i = 0; i < 3; i++) {
+            if (day > monthDate[month]) {
+                day -= monthDate[month];
+                month += 1;
+                if (month > 12) {
+                    year += month / 12;
+                    month %= 12;
+                }
+            }
+            LocalDateTime newDate = LocalDateTime.of(year, month, day, 9, 0, 0);
+            PlanEntity newOne = PlanEntity.builder()
+                    .userEntity(user)
+                    .potEntity(pot)
+                    .dateTime(newDate)
+                    .code(code)
+                    .done(false)
+                    .build();
+//            planList.add(newOne);
+            planRepository.save(newOne);
+        }
+//        planRepository.saveAll(planList);
+    }
 
 }
