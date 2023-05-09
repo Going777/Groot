@@ -63,7 +63,7 @@
                     android:translationZ="-5dp"
                     app:cardBackgroundColor="@color/background"
                     app:cardCornerRadius="30dp"
-                    app:layout_constraintStart_toEndOf="@id/profile_image"
+                    app:layout_constraintStart_toEndOf="@id/profileImg"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <androidx.constraintlayout.widget.ConstraintLayout
@@ -166,9 +166,6 @@
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
 
 
     <com.google.android.material.tabs.TabLayout

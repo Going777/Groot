@@ -13,7 +13,7 @@
         android:layout_marginHorizontal="10dp"
         android:background="@drawable/radius10"
         android:backgroundTint="@color/background"
-        >
+        android:visibility="gone">
 
         <LinearLayout
 

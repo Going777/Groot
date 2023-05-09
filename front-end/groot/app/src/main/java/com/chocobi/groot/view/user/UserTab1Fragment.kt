@@ -84,11 +84,11 @@ class UserTab1Fragment : Fragment() {
         })
 
     }
-    fun showFirstView() {
+    private fun showFirstView() {
         potFirstView.visibility = View.VISIBLE
     }
 
-    fun hideFirstView() {
+    private fun hideFirstView() {
         potFirstView.visibility = View.GONE
     }
 

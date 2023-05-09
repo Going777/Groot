@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -28,6 +29,7 @@ class UserTab3Fragment : Fragment() {
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
+    private lateinit var potFirstView: ConstraintLayout
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityArticleListResponse
     private var REQUESTPAGESIZE = 10
@@ -69,6 +71,9 @@ class UserTab3Fragment : Fragment() {
                     val list = createDummyData(0, REQUESTPAGESIZE)
                     if (usage != "reload") {
                         val totalElements = getData.articles.total // 전체 데이터 수
+                        if (totalElements == 0) {
+                            showFirstView()
+                        }
                         val currentPage = communityArticlePage // 현재 페이지 번호
                         val isLast =
                             (currentPage + 1) * REQUESTPAGESIZE >= totalElements // 마지막 페이지 여부를 판단합니다.
@@ -88,17 +93,20 @@ class UserTab3Fragment : Fragment() {
                         }
                     }
                 } else {
+                    showFirstView()
                     Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
                 Log.d(TAG, "실패2")
+                showFirstView()
             }
         })
     }
 
     private fun findViews(view: View) {
+        potFirstView = view.findViewById(R.id.firstView)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
@@ -187,5 +195,12 @@ class UserTab3Fragment : Fragment() {
             list.add(communityArticleListResponse)
         }
         return list
+    }
+    private fun showFirstView() {
+        potFirstView.visibility = View.VISIBLE
+    }
+
+    private fun hideFirstView() {
+        potFirstView.visibility = View.GONE
     }
 }
