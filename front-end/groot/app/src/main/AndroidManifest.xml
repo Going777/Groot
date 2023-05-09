@@ -52,6 +52,14 @@
             android:exported="false" />
         <activity
             android:name=".ShortcutActivity"
+            android:exported="false">
+
+        </activity>
+        <activity
+            android:name=".view.login.LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.intro.IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -60,15 +68,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.login.LoginActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.intro.IntroActivity"
-            android:exported="false" />
-        <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustNothing"/>
+            android:windowSoftInputMode="adjustNothing">
+
+        </activity>
         <activity
             android:name=".view.signup.SignupActivity"
             android:exported="false" /> <!-- ar -->

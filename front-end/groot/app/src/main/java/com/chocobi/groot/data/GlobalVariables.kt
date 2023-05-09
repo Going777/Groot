@@ -196,22 +196,22 @@ class GlobalVariables : Application() {
         prefs = PreferenceUtil(applicationContext)
 
 
-        val tokenAction = CoroutineScope(Dispatchers.IO).async {
-            accessToken = prefs.getString("access_token", "")
-        }
-
-        val refreshAction = CoroutineScope(Dispatchers.IO).async {
-            refreshToken = prefs.getString("refresh_token", "")
-        }
-
-        val userAction = CoroutineScope(Dispatchers.Main).launch {
-            tokenAction.await()
-            if (accessToken != "") {
-                getUser()
-            } else {
-                refreshAction.await()
-            }
-        }
+//        val tokenAction = CoroutineScope(Dispatchers.IO).async {
+//            accessToken = prefs.getString("access_token", "")
+//        }
+//
+//        val refreshAction = CoroutineScope(Dispatchers.IO).async {
+//            refreshToken = prefs.getString("refresh_token", "")
+//        }
+//
+//        val userAction = CoroutineScope(Dispatchers.Main).launch {
+//            tokenAction.await()
+//            if (accessToken != "") {
+//                getUser()
+//            } else {
+//                refreshAction.await()
+//            }
+//        }
     }
 
 }

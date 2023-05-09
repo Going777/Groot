@@ -88,7 +88,7 @@ class SettingFragment : Fragment() {
 //            .baseUrl(GlobalVariables.getBaseUrl())
 //            .addConverterFactory(GsonConverterFactory.create())
 //            .build()
-        
+
 //        retrofit 객체 만들기
         var retrofit = RetrofitClient.getClient()!!
 
@@ -130,7 +130,7 @@ class SettingFragment : Fragment() {
 
 //        service 객체 만들기
         var userService = retrofit.create(UserService::class.java)
-        
+
 //        요청 보내기
         val accessToken = GlobalVariables.prefs.getString("access_token", "")
         if (accessToken != "") {
@@ -156,15 +156,16 @@ class SettingFragment : Fragment() {
         }
     }
 
-//    토큰 초기화
+    //    토큰 초기화
     private fun initializeAccessToken() {
         val shared = requireContext().getSharedPreferences("SharedPref", Context.MODE_PRIVATE)
         val editor = shared.edit()
         editor.putString("access_token", "")
+        editor.putString("refresh_token", "")
         editor.commit()
     }
 
-//    인트로 페이지 이동
+    //    인트로 페이지 이동
     private fun goToIntro() {
         val intent = Intent(requireContext(), IntroActivity::class.java)
         startActivity(intent)
