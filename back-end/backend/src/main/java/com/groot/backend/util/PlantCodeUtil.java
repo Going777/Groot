@@ -22,6 +22,13 @@ public class PlantCodeUtil {
             entry("쉬움", 1), entry("보통", 2), entry("어려움", 3)
     );
 
+    /**
+     * light demand
+     */
+    public static Map<String, Integer> lightLevel = Map.ofEntries(
+            entry("낮음", 0), entry("중간", 1), entry("높음", 2)
+    );
+
     public static String[] waterCycleCode = {"", "항상 흙을 축축하게 유지함(물에 잠김)",
             "흙을 촉촉하게 유지함(물에 잠기지 않도록 주의)", "토양 표면이 말랐을때 충분히 관수함",
             "화분 흙 대부분 말랐을때 충분히 관수함"

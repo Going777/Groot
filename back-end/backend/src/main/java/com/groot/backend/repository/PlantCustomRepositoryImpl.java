@@ -5,6 +5,7 @@ import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.entity.QPlantEntity;
 import com.groot.backend.util.PlantCodeUtil;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Template;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -66,9 +67,21 @@ public class PlantCustomRepositoryImpl implements PlantCustomRepository{
         if(demand == null || demand.length == 0) {
             return null;
         }
+        BooleanExpression ret = null;
 
-        BooleanExpression ret = Expressions.numberTemplate(Integer.class, "function('bitand', {0}, {1})", plantEntity.lightDemand, 1).gt(0);
-       return ret;
+        for(int i=0; i<demand.length; i++) {
+            int bit = PlantCodeUtil.lightLevel.get(demand[i].trim());
+            int target = 1 << bit;
+            NumberTemplate numberTemplate = Expressions.numberTemplate(Integer.class, "function('bitand', {0}, {1})",
+                    plantEntity.lightDemand, target);
+
+            if (ret == null) {
+                ret = numberTemplate.gt(0);
+            } else {
+                ret = ret.or(numberTemplate.gt(0));
+            }
+        }
+        return ret;
     }
 
     private BooleanExpression eqGrwType(String[] type) {
