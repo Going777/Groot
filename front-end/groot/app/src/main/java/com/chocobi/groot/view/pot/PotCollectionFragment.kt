@@ -88,7 +88,6 @@ class PotCollectionFragment : Fragment() {
 
 
 
-
         return rootView
     }
 

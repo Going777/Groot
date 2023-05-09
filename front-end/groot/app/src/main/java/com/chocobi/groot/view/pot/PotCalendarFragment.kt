@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.pot
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,14 +11,21 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.databinding.CalendarDayBinding
 import com.chocobi.groot.databinding.FragmentPotCalendarBinding
 import com.chocobi.groot.view.pot.adapter.PotCalendarRVAdapter
+import com.chocobi.groot.view.pot.model.DateDiaryResponse
+import com.chocobi.groot.view.pot.model.PotService
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.create
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -34,6 +42,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calendar), HasToolbar, HasBackButton {
 
+    private val TAG = "PotCalendarFragment"
     override val titleRes: Int = R.string.example_7_title
 
     override val toolbar: Toolbar
@@ -78,6 +87,8 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
 
             init {
                 view.setOnClickListener {
+                    Log.d(TAG, "${day.date}")
+                    getDateDiary(day.date.toString())
                     if (selectedDate != day.date) {
                         val oldDate = selectedDate
                         selectedDate = day.date
@@ -117,5 +128,27 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
             firstDayOfWeekFromLocale(),
         )
         binding.exSevenCalendar.scrollToDate(LocalDate.now())
+    }
+
+    private fun getDateDiary(date:String) {
+        val retrofit = RetrofitClient.getClient()!!
+        val potService = retrofit.create(PotService::class.java)
+        potService.getDateDiary(date).enqueue(object :Callback<DateDiaryResponse>{
+            override fun onResponse(
+                call: Call<DateDiaryResponse>,
+                response: Response<DateDiaryResponse>
+            ) {
+                val body = response.body()
+                if (body != null) {
+                    Log.d(TAG, "$body")
+                }
+                Log.d(TAG, "일일 다이어리 가져오기 body 없음")
+            }
+
+            override fun onFailure(call: Call<DateDiaryResponse>, t: Throwable) {
+                Log.d(TAG, "일일 다이어리 가져오기 실패")
+            }
+        })
+
     }
 }

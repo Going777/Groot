@@ -16,6 +16,21 @@ data class PotListResponse(
     val pots: List<Pot>,
 )
 
+data class DateDiaryResponse(
+    val result: String,
+    val msg: String,
+    val diary: List<Diary>
+)
+
+data class Diary(
+    val potId: Int,
+    val userPK: Int,
+    val code: Int,
+    val potName: String,
+    val imgPath: String?,
+    val done: Boolean
+)
+
 data class Pot(
     val potId: Int,
     val plantId: Int,
