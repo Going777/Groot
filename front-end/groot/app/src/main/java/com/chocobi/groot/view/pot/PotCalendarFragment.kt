@@ -16,6 +16,7 @@ import com.chocobi.groot.databinding.CalendarDayBinding
 import com.chocobi.groot.databinding.FragmentPotCalendarBinding
 import com.chocobi.groot.view.pot.adapter.PotCalendarRVAdapter
 import com.chocobi.groot.view.pot.model.DateDiaryResponse
+import com.chocobi.groot.view.pot.model.Diary
 import com.chocobi.groot.view.pot.model.PotService
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
@@ -40,18 +41,21 @@ private const val ARG_PARAM2 = "param2"
  * Use the [PotCalendarFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calendar), HasToolbar, HasBackButton {
+class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calendar), HasToolbar,
+    HasBackButton {
 
     private val TAG = "PotCalendarFragment"
+
+    private lateinit var rv: RecyclerView
+    private var rvAdapter: PotCalendarRVAdapter? = null
+
     override val titleRes: Int = R.string.example_7_title
 
     override val toolbar: Toolbar
         get() = binding.exSevenToolbar
 
     private var selectedDate = LocalDate.now()
-
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
-
     private lateinit var binding: FragmentPotCalendarBinding
 
 
@@ -62,14 +66,50 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_pot_calendar, container, false)
 //        val rootView = super.onCreateView(inflater, container, savedInstanceState)
-        val items = mutableListOf<String>()
-        items.add("산세산세")
-        items.add("이열")
-        items.add("짜부짜부")
-        items.add("찌부짜부")
 
-        val rv = rootView.findViewById<RecyclerView>(R.id.potCalendarRecyclerView)
-        val rvAdapter = PotCalendarRVAdapter(items)
+        val items = mutableListOf<Diary>()
+        items.add(
+            Diary(
+                8,
+                8,
+                0,
+                "하하",
+                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/71ef8293-cb22-4caa-a9c5-62101a8dcb01-prefix3030049238896505837extension",
+                false
+            )
+        )
+        items.add(
+            Diary(
+                8,
+                8,
+                1,
+                "하하",
+                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/71ef8293-cb22-4caa-a9c5-62101a8dcb01-prefix3030049238896505837extension",
+                false
+            )
+        )
+        items.add(
+            Diary(
+                8,
+                8,
+                0,
+                "콜라",
+                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/b6da24a2-fc89-463d-985a-5173bc012a78-prefix4471020168240671346extension",
+                true
+            )
+        )
+        items.add(
+            Diary(
+                8,
+                8,
+                1,
+                "콜라",
+                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/b6da24a2-fc89-463d-985a-5173bc012a78-prefix4471020168240671346extension",
+                true
+            )
+        )
+        rv = rootView.findViewById(R.id.potCalendarRecyclerView)
+        rvAdapter = PotCalendarRVAdapter(items)
         rv.layoutManager = LinearLayoutManager(activity)
         rv.adapter = rvAdapter
 
@@ -130,10 +170,10 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
         binding.exSevenCalendar.scrollToDate(LocalDate.now())
     }
 
-    private fun getDateDiary(date:String) {
+    private fun getDateDiary(date: String) {
         val retrofit = RetrofitClient.getClient()!!
         val potService = retrofit.create(PotService::class.java)
-        potService.getDateDiary(date).enqueue(object :Callback<DateDiaryResponse>{
+        potService.getDateDiary(date).enqueue(object : Callback<DateDiaryResponse> {
             override fun onResponse(
                 call: Call<DateDiaryResponse>,
                 response: Response<DateDiaryResponse>
@@ -141,7 +181,9 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
                 val body = response.body()
                 if (body != null) {
                     Log.d(TAG, "$body")
+                    setRecyclerView(body.diary)
                 }
+
                 Log.d(TAG, "일일 다이어리 가져오기 body 없음")
             }
 
@@ -150,5 +192,11 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
             }
         })
 
+    }
+
+    fun setRecyclerView(diaryList: List<Diary>) {
+        rvAdapter = PotCalendarRVAdapter(diaryList)
+        rv.layoutManager = LinearLayoutManager(activity)
+        rv.adapter = rvAdapter
     }
 }
