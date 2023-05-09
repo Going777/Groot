@@ -5,6 +5,7 @@ import com.groot.backend.dto.response.PlantDetailDTO;
 import com.groot.backend.dto.response.PlantIdentificationDTO;
 import com.groot.backend.dto.response.PlantThumbnailDTO;
 import com.groot.backend.service.PlantService;
+import com.sun.jdi.request.InvalidRequestStateException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -79,15 +80,20 @@ public class PlantController {
         logger.info("page no : {}", plantSearchDTO.getPage());
 
         Map<String, Object> result = new HashMap<>();
-        List<PlantThumbnailDTO> list = plantService.plantList(plantSearchDTO);
 
-        if(list == null || list.size() < 1) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            List<PlantThumbnailDTO> list = plantService.plantList(plantSearchDTO);
+            if(list == null || list.size() < 1) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            result.put("msg", "식물 목록 조회에 성공했습니다.");
+            result.put("plants", list);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (InvalidRequestStateException e) {
+            result.put("msg", "검색 내용을 확인해 주세요");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
-
-        result.put("msg", "식물 목록 조회에 성공했습니다.");
-        result.put("plants", list);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(value = "/identify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

@@ -8,6 +8,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Template;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.sun.jdi.request.InvalidRequestStateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -29,19 +30,25 @@ public class PlantCustomRepositoryImpl implements PlantCustomRepository{
     private QPlantEntity plantEntity;
 
     @Override
-    public List<PlantEntity> search(PlantSearchDTO plantSearchDTO) {
+    public List<PlantEntity> search(PlantSearchDTO plantSearchDTO) throws InvalidRequestStateException {
         plantEntity = QPlantEntity.plantEntity;
 
-        List<PlantEntity> ret = jpaQueryFactory
-                .selectFrom(plantEntity)
-                .where(eqKrName(plantSearchDTO.getName()),
-                        eqLevel(plantSearchDTO.getDifficulty()),
-                        eqLightDemand(plantSearchDTO.getLux()),
-                        eqGrwType(plantSearchDTO.getGrowth())
-                )
-                .fetch();
-
-        return ret;
+        try {
+            List<PlantEntity> ret = jpaQueryFactory
+                    .selectFrom(plantEntity)
+                    .where(eqKrName(plantSearchDTO.getName()),
+                            eqLevel(plantSearchDTO.getDifficulty()),
+                            eqLightDemand(plantSearchDTO.getLux()),
+                            eqGrwType(plantSearchDTO.getGrowth())
+                    )
+                    .offset(plantSearchDTO.getPage() * 30)
+                    .limit(30)
+                    .fetch();
+            return ret;
+        } catch (NullPointerException e) {
+            logger.info("NullPointer Exception : {}", e.getStackTrace());
+            throw new InvalidRequestStateException();
+        }
     }
 
     private BooleanExpression eqKrName(String krName) {
