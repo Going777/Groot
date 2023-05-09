@@ -12,6 +12,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface PotService {
     @GET("/api/pots/{potId}")
@@ -22,6 +23,11 @@ interface PotService {
     @GET("/api/pots")
     fun getPotList(
     ): Call<PotListResponse>
+
+    @GET("/api/diaries/weekly")
+    fun getDateDiary(
+        @Query("date") date: String
+    ): Call<DateDiaryResponse>
 
     @DELETE("/api/pots/{potId}")
     fun deletePot(
