@@ -13,9 +13,11 @@ public interface PlanRepositoryCustom {
     @Modifying
     void deleteAllByCodeAndPotId(Integer code, Long potId);
 
-    List<PlanEntity> findAllByDateTime(LocalDateTime start, LocalDateTime end);
+    List<PlanEntity> findAllByDateTimeAndUserPK(LocalDateTime start, LocalDateTime end, Long userPK);
 
     @Transactional
     @Modifying
     long updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId);
+
+    LocalDateTime findLastDateTimeByDoneAndPotIdAndCode(boolean Done, Long PotId, Integer code);
 }
