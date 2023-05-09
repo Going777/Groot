@@ -291,11 +291,11 @@ class SearchFragment : Fragment() {
             lux1,
             lux2,
             lux3,
+            growth5, // 다육형
             growth1,
             growth2,
             growth3,
             growth4,
-            growth5
         )
             .enqueue(object : Callback<PlantSearchResponse> {
                 override fun onResponse(

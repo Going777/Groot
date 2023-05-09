@@ -21,12 +21,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_STORAGE
@@ -35,6 +37,8 @@ import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -44,12 +48,17 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
+import kotlin.math.log
 
 
 @Suppress("DEPRECATION")
 class CommunityShareFragment : Fragment() {
 
     private val TAG = "CommunityShareFragment"
+    private val LIMITREGIONCNT = 1
+
+    private var region: String? = null
+    private var isFiltered = false // 필터가 걸려있는 상황인지 체크
 
     private lateinit var postImageAdapter: PostImageAdapter
     private val imageList: ArrayList<File?> = ArrayList()
@@ -62,6 +71,9 @@ class CommunityShareFragment : Fragment() {
 
     private lateinit var tagRecyclerView: RecyclerView
     private lateinit var tagInput: EditText
+    private lateinit var regionFilterBtn: Button
+    private lateinit var chipRegionGroup: ChipGroup
+    private lateinit var articleSection: LinearLayout
 
 
     override fun onCreateView(
@@ -128,7 +140,6 @@ class CommunityShareFragment : Fragment() {
         }
 
 
-
         // 이미지 업로드
         val postCameraBtn = view.findViewById<ImageButton>(R.id.postCameraBtn)
 
@@ -191,7 +202,6 @@ class CommunityShareFragment : Fragment() {
 
         var titleCntValue = 0
         var contentCntValue = 0
-
 
 
         // 글자 수 체크 및 제한
@@ -259,8 +269,53 @@ class CommunityShareFragment : Fragment() {
         }
         textWatcher()
 
+        regionFilter(view)
 
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        region = arguments?.getStringArrayList("region_full_list")?.get(0)
+        addChip(region)
+    }
+
+    private fun alertRegionFilterFirst() {
+//        articleSection.setOnClickListener {
+//            if(region == null) {
+//                Toast.makeText(requireContext(), "지역을 먼저 선택해주세요", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
+    }
+
+    private fun addChip(test: String?) {
+        if (test != null) {
+            chipRegionGroup.addView(
+                Chip(
+                    requireContext(),
+                    null,
+                    R.style.REGION_CHIP_ICON
+                ).apply {
+                    text = test
+                    isCloseIconVisible = false
+                })
+        }
+    }
+
+    private fun regionFilter(view: View) {
+        val mActivity = activity as MainActivity
+        regionFilterBtn = view.findViewById(R.id.regionFilterBtn)
+        chipRegionGroup = view.findViewById(R.id.chipRegionGroup)
+
+        regionFilterBtn.setOnClickListener {
+            val regionFilterBottomSheet =
+                RegionFilterBottomSheet(requireContext(), LIMITREGIONCNT)
+            regionFilterBottomSheet.show(
+                mActivity.supportFragmentManager,
+                regionFilterBottomSheet.tag
+            )
+        }
     }
 
     private fun requestPermissions() {

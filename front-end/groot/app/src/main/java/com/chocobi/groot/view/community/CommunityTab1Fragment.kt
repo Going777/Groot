@@ -36,6 +36,7 @@ class CommunityTab1Fragment : Fragment() {
     private val TAG = "CommunityTab1Fragment"
     private val CATEGORY = "나눔"
     private val REQUESTPAGESIZE = 10
+    private val LIMITREGIONCNT = 3
     private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
     private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
 
@@ -72,7 +73,7 @@ class CommunityTab1Fragment : Fragment() {
             val keyword = getLatestKeyword() // 최신의 keyword 값을 가져옴
             GlobalVariables.prefs.setString("share_keyword", keyword) // 전역변수로 저장
             val regionFilterBottomSheet =
-                RegionFilterBottomSheet(requireContext())
+                RegionFilterBottomSheet(requireContext(), LIMITREGIONCNT)
             regionFilterBottomSheet.show(
                 mActivity.supportFragmentManager,
                 regionFilterBottomSheet.tag
