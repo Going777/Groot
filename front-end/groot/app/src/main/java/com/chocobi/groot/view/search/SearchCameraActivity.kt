@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.search
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -22,6 +23,7 @@ import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.addpot.Pot1Activity
 import com.chocobi.groot.view.search.model.PlantIdentifyResponse
 import com.chocobi.groot.view.search.model.SearchService
+import io.github.sceneview.SceneView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -35,23 +37,30 @@ import java.io.FileOutputStream
 class SearchCameraActivity : AppCompatActivity() {
     private val TAG = "SearchCameraActivity"
     private var file: File? = null
-    private lateinit var plantNameText : TextView
-    private lateinit var plantScoreText : TextView
-    private lateinit var plantSciText : TextView
     private var plantId : Int? = null
     private var plantName : String? = null
     private var plantSci : String? = null
+    private var cameraStatus: String? = null
+    private var growType: String? = null
+    private var mgmtLevel: String? = null
+    private var characterGlbPath: String? = null
+
+    private lateinit var plantNameText : TextView
+    private lateinit var plantScoreText : TextView
+    private lateinit var plantSciText : TextView
     private lateinit var frameLayoutProgress: LinearLayout
     private lateinit var cardView: CardView
     private lateinit var addPotBtn: Button
     private lateinit var searchBtn: Button
     private lateinit var detailBtn: Button
-    private var cameraStatus: String? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_camera)
+
+        growType = "다육형,직립형"
+        mgmtLevel = "초보자"
+        characterGlbPath = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/straight_0.glb"
 
         plantNameText = findViewById(R.id.plantNameText)
         plantSciText = findViewById(R.id.plantSciText)
@@ -92,6 +101,9 @@ class SearchCameraActivity : AppCompatActivity() {
             intent.putExtra("imageUri", imageUri)
             intent.putExtra("plantName", plantName)
             intent.putExtra("plantId", plantId)
+            intent.putExtra("growType", growType)
+            intent.putExtra("mgmtLevel", mgmtLevel)
+            intent.putExtra("characterGlbPath", characterGlbPath)
             startActivity(intent)
         }
 
@@ -103,11 +115,7 @@ class SearchCameraActivity : AppCompatActivity() {
                 this.supportFragmentManager,
                 plantBottomSheet.tag
             )
-
         }
-
-
-
     }
 
     private fun identifyPlant(context: Context, file: File?) {
@@ -141,6 +149,9 @@ class SearchCameraActivity : AppCompatActivity() {
                         plantId = body.plant.plantId
                         plantName = body.plant.krName
                         plantSci = body.plant.sciName
+//                        growType = body.plant.grwType
+//                        mgmtLevel = body.plant.mgmtLevel
+//                        characterGlbPath = body.character.glbPath
                         hideProgress()
                     } else {
                         Log.d(TAG, "${response.errorBody()}")

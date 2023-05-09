@@ -43,6 +43,7 @@
             android:exported="false" />
         <activity
             android:name=".view.addpot.Pot2Activity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".CharacterActivity"
