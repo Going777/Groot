@@ -21,7 +21,7 @@ import java.util.List;
 public class PlanEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "pot_id", updatable = false, insertable = false)

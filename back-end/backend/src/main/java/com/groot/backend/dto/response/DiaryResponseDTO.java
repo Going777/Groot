@@ -45,6 +45,8 @@ public class DiaryResponseDTO {
 
     private LocalDateTime updateTime;
 
+    private Boolean isLast;
+
     public Page<DiaryResponseDTO> toDtoList(Page<DiaryEntity> diaryEntities) {
         Page<DiaryResponseDTO> dtoList = diaryEntities.map(a ->
                 DiaryResponseDTO.builder()
@@ -62,6 +64,7 @@ public class DiaryResponseDTO {
                         .sun(a.getSun())
                         .createTime(a.getCreatedDate())
                         .updateTime(a.getLastModifiedDate())
+                        .isLast(a.getIsLast())
                         .build());
         return dtoList;
     }
