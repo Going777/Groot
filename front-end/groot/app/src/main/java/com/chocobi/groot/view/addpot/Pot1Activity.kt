@@ -105,6 +105,10 @@ class Pot1Activity : AppCompatActivity() {
             intent.putExtra("plantNameSplit", plantNameSplit)
             intent.putExtra("plantId", plantId)
             intent.putExtra("imageUri", imageUri)
+
+            intent.putExtra("growType", growType)
+            intent.putExtra("mgmtLevel", mgmtLevel)
+            intent.putExtra("characterGlbPath", characterGlbPath)
             startActivity(intent)
         }
 

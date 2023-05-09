@@ -17,7 +17,9 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.addpot.model.AddPotRequest
 import com.chocobi.groot.view.addpot.model.AddPotResponse
 import com.chocobi.groot.view.addpot.model.AddPotService
+import com.google.ar.sceneform.lullmodel.VertexAttributeUsage.Position
 import io.github.sceneview.SceneView
+import io.github.sceneview.node.ModelNode
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -26,6 +28,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
+import io.github.sceneview.utils.Color
+import io.github.sceneview.math.Position
 
 class Pot2Activity : AppCompatActivity() {
     private val TAG = "Pot2Activity"
@@ -34,7 +38,10 @@ class Pot2Activity : AppCompatActivity() {
     private var isSuccessed = false
 
     private lateinit var characterSceneView: SceneView
-
+    private var growType: String? = null
+    private var mgmtLevel: String? = null
+    private var characterGlbPath: String? = null
+    private var modelNode: ModelNode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +60,13 @@ class Pot2Activity : AppCompatActivity() {
         potNameText.text = tempPotName
         potNameEdit.setText(tempPotName)
 
+
+        growType = intent.getStringExtra("growType")
+        mgmtLevel = intent.getStringExtra("mgmtLevel")
+        characterGlbPath = intent.getStringExtra("characterGlbPath")
+        setCharacterSceneView()
+
+
         //        화분 등록 및 Plant Detail 페이지로 이동
         val add2Btn = findViewById<Button>(R.id.add2Btn)
         add2Btn.setOnClickListener {
@@ -70,6 +84,27 @@ class Pot2Activity : AppCompatActivity() {
 
         characterSceneView = findViewById(R.id.characterSceneView)
 
+    }
+
+    private fun setCharacterSceneView() {
+        if (modelNode != null) {
+            characterSceneView.removeChild(modelNode!!)
+        }
+
+        characterSceneView.backgroundColor = Color(255.0f, 255.0f, 255.0f, 255.0f)
+
+        modelNode = ModelNode().apply {
+            loadModelGlbAsync(
+                glbFileLocation = characterGlbPath
+                    ?: "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
+                autoAnimate = false,
+                scaleToUnits = 1.0f,
+                centerOrigin = Position(x = 0f, y = 0f, z = 0f),
+            )
+        }
+        if (modelNode != null) {
+            characterSceneView.addChild(modelNode!!)
+        }
     }
 
     private fun uriToFile(uri: Uri): File? {
