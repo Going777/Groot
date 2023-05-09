@@ -337,6 +337,4 @@ class CommunityTab1Fragment : Fragment() {
             true
         }
     }
-
-
 }
