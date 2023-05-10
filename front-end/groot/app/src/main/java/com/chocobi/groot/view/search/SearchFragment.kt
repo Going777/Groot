@@ -434,7 +434,7 @@ class SearchFragment : Fragment() {
             rv.visibility = View.GONE
             recmmView.visibility = View.GONE
             firstView.visibility = View.VISIBLE
-            blankView.visibility = View.VISIBLE
+            blankView.visibility = View.GONE
         }
         else {
             rv.visibility = View.GONE
