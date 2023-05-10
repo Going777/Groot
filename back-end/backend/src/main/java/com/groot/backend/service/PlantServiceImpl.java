@@ -172,6 +172,17 @@ public class PlantServiceImpl implements PlantService{
         }
     }
 
+    @Override
+    public PlantWithCharacterDTO getIntroduction(Long plantId) throws Exception {
+        logger.info("Find Plant : {}", plantId);
+        PlantEntity plantEntity = plantRepository.findById(plantId).get();
+
+        return PlantWithCharacterDTO.builder()
+                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, "0"))
+                    .characterAssetDTO(getAsset(plantEntity))
+                    .build();
+    }
+
     /**
      * Convert multipart File to file
      * @param multipartFile

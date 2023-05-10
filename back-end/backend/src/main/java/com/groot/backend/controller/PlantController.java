@@ -150,4 +150,29 @@ public class PlantController {
 
         return new ResponseEntity<>(result, status);
     }
+
+    @GetMapping("/{plantId}/introductions")
+    public ResponseEntity<Map<String, Object>> getIntroduction(@PathVariable Long plantId) {
+        logger.info("Get introduction : {}", plantId);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            PlantWithCharacterDTO plantWithCharacterDTO = plantService.getIntroduction(plantId);
+
+            result.put("plant", plantWithCharacterDTO.getPlantIdentificationDTO());
+            result.put("character", plantWithCharacterDTO.getCharacterAssetDTO());
+            result.put("msg", "식물 정보 조회에 성공했습니다.");
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            result.put("msg", "존재하지 않는 식물입니다.");
+            status = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            result.put("msg", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+
+    }
 }
