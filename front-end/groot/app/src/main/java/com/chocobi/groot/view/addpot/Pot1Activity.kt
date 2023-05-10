@@ -66,7 +66,9 @@ class Pot1Activity : AppCompatActivity() {
 //        }
 
 
-        if (mgmtLevel != "" || mgmtLevel != null) {
+        Log.d("Pot1Activity","onCreate() 숙련도 $mgmtLevel")
+        Log.d("Pot1Activity","onCreate() 숙련도 $growTypes")
+        if (mgmtLevel != "" || mgmtLevel != null ) {
             potInfochipGroup.addView(
                 Chip(this, null, R.style.REGION_CHIP_ICON).apply {
                     text = mgmtLevel
