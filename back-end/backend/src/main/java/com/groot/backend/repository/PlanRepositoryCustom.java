@@ -15,6 +15,8 @@ public interface PlanRepositoryCustom {
 
     List<PlanEntity> findAllByDateTimeAndUserPK(LocalDateTime start, LocalDateTime end, Long userPK);
 
+    void deleteByCodeAndPotId(Long potId, Integer code, LocalDateTime time);
+
     @Transactional
     @Modifying
     long updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId);

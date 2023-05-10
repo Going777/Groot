@@ -297,6 +297,8 @@ public class DiaryServiceImpl implements DiaryService{
         //plan 수정
         // 수행 했던 미션을 취소할 때
         if(diaryEntity.getWater() && !newDiary.getWater()) {
+            // 작성된 plan 삭제
+            planRepository.deleteByCodeAndPotId(pot.getId(), 0, diaryEntity.getCreatedDate());
             // 실행 날짜 업데이트
             LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
             log.info("plan에 미션 완료 표시");
@@ -304,6 +306,8 @@ public class DiaryServiceImpl implements DiaryService{
         }
         //영양제 일정 추가
         if(diaryEntity.getNutrients() && !newDiary.getNutrients()) {
+            // 작성된 plan 삭제
+            planRepository.deleteByCodeAndPotId(pot.getId(), 1, diaryEntity.getCreatedDate());
             // 실행 날짜 업데이트
             LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 1);
             log.info("plan에 미션 완료 표시");

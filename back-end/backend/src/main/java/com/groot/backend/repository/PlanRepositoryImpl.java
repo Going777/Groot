@@ -35,6 +35,15 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
     }
 
     @Override
+    public void deleteByCodeAndPotId(Long potId, Integer code, LocalDateTime time) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        queryFactory.delete(qPlan)
+                .where(qPlan.code.eq(code), qPlan.done.eq(true), qPlan.dateTime.eq(time), qPlan.potId.eq(potId))
+                .execute();
+    }
+
+    @Override
     public long updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId) {
         QPlanEntity qPlan = QPlanEntity.planEntity;
 
