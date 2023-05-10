@@ -148,12 +148,9 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fl_container, passBundleFragment)
                     .commit()
-                // 키보드 닫기
-                GlobalVariables.hideKeyboard(requireActivity())
 
-                // BottomSheet 닫기
-                val parentFragment = parentFragment as? BottomSheetDialogFragment
-                parentFragment?.dismiss()
+//                bottomsheet닫기
+                dismiss()
             }
         }
     }
@@ -164,9 +161,8 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
         }
         requestSearchPlant(targetText)
 
-        // BottomSheet 닫기
-        val parentFragment = parentFragment as? BottomSheetDialogFragment
-        parentFragment?.dismiss()
+//        // 키보드 닫기
+        GlobalVariables.hideKeyboard(requireActivity())
     }
 }
 
