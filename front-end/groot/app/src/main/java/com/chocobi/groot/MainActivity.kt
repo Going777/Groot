@@ -26,6 +26,8 @@ import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.community.model.PopularTagResponse
 import com.chocobi.groot.view.login.LoginActivity
+import com.chocobi.groot.view.login.LoginService
+import com.chocobi.groot.view.login.SubscribeResponse
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
 import com.chocobi.groot.view.pot.PotDiaryFragment
@@ -37,6 +39,7 @@ import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 
@@ -332,6 +335,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        requestSubscribe()
+
 //        인기태그 가져오기
         getPopularTag()
 
@@ -429,6 +435,33 @@ class MainActivity : AppCompatActivity() {
             }
             changeFragment(toPage)
         }
+    }
+
+    private fun requestSubscribe() {
+        Log.d("LoginActivity","requestSubscribe() 요청을 보냅니다")
+        val retrofit = RetrofitClient.getClient()!!
+        val loginService = retrofit.create(LoginService::class.java)
+        loginService.requestSubscribe().enqueue(object : Callback<SubscribeResponse> {
+            override fun onResponse(
+                call: Call<SubscribeResponse>,
+                response: Response<SubscribeResponse>
+            ) {
+                Log.d("LoginActivity", "onResponse() $response")
+                Log.d("LoginActivity","requestSubscribe() $response")
+                if (response.code() == 200) {
+
+                    Log.d("LoginActivity", "onResponse() 구독 요청 성공 $response")
+                } else {
+
+                    Log.d("LoginActivity", "onResponse() 구독 요청 실패1 $response")
+                }
+            }
+
+            override fun onFailure(call: Call<SubscribeResponse>, t: Throwable) {
+                Log.d("LoginActivity", "onResponse() 구독 요청 실패2")
+            }
+
+        })
     }
 
     private fun getPopularTag() {
