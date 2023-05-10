@@ -80,10 +80,10 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public Page<CommentResponseDTO> readComment(Long articleId, Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdDate"));
-        Page<CommentEntity> commentEntities = commentRepository.findAllByArticleId(articleId, pageRequest);
-        Page<CommentResponseDTO> result = new CommentResponseDTO().toDtoList(commentEntities);
+    public List<CommentResponseDTO> readComment(Long articleId) {
+//        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "createdDate"));
+        List<CommentEntity> commentEntities = commentRepository.findAllByArticleIdOrderByCreatedDateAsc(articleId);
+        List<CommentResponseDTO> result = new CommentResponseDTO().toDtoList(commentEntities);
         return result;
     }
 }

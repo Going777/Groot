@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -79,9 +80,9 @@ public class CommentController {
      }
 
     @GetMapping("/list/{articleId}") // 해당 게시글 댓글 리스트 조회
-    public ResponseEntity readCommentList(@PathVariable Long articleId, @RequestParam Integer page, @RequestParam Integer size){
+    public ResponseEntity readCommentList(@PathVariable Long articleId){
         Map<String, Object> resultMap = new HashMap();
-        Page<CommentResponseDTO> commentEntities = commentService.readComment(articleId, page, size);
+        List<CommentResponseDTO> commentEntities = commentService.readComment(articleId);
         if(commentEntities==null){
             resultMap.put("msg", "댓글이 존재하지 않습니다.");
             resultMap.put("result", FAIL);
