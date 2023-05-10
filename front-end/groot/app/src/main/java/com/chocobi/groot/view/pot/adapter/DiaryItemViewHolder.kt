@@ -72,20 +72,26 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         potNickname.text = diaryListResponse.diary.content[0].potName
         postedTime.text =
             diaryListResponse.diary.content[0].createTime.date.year.toString() + "-" + diaryListResponse.diary.content[0].createTime.date.month.toString()
-        diaryPhoto.post {
-            view.get()?.let {
-                ThreadUtil.startThread {
-                    val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
-                        .asBitmap()
-                        .load(diaryListResponse.diary.content[0].imgPath)
-                        .submit(diaryPhoto.width, diaryPhoto.height)
-                    val bitmap = futureTarget.get()
-                    ThreadUtil.startUIThread(0) {
-                        diaryPhoto.setImageBitmap(bitmap)
+        if (diaryListResponse.diary.content[0].imgPath != null && diaryListResponse.diary.content[0].imgPath != "") {
+            diaryPhoto.post {
+                view.get()?.let {
+                    ThreadUtil.startThread {
+                        val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                            .asBitmap()
+                            .load(diaryListResponse.diary.content[0].imgPath)
+                            .submit(diaryPhoto.width, diaryPhoto.height)
+                        val bitmap = futureTarget.get()
+                        ThreadUtil.startUIThread(0) {
+                            diaryPhoto.setImageBitmap(bitmap)
+                        }
                     }
                 }
             }
+            diaryPhoto.visibility = View.VISIBLE
+        } else {
+            diaryPhoto.visibility = View.GONE
         }
+
         diaryContent.text = diaryListResponse.diary.content[0].content
         diaryContent.run {
             doOnLayout {

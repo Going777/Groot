@@ -263,6 +263,8 @@ class PotDiaryFragment : Fragment() {
                             val totalElements = getData.diary.total // 전체 데이터 수
                             if (totalElements == 0) {
                                 showFirstView()
+                            } else {
+                                hideFirstView()
                             }
                             val currentPage = diaryListPage // 현재 페이지 번호
                             val isLast =
@@ -285,7 +287,9 @@ class PotDiaryFragment : Fragment() {
 
                         }
                     } else {
-                        showFirstView()
+                        if (diaryListPage == 0) {
+                            showFirstView()
+                        }
                         Log.d(TAG, "실패1")
                     }
                 }
@@ -298,9 +302,11 @@ class PotDiaryFragment : Fragment() {
 
     private fun showFirstView() {
         firstView.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
     }
 
     private fun hideFirstView() {
         firstView.visibility = View.GONE
+        recyclerView.visibility = View.VISIBLE
     }
 }
