@@ -384,7 +384,7 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     @Override
-    public Boolean deleteDiary(Long diaryId) {
+    public Boolean deleteDiary(Long diaryId, Long planId) {
         if(diaryRepository.existsById(diaryId)){
             DiaryEntity diaryEntity = diaryRepository.findById(diaryId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
             if(diaryEntity.getImgPath()!=null && s3Service.delete(diaryEntity.getImgPath())>0) return false;
@@ -409,15 +409,19 @@ public class DiaryServiceImpl implements DiaryService{
             boolean isWater = diaryEntity.getWater();
             boolean isNutrients = diaryEntity.getNutrients();
 
+            if(planId != 0){
+
+                planRepository.deleteById(planId);
+            }
             if(isWater) {
-                // 해당 미션 완료 표시 및 실행 날짜 업데이트
+                // 마지막으로 실행한 날짜 가져오기
                 LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
                 log.info("plan에 미션 완료 표시");
                 addPlan(diaryEntity.getUserEntity(), pot, 0, date);
             }
             //영양제 일정 추가
             if(isNutrients) {
-                // 해당 미션 완료 표시 및 실행 날짜 업데이트
+                // 마지막으로 실행한 날짜 가져오기
                 LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 1);
                 log.info("plan에 미션 완료 표시");
                 addPlan(diaryEntity.getUserEntity(), pot, 1, date);
