@@ -126,6 +126,8 @@ class CommunityDetailFragment : Fragment() {
             )
 
         }
+        val imageAdapter = CommunityTabAdapter(this)
+
 
 //                retrofit 객체 만들기
         val retrofit = RetrofitClient.getClient()!!
@@ -178,8 +180,33 @@ class CommunityDetailFragment : Fragment() {
                         if (articleDetailData.article.imgs!!.isNotEmpty()){
                             for (i in 1..articleDetailData.article.imgs.size) {
                                 imagesList.add(articleDetailData.article.imgs[i-1])
+                                Log.d("carouselImagesList", imagesList.toString())
                             }
                         }
+
+
+                        val viewPager: ViewPager2 = view.findViewById(R.id.carousel_pager)
+                        Log.d("CommunityDetailFragmentCount중", imagesList.size.toString())
+
+
+                        viewPager.adapter = imageAdapter
+                        val tabLayout: TabLayout = view.findViewById(R.id.carousel_layout)
+
+                        var tabList = listOf<String>()
+
+                        when (imagesList.size) {
+                            0 -> {tabList = listOf<String>()}
+                            1 -> {tabList = listOf<String>("")}
+                            2 -> {tabList = listOf<String>("", "")}
+                            3 -> {tabList = listOf<String>("", "", "")}
+                        }
+
+                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                            tab.text = tabList[position]
+
+                        }.attach()
+
+
 
 
                         // 카테고리별 섹션 구별
@@ -297,32 +324,6 @@ class CommunityDetailFragment : Fragment() {
         }
 
 
-        Log.d("CommunityDetailFragmentImgs", imagesList.toString())
-
-        Log.d("CommunityDetailFragment_childFragmentManager", CommunityCommentFragment().toString())
-
-        val viewPager: ViewPager2 = view.findViewById(R.id.carousel_pager)
-        Log.d("CommunityDetailFragmentCount중", imagesList.size.toString())
-
-        val imageAdapter = CommunityTabAdapter(this)
-        viewPager.adapter = imageAdapter
-        val tabLayout: TabLayout = view.findViewById(R.id.carousel_layout)
-
-        var tabList = listOf<String>()
-
-        when (imagesList.size) {
-            0 -> {tabList = listOf<String>()}
-            1 -> {tabList = listOf<String>("")}
-            2 -> {tabList = listOf<String>("", "")}
-            3 -> {tabList = listOf<String>("", "", "")}
-        }
-
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = tabList[position]
-
-        }.attach()
-
-
 
         return view
     }
@@ -346,24 +347,24 @@ class CommunityDetailFragment : Fragment() {
                 1 -> {
                     nowTab = position
                     return when (position) {
-                        0 -> CommunityDetailImg1Fragment()
+                        0 -> CommunityDetailImg1Fragment(imagesList[0].toString())
                         else -> CommunityTab1Fragment()
                     }
                 }
                 2 -> {
                     nowTab = position
                     return when (position) {
-                        0 -> CommunityDetailImg1Fragment()
-                        1 -> CommunityDetailImg2Fragment()
+                        0 -> CommunityDetailImg1Fragment(imagesList[0].toString())
+                        1 -> CommunityDetailImg2Fragment(imagesList[1].toString())
                         else -> CommunityTab1Fragment()
                     }
                 }
                 3 -> {
                     nowTab = position
                     return when (position) {
-                        0 -> CommunityDetailImg1Fragment()
-                        1 -> CommunityDetailImg2Fragment()
-                        2 -> CommunityDetailImg3Fragment()
+                        0 -> CommunityDetailImg1Fragment(imagesList[0].toString())
+                        1 -> CommunityDetailImg2Fragment(imagesList[1].toString())
+                        2 -> CommunityDetailImg3Fragment(imagesList[2].toString())
                         else -> CommunityTab1Fragment()
                     }
                 }
