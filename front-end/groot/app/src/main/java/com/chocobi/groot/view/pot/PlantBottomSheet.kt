@@ -148,15 +148,12 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
                 parentFragmentManager.beginTransaction()
                     .replace(R.id.fl_container, passBundleFragment)
                     .commit()
-                // BottomSheet를 닫기 위한 코드
-                (view.parent.parent as? BottomSheetBehavior.BottomSheetCallback)?.let { bottomSheetCallback ->
-                    (view.parent.parent.parent as? View)?.let { bottomSheetView ->
-                        BottomSheetBehavior.from(bottomSheetView)?.let { bottomSheetBehavior ->
-                            bottomSheetBehavior.removeBottomSheetCallback(bottomSheetCallback)
-                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-                        }
-                    }
-                }
+                // 키보드 닫기
+                GlobalVariables.hideKeyboard(requireActivity())
+
+                // BottomSheet 닫기
+                val parentFragment = parentFragment as? BottomSheetDialogFragment
+                parentFragment?.dismiss()
             }
         }
     }
@@ -166,6 +163,10 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
             Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
         }
         requestSearchPlant(targetText)
+
+        // BottomSheet 닫기
+        val parentFragment = parentFragment as? BottomSheetDialogFragment
+        parentFragment?.dismiss()
     }
 }
 
