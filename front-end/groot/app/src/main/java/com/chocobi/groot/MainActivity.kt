@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentTransaction
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -87,8 +88,11 @@ class MainActivity : AppCompatActivity() {
                 val potDiaryFragment = PotDiaryFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, potDiaryFragment)
-                    .commit()
+                    .replace(R.id.fl_container, potDiaryFragment, index)
+                    .addToBackStack(index)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commitAllowingStateLoss()
+//                    .commit()
             }
 
             "pot_diary_create" -> {
@@ -102,8 +106,9 @@ class MainActivity : AppCompatActivity() {
 
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, potDiaryCreateFragment)
-                    .commit()
+                    .replace(R.id.fl_container, potDiaryCreateFragment, index)
+                    .addToBackStack(index).commitAllowingStateLoss()
+//                    .commit()
             }
 
             "pot_detail" -> {
@@ -116,16 +121,18 @@ class MainActivity : AppCompatActivity() {
 
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, potDetailFragment)
-                    .commit()
+                    .replace(R.id.fl_container, potDetailFragment, index)
+                    .addToBackStack(index).commitAllowingStateLoss()
+//                    .commit()
             }
 
             "search" -> {
                 val searchFragment = SearchFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, searchFragment)
-                    .commit()
+                    .replace(R.id.fl_container, searchFragment, index)
+                    .addToBackStack(index).commitAllowingStateLoss()
+//                    .commit()
             }
 
             "search_detail" -> {
@@ -133,32 +140,36 @@ class MainActivity : AppCompatActivity() {
                 val searchDetailFragment = SearchDetailFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, searchDetailFragment)
-                    .commit()
+                    .replace(R.id.fl_container, searchDetailFragment, index)
+                    .addToBackStack(index).commitAllowingStateLoss()
+//                    .commit()
             }
 
             "community_share" -> {
                 val communityShareFragment = CommunityShareFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, communityShareFragment)
-                    .commit()
+                    .replace(R.id.fl_container, communityShareFragment, index)
+                    .addToBackStack(index).commitAllowingStateLoss()
+//                    .commit()
             }
 
             "community_post" -> {
                 val communityPostFragment = CommunityPostFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, communityPostFragment)
-                    .commit()
+                    .replace(R.id.fl_container, communityPostFragment, index)
+                    .addToBackStack(index).commitAllowingStateLoss()
+//                    .commit()
             }
 
             "setting" -> {
                 val settingFragment = SettingFragment()
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(R.id.fl_container, settingFragment)
-                    .commit()
+                    .replace(R.id.fl_container, settingFragment, index)
+                    .addToBackStack(index).commitAllowingStateLoss()
+//                    .commit()
             }
         }
     }
@@ -385,7 +396,9 @@ class MainActivity : AppCompatActivity() {
                         // 다른 프래그먼트 화면으로 이동하는 기능
                         val homeFragment = PotFragment()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fl_container, homeFragment).commit()
+                            .replace(R.id.fl_container, homeFragment, "pot")
+                            .addToBackStack("pot").commitAllowingStateLoss()
+//                            .commit()
 //                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 0
@@ -397,7 +410,9 @@ class MainActivity : AppCompatActivity() {
                     R.id.searchFragment -> {
                         val boardFragment = SearchFragment()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fl_container, boardFragment).commit()
+                            .replace(R.id.fl_container, boardFragment, "search")
+                            .addToBackStack("search").commitAllowingStateLoss()
+//                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 40
 //                        params.rightMargin = 40
@@ -407,7 +422,9 @@ class MainActivity : AppCompatActivity() {
                     R.id.communityFragment -> {
                         val boardFragment = CommunityFragment()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fl_container, boardFragment).commit()
+                            .replace(R.id.fl_container, boardFragment, "community")
+                            .addToBackStack("community").commitAllowingStateLoss()
+//                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 40
 //                        params.rightMargin = 40
@@ -417,7 +434,9 @@ class MainActivity : AppCompatActivity() {
                     R.id.userFragment -> {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fl_container, boardFragment).commit()
+                            .replace(R.id.fl_container, boardFragment, "user")
+                            .addToBackStack("user").commitAllowingStateLoss()
+//                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 20
 //                        params.rightMargin = 20
