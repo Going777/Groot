@@ -6,13 +6,8 @@ import com.groot.backend.dto.response.CharacterDTO;
 import com.groot.backend.dto.response.PlantDetailDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
-import com.groot.backend.entity.CharacterEntity;
-import com.groot.backend.entity.PlantEntity;
-import com.groot.backend.entity.PotEntity;
-import com.groot.backend.repository.CharacterRepository;
-import com.groot.backend.repository.PlantRepository;
-import com.groot.backend.repository.PotRepository;
-import com.groot.backend.repository.UserRepository;
+import com.groot.backend.entity.*;
+import com.groot.backend.repository.*;
 import com.groot.backend.util.PlantCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +32,7 @@ public class PotServiceImpl implements PotService{
     private final PotRepository potRepository;
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
+    private final PlanRepository planRepository;
     private final CharacterRepository characterRepository;
     private final S3Service s3Service;
     private final Logger logger = LoggerFactory.getLogger(PotServiceImpl.class);
@@ -52,11 +48,12 @@ public class PotServiceImpl implements PotService{
             logger.info("image uploaded : {}", imgPath);
 
             PlantEntity plantEntity = plantRepository.findById(potRegisterDTO.getPlantId()).get();
+            UserEntity userEntity = userRepository.findById(userPK).get();
             logger.info("Plant found : {}", plantEntity.getKrName());
 
             PotEntity potEntity = potRepository.save(
                     PotEntity.builder()
-                            .userEntity(userRepository.findById(userPK).get())
+                            .userEntity(userEntity)
                             .plantEntity(plantEntity)
                             .name(potRegisterDTO.getPotName())
                             .imgPath(imgPath)
@@ -68,6 +65,36 @@ public class PotServiceImpl implements PotService{
                             .build()
             );
             potRepository.save(potEntity);
+
+            List<PlanEntity> plans = new ArrayList<>();
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(0)
+                    .dateTime(LocalDateTime.now().plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000]))
+                    .done(false)
+                    .build()
+            );
+
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(1)
+                    .dateTime(LocalDateTime.now().plusMonths(6))
+                    .done(false)
+                    .build()
+            );
+
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(2)
+                    .dateTime(LocalDateTime.now().plusYears(1L))
+                    .done(false)
+                    .build()
+            );
+
+            planRepository.saveAll(plans);
 
             return potEntity.getId();
         } catch (IOException e) {
