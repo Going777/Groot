@@ -1,14 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.pot.PotDetailTab5Fragment">
+    tools:context=".view.pot.PotDetailTab5Fragment"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_margin="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_info_fill"
+            android:tint="@color/pill" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="영양제 주기 Tip"
+            android:textSize="20dp"
+            android:textColor="@color/pill"
+            android:textStyle="bold" />
+    </LinearLayout>
+
     <TextView
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="5dp"
+        android:id="@+id/nutrientTabContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="pill tab" />
+        android:text="nutrient tab" />
 
-</FrameLayout>
+</LinearLayout>
