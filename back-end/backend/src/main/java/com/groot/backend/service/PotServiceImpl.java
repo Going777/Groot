@@ -2,10 +2,7 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
-import com.groot.backend.dto.response.CharacterDTO;
-import com.groot.backend.dto.response.PlantDetailDTO;
-import com.groot.backend.dto.response.PotDetailDTO;
-import com.groot.backend.dto.response.PotListDTO;
+import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
 import com.groot.backend.util.PlantCodeUtil;
@@ -158,7 +155,18 @@ public class PotServiceImpl implements PotService{
                 .img(plantEntity.getImg())
                 .build();
 
-        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).build();
+        List<PlanEntity> planEntities = planRepository.findAllByPotId(potId);
+
+        List<PlanWithDateDTO> plans = new ArrayList<>(planEntities.size());
+
+        planEntities.forEach(planEntity -> {
+            plans.add(PlanWithDateDTO.builder()
+                            .code(planEntity.getCode())
+                            .dateTime(planEntity.getDateTime())
+                            .build());
+        });
+
+        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).plans(plans).build();
     }
 
     @Override
