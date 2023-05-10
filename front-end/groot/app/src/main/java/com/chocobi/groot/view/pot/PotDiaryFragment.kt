@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -43,6 +44,7 @@ class PotDiaryFragment : Fragment() {
     private var potRvAdapter: PotListRVAdapter? = null
     private lateinit var adapter: PotDiaryListRVAdapter
     private lateinit var frameLayoutProgress: FrameLayout
+    private lateinit var firstView: ConstraintLayout
     private var potList: MutableList<Pot>? = null
     private val firstItem: Pot = Pot(
         0,
@@ -77,7 +79,7 @@ class PotDiaryFragment : Fragment() {
         findViews(rootView)
         setListeners()
         initList()
-        reload()
+//        reload()
         showProgress()
 
 //        상단 화분 목록
@@ -89,65 +91,9 @@ class PotDiaryFragment : Fragment() {
         return rootView
     }
 
-    private fun requestUserArticleList(usage: String) {
-        if (usage == "loadMore") {
-            diaryListPage++
-        } else {
-            diaryListPage = 0
-        }
-//                retrofit 객체 만들기
-        var retrofit = RetrofitClient.getClient()!!
-        var potService = retrofit.create(PotService::class.java)
 
-        potService.requestPotDiary(selectedPotId, diaryListPage, REQUESTPAGESIZE).enqueue(object :
-            Callback<DiaryListResponse> {
-            override fun onResponse(
-                call: Call<DiaryListResponse>,
-                response: Response<DiaryListResponse>
-            ) {
-                if (response.code() == 200) {
-                    Log.d(TAG, "성공")
-                    getData = response.body()!!
-                    val list = createDummyData(0, REQUESTPAGESIZE)
-                    if (usage != "reload") {
-                        val totalElements = getData.diary.total // 전체 데이터 수
-                        if (totalElements == 0) {
-//                            showFirstView()
-                        }
-                        val currentPage = diaryListPage // 현재 페이지 번호
-                        val isLast =
-                            (currentPage + 1) * REQUESTPAGESIZE >= totalElements // 마지막 페이지 여부를 판단합니다.
-                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                            isLastPage = true
-                        }
-
-                    }
-                    if (usage == "loadMore") {
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.loadMore(list)
-                            hideProgress()
-                        }
-                    } else {
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.reload(list)
-                            hideProgress()
-                        }
-
-                    }
-                } else {
-//                    showFirstView()
-                    Log.d(TAG, "실패1")
-                }
-            }
-
-            override fun onFailure(call: Call<DiaryListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
-//                showFirstView()
-            }
-        })
-    }
-    
     private fun findViews(view: View) {
+        firstView = view.findViewById(R.id.firstView)
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
@@ -287,14 +233,13 @@ class PotDiaryFragment : Fragment() {
     }
 
     private fun clickDiaryPot(potId: Int) {
-
+        showProgress()
+        selectedPotId = potId
 //            화분 다이어리 조회
-//        requestDiaryList(potId)
-
-
+        requestDiaryList("load")
     }
 
-    private fun requestDiaryList(usage:String) {
+    private fun requestDiaryList(usage: String) {
         if (usage == "loadMore") {
             diaryListPage++
         } else {
@@ -304,50 +249,58 @@ class PotDiaryFragment : Fragment() {
         var retrofit = RetrofitClient.getClient()!!
         var potService = retrofit.create(PotService::class.java)
 
-        potService.requestPotDiary(selectedPotId, diaryListPage, REQUESTPAGESIZE).enqueue(object :Callback<DiaryListResponse> {
-            override fun onResponse(
-                call: Call<DiaryListResponse>,
-                response: Response<DiaryListResponse>
-            ) {
-                if (response.code() == 200) {
-                    Log.d(TAG, "성공")
-                    getData = response.body()!!
-                    val list = createDummyData(0, REQUESTPAGESIZE)
-                    if (usage != "reload") {
-                        val totalElements = getData.diary.total // 전체 데이터 수
-                        if (totalElements == 0) {
-//                            showFirstView()
-                        }
-                        val currentPage = diaryListPage // 현재 페이지 번호
-                        val isLast =
-                            (currentPage + 1) * REQUESTPAGESIZE >= totalElements // 마지막 페이지 여부를 판단합니다.
-                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                            isLastPage = true
-                        }
+        potService.requestPotDiary(selectedPotId, diaryListPage, REQUESTPAGESIZE)
+            .enqueue(object : Callback<DiaryListResponse> {
+                override fun onResponse(
+                    call: Call<DiaryListResponse>,
+                    response: Response<DiaryListResponse>
+                ) {
+                    if (response.code() == 200) {
+                        Log.d(TAG, "성공")
+                        getData = response.body()!!
+                        val list = createDummyData(0, REQUESTPAGESIZE)
+                        if (usage != "reload") {
+                            val totalElements = getData.diary.total // 전체 데이터 수
+                            if (totalElements == 0) {
+                                showFirstView()
+                            }
+                            val currentPage = diaryListPage // 현재 페이지 번호
+                            val isLast =
+                                (currentPage + 1) * REQUESTPAGESIZE >= totalElements // 마지막 페이지 여부를 판단합니다.
+                            if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                                isLastPage = true
+                            }
 
-                    }
-                    if (usage == "loadMore") {
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.loadMore(list)
-                            hideProgress()
+                        }
+                        if (usage == "loadMore") {
+                            ThreadUtil.startUIThread(1000) {
+                                adapter.loadMore(list)
+                                hideProgress()
+                            }
+                        } else {
+                            ThreadUtil.startUIThread(1000) {
+                                adapter.reload(list)
+                                hideProgress()
+                            }
+
                         }
                     } else {
-                        ThreadUtil.startUIThread(1000) {
-                            adapter.reload(list)
-                            hideProgress()
-                        }
-
+                        showFirstView()
+                        Log.d(TAG, "실패1")
                     }
-                } else {
-//                    showFirstView()
-                    Log.d(TAG, "실패1")
-                    Log.d(TAG, "실패1")
                 }
-            }
 
-            override fun onFailure(call: Call<DiaryListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
-            }
-        })
+                override fun onFailure(call: Call<DiaryListResponse>, t: Throwable) {
+                    Log.d(TAG, "실패2")
+                }
+            })
+    }
+
+    private fun showFirstView() {
+        firstView.visibility = View.VISIBLE
+    }
+
+    private fun hideFirstView() {
+        firstView.visibility = View.GONE
     }
 }
