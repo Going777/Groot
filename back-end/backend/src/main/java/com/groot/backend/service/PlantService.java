@@ -25,4 +25,12 @@ public interface PlantService {
     public PlantWithCharacterDTO identifyPlant(MultipartFile multipartFile) throws Exception;
 
     public PlantEnvironmentDTO getAdequateEnv(Long plantId) throws Exception;
+
+    /**
+     * returns Plant information
+     * @param plantId
+     * @return PlantWithCharacterDTO
+     * @throws java.util.NoSuchElementException for plant not found
+     */
+    public PlantWithCharacterDTO getIntroduction(Long plantId) throws Exception;
 }
