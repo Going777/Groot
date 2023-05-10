@@ -12,6 +12,7 @@ import androidx.constraintlayout.utils.widget.ImageFilterButton
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.UserData
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -29,6 +30,12 @@ class Pot1Activity : AppCompatActivity() {
 
         //        imageUri 전달받기
         var imageUri = intent.getStringExtra("imageUri")
+        var imageUrl = intent.getStringExtra("imageUrl")
+
+        Log.d("Pot1Activity","onCreate() uri값 ${imageUri}//")
+        Log.d("Pot1Activity","onCreate() url값 ${imageUrl}//")
+
+
         var plantNameLong = findViewById<TextView>(R.id.plantNameLong)
         var plantNameShort = findViewById<TextView>(R.id.plantNameShort)
         var potName = findViewById<TextView>(R.id.potName)
@@ -98,7 +105,11 @@ class Pot1Activity : AppCompatActivity() {
 
         //        image 띄우기
         var potPhoto = findViewById<ImageView>(R.id.potPhoto)
-        potPhoto.setImageURI(imageUri?.toUri())
+        if(imageUri == null) {
+            GlobalVariables.changeImgView(potPhoto, imageUrl!!, this)
+        } else {
+            potPhoto.setImageURI(imageUri?.toUri())
+        }
 
         val add1Btn = findViewById<ImageFilterButton>(R.id.add1Btn)
         add1Btn.setOnClickListener {
