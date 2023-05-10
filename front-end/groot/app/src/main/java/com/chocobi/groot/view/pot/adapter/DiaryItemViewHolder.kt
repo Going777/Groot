@@ -77,7 +77,7 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 ThreadUtil.startThread {
                     val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
                         .asBitmap()
-                        .load(diaryListResponse.diary.content[0].image)
+                        .load(diaryListResponse.diary.content[0].imgPath)
                         .submit(diaryPhoto.width, diaryPhoto.height)
                     val bitmap = futureTarget.get()
                     ThreadUtil.startUIThread(0) {

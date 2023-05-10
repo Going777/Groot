@@ -62,7 +62,7 @@ class PotDiaryCreateFragment : Fragment() {
     private lateinit var bugChip: Chip
     private lateinit var sunChip: Chip
     private lateinit var pillChip: Chip
-    
+
     private var waterStatus = false
     private var potStatus = false
     private var bugStatus = false
@@ -130,7 +130,10 @@ class PotDiaryCreateFragment : Fragment() {
             attachPhotoSection.setOnClickListener {
                 mActivity.setGalleryStatus("pot_diary_create")
                 mActivity.requirePermissions(
-                    arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
+                    arrayOf(
+                        android.Manifest.permission.READ_MEDIA_IMAGES,
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE
+                    ),
                     PERMISSION_GALLERY
                 )
             }
@@ -146,46 +149,46 @@ class PotDiaryCreateFragment : Fragment() {
     private fun requestDiaryCheck() {
         val retrofit = RetrofitClient.getClient()!!
         val potService = retrofit.create(PotService::class.java)
-        potService.requestDiaryCheckState(potId!!).enqueue(object : retrofit2.Callback<DiaryCheckStatusResponse>{
-            override fun onResponse(
-                call: Call<DiaryCheckStatusResponse>,
-                response: Response<DiaryCheckStatusResponse>
-            ) {
-                if(response.code() == 200) {
-                    val res = response.body()
-                    if (res?.diary != null) {
-                        waterStatus = res?.diary?.water!!
-                        potStatus = res?.diary?.pruning!!
-                        bugStatus = res?.diary?.bug!!
-                        sunStatus = res?.diary?.sun!!
-                        nutrientsStatus = res?.diary?.nutrients!!
+        potService.requestDiaryCheckState(potId!!)
+            .enqueue(object : retrofit2.Callback<DiaryCheckStatusResponse> {
+                override fun onResponse(
+                    call: Call<DiaryCheckStatusResponse>,
+                    response: Response<DiaryCheckStatusResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val res = response.body()
+                        if (res?.diary != null) {
+                            waterStatus = res?.diary?.water!!
+                            potStatus = res?.diary?.pruning!!
+                            bugStatus = res?.diary?.bug!!
+                            sunStatus = res?.diary?.sun!!
+                            nutrientsStatus = res?.diary?.nutrients!!
+                        }
+                        Log.d("PotDiaryCreateFragment", "onResponse() 성공 $res")
+                        alertConstraintChip(waterChip, waterStatus, "물 주기")
+                        alertConstraintChip(potChip, potStatus, "분갈이")
+                        alertConstraintChip(bugChip, bugStatus, "해충 퇴치")
+                        alertConstraintChip(sunChip, sunStatus, "햇빛 쬐기")
+                        alertConstraintChip(pillChip, nutrientsStatus, "영양제 주기")
+                    } else {
+                        Log.d("PotDiaryCreateFragment", "onResponse() 실패1")
                     }
-                    Log.d("PotDiaryCreateFragment", "onResponse() 성공 $res")
-                    alertConstraintChip(waterChip, waterStatus, "물 주기")
-                    alertConstraintChip(potChip, potStatus, "분갈이")
-                    alertConstraintChip(bugChip, bugStatus, "해충 퇴치")
-                    alertConstraintChip(sunChip, sunStatus, "햇빛 쬐기")
-                    alertConstraintChip(pillChip, nutrientsStatus, "영양제 주기")
                 }
-                else {
-                    Log.d("PotDiaryCreateFragment", "onResponse() 실패1")
-                }
-            }
 
-            override fun onFailure(call: Call<DiaryCheckStatusResponse>, t: Throwable) {
+                override fun onFailure(call: Call<DiaryCheckStatusResponse>, t: Throwable) {
                     Log.d("PotDiaryCreateFragment", "onResponse() 실패2")
-            }
+                }
 
-        })
+            })
 
     }
 
     private fun findView(view: View) {
         //        사진 첨부 섹션
-        attachPhotoSection = view.findViewById<LinearLayout>(R.id.attachPhotoSection)
+        attachPhotoSection = view.findViewById(R.id.attachPhotoSection)
 //        첨부된 이미지 섹션
-        attachedPhotoSection = view.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
-        attachedPhoto = view.findViewById<ImageView>(R.id.attachedPhoto)
+        attachedPhotoSection = view.findViewById(R.id.attachedPhotoSection)
+        attachedPhoto = view.findViewById(R.id.attachedPhoto)
 
         diaryContent = view.findViewById(R.id.diaryContent)
 
@@ -200,7 +203,7 @@ class PotDiaryCreateFragment : Fragment() {
     }
 
     private fun filterChipGroup() {
-        if(waterStatus == true) {
+        if (waterStatus == true) {
             Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show()
         }
         waterChip.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -221,12 +224,13 @@ class PotDiaryCreateFragment : Fragment() {
         }
     }
 
-//    비활성화 칩 처리
+    //    비활성화 칩 처리
     private fun alertConstraintChip(targetChip: Chip, targetStatus: Boolean, action: String) {
-        if(targetStatus == true) {
+        if (targetStatus == true) {
             targetChip.setOnClickListener {
                 targetChip.isChecked = false
-                Toast.makeText(requireContext(), "오늘은 이미 ${action}를 완료했어요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "오늘은 이미 ${action}를 완료했어요", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
@@ -268,7 +272,8 @@ class PotDiaryCreateFragment : Fragment() {
                         var body = response.body()
                         Log.d(TAG, "$body")
                         if (body != null) {
-                            Toast.makeText(context, "$potName 다이어리가 작성되었습니다", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "$potName 다이어리가 작성되었습니다", Toast.LENGTH_SHORT)
+                                .show()
 //                            다이어리 페이지로 이동
                             mActivity.changeFragment("pot_diary")
                         }

@@ -152,7 +152,7 @@ class PotDiaryFragment : Fragment() {
             }
             val diaryItem = contents[i]
             // 이미지가 있을 때는 visibility를 visible로 설정하고, 없을 때는 gone으로 설정합니다.
-            val visibility = if (diaryItem.image.isNullOrEmpty()) View.GONE else View.VISIBLE
+            val visibility = if (diaryItem.imgPath.isNullOrEmpty()) View.GONE else View.VISIBLE
 
             val diaryListResponse = DiaryListResponse(
                 diary = Diaries(
@@ -165,7 +165,7 @@ class PotDiaryFragment : Fragment() {
                             nickName = diaryItem.nickName,
                             createTime = diaryItem.createTime,
                             updateTime = diaryItem.updateTime,
-                            image = diaryItem.image,
+                            imgPath = diaryItem.imgPath,
                             content = diaryItem.content,
                             water = diaryItem.water,
                             nutrients = diaryItem.nutrients,
