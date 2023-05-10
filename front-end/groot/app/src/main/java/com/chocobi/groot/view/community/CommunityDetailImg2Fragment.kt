@@ -17,7 +17,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [CommunityDetailImg2Fragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class CommunityDetailImg2Fragment : Fragment() {
+class CommunityDetailImg2Fragment(private val image: String) : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -49,13 +49,6 @@ class CommunityDetailImg2Fragment : Fragment() {
          * @return A new instance of fragment CommunityDetailImg2Fragment.
          */
         // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommunityDetailImg2Fragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+
     }
 }
