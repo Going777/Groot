@@ -4,6 +4,7 @@ import com.groot.backend.dto.request.PlantSearchDTO;
 import com.groot.backend.dto.response.PlantDetailDTO;
 import com.groot.backend.dto.response.PlantIdentificationDTO;
 import com.groot.backend.dto.response.PlantThumbnailDTO;
+import com.groot.backend.dto.response.PlantWithCharacterDTO;
 import com.groot.backend.service.PlantService;
 import com.sun.jdi.request.InvalidRequestStateException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -101,28 +102,32 @@ public class PlantController {
     public ResponseEntity<Map<String, Object>> identifyPlant(@RequestPart("file") MultipartFile multipartFile) {
         logger.info("Identify plant : {}", multipartFile.getOriginalFilename());
         Map<String, Object> result = new HashMap<>();
-        PlantIdentificationDTO plantIdentificationDTO;
+        HttpStatus status;
 
         try{
-            plantIdentificationDTO = plantService.identifyPlant(multipartFile);
+            PlantWithCharacterDTO plantWithCharacterDTO = plantService.identifyPlant(multipartFile);
+
+            if(plantWithCharacterDTO != null) {
+                status = HttpStatus.OK;
+                result.put("msg", "식물 식별에 성공했습니다.");
+                result.put("plant", plantWithCharacterDTO.getPlantIdentificationDTO());
+                result.put("character", plantWithCharacterDTO.getCharacterAssetDTO());
+            }
+            else {
+                status = HttpStatus.NOT_FOUND;
+                result.put("msg", "등록되지 않은 식물입니다.");
+            }
 
         } catch (InvalidContentTypeException e) {
             result.put("msg", "올바르지 않은 파일 형식입니다.");
-            return new ResponseEntity<>(result, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            status = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
         } catch (IOException e) {
             result.put("msg", "Failed to create file");
-            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        if(plantIdentificationDTO == null) {
-            result.put("msg", "등록되지 않은 식물입니다.");
-            return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
-        }
-
-        result.put("msg", "식물 식별에 성공했습니다.");
-        result.put("plant", plantIdentificationDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, status);
     }
 }
