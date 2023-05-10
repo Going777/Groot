@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="3dp"
+    android:gravity="center"
+    android:backgroundTint="@color/main"
+    android:background="@drawable/radius5"
+    android:paddingLeft="6dp"
+    android:paddingRight="3dp"
+    android:layout_marginVertical="3dp"
+    android:layout_gravity="center|left">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:paddingRight="4dp"
+        android:gravity="center"
+        android:text="#"
+        tools:ignore="MissingConstraints" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tagListItem"
+        android:textColor="@color/white"
+        android:paddingRight="3dp"
+        android:gravity="center"
+        android:textSize="16dp"
+        android:text="tag"
+        tools:ignore="MissingConstraints" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

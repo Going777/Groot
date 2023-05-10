@@ -8,6 +8,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context=".view.community.CommunityPostFragment"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginTop="10dp"
     android:orientation="vertical">
 
     <ScrollView
@@ -104,13 +106,6 @@
                 android:hint="0 / 30" />
         </androidx.cardview.widget.CardView>
 
-<!--        <Button-->
-<!--            android:layout_width="65dp"-->
-<!--            android:layout_height="65dp"-->
-<!--            android:layout_weight="0"-->
-<!--            android:layout_marginTop="12dp"-->
-<!--            android:drawableLeft="@drawable/ic_camera"-->
-
 
         <androidx.cardview.widget.CardView
             android:id="@+id/imageInput"
@@ -167,9 +162,6 @@
             android:gravity="top"
             android:background="#E9F3ED"
             android:scrollHorizontally="false"/>
-        <!--        app:layout_constraintEnd_toEndOf="parent"-->
-        <!--        app:layout_constraintStart_toStartOf="parent"-->
-        <!--        app:layout_constraintTop_toTopOf="parent" />-->
         <TextView
             android:id="@+id/contentCnt"
             android:layout_width="wrap_content"
