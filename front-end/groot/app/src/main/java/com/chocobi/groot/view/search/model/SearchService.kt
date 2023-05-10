@@ -51,5 +51,8 @@ interface SearchService {
         @Part filePart: MultipartBody.Part
     ): Call<PlantIdentifyResponse>
 
-
+    @GET("api/recommendations")
+    fun getRecomm(
+        @Query("id") userId: Int
+    ): Call<PlantSearchResponse>
 }
