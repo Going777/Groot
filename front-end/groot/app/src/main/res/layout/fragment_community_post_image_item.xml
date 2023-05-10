@@ -7,12 +7,24 @@
     android:layout_marginHorizontal="10dp"
     android:layout_marginVertical="10dp">
 
-    <ImageView
-        android:id="@+id/galleryView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:adjustViewBounds="true"
-        tools:ignore="MissingConstraints"/>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="15dp"
+        android:layout_margin="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/galleryView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            />
+    </androidx.cardview.widget.CardView>
 
     <ImageView
         android:id="@+id/closeButton"

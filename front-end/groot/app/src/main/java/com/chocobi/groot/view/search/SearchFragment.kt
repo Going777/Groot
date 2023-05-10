@@ -315,7 +315,6 @@ class SearchFragment : Fragment() {
 
                 override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
                         Log.d("SearchFragment","requestSearchPlant() api 실패2 ")
-                    TODO("Not yet implemented")
                 }
             })
     }

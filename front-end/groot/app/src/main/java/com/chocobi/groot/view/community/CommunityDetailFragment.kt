@@ -14,7 +14,6 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -27,28 +26,24 @@ import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.community.adapter.CommentAdapter
-import com.chocobi.groot.view.community.adapter.ShareItemAdapter
-import com.chocobi.groot.view.community.adapter.ShareItemViewHolder
+import com.chocobi.groot.view.community.adapter.ArticleTagAdapter
 import com.chocobi.groot.view.community.model.Article
 import com.chocobi.groot.view.community.model.BookmarkResponse
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
-import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
 
 class CommunityDetailFragment : Fragment() {
     private lateinit var bookmarkButton: ImageButton
     private val TAG = "CommunityDetailFragment"
     private lateinit var postCommentBtn: Button
     private lateinit var postCommentInput: EditText
+    private lateinit var recyclerView: RecyclerView
+    private var tagList: List<String> = emptyList()
+
 
 //    private var commentList = arrayListOf<CommunityCommentResponse>()
 
@@ -97,7 +92,6 @@ class CommunityDetailFragment : Fragment() {
         var detailCreateTime = view.findViewById<TextView>(R.id.detailCreateTime)
         var bookmarkLine = view.findViewById<ImageButton>(R.id.bookmarkLine)
         var detailContent = view.findViewById<TextView>(R.id.detailContent)
-        var detailTag = view.findViewById<TextView>(R.id.detailTag)
         var detailCommentCnt = view.findViewById<TextView>(R.id.detailCommentCnt)
         var bookmarkStatus = false
         var postCommentBtn = view.findViewById<Button>(R.id.postCommentBtn)
@@ -174,7 +168,7 @@ class CommunityDetailFragment : Fragment() {
                         val koreahour = articleDetailData.article.createTime.time.hour + 9
                         detailCreateTime.text = articleDetailData.article.createTime.date.year.toString() + '.'+ articleDetailData.article.createTime.date.month.toString() + '.' + articleDetailData.article.createTime.date.day.toString() + ' ' + koreahour + ':'+ articleDetailData.article.createTime.time.minute.toString()
                         detailContent.text = articleDetailData.article.content
-                        detailTag.text = articleDetailData.article.tags.toString()
+                        tagList = articleDetailData.article.tags
                         sharePosition.text = articleDetailData.article.shareRegion
                         detailCommentCnt.text = "댓글 (" + articleDetailData.article.commentCnt.toString() + ")"
 
@@ -220,8 +214,18 @@ class CommunityDetailFragment : Fragment() {
 
                         Log.d( "CommunityDetailFragment", articleDetailData.toString())
 
+                        // 태그
+                        recyclerView = view.findViewById(R.id.tagList)
+                        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+                        // Adapter 설정
+                        val tagAdapter = ArticleTagAdapter(tagList)
+                        recyclerView.adapter = tagAdapter
+
                     } else {
                         Log.d(TAG, "실패1")
+                        Log.d(TAG, response.toString())
+
                     }
                 }
                 override fun onFailure(call: Call<CommunityArticleDetailResponse>, t: Throwable) {
@@ -317,7 +321,6 @@ class CommunityDetailFragment : Fragment() {
             tab.text = tabList[position]
 
         }.attach()
-
 
 
 
