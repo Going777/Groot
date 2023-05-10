@@ -23,11 +23,19 @@ public class PlantCodeUtil {
     );
 
     /**
-     * light demand
+     * light demand string to number of bits to shift
      */
     public static Map<String, Integer> lightLevel = Map.ofEntries(
             entry("낮음", 0), entry("중간", 1), entry("높음", 2)
     );
+
+    /**
+     * amount of illuminance by light demand code 1~7
+     */
+    public static int[][] lightDemand = new int[][] {
+            {0, 0}, {300, 800}, {800, 1500}, {300, 1500}, {1500, 10000},
+            {300, 10000}, {800, 10000}, {300, 10000}
+    };
 
     public static String[] waterCycleCode = {"", "항상 흙을 축축하게 유지함(물에 잠김)",
             "흙을 촉촉하게 유지함(물에 잠기지 않도록 주의)", "토양 표면이 말랐을때 충분히 관수함",
