@@ -48,7 +48,9 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
     private val TAG = "PotBottomSheet"
 
     private var potId: Int = 0
+    private var plantId: Int = 0
     private var potName: String = ""
+    private var potPlant: String = ""
     private lateinit var mActivity: MainActivity
     private lateinit var dialog: AlertDialog.Builder
     private lateinit var potImgSection: LinearLayout
@@ -62,8 +64,16 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
         potId = id
     }
 
+    fun setPlantId(id: Int) {
+        plantId = id
+    }
+
     fun setPotName(name: String) {
         potName = name
+    }
+
+    fun setPotPlant(name: String) {
+        potPlant = name
     }
 
 
@@ -126,6 +136,8 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
         val potPositionBtn = view.findViewById<ImageButton>(R.id.potPosition)
         potPositionBtn.setOnClickListener {
             var intent = Intent(requireContext(), SensorActivity::class.java)
+            intent.putExtra("plantId", plantId)
+            intent.putExtra("plantName", potPlant)
             startActivity(intent)
         }
 
