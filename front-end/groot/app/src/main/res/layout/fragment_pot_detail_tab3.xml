@@ -5,8 +5,9 @@
     android:layout_height="match_parent"
     tools:context=".view.pot.PotDetailTab3Fragment">
 
-    <!-- TODO: Update blank fragment layout -->
+
     <TextView
+        android:id="@+id/bugTabContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="bug tab" />

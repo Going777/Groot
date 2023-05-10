@@ -116,12 +116,8 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         super.onViewCreated(view, savedInstanceState)
 
 
+
 //        탭 조작
-        val tab1 = PotDetailTab1Fragment()
-        val tab2 = PotDetailTab2Fragment()
-        val tab3 = PotDetailTab3Fragment()
-        val tab4 = PotDetailTab4Fragment()
-        val tab5 = PotDetailTab5Fragment()
 
         var tabBtn1 = view.findViewById<Chip>(R.id.tabBtn1)
         var tabBtn2 = view.findViewById<Chip>(R.id.tabBtn2)
@@ -129,18 +125,61 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         var tabBtn4 = view.findViewById<Chip>(R.id.tabBtn4)
         var tabBtn5 = view.findViewById<Chip>(R.id.tabBtn5)
         tabBtn1.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("waterCycle", plant?.waterCycle)
+                putInt("minHumidity", plant?.minHumidity ?: 0)
+                putInt("maxHumidity", plant?.maxHumidity ?: 0)
+                putInt("year", pot?.waterDate?.date?.year ?:0)
+                putInt("month", pot?.waterDate?.date?.year ?:0)
+                putInt("date", pot?.waterDate?.date?.year ?:0)
+            }
+            val tab1 = PotDetailTab1Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab1).commit()
         }
         tabBtn2.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("grwType", plant?.grwType)
+                putInt("year", pot?.pruningDate?.date?.year ?:0)
+                putInt("month", pot?.pruningDate?.date?.year ?:0)
+                putInt("date", pot?.pruningDate?.date?.year ?:0)
+            }
+            val tab2 = PotDetailTab2Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab2).commit()
         }
         tabBtn3.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("insectInfo", plant?.insectInfo)
+            }
+            val tab3 = PotDetailTab3Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab3).commit()
         }
         tabBtn4.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("place", plant?.place)
+                putString("mgmtTip", plant?.mgmtTip)
+                putInt("minGrwTemp", plant?.minGrwTemp ?:0)
+                putInt("maxGrwTemp", plant?.maxGrwTemp ?:0)
+            }
+            val tab4 = PotDetailTab4Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab4).commit()
         }
         tabBtn5.setOnClickListener {
+            val bundle = Bundle().apply {
+                putInt("year", pot?.nutrientDate?.date?.year ?:0)
+                putInt("month", pot?.nutrientDate?.date?.year ?:0)
+                putInt("date", pot?.nutrientDate?.date?.year ?:0)
+            }
+            val tab5 = PotDetailTab5Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab5).commit()
         }
     }
@@ -202,6 +241,19 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         potNameText.text = pot?.potName
         potPlantText.text = pot?.plantKrName
         GlobalVariables.changeImgView(potPlantImg, pot?.imgPath.toString(), requireContext())
+        val bundle = Bundle().apply {
+            putString("waterCycle", plant?.waterCycle)
+            putInt("minHumidity", plant?.minHumidity ?: 0)
+            putInt("maxHumidity", plant?.maxHumidity ?: 0)
+            putInt("year", pot?.waterDate?.date?.year ?:0)
+            putInt("month", pot?.waterDate?.date?.year ?:0)
+            putInt("date", pot?.waterDate?.date?.year ?:0)
+        }
+        val tab1 = PotDetailTab1Fragment().apply {
+            arguments = bundle
+        }
+        childFragmentManager.beginTransaction().replace(R.id.tab_container, tab1).commit()
+
     }
 
 }
