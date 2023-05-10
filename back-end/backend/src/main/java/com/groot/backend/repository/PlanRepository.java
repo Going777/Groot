@@ -9,4 +9,6 @@ import java.util.List;
 public interface PlanRepository extends JpaRepository<PlanEntity, Long>, PlanRepositoryCustom {
 
     Boolean existsByDateTimeAndCode(LocalDateTime dateTime, Integer code);
+
+    List<PlanEntity> findAllByPotId(Long potId);
 }

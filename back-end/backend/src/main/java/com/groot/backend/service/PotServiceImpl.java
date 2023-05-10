@@ -2,17 +2,9 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
-import com.groot.backend.dto.response.CharacterDTO;
-import com.groot.backend.dto.response.PlantDetailDTO;
-import com.groot.backend.dto.response.PotDetailDTO;
-import com.groot.backend.dto.response.PotListDTO;
-import com.groot.backend.entity.CharacterEntity;
-import com.groot.backend.entity.PlantEntity;
-import com.groot.backend.entity.PotEntity;
-import com.groot.backend.repository.CharacterRepository;
-import com.groot.backend.repository.PlantRepository;
-import com.groot.backend.repository.PotRepository;
-import com.groot.backend.repository.UserRepository;
+import com.groot.backend.dto.response.*;
+import com.groot.backend.entity.*;
+import com.groot.backend.repository.*;
 import com.groot.backend.util.PlantCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +29,7 @@ public class PotServiceImpl implements PotService{
     private final PotRepository potRepository;
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
+    private final PlanRepository planRepository;
     private final CharacterRepository characterRepository;
     private final S3Service s3Service;
     private final Logger logger = LoggerFactory.getLogger(PotServiceImpl.class);
@@ -52,11 +45,12 @@ public class PotServiceImpl implements PotService{
             logger.info("image uploaded : {}", imgPath);
 
             PlantEntity plantEntity = plantRepository.findById(potRegisterDTO.getPlantId()).get();
+            UserEntity userEntity = userRepository.findById(userPK).get();
             logger.info("Plant found : {}", plantEntity.getKrName());
 
             PotEntity potEntity = potRepository.save(
                     PotEntity.builder()
-                            .userEntity(userRepository.findById(userPK).get())
+                            .userEntity(userEntity)
                             .plantEntity(plantEntity)
                             .name(potRegisterDTO.getPotName())
                             .imgPath(imgPath)
@@ -68,6 +62,36 @@ public class PotServiceImpl implements PotService{
                             .build()
             );
             potRepository.save(potEntity);
+
+            List<PlanEntity> plans = new ArrayList<>();
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(0)
+                    .dateTime(LocalDateTime.now().plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000]))
+                    .done(false)
+                    .build()
+            );
+
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(1)
+                    .dateTime(LocalDateTime.now().plusMonths(6))
+                    .done(false)
+                    .build()
+            );
+
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(2)
+                    .dateTime(LocalDateTime.now().plusMonths(12))
+                    .done(false)
+                    .build()
+            );
+
+            planRepository.saveAll(plans);
 
             return potEntity.getId();
         } catch (IOException e) {
@@ -140,7 +164,18 @@ public class PotServiceImpl implements PotService{
                 .img(plantEntity.getImg())
                 .build();
 
-        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).build();
+        List<PlanEntity> planEntities = planRepository.findAllByPotId(potId);
+
+        List<PlanWithDateDTO> plans = new ArrayList<>(planEntities.size());
+
+        planEntities.forEach(planEntity -> {
+            plans.add(PlanWithDateDTO.builder()
+                            .code(planEntity.getCode())
+                            .dateTime(planEntity.getDateTime())
+                            .build());
+        });
+
+        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).plans(plans).build();
     }
 
     @Override
@@ -264,10 +299,11 @@ public class PotServiceImpl implements PotService{
                 .plantKrName(potEntity.getPlantKrName())
                 .dates(calcPeriod(potEntity.getCreatedDate()))
                 .createdTime(potEntity.getCreatedDate())
-                .waterDate(calcNextWaterDate(potEntity.getWaterDate(), potEntity))
-                .nutrientsDate(calcNextDate(potEntity.getNutrientsDate(), 6))
-                .pruningDate(calcNextDate(potEntity.getPruningDate(), 12))
+                .waterDate(potEntity.getWaterDate())
+                .nutrientsDate(potEntity.getNutrientsDate())
+                .pruningDate(potEntity.getPruningDate())
                 .survival(potEntity.getSurvival())
+                .experience(potEntity.getExperience())
                 .level(expToLevel(potEntity.getExperience()))   // level?
                 .characterPNGPath(urls[0])
                 .characterGLBPath(urls[1])
