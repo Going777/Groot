@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
@@ -27,6 +28,7 @@ import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.community.model.PopularTagResponse
+import com.chocobi.groot.view.intro.IntroActivity
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
@@ -464,6 +466,29 @@ class MainActivity : AppCompatActivity() {
             }
             changeFragment(toPage)
         }
+    }
+
+    fun updateBottomMenu(navigation: BottomNavigationView) {
+        val tag1: Fragment? = supportFragmentManager.findFragmentByTag("pot")
+        val tag2: Fragment? = supportFragmentManager.findFragmentByTag("search")
+        val tag3: Fragment? = supportFragmentManager.findFragmentByTag("community")
+        val tag4: Fragment? = supportFragmentManager.findFragmentByTag("user")
+        Log.d(TAG, "${tag1} ${tag2} ${tag3} ${tag4}")
+
+        if(tag1 != null && tag1.isVisible()) navigation.getMenu().findItem(R.id.potFragment).setChecked(true)
+        else if(tag2 != null && tag2.isVisible()) navigation.getMenu().findItem(R.id.searchFragment).setChecked(true)
+        else if(tag3 != null && tag3.isVisible()) navigation.getMenu().findItem(R.id.communityFragment).setChecked(true)
+        else if(tag4 != null && tag4.isVisible()) navigation.getMenu().findItem(R.id.userFragment).setChecked(true)
+        else {
+            var intent = Intent(this, IntroActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val bnv = findViewById<View>(R.id.bottom_navigation) as BottomNavigationView
+        updateBottomMenu(bnv)
     }
 
     private fun getPopularTag() {
