@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.search
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -27,6 +29,7 @@ import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.search.adapter.DictRVAdapter
 import com.chocobi.groot.view.search.model.PlantMetaData
 import com.chocobi.groot.view.search.model.PlantSearchResponse
@@ -187,6 +190,40 @@ class SearchFragment : Fragment() {
             plantName = autoCompleteTextView.text.toString()
             search(plantName)
         }
+
+        addPot(mActivity)
+
+//        firstView.setOnClickListener {
+//            var dialog = AlertDialog.Builder(requireContext())
+//            dialog.setTitle("새 화분 등록하기")
+//            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+//
+//            dialog.setItems(dialogArray) { _, which ->
+//                when (which) {
+//                    0 -> {
+//                        mActivity.setCameraStatus("addPot")
+//                        mActivity.requirePermissions(
+//                            arrayOf(android.Manifest.permission.CAMERA),
+//                            PERMISSION_CAMERA
+//                        )
+//                    }
+//
+//                    1 -> {
+//                        val plantBottomSheet = PlantBottomSheet(requireContext())
+//                        plantBottomSheet.show(
+//                            mActivity.supportFragmentManager,
+//                            plantBottomSheet.tag
+//                        )
+//                    }
+//                }
+//            }
+//            dialog.setNegativeButton(
+//                "취소",
+//                DialogInterface.OnClickListener { dialog, which ->
+//                    dialog.dismiss()
+//                })
+//            dialog.show()
+//        }
 
         return rootView
     }
@@ -404,6 +441,40 @@ class SearchFragment : Fragment() {
             recmmView.visibility = View.VISIBLE
             firstView.visibility = View.GONE
             blankView.visibility = View.GONE
+        }
+    }
+
+    private fun addPot(activity: MainActivity) {
+        firstView.setOnClickListener {
+            var dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("새 화분 등록하기")
+            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+
+            dialog.setItems(dialogArray) { _, which ->
+                when (which) {
+                    0 -> {
+                        activity.setCameraStatus("addPot")
+                        activity.requirePermissions(
+                            arrayOf(android.Manifest.permission.CAMERA),
+                            PERMISSION_CAMERA
+                        )
+                    }
+
+                    1 -> {
+                        val plantBottomSheet = PlantBottomSheet(requireContext())
+                        plantBottomSheet.show(
+                            activity.supportFragmentManager,
+                            plantBottomSheet.tag
+                        )
+                    }
+                }
+            }
+            dialog.setNegativeButton(
+                "취소",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            dialog.show()
         }
     }
 }
