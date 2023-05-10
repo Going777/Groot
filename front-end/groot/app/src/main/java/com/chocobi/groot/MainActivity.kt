@@ -81,20 +81,14 @@ class MainActivity : AppCompatActivity() {
 
     //        fragment 조작
     fun changeFragment(index: String) {
+        var fragment: Fragment? = null
         when (index) {
             "pot" -> {
                 bnv_main.run { selectedItemId = R.id.potFragment }
             }
 
             "pot_diary" -> {
-                val potDiaryFragment = PotDiaryFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, potDiaryFragment, index)
-                    .addToBackStack(index)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commitAllowingStateLoss()
-//                    .commit()
+                fragment = PotDiaryFragment()
             }
 
             "pot_diary_create" -> {
@@ -103,14 +97,9 @@ class MainActivity : AppCompatActivity() {
                 bundle.putString("potName", potName)
                 bundle.putString("potPlant", potPlant)
                 bundle.putString("potCharImg", potCharImg)
-                val potDiaryCreateFragment = PotDiaryCreateFragment()
-                potDiaryCreateFragment.arguments = bundle
 
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, potDiaryCreateFragment, index)
-                    .addToBackStack(index).commitAllowingStateLoss()
-//                    .commit()
+                fragment = PotDiaryCreateFragment()
+                fragment.arguments = bundle
             }
 
             "pot_detail" -> {
@@ -118,61 +107,38 @@ class MainActivity : AppCompatActivity() {
                 bundle.putInt("potId", potId)
                 bundle.putString("potName", potName)
                 bundle.putString("potPlant", potPlant)
-                val potDetailFragment = PotDetailFragment()
-                potDetailFragment.arguments = bundle
 
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, potDetailFragment, index)
-                    .addToBackStack(index).commitAllowingStateLoss()
-//                    .commit()
+                fragment = PotDetailFragment()
+                fragment.arguments = bundle
             }
 
             "search" -> {
-                val searchFragment = SearchFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, searchFragment, index)
-                    .addToBackStack(index).commitAllowingStateLoss()
-//                    .commit()
+                fragment = SearchFragment()
             }
 
             "search_detail" -> {
-                Log.d(TAG, "search detail 호출")
-                val searchDetailFragment = SearchDetailFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, searchDetailFragment, index)
-                    .addToBackStack(index).commitAllowingStateLoss()
-//                    .commit()
+                fragment = SearchDetailFragment()
             }
 
             "community_share" -> {
-                val communityShareFragment = CommunityShareFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, communityShareFragment, index)
-                    .addToBackStack(index).commitAllowingStateLoss()
-//                    .commit()
+                fragment = CommunityShareFragment()
             }
 
             "community_post" -> {
-                val communityPostFragment = CommunityPostFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, communityPostFragment, index)
-                    .addToBackStack(index).commitAllowingStateLoss()
-//                    .commit()
+                fragment = CommunityPostFragment()
             }
 
             "setting" -> {
-                val settingFragment = SettingFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, settingFragment, index)
-                    .addToBackStack(index).commitAllowingStateLoss()
-//                    .commit()
+                fragment = SettingFragment()
             }
+        }
+        if (fragment != null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fl_container, fragment, index)
+                .addToBackStack(index)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commitAllowingStateLoss()
         }
     }
 
@@ -399,7 +365,9 @@ class MainActivity : AppCompatActivity() {
                         val homeFragment = PotFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, homeFragment, "pot")
-                            .addToBackStack("pot").commitAllowingStateLoss()
+                            .addToBackStack("pot")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commitAllowingStateLoss()
 //                            .commit()
 //                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
@@ -413,7 +381,9 @@ class MainActivity : AppCompatActivity() {
                         val boardFragment = SearchFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment, "search")
-                            .addToBackStack("search").commitAllowingStateLoss()
+                            .addToBackStack("search")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commitAllowingStateLoss()
 //                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 40
@@ -425,7 +395,9 @@ class MainActivity : AppCompatActivity() {
                         val boardFragment = CommunityFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment, "community")
-                            .addToBackStack("community").commitAllowingStateLoss()
+                            .addToBackStack("community")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commitAllowingStateLoss()
 //                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 40
@@ -437,7 +409,9 @@ class MainActivity : AppCompatActivity() {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
                             .replace(R.id.fl_container, boardFragment, "user")
-                            .addToBackStack("user").commitAllowingStateLoss()
+                            .addToBackStack("user")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commitAllowingStateLoss()
 //                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 20
@@ -475,10 +449,14 @@ class MainActivity : AppCompatActivity() {
         val tag4: Fragment? = supportFragmentManager.findFragmentByTag("user")
         Log.d(TAG, "${tag1} ${tag2} ${tag3} ${tag4}")
 
-        if(tag1 != null && tag1.isVisible()) navigation.getMenu().findItem(R.id.potFragment).setChecked(true)
-        else if(tag2 != null && tag2.isVisible()) navigation.getMenu().findItem(R.id.searchFragment).setChecked(true)
-        else if(tag3 != null && tag3.isVisible()) navigation.getMenu().findItem(R.id.communityFragment).setChecked(true)
-        else if(tag4 != null && tag4.isVisible()) navigation.getMenu().findItem(R.id.userFragment).setChecked(true)
+        if (tag1 != null && tag1.isVisible()) navigation.getMenu().findItem(R.id.potFragment)
+            .setChecked(true)
+        else if (tag2 != null && tag2.isVisible()) navigation.getMenu()
+            .findItem(R.id.searchFragment).setChecked(true)
+        else if (tag3 != null && tag3.isVisible()) navigation.getMenu()
+            .findItem(R.id.communityFragment).setChecked(true)
+        else if (tag4 != null && tag4.isVisible()) navigation.getMenu().findItem(R.id.userFragment)
+            .setChecked(true)
         else {
             var intent = Intent(this, IntroActivity::class.java)
             startActivity(intent)
