@@ -11,5 +11,5 @@ public interface CommentService {
     CommentEntity insertComment(CommentDTO commentDTO, Long userPK);
     CommentEntity updateComment(CommentDTO commentDTO);
     boolean deleteComment(Long commentId);
-    Page<CommentResponseDTO> readComment(Long articleId, Integer page, Integer size);
+    List<CommentResponseDTO> readComment(Long articleId);
 }

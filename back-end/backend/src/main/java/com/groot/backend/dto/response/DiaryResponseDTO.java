@@ -63,6 +63,7 @@ public class DiaryResponseDTO {
                         .nutrients(a.getNutrients())
                         .water(a.getWater())
                         .bug(a.getBug())
+                        .pruning(a.getPruning())
                         .sun(a.getSun())
                         .createTime(a.getCreatedDate())
                         .updateTime(a.getLastModifiedDate())
