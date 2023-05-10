@@ -1,10 +1,7 @@
 package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.PlantSearchDTO;
-import com.groot.backend.dto.response.PlantDetailDTO;
-import com.groot.backend.dto.response.PlantIdentificationDTO;
-import com.groot.backend.dto.response.PlantThumbnailDTO;
-import com.groot.backend.dto.response.PlantWithCharacterDTO;
+import com.groot.backend.dto.response.*;
 import com.groot.backend.service.PlantService;
 import com.sun.jdi.request.InvalidRequestStateException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -124,6 +121,29 @@ public class PlantController {
         } catch (IOException e) {
             result.put("msg", "Failed to create file");
             status = HttpStatus.INTERNAL_SERVER_ERROR;
+        } catch (Exception e) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @GetMapping("/{plantId}/env")
+    @Operation(summary = "Adequate environment for plant", description = "returns min, max illuminance(lux)")
+    public ResponseEntity<Map<String, Object>> getAdequateEnv(@PathVariable Long plantId) {
+        logger.info("Get adequate illuminance");
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            PlantEnvironmentDTO plantEnvironmentDTO = plantService.getAdequateEnv(plantId);
+
+            result.put("env", plantEnvironmentDTO);
+            result.put("msg", "식물 환경 조회에 성공했습니다.");
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            result.put("msg", "식물 찾기에 실패했습니다.");
+            status = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }

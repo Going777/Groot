@@ -153,6 +153,25 @@ public class PlantServiceImpl implements PlantService{
         }
     }
 
+    @Override
+    public PlantEnvironmentDTO getAdequateEnv(Long plantId) throws Exception {
+        logger.info("Find plant : {}", plantId);
+
+        try {
+            PlantEntity plantEntity = plantRepository.findById(plantId).get();
+            int lightDemand = plantEntity.getLightDemand();
+
+            return PlantEnvironmentDTO.builder()
+                    .minLux(PlantCodeUtil.lightDemand[lightDemand][0])
+                    .maxLux(PlantCodeUtil.lightDemand[lightDemand][1])
+                    .build();
+
+        } catch (NoSuchElementException e) {
+            logger.info("Failed to find plant : {}", plantId);
+            throw e;
+        }
+    }
+
     /**
      * Convert multipart File to file
      * @param multipartFile
