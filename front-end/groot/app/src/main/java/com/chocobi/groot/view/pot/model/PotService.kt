@@ -24,6 +24,10 @@ interface PotService {
     fun getPotList(
     ): Call<PotListResponse>
 
+    @GET("/api/pots/archive")
+    fun getPotArchive(
+    ): Call<PotListResponse>
+
     @GET("/api/diaries/weekly")
     fun getDateDiary(
         @Query("date") date: String
