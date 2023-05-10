@@ -63,8 +63,8 @@ public class ArticleServiceImpl implements ArticleService{
         Set<ZSetOperations.TypedTuple<String>> typedTuples;
         String key = "ranking";
 
-        if(ZSetOperations.size(key) >= 10){
-            typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
+        if(ZSetOperations.size(key) >= 5){
+            typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 4);  //score순으로 5개 보여줌
         }else {
             typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));
         }
@@ -84,8 +84,8 @@ public class ArticleServiceImpl implements ArticleService{
             }
             ZSetOperations = redisTemplate.opsForZSet();
 
-            if(ZSetOperations.size(key) >= 10){
-                typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
+            if(ZSetOperations.size(key) >= 5){
+                typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 4);  //score순으로 5개 보여줌
             }else {
                 typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));
             }
@@ -101,7 +101,7 @@ public class ArticleServiceImpl implements ArticleService{
 
                 List<TagRankDTO> rankDTOS = new ArrayList<>();
                 if(list.size() != 0){
-                    List<TagCountEntity> sublist = (list.size() >= 10) ?  list.subList(0,9) : list;
+                    List<TagCountEntity> sublist = (list.size() >= 5) ?  list.subList(0,4) : list;
 
                     for(TagCountEntity tagCountEntity : sublist){
                         TagRankDTO dto = TagRankDTO.builder()
@@ -127,7 +127,7 @@ public class ArticleServiceImpl implements ArticleService{
         // redis 내용 mysql에 저장
         String key = "ranking";
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
-        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));  //score순으로 10개 보여줌
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));  //score순으로 정렬해서 보여줌
 
         for(ZSetOperations.TypedTuple typedTuple : typedTuples) {
             TagCountEntity tagCountEntity = TagCountEntity.builder()
