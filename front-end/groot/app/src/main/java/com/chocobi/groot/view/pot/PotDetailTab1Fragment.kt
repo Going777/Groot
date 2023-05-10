@@ -5,28 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.chocobi.groot.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PotDetailTab1Fragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PotDetailTab1Fragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var waterCycle: String? = null
+    private var minHumidity: Int = 0
+    private var maxHumidity: Int = 0
+    private var lastDate: String? = null
+    private var comingDate: String? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
 
@@ -34,8 +28,29 @@ class PotDetailTab1Fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val view = inflater.inflate(R.layout.fragment_pot_detail_tab1, container, false)
+        arguments?.let {
+            waterCycle = it.getString("waterCycle")
+            minHumidity = it.getInt("minHumidity")
+            maxHumidity = it.getInt("maxHumidity")
+            lastDate = it.getString("lastDate")
+            comingDate = it.getString("comingDate")
+        }
+        val waterTabContent = view.findViewById<TextView>(R.id.waterTabContent)
+        val waterLastDate = view.findViewById<TextView>(R.id.waterLastDate)
+        val waterLastDateInfo = view.findViewById<TextView>(R.id.waterLastDateInfo)
+        val waterComingDate = view.findViewById<TextView>(R.id.waterComingDate)
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pot_detail_tab1, container, false)
+        val waterDesc =
+            "습도 ${minHumidity}~${maxHumidity}% 환경에서 잘 자라요.\n${waterCycle?.replace("함", "해 주세요.")}"!!
+        waterTabContent.text = waterDesc
+        if (lastDate == null) {
+            waterLastDateInfo.text = "아직 물을 주지 않았어요."
+        } else {
+            waterLastDate.text = lastDate
+        }
+        waterComingDate.text = comingDate
+        return view
     }
 
 }

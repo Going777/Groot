@@ -5,28 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.chocobi.groot.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [PotDetailTab2Fragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PotDetailTab2Fragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var grwType: String? = null
+    private var lastDate: String? = null
+    private var comingDate: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
 
@@ -34,8 +25,27 @@ class PotDetailTab2Fragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val view = inflater.inflate(R.layout.fragment_pot_detail_tab2, container, false)
+        arguments?.let {
+            grwType = it.getString("grwType")
+            lastDate = it.getString("lastDate")
+            comingDate = it.getString("comingDate")
+        }
+        val pruningTabContent = view.findViewById<TextView>(R.id.pruningTabContent)
+        val pruningLastDate = view.findViewById<TextView>(R.id.pruningLastDate)
+        val pruningLastDateInfo = view.findViewById<TextView>(R.id.pruningLastDateInfo)
+        val pruningComingDate = view.findViewById<TextView>(R.id.pruningComingDate)
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pot_detail_tab2, container, false)
+        val typeDesc = "${grwType?.replace(",", ", ")!!} 형태로 자라는 식물이에요."
+        pruningTabContent.text = typeDesc
+        if (lastDate == null) {
+            pruningLastDateInfo.text = "아직 분갈이를 하지 않았어요."
+        } else {
+            pruningLastDate.text = lastDate
+        }
+        pruningComingDate.text = comingDate
+        return view
     }
 
 

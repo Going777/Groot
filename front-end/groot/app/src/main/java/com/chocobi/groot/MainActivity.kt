@@ -493,32 +493,7 @@ class MainActivity : AppCompatActivity() {
         val bnv = findViewById<View>(R.id.bottom_navigation) as BottomNavigationView
         updateBottomMenu(bnv)
     }
-    private fun requestSubscribe() {
-        Log.d("LoginActivity","requestSubscribe() 요청을 보냅니다")
-        val retrofit = RetrofitClient.getClient()!!
-        val loginService = retrofit.create(LoginService::class.java)
-        loginService.requestSubscribe().enqueue(object : Callback<SubscribeResponse> {
-            override fun onResponse(
-                call: Call<SubscribeResponse>,
-                response: Response<SubscribeResponse>
-            ) {
-                Log.d("LoginActivity", "onResponse() $response")
-                Log.d("LoginActivity","requestSubscribe() $response")
-                if (response.code() == 200) {
 
-                    Log.d("LoginActivity", "onResponse() 구독 요청 성공 $response")
-                } else {
-
-                    Log.d("LoginActivity", "onResponse() 구독 요청 실패1 $response")
-                }
-            }
-
-            override fun onFailure(call: Call<SubscribeResponse>, t: Throwable) {
-                Log.d("LoginActivity", "onResponse() 구독 요청 실패2")
-            }
-
-        })
-    }
 
     private fun getPlantNameList() {
         val retrofit = Retrofit.Builder()
