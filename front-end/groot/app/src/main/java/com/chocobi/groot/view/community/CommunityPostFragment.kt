@@ -269,16 +269,16 @@ class CommunityPostFragment : Fragment() {
         } else {
             requestPermissions(
 //                권한 설정 수정
-                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES),
 //                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                 PERMISSION_GALLERY
             )
-            requestPermissions(
-//                권한 설정 수정
-//                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
-                PERMISSION_GALLERY
-            )
+//            requestPermissions(
+////                권한 설정 수정
+////                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
+//                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
+//                PERMISSION_GALLERY
+//            )
         }
     }
 
