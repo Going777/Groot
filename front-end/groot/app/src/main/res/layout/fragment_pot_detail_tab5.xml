@@ -35,7 +35,7 @@
         android:id="@+id/nutrientTabContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="nutrient tab" />
+        android:text="" />
 
     <LinearLayout
         android:id="@+id/nutrientLastDateSection"
@@ -50,11 +50,12 @@
             android:id="@+id/nutrientLastDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2023년 4월 17일"
+            android:text=""
             android:textColor="@color/pill"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/nutrientLastDateInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="에 마지막으로 영양제를 줬어요." />

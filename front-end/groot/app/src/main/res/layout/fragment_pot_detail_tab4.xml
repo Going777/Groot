@@ -33,8 +33,15 @@
         android:layout_marginLeft="25dp"
         android:layout_marginTop="5dp"
         android:id="@+id/sunTabContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="sun tab" />
+    <TextView
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="5dp"
+        android:id="@+id/sunTabContent2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="sun tab" />
 
 </LinearLayout>

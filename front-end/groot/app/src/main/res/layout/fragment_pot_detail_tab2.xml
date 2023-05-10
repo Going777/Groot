@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="가지치기 Tip"
+            android:text="분갈이 Tip"
             android:textColor="@color/pot"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -49,14 +49,15 @@
             android:id="@+id/pruningLastDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2023년 4월 17일"
+            android:text=""
             android:textColor="@color/pot"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/pruningLastDateInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="에 마지막으로 가지치기를 했어요." />
+            android:text="에 마지막으로 분갈이를 했어요." />
     </LinearLayout>
 
     <LinearLayout
@@ -71,7 +72,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="다음으로 가지치는 날은 " />
+            android:text="다음으로 분갈이 하는 날은 " />
 
         <TextView
             android:id="@+id/pruningComingDate"

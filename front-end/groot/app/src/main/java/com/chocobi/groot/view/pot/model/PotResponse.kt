@@ -6,7 +6,13 @@ import com.chocobi.groot.view.community.model.Pageable
 data class PotResponse(
     val msg: String,
     val pot: Pot,
-    val plant: Plant
+    val plant: Plant,
+    val plan: List<Plan>
+)
+
+data class Plan(
+    val code: Int,
+    val dateTime: DateTime,
 )
 
 data class PotImgResponse(

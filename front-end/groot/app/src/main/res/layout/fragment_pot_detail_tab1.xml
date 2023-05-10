@@ -49,11 +49,12 @@
             android:id="@+id/waterLastDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="2023년 4월 17일"
+            android:text=""
             android:textColor="@color/water"
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/waterLastDateInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="에 마지막으로 물을 줬어요." />
