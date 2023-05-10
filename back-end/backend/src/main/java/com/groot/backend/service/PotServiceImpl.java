@@ -85,15 +85,6 @@ public class PotServiceImpl implements PotService{
                     .build()
             );
 
-            plans.add(PlanEntity.builder()
-                    .potEntity(potEntity)
-                    .userEntity(userEntity)
-                    .code(2)
-                    .dateTime(LocalDateTime.now().plusYears(1L))
-                    .done(false)
-                    .build()
-            );
-
             planRepository.saveAll(plans);
 
             return potEntity.getId();
