@@ -56,7 +56,6 @@ class SearchFragment : Fragment() {
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 //    private lateinit var recmAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 
-
     private lateinit var firstView: ConstraintLayout
     private lateinit var blankView: ConstraintLayout
     private lateinit var autoCompleteTextView: AutoCompleteTextView
@@ -64,7 +63,7 @@ class SearchFragment : Fragment() {
     private lateinit var luxChipGroup: ChipGroup
     private lateinit var growthChipGroup: ChipGroup
     private lateinit var rv: RecyclerView
-    private lateinit var recmCardView: MaterialCardView
+    private lateinit var recmmView: MaterialCardView
     private lateinit var recmRv: RecyclerView
     private lateinit var difficultyEasy: Chip
     private lateinit var difficultyMedium: Chip
@@ -99,7 +98,6 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 맨 처음 시작했을 때 추천 받아오기 뜨기
-//        requestRecommendations()
     }
 
     override fun onCreateView(
@@ -113,6 +111,7 @@ class SearchFragment : Fragment() {
         val mActivity = activity as MainActivity
 
         findView(rootView)
+        requestRecommendations()
         filterChipGroup()
 
 
@@ -199,7 +198,7 @@ class SearchFragment : Fragment() {
         luxChipGroup = view.findViewById(R.id.luxChipGroup)
         growthChipGroup = view.findViewById(R.id.growthChipGroup)
         rv = view.findViewById(R.id.dictRecyclerView)
-        recmCardView = view.findViewById(R.id.recmCardView)
+        recmmView = view.findViewById(R.id.recmmView)
         recmRv = view.findViewById(R.id.recmRecyclerView)
 
         difficultyEasy = view.findViewById(R.id.difficultyEasy)
@@ -332,17 +331,20 @@ class SearchFragment : Fragment() {
                         Log.d("SearchFragment", "requestSearchPlant() api 성공 $searchBody")
                         if (searchBody != null) {
                             plants = searchBody.plants
-                            if (plants == null) {
-                                rv.visibility = View.GONE
-                                blankView.visibility = View.VISIBLE
-                            } else {
-                                rvAdapter.setData(plants!!)
-                            }
+                            Log.d("SearchFragment", "onResponse() 요청된 것 보기 $plants")
+                            recmmView.visibility = View.GONE
+                            firstView.visibility = View.GONE
+                            blankView.visibility = View.GONE
+                            rv.visibility = View.VISIBLE
+                            rvAdapter.setData(plants!!)
                         }
-
-                    } else
-                        Log.d("SearchFragment", "requestSearchPlant() api 실패1 ")
-
+                    } else {
+                        Log.d("SearchFragment", "onResponse() 아무것도 값이 없어요")
+                        rv.visibility = View.GONE
+                        recmmView.visibility = View.GONE
+                        firstView.visibility = View.GONE
+                        blankView.visibility = View.VISIBLE
+                    }
                 }
 
                 override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
@@ -353,39 +355,55 @@ class SearchFragment : Fragment() {
 
     private fun search(targetText: String?) {
         if (targetText == "") {
-            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
+            Log.d("SearchFragment","search() 여기 들어오나?")
+            requestRecommendations()
+//            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
         }
-        requestSearchPlant()
+        else {
+            requestSearchPlant()
+        }
     }
 
     private fun requestRecommendations() {
-        val retrofit = RetrofitClient.basicClient()!!
-        val searchService = retrofit.create(SearchService::class.java)
-        searchService.getRecomm(UserData.getUserPK())
-            .enqueue(object : Callback<PlantSearchResponse> {
-                override fun onResponse(
-                    call: Call<PlantSearchResponse>,
-                    response: Response<PlantSearchResponse>
-                ) {
-                    if (response.code() == 200) {
-                        val searchBody = response.body()
-                        Log.d("SearchFragment", "requestRecommendations() api 성공 $searchBody")
-                        if (searchBody != null) {
-                            plants = searchBody.plants
-                            if (plants == null) {
-                                rv.visibility = View.GONE
-                                firstView.visibility = View.VISIBLE
-                            } else {
-                                rvAdapter.setData(plants!!)
-                            }
-                        }
-                    } else
-                        Log.d("SearchFragment", "requestRecommendations() api 실패1 ")
-                }
-
-                override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
-                }
-            })
-
+//        val retrofit = RetrofitClient.basicClient()!!
+//        val searchService = retrofit.create(SearchService::class.java)
+//        searchService.getRecomm(UserData.getUserPK())
+//            .enqueue(object : Callback<PlantSearchResponse> {
+//                override fun onResponse(
+//                    call: Call<PlantSearchResponse>,
+//                    response: Response<PlantSearchResponse>
+//                ) {
+//                    if (response.code() == 200) {
+//                        val searchBody = response.body()
+//                        Log.d("SearchFragment", "requestRecommendations() api 성공 $searchBody")
+//                        if (searchBody != null) {
+//                            plants = searchBody.plants
+//                            if (plants == null) {
+//                                rv.visibility = View.GONE
+//                                firstView.visibility = View.VISIBLE
+//                            } else {
+//                                rvAdapter.setData(plants!!)
+//                            }
+//                        }
+//                    } else
+//                        Log.d("SearchFragment", "requestRecommendations() api 실패1 ")
+//                }
+//
+//                override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
+//                }
+//            })
+        plants = null
+        if (plants == null) {
+            rv.visibility = View.GONE
+            recmmView.visibility = View.GONE
+            firstView.visibility = View.VISIBLE
+            blankView.visibility = View.VISIBLE
+        }
+        else {
+            rv.visibility = View.GONE
+            recmmView.visibility = View.VISIBLE
+            firstView.visibility = View.GONE
+            blankView.visibility = View.GONE
+        }
     }
 }

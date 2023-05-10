@@ -136,9 +136,6 @@ class SearchDetailFragment : Fragment() {
     private fun identifyPlant() {
         val retrofit = RetrofitClient.basicClient()!!
         val searchService = retrofit.create(SearchService::class.java)
-
-
-
     }
 
     private fun getDetail(plantId: Int) {
