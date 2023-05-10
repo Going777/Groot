@@ -13,9 +13,9 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_margin="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:src="@drawable/ic_info_fill"
             android:tint="@color/water" />
 
@@ -23,17 +23,65 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="물주기 Tip"
-            android:textSize="20dp"
             android:textColor="@color/water"
+            android:textSize="20dp"
             android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
+        android:id="@+id/waterTabContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
         android:layout_marginTop="5dp"
-        android:id="@+id/waterTabContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:text="water tab" />
+
+    <LinearLayout
+        android:id="@+id/waterLastDateSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/waterLastDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2023년 4월 17일"
+            android:textColor="@color/water"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="에 마지막으로 물을 줬어요." />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/waterComingDateSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="다음으로 물을 주는 날은 " />
+        <TextView
+            android:id="@+id/waterComingDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2023년 4월 17일"
+            android:textColor="@color/water"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이에요." />
+    </LinearLayout>
 
 </LinearLayout>

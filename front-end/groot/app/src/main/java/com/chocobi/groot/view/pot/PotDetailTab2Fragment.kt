@@ -30,7 +30,7 @@ class PotDetailTab2Fragment : Fragment() {
         }
         val pruningTabContent = view.findViewById<TextView>(R.id.pruningTabContent)
         // Inflate the layout for this fragment
-        val typeDesc = "${grwType?.replace(",",", ")!!} 형태로 자라는 식물이에요"
+        val typeDesc = "${grwType?.replace(",",", ")!!} 형태로 자라는 식물이에요."
         pruningTabContent.text = typeDesc
         return view
     }

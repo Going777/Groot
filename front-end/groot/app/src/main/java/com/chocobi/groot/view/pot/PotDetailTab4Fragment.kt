@@ -43,7 +43,7 @@ class PotDetailTab4Fragment : Fragment() {
         val sunTabContent = view.findViewById<TextView>(R.id.sunTabContent)
         // Inflate the layout for this fragment
         val placeDesc = place?.replace(",","\n")!!
-        val tempDesc = "${minGrwTemp}~${maxGrwTemp}°C 환경에서 잘 자라요"
+        val tempDesc = "${minGrwTemp}~${maxGrwTemp}°C 환경에서 잘 자라요."
         sunTabContent.text = placeDesc+"\n"+tempDesc
         return view
     }

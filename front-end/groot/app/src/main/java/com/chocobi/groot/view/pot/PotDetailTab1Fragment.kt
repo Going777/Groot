@@ -34,7 +34,7 @@ class PotDetailTab1Fragment : Fragment() {
         }
         val waterTabContent = view.findViewById<TextView>(R.id.waterTabContent)
         // Inflate the layout for this fragment
-        val waterDesc = "${minHumidity}~${maxHumidity}% 환경에서 잘 자라요\n${waterCycle?.replace("함","해 주세요")}"!!
+        val waterDesc = "습도 ${minHumidity}~${maxHumidity}% 환경에서 잘 자라요.\n${waterCycle?.replace("함","해 주세요.")}"!!
 
         waterTabContent.text = waterDesc
         return view

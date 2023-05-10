@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.pot.PotDetailTab2Fragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".view.pot.PotDetailTab2Fragment">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -13,9 +13,9 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_margin="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:src="@drawable/ic_info_fill"
             android:tint="@color/pot" />
 
@@ -23,17 +23,68 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="가지치기 Tip"
-            android:textSize="20dp"
             android:textColor="@color/pot"
+            android:textSize="20dp"
             android:textStyle="bold" />
     </LinearLayout>
 
     <TextView
+        android:id="@+id/pruningTabContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="25dp"
         android:layout_marginTop="5dp"
-        android:id="@+id/pruningTabContent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:text="pruning tab" />
+
+    <LinearLayout
+        android:id="@+id/pruningLastDateSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/pruningLastDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2023년 4월 17일"
+            android:textColor="@color/pot"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="에 마지막으로 가지치기를 했어요." />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pruningComingDateSection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="다음으로 가지치는 날은 " />
+
+        <TextView
+            android:id="@+id/pruningComingDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2023년 4월 17일"
+            android:textColor="@color/pot"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="이에요." />
+    </LinearLayout>
 
 </LinearLayout>
