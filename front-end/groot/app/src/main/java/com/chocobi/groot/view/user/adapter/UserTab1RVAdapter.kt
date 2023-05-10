@@ -63,7 +63,8 @@ class UserTab1RVAdapter(val items: List<Pot>) :
             potDate.text = make00Date(item.createdTime.date)
             potDateChip.text = "D+" + item.dates.toString()
             if (item.survival == false) {
-                cardView.setBackgroundColor(Color.parseColor("#ECECEC"))
+                cardView.setCardBackgroundColor(Color.parseColor("#ECECEC"))
+                potDateChip.setChipBackgroundColorResource(R.color.dark_grey)
             }
             potImg.post {
                 view.get()?.let {

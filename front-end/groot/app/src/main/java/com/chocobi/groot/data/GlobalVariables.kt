@@ -130,6 +130,8 @@ class GlobalVariables : Application() {
 
                     override fun onFailure(call: Call<RefreshResponse>, t: Throwable) {
                         Log.d(TAG, "refresh 실패")
+                        prefs.setString("access_token", "")
+                        prefs.setString("refresh_token", "")
                     }
                 })
 
