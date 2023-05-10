@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.sensor.model.SensorResponse
 import com.chocobi.groot.view.sensor.model.SensorService
@@ -24,7 +25,12 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
     private var sensorManager: SensorManager? = null
     private var lightSensor: Sensor? = null
     private lateinit var lightValueText: TextView
+    private lateinit var envStatus: TextView
+    private lateinit var envStatusInfo: TextView
     private var plantId: Int = 0
+    private var plantName: String = ""
+    private var maxLux : Int = 0
+    private var minLux : Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +38,12 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         setContentView(R.layout.activity_sensor)
 
         plantId = intent.getIntExtra("plantId", 0)
+        val plantName = intent.getStringExtra("plantName")
+        val plantNameText = findViewById<TextView>(R.id.plantName)
+        plantNameText.text = plantName
         lightValueText = findViewById(R.id.lightValueText)
+        envStatus = findViewById(R.id.envStatus)
+        envStatusInfo = findViewById(R.id.envStatusInfo)
 
         // 센서 매니저 인스턴스 생성
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -64,8 +75,26 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         when (event.sensor.type) {
             Sensor.TYPE_LIGHT -> {
                 val lightValue = event.values[0]
-//                Log.d(TAG, "조도: $lightValue")
                 lightValueText.text = lightValue.toString()
+
+                if (minLux <= lightValue && lightValue <= maxLux) {
+                    envStatus.text = "적합"
+                    envStatusInfo.text = "이곳에 화분을 놓아주세요"
+                    envStatus.setTextColor(ContextCompat.getColor(this, R.color.main))
+                    envStatusInfo.setTextColor(ContextCompat.getColor(this, R.color.main))
+
+
+                } else if (minLux > lightValue) {
+                    envStatus.text = "부적합"
+                    envStatusInfo.text = "식물을 키우기에 너무 어두워요"
+                    envStatus.setTextColor(ContextCompat.getColor(this, R.color.bug))
+                    envStatusInfo.setTextColor(ContextCompat.getColor(this, R.color.bug))
+                } else {
+                    envStatus.text = "부적합"
+                    envStatusInfo.text = "식물을 키우기에 너무 밝아요"
+                    envStatus.setTextColor(ContextCompat.getColor(this, R.color.bug))
+                    envStatusInfo.setTextColor(ContextCompat.getColor(this, R.color.bug))
+                }
             }
         }
     }
@@ -97,7 +126,8 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
             ) {
                 if (response.code() == 200) {
                     val body = response.body()!!
-                    Log.d(TAG, "$body")
+                    maxLux = body.env.maxLux
+                    minLux = body.env.minLux
                 }
             }
 
