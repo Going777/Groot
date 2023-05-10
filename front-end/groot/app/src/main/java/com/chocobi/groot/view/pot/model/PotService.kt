@@ -33,6 +33,13 @@ interface PotService {
         @Query("date") date: String
     ): Call<DateDiaryResponse>
 
+    @GET("/api/diaries/{potId}")
+    fun requestPotDiary(
+        @Path("potId") potId: Int,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+    ): Call<DiaryListResponse>
+
     @DELETE("/api/pots/{potId}")
     fun deletePot(
         @Path("potId") potId: Int

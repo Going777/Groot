@@ -1,5 +1,8 @@
 package com.chocobi.groot.view.pot.model
 
+import com.chocobi.groot.data.ModelDiary
+import com.chocobi.groot.view.community.model.Pageable
+
 data class PotResponse(
     val msg: String,
     val pot: Pot,
@@ -22,6 +25,17 @@ data class DateDiaryResponse(
     val diary: List<Diary>
 )
 
+data class DiaryListResponse(
+    val result: String,
+    val msg: String,
+    val diary: Diaries
+)
+
+data class Diaries(
+    val total: Int,
+    val content: List<ModelDiary>,
+    val pageable: Pageable
+)
 data class Diary(
     val potId: Int,
     val userPK: Int,

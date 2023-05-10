@@ -1,8 +1,12 @@
 package com.chocobi.groot.data
 
+import com.chocobi.groot.view.pot.model.DateTime
+
 data class ModelDiary(
-    val id: Number,
-    val potId: Number,
+    val userPK: Int,
+    val nickName: String,
+    val id: Int,
+    val potId: Int,
     val potName: String,
     val image: String,
     val content: String,
@@ -11,5 +15,8 @@ data class ModelDiary(
     val pruning: Boolean,
     val bug: Boolean,
     val sun: Boolean,
-    val createDate: String,
+    val createTime: DateTime,
+    val updateTime: DateTime,
+    val isPotLast: Boolean,
+    val isUserLast: Boolean
 )
