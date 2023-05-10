@@ -9,3 +9,12 @@ data class LoginResponse(
     var msg : String,
 )
 
+data class SubscribeResponse(
+    val receiver: Int,
+    val content: String,
+    val page: String,
+    val contentId: Int,
+    val read: Boolean,
+    val notificationId: Int,
+)
+

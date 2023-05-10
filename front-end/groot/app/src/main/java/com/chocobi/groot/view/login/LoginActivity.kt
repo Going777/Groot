@@ -21,6 +21,11 @@ import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
@@ -99,5 +104,30 @@ class LoginActivity : AppCompatActivity() {
                     dialog.show()
                 }
             })
+    }
+
+    private fun requestSubscribe() {
+        val retrofit = RetrofitClient.getClient()!!
+        val loginService = retrofit.create(LoginService::class.java)
+        loginService.requestSubscribe().enqueue(object : Callback<SubscribeResponse> {
+            override fun onResponse(
+                call: Call<SubscribeResponse>,
+                response: Response<SubscribeResponse>
+            ) {
+                Log.d("LoginActivity", "onResponse() $response")
+                if (response.code() == 200) {
+
+                    Log.d("LoginActivity", "onResponse() 구독 요청 성공 $response")
+                } else {
+
+                    Log.d("LoginActivity", "onResponse() 구독 요청 실패1 $response")
+                }
+            }
+
+            override fun onFailure(call: Call<SubscribeResponse>, t: Throwable) {
+                Log.d("LoginActivity", "onResponse() 구독 요청 실패2")
+            }
+
+        })
     }
 }
