@@ -46,13 +46,13 @@ interface SearchService {
     ): Call<PlantDetailResponse>
 
     @Multipart
-    @POST("api/plants/identify")
+    @POST("/api/plants/identify")
     fun identifyPlant(
         @Part filePart: MultipartBody.Part
     ): Call<PlantIdentifyResponse>
 
-    @GET("api/recommendations")
+    @GET("/api/plants/{plantId}/introductions")
     fun getRecomm(
-        @Query("id") userId: Int
-    ): Call<PlantSearchResponse>
+        @Path("plantId") plantId: Int
+    ): Call<PlantIdentifyResponse>
 }

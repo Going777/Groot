@@ -199,7 +199,6 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
                         Toast.LENGTH_LONG
                     ).show()
                     mActivity.changeFragment("pot")
-
                 } else {
                     Log.d(TAG, "실패1")
                 }
@@ -209,7 +208,6 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
                 Log.d(TAG, "실패2")
             }
         })
-
     }
 
     private fun gonePot(potId: Int) {

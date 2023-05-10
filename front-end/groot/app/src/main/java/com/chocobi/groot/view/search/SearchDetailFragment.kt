@@ -13,6 +13,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
@@ -21,6 +22,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.addpot.Pot1Activity
 import com.chocobi.groot.view.search.model.PlantDetailData
 import com.chocobi.groot.view.search.model.PlantDetailResponse
+import com.chocobi.groot.view.search.model.PlantIdentifyResponse
 import com.chocobi.groot.view.search.model.SearchService
 import com.google.android.filament.ToneMapper.Linear
 import org.w3c.dom.Text
@@ -32,19 +34,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 import kotlin.random.Random
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SearchDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SearchDetailFragment : Fragment() {
     private val TAG = "SearchDetailFragment"
-    private var plantId: String? = null
+    private var plantId : String? = null
+    private var plantName : String? = null
+    private var plantSci : String? = null
+    private var growType: String? = null
+    private var mgmtLevel: String? = null
+    private var characterGlbPath: String? = null
 
     private var plant: PlantDetailData? = null
 
@@ -60,7 +57,7 @@ class SearchDetailFragment : Fragment() {
     private var plantImg: ImageView? = null
     private var plantKrName: TextView? = null
     private var plantEnName: TextView? = null
-    private var mgmtLevel: Button? = null
+    private var mgmtLevelBtn: Button? = null
     private var descriptionText: TextView? = null
     private var typeText: TextView? = null
     private var humidityText: TextView? = null
@@ -92,6 +89,7 @@ class SearchDetailFragment : Fragment() {
         }
 
         findView(rootView)
+        identifyPlant()
 
         return rootView
     }
@@ -109,7 +107,7 @@ class SearchDetailFragment : Fragment() {
         plantImg = rootView.findViewById(R.id.plantImage)
         plantKrName = rootView.findViewById(R.id.plantKrName)
         plantEnName = rootView.findViewById(R.id.plantEnName)
-        mgmtLevel = rootView.findViewById(R.id.mgmtLevel)
+        mgmtLevelBtn = rootView.findViewById(R.id.mgmtLevel)
         descriptionText = rootView.findViewById(R.id.descriptionText)
         typeText = rootView.findViewById(R.id.typeText)
         humidityText = rootView.findViewById(R.id.humidityText)
@@ -136,6 +134,31 @@ class SearchDetailFragment : Fragment() {
     private fun identifyPlant() {
         val retrofit = RetrofitClient.basicClient()!!
         val searchService = retrofit.create(SearchService::class.java)
+        searchService.getRecomm(plantId!!.toInt())
+            .enqueue(object : Callback<PlantIdentifyResponse> {
+                override fun onResponse(
+                    call: Call<PlantIdentifyResponse>,
+                    response: Response<PlantIdentifyResponse>
+                ) {
+                    var body = response.body()
+                    var msg = response.body()?.msg
+                    Log.d("SearchDetailFragment","onResponse() 요청 성공 $body")
+                    if (body != null) {
+                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                        plantName = body.plant.krName
+                        plantSci = body.plant.sciName
+                        growType = body.plant.grwType
+                        mgmtLevel = body.plant.mgmtLevel
+                        characterGlbPath = body.character.glbPath
+                    } else {
+                        Log.d(TAG, "${response.errorBody()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<PlantIdentifyResponse>, t: Throwable) {
+                    Log.d("SearchDetailFragment", "식물 식별 실패")
+                }
+            })
     }
 
     private fun getDetail(plantId: Int) {
@@ -176,7 +199,7 @@ class SearchDetailFragment : Fragment() {
         plantEnName?.text = plant?.sciName
 
         GlobalVariables.changeImgView(plantImg!!, plant!!.img, requireContext())
-        isExist(plant?.mgmtLevel!!, levelLinearLayout!!, mgmtLevel!!)
+        isExist(plant?.mgmtLevel!!, levelLinearLayout!!, mgmtLevelBtn!!)
         isExist(plant?.description!!, docLinearLayout!!, descriptionText!!)
         isExist(typeDesc, typeLinearLayout!!, typeText!!)
         isExist(waterDesc, humidityLinearLayout!!, humidityText!!)
