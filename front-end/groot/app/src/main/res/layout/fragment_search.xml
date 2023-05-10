@@ -31,8 +31,7 @@
             android:completionThreshold="1"
             android:gravity="center_vertical"
             android:hint="식물 이름을 입력해 주세요"
-            android:textColorHint="@color/grey"
-            />
+            android:textColorHint="@color/grey" />
 
         <ImageButton
             android:id="@+id/searchPlantBtn"
@@ -243,10 +242,21 @@
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="match_parent">-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dictRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dictRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recmRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
     <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
     <FrameLayout

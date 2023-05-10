@@ -51,5 +51,4 @@ interface SearchService {
         @Part filePart: MultipartBody.Part
     ): Call<PlantIdentifyResponse>
 
-
 }

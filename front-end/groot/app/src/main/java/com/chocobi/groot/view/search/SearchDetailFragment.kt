@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.search
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,9 +13,12 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatButton
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.addpot.Pot1Activity
 import com.chocobi.groot.view.search.model.PlantDetailData
 import com.chocobi.groot.view.search.model.PlantDetailResponse
 import com.chocobi.groot.view.search.model.SearchService
@@ -25,6 +29,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import kotlin.random.Random
 
 // TODO: Rename parameter arguments, choose names that match
@@ -63,6 +68,7 @@ class SearchDetailFragment : Fragment() {
     private var tipText: TextView? = null
     private var placeText: TextView? = null
     private var insectInfoText: TextView? = null
+    private lateinit var addPotBtn: AppCompatButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +91,12 @@ class SearchDetailFragment : Fragment() {
             mActivity.changeFragment("search")
         }
 
+        findView(rootView)
+
+        return rootView
+    }
+
+    private fun findView(rootView: View) {
         levelLinearLayout = rootView.findViewById(R.id.level)
         docLinearLayout = rootView.findViewById(R.id.doc)
         typeLinearLayout = rootView.findViewById(R.id.type)
@@ -105,8 +117,28 @@ class SearchDetailFragment : Fragment() {
         tipText = rootView.findViewById(R.id.tipText)
         placeText = rootView.findViewById(R.id.placeText)
         insectInfoText = rootView.findViewById(R.id.insectInfoText)
+        addPotBtn = rootView.findViewById(R.id.addPotBtn)
+    }
 
-        return rootView
+    private fun addPot() {
+        addPotBtn.setOnClickListener {
+//            var intent = Intent(requireContext(), Pot1Activity::class.java)
+//            intent.putExtra("imageUri", plantImg)
+//            intent.putExtra("plantName", plantKrName)
+//            intent.putExtra("plantId", plantId)
+//            intent.putExtra("growType", typeText)
+//            intent.putExtra("mgmtLevel", mgmtLevel)
+//            intent.putExtra("characterGlbPath", characterGlbPath)
+//            startActivity(intent)
+        }
+    }
+
+    private fun identifyPlant() {
+        val retrofit = RetrofitClient.basicClient()!!
+        val searchService = retrofit.create(SearchService::class.java)
+
+
+
     }
 
     private fun getDetail(plantId: Int) {
@@ -133,7 +165,6 @@ class SearchDetailFragment : Fragment() {
             override fun onFailure(call: Call<PlantDetailResponse>, t: Throwable) {
                 Log.d(TAG, "onFailure() 정보조회 실패")
             }
-
         })
     }
 

@@ -316,7 +316,7 @@
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/appCompatButton"
+                android:id="@+id/addPotBtn"
                 style="@style/MAIN_BTN"
                 android:layout_gravity="bottom"
                 android:layout_marginVertical="20dp"
