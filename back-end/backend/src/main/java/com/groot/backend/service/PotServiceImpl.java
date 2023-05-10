@@ -268,6 +268,7 @@ public class PotServiceImpl implements PotService{
                 .nutrientsDate(calcNextDate(potEntity.getNutrientsDate(), 6))
                 .pruningDate(calcNextDate(potEntity.getPruningDate(), 12))
                 .survival(potEntity.getSurvival())
+                .experience(potEntity.getExperience())
                 .level(expToLevel(potEntity.getExperience()))   // level?
                 .characterPNGPath(urls[0])
                 .characterGLBPath(urls[1])
