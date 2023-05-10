@@ -8,12 +8,14 @@ import com.groot.backend.repository.*;
 import com.groot.backend.util.PlantCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -237,6 +239,7 @@ public class PotServiceImpl implements PotService{
     }
 
     @Override
+    @Transactional
     public boolean toggleStatus(Long userPK, Long potId) throws Exception {
         logger.info("toggle status : {}", potId);
 
@@ -246,10 +249,21 @@ public class PotServiceImpl implements PotService{
 
         logger.info("pot {} found with status : {}", potId, potEntity.getSurvival());
 
-        boolean ret = potEntity.toggleSurvival();
-        potRepository.save(potEntity);
+        if(potEntity.getSurvival()) {
+            potEntity.toggleSurvival();
+            potRepository.save(potEntity);
 
-        return ret;
+            planRepository.deleteAllByPotId(potId);
+
+            return false;
+        }
+        else {
+            // not implemented yet
+//            potEntity.toggleSurvival();
+//            potRepository.save(potEntity);
+//            return true;
+            throw new NotYetImplementedException();
+        }
     }
 
     /**
