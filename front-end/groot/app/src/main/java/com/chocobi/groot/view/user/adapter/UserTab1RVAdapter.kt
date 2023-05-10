@@ -1,10 +1,13 @@
 package com.chocobi.groot.view.user.adapter
 
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
@@ -54,10 +57,14 @@ class UserTab1RVAdapter(val items: List<Pot>) :
             val potPlant = itemView.findViewById<TextView>(R.id.potPlant)
             val potDate = itemView.findViewById<TextView>(R.id.potDate)
             val potDateChip = itemView.findViewById<Chip>(R.id.potDateChip)
+            val cardView = itemView.findViewById<CardView>(R.id.cardView)
             potName.text = item.potName
             potPlant.text = item.plantKrName
             potDate.text = make00Date(item.createdTime.date)
             potDateChip.text = "D+" + item.dates.toString()
+            if (item.survival == false) {
+                cardView.setBackgroundColor(Color.parseColor("#ECECEC"))
+            }
             potImg.post {
                 view.get()?.let {
                     ThreadUtil.startThread {
@@ -79,7 +86,7 @@ class UserTab1RVAdapter(val items: List<Pot>) :
         }
     }
 
-    private fun make00Date(date: Date) : String {
+    private fun make00Date(date: Date): String {
         val year = date.year.toString()
         val month = String.format("%02d", date.month)
         val day = String.format("%02d", date.day)

@@ -14,6 +14,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -190,8 +191,23 @@ class MainActivity : AppCompatActivity() {
         } else {
             // isAllPermissionsGranted : 권한이 모두 승인 되었는지 여부 저장
             // all 메서드를 사용하면 배열 속에 들어 있는 모든 값을 체크할 수 있다.
-            val isAllPermissionsGranted =
-                permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
+            var isAllPermissionsGranted = false
+            if (requestCode == PERMISSION_GALLERY) {
+                isAllPermissionsGranted =
+                    arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES).all {
+                        checkSelfPermission(
+                            it
+                        ) == PackageManager.PERMISSION_GRANTED
+                    } || arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE).all {
+                        checkSelfPermission(
+                            it
+                        ) == PackageManager.PERMISSION_GRANTED
+                    }
+            } else {
+
+                isAllPermissionsGranted =
+                    permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
+            }
             if (isAllPermissionsGranted) {
                 permissionGranted(requestCode)
             } else {

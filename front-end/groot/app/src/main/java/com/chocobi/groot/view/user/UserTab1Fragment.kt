@@ -54,7 +54,7 @@ class UserTab1Fragment : Fragment() {
     private fun getPotArchive(mActivity: MainActivity) {
         var retrofit = RetrofitClient.getClient()!!
         var potService = retrofit.create(PotService::class.java)
-        potService.getPotList().enqueue(object :
+        potService.getPotArchive().enqueue(object :
             Callback<PotListResponse> {
             override fun onResponse(
                 call: Call<PotListResponse>,

@@ -31,6 +31,7 @@ import com.chocobi.groot.view.pot.model.PotImgResponse
 import com.chocobi.groot.view.pot.model.PotNameRequest
 import com.chocobi.groot.view.pot.model.PotService
 import com.chocobi.groot.view.pot.model.PotStatusRequest
+import com.chocobi.groot.view.sensor.SensorActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -119,6 +120,13 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
         val potScanBtn = view.findViewById<ImageButton>(R.id.potScanBtn)
         potScanBtn.setOnClickListener {
             requestPermissions()
+        }
+
+//        화분 위치 추천
+        val potPositionBtn = view.findViewById<ImageButton>(R.id.potPosition)
+        potPositionBtn.setOnClickListener {
+            var intent = Intent(requireContext(), SensorActivity::class.java)
+            startActivity(intent)
         }
 
 
