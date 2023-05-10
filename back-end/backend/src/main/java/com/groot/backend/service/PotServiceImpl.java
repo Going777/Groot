@@ -282,9 +282,9 @@ public class PotServiceImpl implements PotService{
                 .plantKrName(potEntity.getPlantKrName())
                 .dates(calcPeriod(potEntity.getCreatedDate()))
                 .createdTime(potEntity.getCreatedDate())
-                .waterDate(calcNextWaterDate(potEntity.getWaterDate(), potEntity))
-                .nutrientsDate(calcNextDate(potEntity.getNutrientsDate(), 6))
-                .pruningDate(calcNextDate(potEntity.getPruningDate(), 12))
+                .waterDate(potEntity.getWaterDate())
+                .nutrientsDate(potEntity.getNutrientsDate())
+                .pruningDate(potEntity.getPruningDate())
                 .survival(potEntity.getSurvival())
                 .experience(potEntity.getExperience())
                 .level(expToLevel(potEntity.getExperience()))   // level?
