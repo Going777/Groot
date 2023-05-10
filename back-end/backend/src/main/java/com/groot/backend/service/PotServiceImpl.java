@@ -224,6 +224,7 @@ public class PotServiceImpl implements PotService{
     }
 
     @Override
+    @Transactional
     public int deletePot(Long userPK, Long potId) throws Exception{
         logger.info("delete pot : {}", potId);
 
@@ -234,7 +235,8 @@ public class PotServiceImpl implements PotService{
         if(potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
 
         potRepository.delete(potEntity); // IllegalArgumentException
-
+        planRepository.deleteAllByPotId(potId);
+        
         return 0;
     }
 
