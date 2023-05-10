@@ -10,20 +10,28 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import android.widget.TextView
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.sensor.model.SensorResponse
+import com.chocobi.groot.view.sensor.model.SensorService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.create
 
 
 class SensorActivity : AppCompatActivity(), SensorEventListener {
     private val TAG = "SensorActivity"
     private var sensorManager: SensorManager? = null
     private var lightSensor: Sensor? = null
-    private var humiditySensor: Sensor? = null
-    private var temperatureSensor: Sensor? = null
     private lateinit var lightValueText: TextView
+    private var plantId: Int = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sensor)
+
+        plantId = intent.getIntExtra("plantId", 0)
         lightValueText = findViewById(R.id.lightValueText)
 
         // 센서 매니저 인스턴스 생성
@@ -32,8 +40,9 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
 
         for (i in deviceSensors) {
         Log.d(TAG, "deviceSensor: $i")
-
         }
+
+        getPlantLux()
 
 
         // 조도 센서 인스턴스 생성
@@ -46,20 +55,18 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event == null) return
-        Log.d(
-            "Sensor",
-            "onSensorChanged(): sensorType=${event.sensor.type}, values=${event.values.joinToString()}"
-        )
+//        Log.d(
+//            "Sensor",
+//            "onSensorChanged(): sensorType=${event.sensor.type}, values=${event.values.joinToString()}"
+//        )
 
         // 센서 타입 확인
         when (event.sensor.type) {
             Sensor.TYPE_LIGHT -> {
                 val lightValue = event.values[0]
-                Log.d(TAG, "조도: $lightValue")
+//                Log.d(TAG, "조도: $lightValue")
                 lightValueText.text = lightValue.toString()
             }
-
-
         }
     }
 
@@ -79,5 +86,25 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
         // 센서 등록
         sensorManager!!.registerListener(this, lightSensor, SensorManager.SENSOR_DELAY_NORMAL)
  }
+
+    private fun getPlantLux() {
+        var retrofit = RetrofitClient.getClient()!!
+        var sensorService = retrofit.create(SensorService::class.java)
+        sensorService.getPlantLux(plantId).enqueue(object :Callback<SensorResponse> {
+            override fun onResponse(
+                call: Call<SensorResponse>,
+                response: Response<SensorResponse>
+            ) {
+                if (response.code() == 200) {
+                    val body = response.body()!!
+                    Log.d(TAG, "$body")
+                }
+            }
+
+            override fun onFailure(call: Call<SensorResponse>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
 }
 
