@@ -35,9 +35,9 @@ class PotListRVAdapter(val items: List<Pot>, val position: Int?) :
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_pot_list_item, parent, false)
 
-        if (position is Int) {
-            selectedPosition = position
-        }
+//        if (position is Int) {
+//            selectedPosition = position
+//        }
 
         return ViewHolder(view)
     }
@@ -64,7 +64,6 @@ class PotListRVAdapter(val items: List<Pot>, val position: Int?) :
 
 //                border 설정
                 holder.itemView.findViewById<CircleImageView>(R.id.potImage).borderWidth = 10
-
                 if (selectedPosition != position && selectedPosition != -1) {
                     notifyItemChanged(selectedPosition)
                 }

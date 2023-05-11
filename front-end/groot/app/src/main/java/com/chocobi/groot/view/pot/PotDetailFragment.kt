@@ -148,7 +148,10 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                 if (pot?.waterDate != null) {
                     putString("lastDate", changeDateFormat(pot?.waterDate!!))
                 }
-                putString("comingDate", changeDateFormat(plan!![0].dateTime))
+                if (plant != null && plan?.size!! > 0) {
+
+                    putString("comingDate", changeDateFormat(plan!![0].dateTime))
+                }
             }
             val tab1 = PotDetailTab1Fragment().apply {
                 arguments = bundle
@@ -161,7 +164,10 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                 if (pot?.pruningDate != null) {
                     putString("lastDate", changeDateFormat(pot?.pruningDate!!))
                 }
-                putString("comingDate", changeDateFormat(plan!![2].dateTime))
+                if (plant != null && plan?.size!! > 0) {
+
+                    putString("comingDate", changeDateFormat(plan!![2].dateTime))
+                }
             }
             val tab2 = PotDetailTab2Fragment().apply {
                 arguments = bundle
@@ -194,7 +200,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                 if (pot?.nutrientDate != null) {
                     putString("lastDate", changeDateFormat(pot?.nutrientDate!!))
                 }
-                putString("comingDate", changeDateFormat(plan!![1].dateTime))
+                if (plant != null && plan?.size!! > 0) {
+                    putString("comingDate", changeDateFormat(plan!![1].dateTime))
+                }
             }
             val tab5 = PotDetailTab5Fragment().apply {
                 arguments = bundle
@@ -268,7 +276,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             if (pot?.waterDate != null) {
                 putString("lastDate", changeDateFormat(pot?.waterDate!!))
             }
-            putString("comingDate", changeDateFormat(plan!![0].dateTime))
+            if (plan != null && plan?.size!! > 0) {
+                putString("comingDate", changeDateFormat(plan!![0].dateTime))
+            }
         }
         val tab1 = PotDetailTab1Fragment().apply {
             arguments = bundle

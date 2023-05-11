@@ -301,7 +301,6 @@ class PotDiaryFragment : Fragment() {
                                 adapter.reload(list)
                                 hideProgress()
                             }
-
                         }
                     } else {
                         if (diaryListPage == 0) {
