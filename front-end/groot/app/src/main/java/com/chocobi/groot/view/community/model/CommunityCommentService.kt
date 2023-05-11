@@ -20,8 +20,6 @@ interface CommunityCommentService {
     fun requestCommunityComment(
 //        input 정의
         @Path("articleId") articleIdInput:Int,
-        @Query("page") pageInput:Int,
-        @Query("size") sizeInput:Int
         ) : Call<CommunityCommentResponse> // output 정의
 }
 

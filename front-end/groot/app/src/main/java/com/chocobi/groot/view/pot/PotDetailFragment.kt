@@ -103,14 +103,21 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         }
 
 //        만나러가기 버튼 클릭시
-        val toArBtn = rootView.findViewById<Button>(R.id.toArBtn)
-        toArBtn.setOnClickListener {
+//        dialog 띄우기
+        val safeAlertDialog = AlertDialog.Builder(requireContext())
+        safeAlertDialog.setMessage("AR 모드를 사용할 때는 주변이 안전한지 먼저 확인하세요.")
+        safeAlertDialog.setPositiveButton("OK") { dialog, which ->
             val intent = Intent(context, ArActivity::class.java)
             intent.putExtra("GLBfile", pot?.characterGLBPath.toString())
             intent.putExtra("level", pot?.level.toString())
             intent.putExtra("potName", pot?.potName.toString())
             intent.putExtra("potPlant", pot?.plantKrName.toString())
             startActivity(intent)
+        }
+
+        val toArBtn = rootView.findViewById<Button>(R.id.toArBtn)
+        toArBtn.setOnClickListener {
+            safeAlertDialog.create().show()
         }
         // Inflate the layout for this fragment
         return rootView

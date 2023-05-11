@@ -104,6 +104,8 @@ class CommunityDetailFragment : Fragment() {
         var commentSection = view.findViewById<LinearLayoutCompat>(R.id.commentSection)
         var commentInputSection = view.findViewById<CardView>(R.id.commentInputSection)
 
+        var carouselSection = view.findViewById<LinearLayoutCompat>(R.id.carouselSection)
+
 
         postCommentBtn.setOnClickListener {
 
@@ -182,6 +184,11 @@ class CommunityDetailFragment : Fragment() {
                                 imagesList.add(articleDetailData.article.imgs[i-1])
                                 Log.d("carouselImagesList", imagesList.toString())
                             }
+                        } else if (articleDetailData.article.imgs.isEmpty()){
+                            carouselSection.visibility = View.GONE
+                            val layoutParams = detailTitle.layoutParams as ViewGroup.MarginLayoutParams
+                            layoutParams.setMargins(0, 80, 0, 0)
+                            detailTitle.layoutParams = layoutParams
                         }
 
 
