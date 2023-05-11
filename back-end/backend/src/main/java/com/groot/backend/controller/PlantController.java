@@ -1,10 +1,9 @@
 package com.groot.backend.controller;
 
 import com.groot.backend.dto.request.PlantSearchDTO;
-import com.groot.backend.dto.response.PlantDetailDTO;
-import com.groot.backend.dto.response.PlantIdentificationDTO;
-import com.groot.backend.dto.response.PlantThumbnailDTO;
+import com.groot.backend.dto.response.*;
 import com.groot.backend.service.PlantService;
+import com.sun.jdi.request.InvalidRequestStateException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -79,15 +78,20 @@ public class PlantController {
         logger.info("page no : {}", plantSearchDTO.getPage());
 
         Map<String, Object> result = new HashMap<>();
-        List<PlantThumbnailDTO> list = plantService.plantList(plantSearchDTO);
 
-        if(list == null || list.size() < 1) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            List<PlantThumbnailDTO> list = plantService.plantList(plantSearchDTO);
+            if(list == null || list.size() < 1) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            result.put("msg", "식물 목록 조회에 성공했습니다.");
+            result.put("plants", list);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+
+        } catch (InvalidRequestStateException e) {
+            result.put("msg", "검색 내용을 확인해 주세요");
+            return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
         }
-
-        result.put("msg", "식물 목록 조회에 성공했습니다.");
-        result.put("plants", list);
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(value = "/identify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -95,28 +99,80 @@ public class PlantController {
     public ResponseEntity<Map<String, Object>> identifyPlant(@RequestPart("file") MultipartFile multipartFile) {
         logger.info("Identify plant : {}", multipartFile.getOriginalFilename());
         Map<String, Object> result = new HashMap<>();
-        PlantIdentificationDTO plantIdentificationDTO;
+        HttpStatus status;
 
         try{
-            plantIdentificationDTO = plantService.identifyPlant(multipartFile);
+            PlantWithCharacterDTO plantWithCharacterDTO = plantService.identifyPlant(multipartFile);
+
+            if(plantWithCharacterDTO != null) {
+                status = HttpStatus.OK;
+                result.put("msg", "식물 식별에 성공했습니다.");
+                result.put("plant", plantWithCharacterDTO.getPlantIdentificationDTO());
+                result.put("character", plantWithCharacterDTO.getCharacterAssetDTO());
+            }
+            else {
+                status = HttpStatus.NOT_FOUND;
+                result.put("msg", "등록되지 않은 식물입니다.");
+            }
 
         } catch (InvalidContentTypeException e) {
             result.put("msg", "올바르지 않은 파일 형식입니다.");
-            return new ResponseEntity<>(result, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            status = HttpStatus.UNSUPPORTED_MEDIA_TYPE;
         } catch (IOException e) {
             result.put("msg", "Failed to create file");
-            return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        if(plantIdentificationDTO == null) {
-            result.put("msg", "등록되지 않은 식물입니다.");
-            return new ResponseEntity<>(result, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(result, status);
+    }
+
+    @GetMapping("/{plantId}/env")
+    @Operation(summary = "Adequate environment for plant", description = "returns min, max illuminance(lux)")
+    public ResponseEntity<Map<String, Object>> getAdequateEnv(@PathVariable Long plantId) {
+        logger.info("Get adequate illuminance");
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            PlantEnvironmentDTO plantEnvironmentDTO = plantService.getAdequateEnv(plantId);
+
+            result.put("env", plantEnvironmentDTO);
+            result.put("msg", "식물 환경 조회에 성공했습니다.");
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            result.put("msg", "식물 찾기에 실패했습니다.");
+            status = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        result.put("msg", "식물 식별에 성공했습니다.");
-        result.put("plant", plantIdentificationDTO);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(result, status);
+    }
+
+    @GetMapping("/{plantId}/introductions")
+    public ResponseEntity<Map<String, Object>> getIntroduction(@PathVariable Long plantId) {
+        logger.info("Get introduction : {}", plantId);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            PlantWithCharacterDTO plantWithCharacterDTO = plantService.getIntroduction(plantId);
+
+            result.put("plant", plantWithCharacterDTO.getPlantIdentificationDTO());
+            result.put("character", plantWithCharacterDTO.getCharacterAssetDTO());
+            result.put("msg", "식물 정보 조회에 성공했습니다.");
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            result.put("msg", "존재하지 않는 식물입니다.");
+            status = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            result.put("msg", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+
     }
 }

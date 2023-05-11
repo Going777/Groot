@@ -45,13 +45,16 @@
             android:text="미션 내용" />
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/imageView8"
+    <CheckBox
+        android:id="@+id/checkbox"
         android:layout_width="36dp"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
+        android:background="@drawable/check_box_custom"
+        android:button="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/checkbox_check" />
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

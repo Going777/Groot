@@ -2,26 +2,20 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
-import com.groot.backend.dto.response.CharacterDTO;
-import com.groot.backend.dto.response.PlantDetailDTO;
-import com.groot.backend.dto.response.PotDetailDTO;
-import com.groot.backend.dto.response.PotListDTO;
-import com.groot.backend.entity.CharacterEntity;
-import com.groot.backend.entity.PlantEntity;
-import com.groot.backend.entity.PotEntity;
-import com.groot.backend.repository.CharacterRepository;
-import com.groot.backend.repository.PlantRepository;
-import com.groot.backend.repository.PotRepository;
-import com.groot.backend.repository.UserRepository;
+import com.groot.backend.dto.response.*;
+import com.groot.backend.entity.*;
+import com.groot.backend.repository.*;
 import com.groot.backend.util.PlantCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -37,6 +31,7 @@ public class PotServiceImpl implements PotService{
     private final PotRepository potRepository;
     private final PlantRepository plantRepository;
     private final UserRepository userRepository;
+    private final PlanRepository planRepository;
     private final CharacterRepository characterRepository;
     private final S3Service s3Service;
     private final Logger logger = LoggerFactory.getLogger(PotServiceImpl.class);
@@ -48,18 +43,21 @@ public class PotServiceImpl implements PotService{
 
 
         try {
-            imgPath = s3Service.upload(multipartFile, "pot");
-            logger.info("image uploaded : {}", imgPath);
+            if(multipartFile != null && !multipartFile.isEmpty()) {
+                imgPath = s3Service.upload(multipartFile, "pot");
+                logger.info("image uploaded : {}", imgPath);
+            }
 
             PlantEntity plantEntity = plantRepository.findById(potRegisterDTO.getPlantId()).get();
+            UserEntity userEntity = userRepository.findById(userPK).get();
             logger.info("Plant found : {}", plantEntity.getKrName());
 
             PotEntity potEntity = potRepository.save(
                     PotEntity.builder()
-                            .userEntity(userRepository.findById(userPK).get())
+                            .userEntity(userEntity)
                             .plantEntity(plantEntity)
                             .name(potRegisterDTO.getPotName())
-                            .imgPath(imgPath)
+                            .imgPath(imgPath == "" ? plantEntity.getImg() : imgPath)
                             // default values might be modified
                             .temperature(potRegisterDTO.getTemperature() == 0 ? 20 : potRegisterDTO.getTemperature())
                             .illuminance(potRegisterDTO.getIlluminance() == 0 ? 500 : potRegisterDTO.getIlluminance())
@@ -68,6 +66,45 @@ public class PotServiceImpl implements PotService{
                             .build()
             );
             potRepository.save(potEntity);
+
+            List<PlanEntity> plans = new ArrayList<>();
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(0)
+                    .dateTime(LocalDateTime.now()
+                            .plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000])
+                            .withHour(9).withMinute(0).withSecond(0)
+                    )
+                    .done(false)
+                    .build()
+            );
+
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(1)
+                    .dateTime(LocalDateTime.now()
+                            .plusMonths(6)
+                            .withHour(9).withMinute(0).withSecond(0)
+                    )
+                    .done(false)
+                    .build()
+            );
+
+            plans.add(PlanEntity.builder()
+                    .potEntity(potEntity)
+                    .userEntity(userEntity)
+                    .code(2)
+                    .dateTime(LocalDateTime.now()
+                            .plusMonths(12)
+                            .withHour(9).withMinute(0).withSecond(0)
+                    )
+                    .done(false)
+                    .build()
+            );
+
+            planRepository.saveAll(plans);
 
             return potEntity.getId();
         } catch (IOException e) {
@@ -140,7 +177,18 @@ public class PotServiceImpl implements PotService{
                 .img(plantEntity.getImg())
                 .build();
 
-        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).build();
+        List<PlanEntity> planEntities = planRepository.findAllByPotId(potId);
+
+        List<PlanWithDateDTO> plans = new ArrayList<>(planEntities.size());
+
+        planEntities.forEach(planEntity -> {
+            plans.add(PlanWithDateDTO.builder()
+                            .code(planEntity.getCode())
+                            .dateTime(planEntity.getDateTime())
+                            .build());
+        });
+
+        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).plans(plans).build();
     }
 
     @Override
@@ -178,6 +226,7 @@ public class PotServiceImpl implements PotService{
     }
 
     @Override
+    @Transactional
     public int deletePot(Long userPK, Long potId) throws Exception{
         logger.info("delete pot : {}", potId);
 
@@ -188,11 +237,13 @@ public class PotServiceImpl implements PotService{
         if(potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
 
         potRepository.delete(potEntity); // IllegalArgumentException
-
+        planRepository.deleteAllByPotId(potId);
+        
         return 0;
     }
 
     @Override
+    @Transactional
     public boolean toggleStatus(Long userPK, Long potId) throws Exception {
         logger.info("toggle status : {}", potId);
 
@@ -202,10 +253,21 @@ public class PotServiceImpl implements PotService{
 
         logger.info("pot {} found with status : {}", potId, potEntity.getSurvival());
 
-        boolean ret = potEntity.toggleSurvival();
-        potRepository.save(potEntity);
+        if(potEntity.getSurvival()) {
+            potEntity.toggleSurvival();
+            potRepository.save(potEntity);
 
-        return ret;
+            planRepository.deleteAllByPotId(potId);
+
+            return false;
+        }
+        else {
+            // not implemented yet
+//            potEntity.toggleSurvival();
+//            potRepository.save(potEntity);
+//            return true;
+            throw new NotYetImplementedException();
+        }
     }
 
     /**
@@ -264,10 +326,11 @@ public class PotServiceImpl implements PotService{
                 .plantKrName(potEntity.getPlantKrName())
                 .dates(calcPeriod(potEntity.getCreatedDate()))
                 .createdTime(potEntity.getCreatedDate())
-                .waterDate(calcNextWaterDate(potEntity.getWaterDate(), potEntity))
-                .nutrientsDate(calcNextDate(potEntity.getNutrientsDate(), 6))
-                .pruningDate(calcNextDate(potEntity.getPruningDate(), 12))
+                .waterDate(potEntity.getWaterDate())
+                .nutrientsDate(potEntity.getNutrientsDate())
+                .pruningDate(potEntity.getPruningDate())
                 .survival(potEntity.getSurvival())
+                .experience(potEntity.getExperience())
                 .level(expToLevel(potEntity.getExperience()))   // level?
                 .characterPNGPath(urls[0])
                 .characterGLBPath(urls[1])

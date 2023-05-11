@@ -19,7 +19,7 @@ data class ArticleContent (
     val img: String?,
     val nickName: String,
     val title: String,
-    val tags: List<String>,
+    val tags: List<String?>,
     val views: Int,
     val commentCnt: Int,
     val bookmark: Boolean,

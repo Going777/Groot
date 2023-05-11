@@ -38,6 +38,8 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath password = createString("password");
 
+    public final ListPath<PlanEntity, QPlanEntity> planEntities = this.<PlanEntity, QPlanEntity>createList("planEntities", PlanEntity.class, QPlanEntity.class, PathInits.DIRECT2);
+
     public final ListPath<PotEntity, QPotEntity> potEntities = this.<PotEntity, QPotEntity>createList("potEntities", PotEntity.class, QPotEntity.class, PathInits.DIRECT2);
 
     public final StringPath profile = createString("profile");

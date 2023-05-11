@@ -6,6 +6,7 @@
     tools:context=".view.community.CommunityDetailImg3Fragment">
 
     <ImageView
+        android:id="@+id/detailImage3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/sample_plant_image"/>

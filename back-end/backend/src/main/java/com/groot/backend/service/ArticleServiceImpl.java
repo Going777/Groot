@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -38,7 +39,7 @@ public class ArticleServiceImpl implements ArticleService{
     private final RedisTemplate<String, String> redisTemplate;
     private final TagCountRepository tagCountRepository;
 
-
+    // 지역명 리스트 조회
     @Override
     public List<String> readRegion() {
         List<RegionEntity> regions = regionRepository.findAll();
@@ -49,6 +50,7 @@ public class ArticleServiceImpl implements ArticleService{
         return result;
     }
 
+    // 게시글 존재 여부 확인
     @Override
     public boolean existedArticleId(Long articleId) {
         return articleRepository.existsById(articleId);
@@ -61,8 +63,8 @@ public class ArticleServiceImpl implements ArticleService{
         Set<ZSetOperations.TypedTuple<String>> typedTuples;
         String key = "ranking";
 
-        if(ZSetOperations.size(key) >= 10){
-            typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
+        if(ZSetOperations.size(key) >= 5){
+            typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 4);  //score순으로 5개 보여줌
         }else {
             typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));
         }
@@ -82,8 +84,8 @@ public class ArticleServiceImpl implements ArticleService{
             }
             ZSetOperations = redisTemplate.opsForZSet();
 
-            if(ZSetOperations.size(key) >= 10){
-                typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 9);  //score순으로 10개 보여줌
+            if(ZSetOperations.size(key) >= 5){
+                typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 4);  //score순으로 5개 보여줌
             }else {
                 typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));
             }
@@ -92,7 +94,6 @@ public class ArticleServiceImpl implements ArticleService{
         }else{
             // 조회되는 값은 있는데, 리셋 후 입력된 태그가 없으면 전날 데이터를 보여줌
             if(Double.compare(result.get(0).getCount(), 0.0) == 0){
-                System.out.println("전날데이터");
                 List<TagCountEntity> list = tagCountRepository.findAll(Sort.by(Sort.Direction.DESC, "count"));
 
                 // tagCount 데이터가 존재하지 않으면 태그 데이터만 보여줌
@@ -100,7 +101,7 @@ public class ArticleServiceImpl implements ArticleService{
 
                 List<TagRankDTO> rankDTOS = new ArrayList<>();
                 if(list.size() != 0){
-                    List<TagCountEntity> sublist = (list.size() >= 10) ?  list.subList(0,9) : list;
+                    List<TagCountEntity> sublist = (list.size() >= 5) ?  list.subList(0,4) : list;
 
                     for(TagCountEntity tagCountEntity : sublist){
                         TagRankDTO dto = TagRankDTO.builder()
@@ -126,7 +127,7 @@ public class ArticleServiceImpl implements ArticleService{
         // redis 내용 mysql에 저장
         String key = "ranking";
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
-        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));  //score순으로 10개 보여줌
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));  //score순으로 정렬해서 보여줌
 
         for(ZSetOperations.TypedTuple typedTuple : typedTuples) {
             TagCountEntity tagCountEntity = TagCountEntity.builder()
@@ -151,7 +152,7 @@ public class ArticleServiceImpl implements ArticleService{
 
     // 게시글 작성
     @Override
-    public boolean createArticle(ArticleDTO articleDTO, String[] imgPaths) {
+    public boolean createArticle(Long userPK, ArticleDTO articleDTO, String[] imgPaths) {
         String[] tags = articleDTO.getTags();
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
 
@@ -192,7 +193,7 @@ public class ArticleServiceImpl implements ArticleService{
         // article 테이블에 insert
         ArticleEntity articleEntity = ArticleEntity.builder()
                 .category(articleDTO.getCategory())
-                .userEntity(userRepository.findById(articleDTO.getUserPK()).orElseThrow())
+                .userEntity(userRepository.findById(userPK).orElseThrow())
                 .title(articleDTO.getTitle())
                 .content(articleDTO.getContent())
                 .views(0L)
@@ -234,28 +235,32 @@ public class ArticleServiceImpl implements ArticleService{
         ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow();
         // UserEntity 조회
         UserEntity userEntity = userRepository.findById(articleEntity.getUserPK()).orElseThrow();
+
         // tags id 조회
         List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleId);
-        // tag id로 tagEntity 조회
         List<String> tags = new ArrayList<>();
-        for(ArticleTagEntity articleTagEntity : articleTagEntityList){
-            tags.add(tagRepository.findById(articleTagEntity.getTagId()).orElseThrow().getName());
+        if(articleTagEntityList.size() != 0){
+            // tag id로 tagEntity 조회
+            for(ArticleTagEntity articleTagEntity : articleTagEntityList){
+                tags.add(tagRepository.findById(articleTagEntity.getTagId()).orElseThrow().getName());
+            }
         }
+
         // commentEntity 조회
         List<CommentEntity> commentEntityList = commentRepository.findByArticleId(articleId);
 
         List<CommentResponseDTO> comments = new ArrayList<>();
         int commentCnt = 0;
         // commentDTO build
-        if(commentEntityList != null){
+        if(commentEntityList.size() != 0){
             for(CommentEntity commentEntity : commentEntityList){
                 UserEntity commentUserEntity = userRepository.findById(commentEntity.getUserPK()).orElseThrow();
                 CommentResponseDTO commentDTO = CommentResponseDTO.builder()
+                        .id(commentEntity.getId())
                         .userPK(commentEntity.getUserPK())
-                        .profile(commentUserEntity.getProfile())
+                        .profile(commentUserEntity.getProfile() == null ? "" : commentUserEntity.getProfile())
                         .content(commentEntity.getContent())
                         .createTime(commentEntity.getCreatedDate())
-//                        .updateTime(commentEntity.getLastModifiedDate())
                         .build();
 
                 comments.add(commentDTO);
@@ -277,7 +282,7 @@ public class ArticleServiceImpl implements ArticleService{
         // image 조회
         List<String> imgPaths = new ArrayList<>();
         List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleId);
-        if(articleImageEntityList != null){
+        if(articleImageEntityList.size() != 0){
             for(ArticleImageEntity entity : articleImageEntityList){
                 imgPaths.add(entity.getImg());
             }
@@ -288,7 +293,7 @@ public class ArticleServiceImpl implements ArticleService{
                 .imgs(imgPaths)
                 .userPK(articleEntity.getUserPK())
                 .nickName(userEntity.getNickName())
-                .profile(userEntity.getProfile())
+                .profile(userEntity.getProfile() == null ? "" : userEntity.getProfile())
                 .title(articleEntity.getTitle())
                 .tags(tags)
                 .views(articleEntity.getViews()+1)
@@ -363,14 +368,19 @@ public class ArticleServiceImpl implements ArticleService{
 
         // 태크-게시물 테이블에 기존 태그 delete
         List<ArticleTagEntity> articleTagEntityList = articleTagRepository.findByArticleId(articleDTO.getArticleId());
-        for(ArticleTagEntity articleTagEntity : articleTagEntityList){
-            articleTagRepository.delete(articleTagEntity);
+        if(articleTagEntityList.size() != 0){
+            for(ArticleTagEntity articleTagEntity : articleTagEntityList){
+                articleTagRepository.delete(articleTagEntity);
+            }
         }
+
 
         // 이미지 테이블의 기존 정보 delete
         List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleDTO.getArticleId());
-        for(ArticleImageEntity articleImageEntity : articleImageEntityList){
-            articleImageRepository.delete(articleImageEntity);
+        if(articleImageEntityList.size() != 0 ){
+            for(ArticleImageEntity articleImageEntity : articleImageEntityList){
+                articleImageRepository.delete(articleImageEntity);
+            }
         }
 
         // article 테이블에 update
@@ -416,7 +426,12 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public void deleteArticle(Long articleId) {
+    public void deleteArticle(Long userPK, Long articleId) {
+        // 권한 체크
+        ArticleEntity articleEntity = articleRepository.findById(articleId).orElseThrow();
+
+        if(articleEntity.getUserPK() != userPK) throw new AccessDeniedException("삭제 권한 없음");
+
         // s3 이미지 삭제
         List<ArticleImageEntity> articleImageEntityList = articleImageRepository.findAllByArticleId(articleId);
         if(articleImageEntityList != null){
@@ -495,19 +510,21 @@ public class ArticleServiceImpl implements ArticleService{
         List<ArticleEntity> articleEntityList = articleRepository.findUserSharedArticle(userPK, articleId);
 
         List<UserSharedArticleDTO> result = new ArrayList<>();
-        for(ArticleEntity entity : articleEntityList){
-            // 이미지 조회
-            List<ArticleImageEntity> aImageEntityList = articleImageRepository.findAllByArticleId(entity.getId());
+        if(articleEntityList.size() != 0){
+            for(ArticleEntity entity : articleEntityList){
+                // 이미지 조회
+                List<ArticleImageEntity> aImageEntityList = articleImageRepository.findAllByArticleId(entity.getId());
 
-            UserSharedArticleDTO dto = UserSharedArticleDTO.builder()
-                    .articleId(entity.getId())
-                    .userPK(entity.getUserPK())
-                    .nickName(userRepository.findById(userPK).orElseThrow().getNickName())
-                    .title(entity.getTitle())
-                    .img((aImageEntityList == null || aImageEntityList.size() == 0) ? null : aImageEntityList.get(0).getImg())
-                    .build();
+                UserSharedArticleDTO dto = UserSharedArticleDTO.builder()
+                        .articleId(entity.getId())
+                        .userPK(entity.getUserPK())
+                        .nickName(userRepository.findById(userPK).orElseThrow().getNickName())
+                        .title(entity.getTitle())
+                        .img((aImageEntityList == null || aImageEntityList.size() == 0) ? null : aImageEntityList.get(0).getImg())
+                        .build();
 
-            result.add(dto);
+                result.add(dto);
+            }
         }
 
         return result;
@@ -542,7 +559,7 @@ public class ArticleServiceImpl implements ArticleService{
                         .img(findImgByArticleEntity(a))
                         .userPK(a.getUserPK())
                         .nickName(findUserEntityByArticleEntity(a).getNickName())
-                        .profile(findUserEntityByArticleEntity(a).getProfile())
+                        .profile(findUserEntityByArticleEntity(a).getProfile() == null ? "" : findUserEntityByArticleEntity(a).getProfile())
                         .title(a.getTitle())
                         .tags(findTagsByArticleEntity(a))
                         .views(a.getViews())
@@ -613,6 +630,4 @@ public class ArticleServiceImpl implements ArticleService{
         }
         return imgPath;
     }
-
-
 }

@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ public class PotController {
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE, MediaType.APPLICATION_JSON_VALUE}, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "Create pot", description = "returns potId")
     public ResponseEntity<Map<String, Object>> createPot(HttpServletRequest request,
-                                    @RequestPart("img") @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
+                                    @RequestPart(value = "img", required = false) @Parameter(content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE)) MultipartFile multipartFile,
                                     @RequestPart("pot") @Valid @Parameter(content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE)) PotRegisterDTO potRegisterDTO) {
         logger.info("Create pot : {}", potRegisterDTO.getPotName());
         Map<String, Object> result = new HashMap<>();
@@ -110,6 +111,7 @@ public class PotController {
             result.put("msg", "화분 조회에 성공했습니다.");
             result.put("pot", potDetailDTO.getPot());
             result.put("plant", potDetailDTO.getPlant());
+            result.put("plan", potDetailDTO.getPlans());
             status = HttpStatus.OK;
         } catch (AccessDeniedException e) {
             status = HttpStatus.FORBIDDEN;
@@ -204,7 +206,7 @@ public class PotController {
     }
 
     @PutMapping("/{potId}/status")
-    @Operation(summary = "toggle status", description = "alive or gone")
+    @Operation(summary = "toggle status", description = "resurrection is not implemented yet : 503")
     public ResponseEntity<Map<String, Object>> toggleStatus(HttpServletRequest request, @PathVariable Long potId) {
         Long userPK;
         try {
@@ -229,8 +231,12 @@ public class PotController {
         } catch (NoSuchElementException e) {
             result.put("msg", "존재하지 않는 화분입니다.");
             status = HttpStatus.NOT_FOUND;
+        } catch (NotYetImplementedException e) {
+            result.put("msg", "아직 구현되지 않은 기능입니다.");
+            status = HttpStatus.SERVICE_UNAVAILABLE;
         } catch (Exception e) {
-            result.put("msg", e.getStackTrace());
+            logger.info("ERROR : {}", e.getStackTrace());
+            result.put("msg", e.getCause());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 

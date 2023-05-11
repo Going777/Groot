@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.search
 
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.util.Log
@@ -16,17 +17,24 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.search.adapter.DictRVAdapter
 import com.chocobi.groot.view.search.model.PlantMetaData
 import com.chocobi.groot.view.search.model.PlantSearchResponse
 import com.chocobi.groot.view.search.model.SearchService
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import retrofit2.Call
@@ -46,20 +54,20 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-
-    private var plantName: String = ""
-    private lateinit var plants: Array<PlantMetaData>
+    private var plantName: String? = null
+    private var plants: Array<PlantMetaData>? = null
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
+//    private lateinit var recmAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 
-
+    private lateinit var firstView: ConstraintLayout
+    private lateinit var blankView: ConstraintLayout
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var difficultyChipGroup: ChipGroup
     private lateinit var luxChipGroup: ChipGroup
     private lateinit var growthChipGroup: ChipGroup
+    private lateinit var rv: RecyclerView
+    private lateinit var recmmView: MaterialCardView
+    private lateinit var recmRv: RecyclerView
     private lateinit var difficultyEasy: Chip
     private lateinit var difficultyMedium: Chip
     private lateinit var difficultyHard: Chip
@@ -92,6 +100,7 @@ class SearchFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 맨 처음 시작했을 때 추천 받아오기 뜨기
     }
 
     override fun onCreateView(
@@ -105,6 +114,7 @@ class SearchFragment : Fragment() {
         val mActivity = activity as MainActivity
 
         findView(rootView)
+        requestRecommendations()
         filterChipGroup()
 
 
@@ -118,27 +128,13 @@ class SearchFragment : Fragment() {
             )
         }
 
-        val rv = rootView.findViewById<RecyclerView>(R.id.dictRecyclerView)
+        recyclerViewSetting()
 
-        rvAdapter = DictRVAdapter(emptyArray())
-        rv.layoutManager = GridLayoutManager(activity, 3)
-        rv.adapter = rvAdapter
-
-        rvAdapter.itemClick = object : DictRVAdapter.ItemClick {
-            override fun onClick(view: View, position: Int) {
-                val bundle = Bundle().apply {
-                    putString("plant_id", plants[position].plantId.toString())
-                }
-
-                val passBundleBFragment = SearchDetailFragment().apply {
-                    arguments = bundle
-                }
-
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fl_container, passBundleBFragment)
-                    .commit()
-            }
-        }
+//        if(plants == null) {
+//            firstView.visibility = View.VISIBLE
+//        } else {
+//            firstView.visibility = View.GONE
+//        }
 
         // 자동완성으로 보여줄 내용들
         val plantNames =
@@ -195,14 +191,52 @@ class SearchFragment : Fragment() {
             search(plantName)
         }
 
+        addPot(mActivity)
+
+//        firstView.setOnClickListener {
+//            var dialog = AlertDialog.Builder(requireContext())
+//            dialog.setTitle("새 화분 등록하기")
+//            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+//
+//            dialog.setItems(dialogArray) { _, which ->
+//                when (which) {
+//                    0 -> {
+//                        mActivity.setCameraStatus("addPot")
+//                        mActivity.requirePermissions(
+//                            arrayOf(android.Manifest.permission.CAMERA),
+//                            PERMISSION_CAMERA
+//                        )
+//                    }
+//
+//                    1 -> {
+//                        val plantBottomSheet = PlantBottomSheet(requireContext())
+//                        plantBottomSheet.show(
+//                            mActivity.supportFragmentManager,
+//                            plantBottomSheet.tag
+//                        )
+//                    }
+//                }
+//            }
+//            dialog.setNegativeButton(
+//                "취소",
+//                DialogInterface.OnClickListener { dialog, which ->
+//                    dialog.dismiss()
+//                })
+//            dialog.show()
+//        }
+
         return rootView
     }
 
     private fun findView(view: View) {
+        firstView = view.findViewById(R.id.firstView)
+        blankView = view.findViewById(R.id.blankView)
         difficultyChipGroup = view.findViewById(R.id.difficultyChipGroup)
         luxChipGroup = view.findViewById(R.id.luxChipGroup)
         growthChipGroup = view.findViewById(R.id.growthChipGroup)
-
+        rv = view.findViewById(R.id.dictRecyclerView)
+        recmmView = view.findViewById(R.id.recmmView)
+        recmRv = view.findViewById(R.id.recmRecyclerView)
 
         difficultyEasy = view.findViewById(R.id.difficultyEasy)
         difficultyMedium = view.findViewById(R.id.difficultyMedium)
@@ -216,6 +250,33 @@ class SearchFragment : Fragment() {
         growthFleshy = view.findViewById(R.id.growthFleshy)
         growthCrawl = view.findViewById(R.id.growthCrawl)
         growthGrass = view.findViewById(R.id.growthGrass)
+    }
+
+    private fun recyclerViewSetting() {
+        rvAdapter = DictRVAdapter(emptyArray())
+        rv.layoutManager = GridLayoutManager(activity, 3)
+        rv.adapter = rvAdapter
+//        recmAdapter = DictRVAdapter(emptyArray())
+//        recmRv.adapter = recmAdapter
+
+        recmRv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        recmRv.adapter = rvAdapter
+
+        rvAdapter.itemClick = object : DictRVAdapter.ItemClick {
+            override fun onClick(view: View, position: Int) {
+                val bundle = Bundle().apply {
+                    putString("plant_id", plants!![position].plantId.toString())
+                }
+
+                val passBundleBFragment = SearchDetailFragment().apply {
+                    arguments = bundle
+                }
+
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fl_container, passBundleBFragment)
+                    .commit()
+            }
+        }
     }
 
     private fun filterChipGroup() {
@@ -272,14 +333,14 @@ class SearchFragment : Fragment() {
     private fun requestSearchPlant() {
         plantName = autoCompleteTextView.text.toString()
 
-        Log.d("SearchFragment","requestSearchPlant() api 호출 식물이름 $plantName")
-        Log.d("SearchFragment","requestSearchPlant() api 호출 난이도 $difficulty1 $difficulty2 $difficulty3")
-        Log.d("SearchFragment","requestSearchPlant() api 호출 빛 $lux1 $lux2 $lux3")
-        Log.d("SearchFragment","requestSearchPlant() api 호출 생육 $growth1 $growth2 $growth3")
-        val retrofit = Retrofit.Builder()
-            .baseUrl(GlobalVariables.getBaseUrl())
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
+        Log.d("SearchFragment", "requestSearchPlant() api 호출 식물이름 $plantName")
+        Log.d(
+            "SearchFragment",
+            "requestSearchPlant() api 호출 난이도 $difficulty1 $difficulty2 $difficulty3"
+        )
+        Log.d("SearchFragment", "requestSearchPlant() api 호출 빛 $lux1 $lux2 $lux3")
+        Log.d("SearchFragment", "requestSearchPlant() api 호출 생육 $growth1 $growth2 $growth3")
+        val retrofit = RetrofitClient.basicClient()!!
 
         val plantSearchService = retrofit.create(SearchService::class.java)
 
@@ -291,11 +352,11 @@ class SearchFragment : Fragment() {
             lux1,
             lux2,
             lux3,
+            growth5, // 다육형
             growth1,
             growth2,
             growth3,
             growth4,
-            growth5
         )
             .enqueue(object : Callback<PlantSearchResponse> {
                 override fun onResponse(
@@ -304,24 +365,116 @@ class SearchFragment : Fragment() {
                 ) {
                     if (response.code() == 200) {
                         val searchBody = response.body()
+                        Log.d("SearchFragment", "requestSearchPlant() api 성공 $searchBody")
                         if (searchBody != null) {
                             plants = searchBody.plants
-                            rvAdapter.setData(plants)
+                            Log.d("SearchFragment", "onResponse() 요청된 것 보기 $plants")
+                            recmmView.visibility = View.GONE
+                            firstView.visibility = View.GONE
+                            blankView.visibility = View.GONE
+                            rv.visibility = View.VISIBLE
+                            rvAdapter.setData(plants!!)
                         }
-
+                    } else {
+                        Log.d("SearchFragment", "onResponse() 아무것도 값이 없어요")
+                        rv.visibility = View.GONE
+                        recmmView.visibility = View.GONE
+                        firstView.visibility = View.GONE
+                        blankView.visibility = View.VISIBLE
                     }
                 }
 
                 override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
-                    TODO("Not yet implemented")
+                    Log.d("SearchFragment", "requestSearchPlant() api 실패2 ")
                 }
             })
     }
 
-    private fun search(targetText: String) {
+    private fun search(targetText: String?) {
         if (targetText == "") {
-            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
+            Log.d("SearchFragment","search() 여기 들어오나?")
+            requestRecommendations()
+//            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
         }
-        requestSearchPlant()
+        else {
+            requestSearchPlant()
+        }
+    }
+
+    private fun requestRecommendations() {
+//        val retrofit = RetrofitClient.basicClient()!!
+//        val searchService = retrofit.create(SearchService::class.java)
+//        searchService.getRecomm(UserData.getUserPK())
+//            .enqueue(object : Callback<PlantSearchResponse> {
+//                override fun onResponse(
+//                    call: Call<PlantSearchResponse>,
+//                    response: Response<PlantSearchResponse>
+//                ) {
+//                    if (response.code() == 200) {
+//                        val searchBody = response.body()
+//                        Log.d("SearchFragment", "requestRecommendations() api 성공 $searchBody")
+//                        if (searchBody != null) {
+//                            plants = searchBody.plants
+//                            if (plants == null) {
+//                                rv.visibility = View.GONE
+//                                firstView.visibility = View.VISIBLE
+//                            } else {
+//                                rvAdapter.setData(plants!!)
+//                            }
+//                        }
+//                    } else
+//                        Log.d("SearchFragment", "requestRecommendations() api 실패1 ")
+//                }
+//
+//                override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
+//                }
+//            })
+        plants = null
+        if (plants == null) {
+            rv.visibility = View.GONE
+            recmmView.visibility = View.GONE
+            firstView.visibility = View.VISIBLE
+            blankView.visibility = View.GONE
+        }
+        else {
+            rv.visibility = View.GONE
+            recmmView.visibility = View.VISIBLE
+            firstView.visibility = View.GONE
+            blankView.visibility = View.GONE
+        }
+    }
+
+    private fun addPot(activity: MainActivity) {
+        firstView.setOnClickListener {
+            var dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("새 화분 등록하기")
+            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+
+            dialog.setItems(dialogArray) { _, which ->
+                when (which) {
+                    0 -> {
+                        activity.setCameraStatus("addPot")
+                        activity.requirePermissions(
+                            arrayOf(android.Manifest.permission.CAMERA),
+                            PERMISSION_CAMERA
+                        )
+                    }
+
+                    1 -> {
+                        val plantBottomSheet = PlantBottomSheet(requireContext())
+                        plantBottomSheet.show(
+                            activity.supportFragmentManager,
+                            plantBottomSheet.tag
+                        )
+                    }
+                }
+            }
+            dialog.setNegativeButton(
+                "취소",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            dialog.show()
+        }
     }
 }

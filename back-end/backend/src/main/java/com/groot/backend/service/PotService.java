@@ -69,7 +69,7 @@ public interface PotService {
      * toggle survival status
      * @param userPK
      * @param potId
-     * @return next status (survival or not)
+     * @return next status (survival or not) : resurrection is not implemented yet
      * @throws NoSuchElementException when pot not found
      * @throws AccessDeniedException for unauthorized access
      */

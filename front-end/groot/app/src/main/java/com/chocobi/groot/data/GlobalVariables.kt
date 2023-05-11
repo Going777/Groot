@@ -49,9 +49,6 @@ class GlobalVariables : Application() {
             return BASE_URL
         }
 
-        fun setBaseUrl(url: String) {
-            BASE_URL = url
-        }
 
 
         fun fetchUserData() {
@@ -133,6 +130,8 @@ class GlobalVariables : Application() {
 
                     override fun onFailure(call: Call<RefreshResponse>, t: Throwable) {
                         Log.d(TAG, "refresh 실패")
+                        prefs.setString("access_token", "")
+                        prefs.setString("refresh_token", "")
                     }
                 })
 
@@ -199,22 +198,22 @@ class GlobalVariables : Application() {
         prefs = PreferenceUtil(applicationContext)
 
 
-        val tokenAction = CoroutineScope(Dispatchers.IO).async {
-            accessToken = prefs.getString("access_token", "")
-        }
-
-        val refreshAction = CoroutineScope(Dispatchers.IO).async {
-            refreshToken = prefs.getString("refresh_token", "")
-        }
-
-        val userAction = CoroutineScope(Dispatchers.Main).launch {
-            tokenAction.await()
-            if (accessToken != "") {
-                getUser()
-            } else {
-                refreshAction.await()
-            }
-        }
+//        val tokenAction = CoroutineScope(Dispatchers.IO).async {
+//            accessToken = prefs.getString("access_token", "")
+//        }
+//
+//        val refreshAction = CoroutineScope(Dispatchers.IO).async {
+//            refreshToken = prefs.getString("refresh_token", "")
+//        }
+//
+//        val userAction = CoroutineScope(Dispatchers.Main).launch {
+//            tokenAction.await()
+//            if (accessToken != "") {
+//                getUser()
+//            } else {
+//                refreshAction.await()
+//            }
+//        }
     }
 
 }

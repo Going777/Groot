@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -23,17 +25,20 @@ public class CommentResponseDTO {
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
 
-    public Page<CommentResponseDTO> toDtoList(Page<CommentEntity> commentEntities) {
-        Page<CommentResponseDTO> dtoList = commentEntities.map(a ->
-                CommentResponseDTO.builder()
-                        .id(a.getId())
-                        .userPK(a.getUserEntity().getId())
-                        .nickName(a.getUserEntity().getNickName())
-                        .profile(a.getUserEntity().getProfile())
-                        .content(a.getContent())
-                        .createTime(a.getCreatedDate())
-                        .updateTime(a.getLastModifiedDate())
-                        .build());
+    public List<CommentResponseDTO> toDtoList(List<CommentEntity> commentEntities) {
+        List dtoList = new ArrayList();
+        for(CommentEntity comment: commentEntities){
+            dtoList.add(CommentResponseDTO.builder()
+                    .id(comment.getId())
+                    .userPK(comment.getUserEntity().getId())
+                    .nickName(comment.getUserEntity().getNickName())
+                    .profile(comment.getUserEntity().getProfile())
+                    .content(comment.getContent())
+                    .createTime(comment.getCreatedDate())
+                    .updateTime(comment.getLastModifiedDate())
+                    .build());
+        }
+
         return dtoList;
     }
 }

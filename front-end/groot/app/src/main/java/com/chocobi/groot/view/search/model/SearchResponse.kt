@@ -35,15 +35,22 @@ data class PlantDetailData(
     val img: String
 )
 
-
 data class PlantIdentifyResponse(
     val msg: String,
-    val plant: PlantIdentifyData
+    val plant: PlantIdentifyData,
+    val character:CharacterData
 )
 
 data class PlantIdentifyData(
     val plantId: Int,
     val krName: String,
     val sciName: String,
+    val grwType: String,
+    val mgmtLevel: String,
     val score: Int
+)
+
+data class CharacterData(
+    val glbPath: String,
+    val pngPath: String,
 )

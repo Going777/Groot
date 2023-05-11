@@ -14,6 +14,9 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -25,7 +28,13 @@ import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.community.model.PopularTagResponse
+import com.chocobi.groot.view.intro.IntroActivity
+import com.chocobi.groot.view.intro.IntroDataService
+import com.chocobi.groot.view.intro.PlantNamesResponse
+import com.chocobi.groot.view.intro.RegionNameResponse
 import com.chocobi.groot.view.login.LoginActivity
+import com.chocobi.groot.view.login.LoginService
+import com.chocobi.groot.view.login.SubscribeResponse
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
 import com.chocobi.groot.view.pot.PotDiaryFragment
@@ -37,7 +46,10 @@ import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
@@ -77,17 +89,14 @@ class MainActivity : AppCompatActivity() {
 
     //        fragment 조작
     fun changeFragment(index: String) {
+        var fragment: Fragment? = null
         when (index) {
             "pot" -> {
                 bnv_main.run { selectedItemId = R.id.potFragment }
             }
 
             "pot_diary" -> {
-                val potDiaryFragment = PotDiaryFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, potDiaryFragment)
-                    .commit()
+                fragment = PotDiaryFragment()
             }
 
             "pot_diary_create" -> {
@@ -96,13 +105,9 @@ class MainActivity : AppCompatActivity() {
                 bundle.putString("potName", potName)
                 bundle.putString("potPlant", potPlant)
                 bundle.putString("potCharImg", potCharImg)
-                val potDiaryCreateFragment = PotDiaryCreateFragment()
-                potDiaryCreateFragment.arguments = bundle
 
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, potDiaryCreateFragment)
-                    .commit()
+                fragment = PotDiaryCreateFragment()
+                fragment.arguments = bundle
             }
 
             "pot_detail" -> {
@@ -110,55 +115,38 @@ class MainActivity : AppCompatActivity() {
                 bundle.putInt("potId", potId)
                 bundle.putString("potName", potName)
                 bundle.putString("potPlant", potPlant)
-                val potDetailFragment = PotDetailFragment()
-                potDetailFragment.arguments = bundle
 
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, potDetailFragment)
-                    .commit()
+                fragment = PotDetailFragment()
+                fragment.arguments = bundle
             }
 
             "search" -> {
-                val searchFragment = SearchFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, searchFragment)
-                    .commit()
+                fragment = SearchFragment()
             }
 
             "search_detail" -> {
-                Log.d(TAG, "search detail 호출")
-                val searchDetailFragment = SearchDetailFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, searchDetailFragment)
-                    .commit()
+                fragment = SearchDetailFragment()
             }
 
             "community_share" -> {
-                val communityShareFragment = CommunityShareFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, communityShareFragment)
-                    .commit()
+                fragment = CommunityShareFragment()
             }
 
             "community_post" -> {
-                val communityPostFragment = CommunityPostFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, communityPostFragment)
-                    .commit()
+                fragment = CommunityPostFragment()
             }
 
             "setting" -> {
-                val settingFragment = SettingFragment()
-                supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.fl_container, settingFragment)
-                    .commit()
+                fragment = SettingFragment()
             }
+        }
+        if (fragment != null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.fl_container, fragment, index)
+                .addToBackStack(index)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commitAllowingStateLoss()
         }
     }
 
@@ -190,8 +178,23 @@ class MainActivity : AppCompatActivity() {
         } else {
             // isAllPermissionsGranted : 권한이 모두 승인 되었는지 여부 저장
             // all 메서드를 사용하면 배열 속에 들어 있는 모든 값을 체크할 수 있다.
-            val isAllPermissionsGranted =
-                permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
+            var isAllPermissionsGranted = false
+            if (requestCode == PERMISSION_GALLERY) {
+                isAllPermissionsGranted =
+                    arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES).all {
+                        checkSelfPermission(
+                            it
+                        ) == PackageManager.PERMISSION_GRANTED
+                    } || arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE).all {
+                        checkSelfPermission(
+                            it
+                        ) == PackageManager.PERMISSION_GRANTED
+                    }
+            } else {
+
+                isAllPermissionsGranted =
+                    permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
+            }
             if (isAllPermissionsGranted) {
                 permissionGranted(requestCode)
             } else {
@@ -332,6 +335,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        requestSubscribe()
+
+        //        화분 정보 받아왔는지 체크
+        val isExistPlantData = GlobalVariables.prefs.getString("plant_names", "")
+        if (isExistPlantData == "") {
+            Toast.makeText(this, "지역 / 식물 다 받아올 거임", Toast.LENGTH_SHORT).show()
+//        화분 이름 받아오기
+            getPlantNameList()
+//            지역 받아오기
+            getRegionNameList()
+        } else {
+//            GlobalVariables.prefs.setString("plant_names", "")
+            Toast.makeText(this, "지역 / 식물 다 받아옴", Toast.LENGTH_SHORT).show()
+        }
+
 //        인기태그 가져오기
         getPopularTag()
 
@@ -339,7 +358,7 @@ class MainActivity : AppCompatActivity() {
         potName = intent.getStringExtra("potName").toString()
         potPlant = intent.getStringExtra("potPlant").toString()
         var refreshToken = GlobalVariables.prefs.getString("refresh_token", "")
-        if (refreshToken == "") {
+        if (refreshToken == "" || refreshToken == null) {
             var intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
         }
@@ -369,7 +388,11 @@ class MainActivity : AppCompatActivity() {
                         // 다른 프래그먼트 화면으로 이동하는 기능
                         val homeFragment = PotFragment()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fl_container, homeFragment).commit()
+                            .replace(R.id.fl_container, homeFragment, "pot")
+                            .addToBackStack("pot")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commitAllowingStateLoss()
+//                            .commit()
 //                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 0
@@ -381,7 +404,11 @@ class MainActivity : AppCompatActivity() {
                     R.id.searchFragment -> {
                         val boardFragment = SearchFragment()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fl_container, boardFragment).commit()
+                            .replace(R.id.fl_container, boardFragment, "search")
+                            .addToBackStack("search")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commitAllowingStateLoss()
+//                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 40
 //                        params.rightMargin = 40
@@ -391,7 +418,11 @@ class MainActivity : AppCompatActivity() {
                     R.id.communityFragment -> {
                         val boardFragment = CommunityFragment()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fl_container, boardFragment).commit()
+                            .replace(R.id.fl_container, boardFragment, "community")
+                            .addToBackStack("community")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commitAllowingStateLoss()
+//                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 40
 //                        params.rightMargin = 40
@@ -401,7 +432,11 @@ class MainActivity : AppCompatActivity() {
                     R.id.userFragment -> {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
-                            .replace(R.id.fl_container, boardFragment).commit()
+                            .replace(R.id.fl_container, boardFragment, "user")
+                            .addToBackStack("user")
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                            .commitAllowingStateLoss()
+//                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
 //                        params.leftMargin = 20
 //                        params.rightMargin = 20
@@ -429,6 +464,102 @@ class MainActivity : AppCompatActivity() {
             }
             changeFragment(toPage)
         }
+    }
+
+
+    private fun updateBottomMenu(navigation: BottomNavigationView) {
+        val tag1: Fragment? = supportFragmentManager.findFragmentByTag("pot")
+        val tag2: Fragment? = supportFragmentManager.findFragmentByTag("search")
+        val tag3: Fragment? = supportFragmentManager.findFragmentByTag("community")
+        val tag4: Fragment? = supportFragmentManager.findFragmentByTag("user")
+        Log.d(TAG, "${tag1} ${tag2} ${tag3} ${tag4}")
+
+        if (tag1 != null && tag1.isVisible()) navigation.getMenu().findItem(R.id.potFragment)
+            .setChecked(true)
+        else if (tag2 != null && tag2.isVisible()) navigation.getMenu()
+            .findItem(R.id.searchFragment).setChecked(true)
+        else if (tag3 != null && tag3.isVisible()) navigation.getMenu()
+            .findItem(R.id.communityFragment).setChecked(true)
+        else if (tag4 != null && tag4.isVisible()) navigation.getMenu().findItem(R.id.userFragment)
+            .setChecked(true)
+        else {
+            var intent = Intent(this, IntroActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val bnv = findViewById<View>(R.id.bottom_navigation) as BottomNavigationView
+        updateBottomMenu(bnv)
+    }
+
+
+    private fun getPlantNameList() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(GlobalVariables.getBaseUrl())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val IntroDataService = retrofit.create(IntroDataService::class.java)
+
+//        요청 보내기
+        IntroDataService.requestPlantNames().enqueue(object : Callback<PlantNamesResponse> {
+            //            요청 성공
+            override fun onResponse(
+                call: Call<PlantNamesResponse>,
+                response: Response<PlantNamesResponse>
+            ) {
+                if (response.code() == 200) {
+                    val plantNameBody = response.body()
+
+                    Log.d("IntroActivity", "onResponse(), 식물 $plantNameBody")
+//                    전역 변수에 식물 이름 리스트 저장
+                    if (plantNameBody != null) {
+                        val plantNames = plantNameBody.nameList.joinToString()
+                        GlobalVariables.prefs.setString("plant_names", plantNames)
+                    }
+                }
+            }
+
+            //            요청 실패
+            override fun onFailure(call: Call<PlantNamesResponse>, t: Throwable) {
+                Log.d(TAG, "onFailure() 식물 이름 가져오기")
+            }
+        })
+    }
+
+    private fun getRegionNameList() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(GlobalVariables.getBaseUrl())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val IntroDataService = retrofit.create(IntroDataService::class.java)
+
+//        요청 보내기
+        IntroDataService.requestRegionNames().enqueue(object : Callback<RegionNameResponse> {
+            //            요청 성공
+            override fun onResponse(
+                call: Call<RegionNameResponse>,
+                response: Response<RegionNameResponse>
+            ) {
+                if (response.code() == 200) {
+                    val regionNameBody = response.body()
+
+                    Log.d("IntroActivity", "지역 onResponse() / $regionNameBody")
+//                    전역 변수에 지역 리스트 저장
+                    if (regionNameBody != null) {
+                        val plantNames = regionNameBody.regions.joinToString()
+                        GlobalVariables.prefs.setString("region_names", plantNames)
+                    }
+                }
+            }
+
+            //            요청 실패
+            override fun onFailure(call: Call<RegionNameResponse>, t: Throwable) {
+                Log.d("IntroActivity", "onFailure() 지역 가져오기")
+            }
+        })
     }
 
     private fun getPopularTag() {

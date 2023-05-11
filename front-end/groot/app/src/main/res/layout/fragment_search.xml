@@ -31,8 +31,7 @@
             android:completionThreshold="1"
             android:gravity="center_vertical"
             android:hint="식물 이름을 입력해 주세요"
-            android:textColorHint="@color/grey"
-            />
+            android:textColorHint="@color/grey" />
 
         <ImageButton
             android:id="@+id/searchPlantBtn"
@@ -243,27 +242,158 @@
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="match_parent">-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/dictRecyclerView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
-
-    <FrameLayout
-        android:id="@+id/dictFrameLayoutProgress"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/firstView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black"
-        android:clickable="true"
-        android:focusable="true"
+        android:layout_height="150dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/radius10"
+        android:backgroundTint="@color/background"
         android:visibility="gone">
 
-        <ProgressBar
-            android:id="@+id/dictProgressBar"
+        <LinearLayout
+            android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
-    </FrameLayout>
+            android:layout_marginLeft="20dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="화분을 등록하면"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="맞춤 식물을 추천해드려요"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="5dp"
+                android:text="첫 화분 등록하기"
+                android:textColor="@color/main"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="110dp"
+            android:layout_height="120dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/char_egg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/blankView"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginHorizontal="10dp"
+        android:background="@drawable/radius10"
+        android:backgroundTint="@color/white"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/logo_grey"
+                app:tint="@color/light_grey" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginVertical="15dp"
+                android:text="일치하는 식물이 없어요"
+                android:textColor="@color/grey"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/dictRecyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/recmmView"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginHorizontal="10dp"
+            android:backgroundTint="@color/background"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="AI 추천 식물"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recmRecyclerView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+
+    <!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+
+    <!--    <FrameLayout-->
+    <!--        android:id="@+id/dictFrameLayoutProgress"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:background="@color/black"-->
+    <!--        android:clickable="true"-->
+    <!--        android:focusable="true"-->
+    <!--        android:visibility="gone">-->
+
+    <!--        <ProgressBar-->
+    <!--            android:id="@+id/dictProgressBar"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_gravity="center" />-->
+    <!--    </FrameLayout>-->
 
 
     <!--    <ImageButton-->

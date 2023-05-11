@@ -1,9 +1,18 @@
 package com.chocobi.groot.view.pot.model
 
+import com.chocobi.groot.data.ModelDiary
+import com.chocobi.groot.view.community.model.Pageable
+
 data class PotResponse(
     val msg: String,
     val pot: Pot,
-    val plant: Plant
+    val plant: Plant,
+    val plan: List<Plan>
+)
+
+data class Plan(
+    val code: Int,
+    val dateTime: DateTime,
 )
 
 data class PotImgResponse(
@@ -14,6 +23,32 @@ data class PotImgResponse(
 data class PotListResponse(
     val msg: String,
     val pots: List<Pot>,
+)
+
+data class DateDiaryResponse(
+    val result: String,
+    val msg: String,
+    val diary: List<Diary>
+)
+
+data class DiaryListResponse(
+    val result: String,
+    val msg: String,
+    val diary: Diaries
+)
+
+data class Diaries(
+    val total: Int,
+    val content: List<ModelDiary>,
+    val pageable: Pageable
+)
+data class Diary(
+    val potId: Int,
+    val userPK: Int,
+    val code: Int,
+    val potName: String,
+    val imgPath: String?,
+    val done: Boolean
 )
 
 data class Pot(
@@ -78,4 +113,20 @@ class DiaryRequest internal constructor(
     val bug: Boolean?,
     val sun: Boolean?,
     val nutrients: Boolean?
+)
+
+data class DiaryCheckStatusResponse(
+    val result: String,
+    val msg: String,
+    val diary: DiaryCheckStatus,
+)
+
+data class DiaryCheckStatus(
+    val potId: Int,
+    val userPK: Int,
+    val water: Boolean?,
+    val pruning: Boolean?,
+    val nutrients: Boolean?,
+    val bug: Boolean?,
+    val sun: Boolean?,
 )

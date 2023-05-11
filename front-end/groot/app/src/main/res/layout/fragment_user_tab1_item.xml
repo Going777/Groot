@@ -6,10 +6,10 @@
     android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/potImg"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/sample_plant_image"
+        android:background="@drawable/circle_button_background"
         app:civ_border_color="#fff"
         app:civ_border_width="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -18,13 +18,13 @@
 
 
     <androidx.cardview.widget.CardView
-        android:translationZ="-5dp"
-        android:id="@+id/cardView2"
+        android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:layout_marginLeft="40dp"
+        android:translationZ="-5dp"
         app:cardBackgroundColor="@color/background"
         app:cardCornerRadius="20dp"
-        android:layout_marginLeft="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="50dp">
@@ -33,23 +33,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginLeft="-40dp"
             android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginLeft="-40dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/potName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
-                android:text="산세산세"
+                android:text=""
                 android:textSize="18dp"
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/potPlant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="산세베리아" />
+                android:text="" />
         </LinearLayout>
 
         <LinearLayout
@@ -61,19 +62,21 @@
             android:orientation="vertical">
 
             <com.google.android.material.chip.Chip
+                android:id="@+id/potDateChip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="D+39"
                 android:textColor="@color/white"
                 android:textSize="14dp"
-                app:chipStartPadding="0dp"
+                app:chipBackgroundColor="@color/chip"
                 app:chipEndPadding="0dp"
-                app:chipBackgroundColor="@color/chip" />
+                app:chipStartPadding="0dp" />
 
             <TextView
-                android:layout_marginTop="-5dp"
+                android:id="@+id/potDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-5dp"
                 android:text="2023-03-01" />
 
         </LinearLayout>

@@ -35,6 +35,7 @@ interface SearchService {
         @Query("page") page: Int? = null,
     ): Call<PlantSearchResponse>
 
+
     @Headers(
         "accept: application/json",
         "content-type: application/json"
@@ -45,10 +46,13 @@ interface SearchService {
     ): Call<PlantDetailResponse>
 
     @Multipart
-    @POST("api/plants/identify")
+    @POST("/api/plants/identify")
     fun identifyPlant(
         @Part filePart: MultipartBody.Part
     ): Call<PlantIdentifyResponse>
 
-
+    @GET("/api/plants/{plantId}/introductions")
+    fun getRecomm(
+        @Path("plantId") plantId: Int
+    ): Call<PlantIdentifyResponse>
 }

@@ -1,195 +1,81 @@
 package com.chocobi.groot.view.pot.adapter
 
-import android.graphics.Bitmap
-import android.text.TextUtils
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.view.doOnLayout
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.FutureTarget
-import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.ModelDiary
-import java.lang.ref.WeakReference
 
-class PotDiaryListRVAdapter : RecyclerView.Adapter<PotDiaryListRVAdapter.ViewHolder>() {
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.R
+import com.chocobi.groot.view.pot.model.DiaryListResponse
+
+class PotDiaryListRVAdapter : RecyclerView.Adapter<DiaryItemViewHolder>() {
 
     interface RecyclerViewAdapterDelegate {
         fun onLoadMore()
     }
 
-    private var items: MutableList<ModelDiary> = mutableListOf()
+    private var mutableList: MutableList<DiaryListResponse> = mutableListOf()
+
     var delegate: RecyclerViewAdapterDelegate? = null
-//    private lateinit var postBtnClickListner: ItemClickListener
-//    private lateinit var scanBtnClickListner: ItemClickListener
-//    private lateinit var detailBtnClickListner: ItemClickListener
+
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ViewHolder {
+    ): DiaryItemViewHolder {
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_pot_diary_list_item, parent, false)
-        return ViewHolder(view)
+        return DiaryItemViewHolder(view)
     }
 
     //    전체 리사이클러뷰의 개수
     override fun getItemCount(): Int {
-        return items.size
+        return mutableList.size
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.item = items[position]
-//        holder.delegate = object : PotDiaryListRVAdapter.ViewHolder.ItemViewHolderDelegate {
-//            override fun onItemViewClick(diaryItem: ModelDiary) {
-//                Log.d("??", "I click ${diaryItem.id}")
-//                val context = holder.itemView.context
+    override fun onBindViewHolder(holder: DiaryItemViewHolder, position: Int) {
+        holder.diaryListResponse = mutableList[position]
+
+
+        holder.delegate = object : DiaryItemViewHolder.ItemViewHolderDelegate {
+            override fun onItemViewClick(diaryListResponse: DiaryListResponse) {
+                val context = holder.itemView.context
 //                if (context is FragmentActivity) {
 //                    val fragmentManager = context.supportFragmentManager
 //                    val communityDetailFragment = CommunityDetailFragment()
+//
+//                    // articleId 값을 CommunityDetailFragment에 전달하기 위해 인수(bundle)를 설정합니다.
+//                    val args = Bundle()
+//                    args.putInt("articleId", diaryListResponse.articles.content[0].articleId)
+//                    communityDetailFragment.arguments = args
+//                    Log.d("CommunityDetailFragmentArticleId", communityDetailFragment.arguments.toString())
+//
 //                    fragmentManager.beginTransaction()
 //                        .replace(R.id.fl_container, communityDetailFragment)
 //                        .addToBackStack(null)
 //                        .commit()
 //                }
-//            }
-//        }
+            }
+
+        }
+
 
         holder.updateView()
 
-        if (position == items.size - 1) {
+        if (position == mutableList.size - 1) {
             delegate?.onLoadMore()
         }
 
     }
 
-    fun reload(mutableList: MutableList<ModelDiary>) {
-        this.items.clear()
-        this.items.addAll(mutableList)
+    fun reload(mutableList: MutableList<DiaryListResponse>) {
+        this.mutableList.clear()
+        this.mutableList.addAll(mutableList)
         notifyDataSetChanged()
     }
 
-    fun loadMore(mutableList: MutableList<ModelDiary>) {
-        this.items.addAll(mutableList)
-        notifyItemRangeChanged(this.items.size - mutableList.size + 1, mutableList.size)
+    fun loadMore(mutableList: MutableList<DiaryListResponse>) {
+        this.mutableList.addAll(mutableList)
+        notifyItemRangeChanged(this.mutableList.size - mutableList.size + 1, mutableList.size)
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-//        interface ItemViewHolderDelegate {
-//            fun onItemViewClick(diaryItem: ModelDiary) {
-//                Log.d("ItemViewHolder", "clicked")
-//            }
-//        }
-
-        private var view: WeakReference<View> = WeakReference(itemView)
-
-        private lateinit var potNickname: TextView
-        private lateinit var postedTime: TextView
-        private lateinit var diaryPhoto: ImageView
-        private lateinit var diaryContent: TextView
-        private lateinit var detailOption: TextView
-        private lateinit var waterBadge: ImageView
-        private lateinit var potBadge: ImageView
-        private lateinit var bugBadge: ImageView
-        private lateinit var sunnnyBadge: ImageView
-        private lateinit var pillBadge: ImageView
-
-        //        var delegate: ItemViewHolderDelegate? = null
-        lateinit var item: ModelDiary
-
-        init {
-            findView()
-//            setListener()
-        }
-
-        private fun findView() {
-            view.get()?.let {
-                potNickname = it.findViewById(R.id.potNickname)
-                postedTime = it.findViewById(R.id.postedTime)
-                diaryPhoto = it.findViewById(R.id.diaryPhoto)
-
-                diaryContent = it.findViewById(R.id.diaryContent)
-                detailOption = it.findViewById(R.id.detailOption)
-
-                waterBadge = it.findViewById(R.id.waterBadge)
-                potBadge = it.findViewById(R.id.potBadge)
-                bugBadge = it.findViewById(R.id.bugBadge)
-                sunnnyBadge = it.findViewById(R.id.sunnnyBadge)
-                pillBadge = it.findViewById(R.id.pillBadge)
-            }
-        }
-
-//        private fun setListener() {
-//            view.get()?.setOnClickListener {
-//                delegate?.onItemViewClick(item)
-//                Log.d("??", "aaaaaaaaaaaaaaaaaaaaaaaaaa")
-//            }
-//        }
-
-        fun updateView() {
-            potNickname.text = item.potName
-            postedTime.text = item.createDate
-            diaryPhoto.post {
-                view.get()?.let {
-                    ThreadUtil.startThread {
-                        val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
-                            .asBitmap()
-                            .load(item.image)
-                            .submit(diaryPhoto.width, diaryPhoto.height)
-                        val bitmap = futureTarget.get()
-                        ThreadUtil.startUIThread(0) {
-                            diaryPhoto.setImageBitmap(bitmap)
-                        }
-                    }
-                }
-            }
-            diaryContent.text = item.content
-            diaryContent.run {
-                doOnLayout {
-                    val lineCount = lineCount
-                    val maxLine = 2
-                    if (lineCount > maxLine) {
-                        maxLines = maxLine
-                        ellipsize = TextUtils.TruncateAt.END
-                        detailOption.visibility = View.VISIBLE
-                    } else {
-                        detailOption.visibility = View.GONE
-                    }
-                }
-            }
-            detailOption.setOnClickListener {
-                when (diaryContent.maxLines) {
-                    2 -> {
-                        diaryContent.maxLines = 100
-                        detailOption.text = "간단히 보기"
-                    }
-                    else -> {
-                        diaryContent.maxLines = 2
-                        detailOption.text = "자세히 보기"
-                    }
-                }
-            }
-
-            if (item.water) {
-                waterBadge.visibility = View.VISIBLE
-            }
-            if (item.pruning) {
-                potBadge.visibility = View.VISIBLE
-            }
-            if (item.bug) {
-                bugBadge.visibility = View.VISIBLE
-            }
-            if (item.sun) {
-                sunnnyBadge.visibility = View.VISIBLE
-            }
-            if (item.nutrients) {
-                pillBadge.visibility = View.VISIBLE
-            }
-        }
-    }
 }

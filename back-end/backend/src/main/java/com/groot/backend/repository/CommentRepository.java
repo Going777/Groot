@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<CommentEntity, Long> {
     List<CommentEntity> findByArticleId(Long articleId);
-    Page<CommentEntity> findAllByArticleId(Long articleId, PageRequest pageRequest);
+    List<CommentEntity> findAllByArticleIdOrderByCreatedDateAsc(Long articleId);
     void deleteById(Long commentId);
 }

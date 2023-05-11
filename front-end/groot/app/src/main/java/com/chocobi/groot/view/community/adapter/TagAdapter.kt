@@ -29,6 +29,7 @@ class TagAdapter : RecyclerView.Adapter<TagAdapter.TagViewHolder>() {
 
         fun bind(tag: String) {
             tagTextView.text = tag
+
         }
     }
 
@@ -40,6 +41,11 @@ class TagAdapter : RecyclerView.Adapter<TagAdapter.TagViewHolder>() {
     override fun onBindViewHolder(holder: TagViewHolder, position: Int) {
         val tag = tagList[position]
         holder.bind(tag)
+
+        holder.itemView.setOnClickListener {
+            tagList.removeAt(position)
+            notifyDataSetChanged()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -62,3 +68,4 @@ class TagHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tagTextView.setOnEditorActionListener(null)
     }
 }
+

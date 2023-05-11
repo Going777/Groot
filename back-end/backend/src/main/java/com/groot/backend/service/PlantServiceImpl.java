@@ -1,11 +1,10 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PlantSearchDTO;
-import com.groot.backend.dto.response.PlantDetailDTO;
-import com.groot.backend.dto.response.PlantIdentificationDTO;
-import com.groot.backend.dto.response.PlantThumbnailDTO;
-import com.groot.backend.dto.response.PotListDTO;
+import com.groot.backend.dto.response.*;
+import com.groot.backend.entity.CharacterEntity;
 import com.groot.backend.entity.PlantEntity;
+import com.groot.backend.repository.CharacterRepository;
 import com.groot.backend.repository.PlantRepository;
 import com.groot.backend.util.JsonParserUtil;
 import com.groot.backend.util.PlantCodeUtil;
@@ -42,6 +41,8 @@ public class PlantServiceImpl implements PlantService{
     private final Logger logger = LoggerFactory.getLogger(PlantServiceImpl.class);
 
     private final PlantRepository plantRepository;
+
+    private final CharacterRepository characterRepository;
 
     @Value("${plant.temp.dir}")
     private String plantTempDir;
@@ -102,10 +103,12 @@ public class PlantServiceImpl implements PlantService{
     @Override
     public List<PlantThumbnailDTO> plantList(PlantSearchDTO plantSearchDTO) {
         logger.info("search plant list");
-        List<PlantThumbnailDTO> ret = new ArrayList<>(12);
-        Pageable pageable = PageRequest.of(plantSearchDTO.getPage(), 12);
+        List<PlantThumbnailDTO> ret = new ArrayList<>(30);
+        Pageable pageable = PageRequest.of(plantSearchDTO.getPage(), 30);
 
-        List<PlantEntity> list = plantRepository.findByKrNameContains(plantSearchDTO.getName(), pageable);
+        List<PlantEntity> list = plantRepository.search(plantSearchDTO);
+
+        logger.info("{} plants found", list.size());
 
         list.forEach(plantEntity -> {
             ret.add(PlantThumbnailDTO.builder()
@@ -118,7 +121,7 @@ public class PlantServiceImpl implements PlantService{
     }
 
     @Override
-    public PlantIdentificationDTO identifyPlant(MultipartFile multipartFile) throws Exception {
+    public PlantWithCharacterDTO identifyPlant(MultipartFile multipartFile) throws Exception {
         logger.info("Identify by : {}", multipartFile.getOriginalFilename());
 
         File file = convertFile(multipartFile);
@@ -139,12 +142,45 @@ public class PlantServiceImpl implements PlantService{
         }
         else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
             logger.info("image file is not a plant");
-            return defaultReturn(0);
+            return PlantWithCharacterDTO.builder()
+                    .plantIdentificationDTO(defaultReturn(0))
+                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+                    .build();
         }
         else {
             logger.info("Plantnet request failed with response code : {}", response.getStatusCode());
             throw new Exception();
         }
+    }
+
+    @Override
+    public PlantEnvironmentDTO getAdequateEnv(Long plantId) throws Exception {
+        logger.info("Find plant : {}", plantId);
+
+        try {
+            PlantEntity plantEntity = plantRepository.findById(plantId).get();
+            int lightDemand = plantEntity.getLightDemand();
+
+            return PlantEnvironmentDTO.builder()
+                    .minLux(PlantCodeUtil.lightDemand[lightDemand][0])
+                    .maxLux(PlantCodeUtil.lightDemand[lightDemand][1])
+                    .build();
+
+        } catch (NoSuchElementException e) {
+            logger.info("Failed to find plant : {}", plantId);
+            throw e;
+        }
+    }
+
+    @Override
+    public PlantWithCharacterDTO getIntroduction(Long plantId) throws Exception {
+        logger.info("Find Plant : {}", plantId);
+        PlantEntity plantEntity = plantRepository.findById(plantId).get();
+
+        return PlantWithCharacterDTO.builder()
+                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, "0"))
+                    .characterAssetDTO(getAsset(plantEntity))
+                    .build();
     }
 
     /**
@@ -200,9 +236,9 @@ public class PlantServiceImpl implements PlantService{
     /**
      * search plant from db by scientific name
      * @param result top-k list with score
-     * @return plant info, sanse for not found
+     * @return plant info and character asset, sanse for not found
      */
-    private PlantIdentificationDTO searchFromDB(String[][] result) {
+    private PlantWithCharacterDTO searchFromDB(String[][] result) {
         logger.info("search {} from database", result[0][0]);
         String regex = "";
         for(int i=0; i< result.length; i++) {
@@ -226,14 +262,21 @@ public class PlantServiceImpl implements PlantService{
         }
 
         if(plantEntities.size() > 0) {
-            logger.info("1 depth searching found : {}", plantEntities.size());
+            logger.info("searching found : {}", plantEntities.size());
             PlantEntity plantEntity = plantEntities.get(0);
-            return buildIdentificationDTO(plantEntity, result[0][1]);
+
+            return PlantWithCharacterDTO.builder()
+                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, result[0][1]))
+                    .characterAssetDTO(getAsset(plantEntity))
+                    .build();
         }
         // return for not found
         else {
             logger.info("Failed to find plant from db (1 depth)");
-            return defaultReturn(11);
+            return PlantWithCharacterDTO.builder()
+                    .plantIdentificationDTO(defaultReturn(11))
+                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+                    .build();
         }
 //        return null;
     }
@@ -250,6 +293,22 @@ public class PlantServiceImpl implements PlantService{
                 .krName(plantEntity.getKrName())
                 .sciName(plantEntity.getSciName())
                 .score((int)(Float.parseFloat(score) * 100))
+                .grwType(plantEntity.getGrwType())
+                .mgmtLevel(PlantCodeUtil.mgmtLevelCode[plantEntity.getMgmtLevel()])
+                .build();
+    }
+
+    /**
+     * find character assets resources
+     * @return
+     */
+    private CharacterAssetDTO getAsset(PlantEntity plantEntity) {
+        CharacterEntity characterEntity =
+                characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(plantEntity.getGrwType()), 0);
+
+        return CharacterAssetDTO.builder()
+                .pngPath(characterEntity.getPngPath())
+                .glbPath(characterEntity.getGlbPath())
                 .build();
     }
 

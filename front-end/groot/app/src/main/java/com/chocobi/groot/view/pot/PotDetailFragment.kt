@@ -21,6 +21,8 @@ import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
+import com.chocobi.groot.view.pot.model.DateTime
+import com.chocobi.groot.view.pot.model.Plan
 import com.chocobi.groot.view.pot.model.Plant
 import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotResponse
@@ -42,6 +44,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     private val TAG = "PotDetailFragment"
     private var pot: Pot? = null
     private var plant: Plant? = null
+    private var plan: List<Plan>? = null
     private lateinit var characterSceneView: SceneView
     private lateinit var potNameText: TextView
     private lateinit var potPlantText: TextView
@@ -82,7 +85,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         settingBtn.setOnClickListener {
             val potBottomSheet = PotBottomSheet(requireContext(), this)
             potBottomSheet.setPotId(potId)
+            potBottomSheet.setPlantId(pot?.plantId ?: 0)
             potBottomSheet.setPotName(pot?.potName.toString())
+            potBottomSheet.setPotPlant(pot?.plantKrName.toString())
             potBottomSheet.show(
                 mActivity.supportFragmentManager,
                 potBottomSheet.tag
@@ -117,11 +122,6 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
 
 
 //        탭 조작
-        val tab1 = PotDetailTab1Fragment()
-        val tab2 = PotDetailTab2Fragment()
-        val tab3 = PotDetailTab3Fragment()
-        val tab4 = PotDetailTab4Fragment()
-        val tab5 = PotDetailTab5Fragment()
 
         var tabBtn1 = view.findViewById<Chip>(R.id.tabBtn1)
         var tabBtn2 = view.findViewById<Chip>(R.id.tabBtn2)
@@ -129,18 +129,64 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         var tabBtn4 = view.findViewById<Chip>(R.id.tabBtn4)
         var tabBtn5 = view.findViewById<Chip>(R.id.tabBtn5)
         tabBtn1.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("waterCycle", plant?.waterCycle)
+                putInt("minHumidity", plant?.minHumidity ?: 0)
+                putInt("maxHumidity", plant?.maxHumidity ?: 0)
+                if (pot?.waterDate != null) {
+                    putString("lastDate", changeDateFormat(pot?.waterDate!!))
+                }
+                putString("comingDate", changeDateFormat(plan!![0].dateTime))
+            }
+            val tab1 = PotDetailTab1Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab1).commit()
         }
         tabBtn2.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("grwType", plant?.grwType)
+                if (pot?.pruningDate != null) {
+                    putString("lastDate", changeDateFormat(pot?.pruningDate!!))
+                }
+                putString("comingDate", changeDateFormat(plan!![2].dateTime))
+            }
+            val tab2 = PotDetailTab2Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab2).commit()
         }
         tabBtn3.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("insectInfo", plant?.insectInfo)
+            }
+            val tab3 = PotDetailTab3Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab3).commit()
         }
         tabBtn4.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString("place", plant?.place)
+                putString("mgmtTip", plant?.mgmtTip)
+                putInt("minGrwTemp", plant?.minGrwTemp ?: 0)
+                putInt("maxGrwTemp", plant?.maxGrwTemp ?: 0)
+            }
+            val tab4 = PotDetailTab4Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab4).commit()
         }
         tabBtn5.setOnClickListener {
+            val bundle = Bundle().apply {
+                if (pot?.nutrientDate != null) {
+                    putString("lastDate", changeDateFormat(pot?.nutrientDate!!))
+                }
+                putString("comingDate", changeDateFormat(plan!![1].dateTime))
+            }
+            val tab5 = PotDetailTab5Fragment().apply {
+                arguments = bundle
+            }
             childFragmentManager.beginTransaction().replace(R.id.tab_container, tab5).commit()
         }
     }
@@ -161,6 +207,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                     pot = body.pot
                     Log.d(TAG, "pot: $pot")
                     plant = body.plant
+                    plan = body.plan
                     Log.d(TAG, "plant: $plant")
                     setCharacterSceneView()
                     setPlantContent()
@@ -202,6 +249,23 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         potNameText.text = pot?.potName
         potPlantText.text = pot?.plantKrName
         GlobalVariables.changeImgView(potPlantImg, pot?.imgPath.toString(), requireContext())
+        val bundle = Bundle().apply {
+            putString("waterCycle", plant?.waterCycle)
+            putInt("minHumidity", plant?.minHumidity ?: 0)
+            putInt("maxHumidity", plant?.maxHumidity ?: 0)
+            if (pot?.waterDate != null) {
+                putString("lastDate", changeDateFormat(pot?.waterDate!!))
+            }
+            putString("comingDate", changeDateFormat(plan!![0].dateTime))
+        }
+        val tab1 = PotDetailTab1Fragment().apply {
+            arguments = bundle
+        }
+        childFragmentManager.beginTransaction().replace(R.id.tab_container, tab1).commit()
+    }
+
+    private fun changeDateFormat(date: DateTime): String {
+        return date.date.year.toString() + "년 " + date.date.month.toString() + "월 " + date.date.day.toString() + "일"
     }
 
 }

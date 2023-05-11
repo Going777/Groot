@@ -15,5 +15,9 @@ public class PlantIdentificationDTO {
 
     private String sciName;
 
+    private String grwType;
+
+    private String mgmtLevel;
+
     private int score;
 }

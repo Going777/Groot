@@ -30,7 +30,7 @@ public class DiaryCheckRepositoryImpl implements DiaryCheckRepositoryCustom {
         LocalDateTime date = LocalDateTime.of(2023,now.getMonthValue(), now.getDayOfMonth(), 0, 0, 0);
         log.info("month"+now.getMonthValue()+" day"+now.getDayOfMonth());
         DiaryCheckEntity diary = queryFactory.selectFrom(qDiaryCheck)
-                .where(qDiaryCheck.potId.eq(potId), qDiaryCheck.createdDate.gt(date))
+                .where(qDiaryCheck.potId.eq(potId), qDiaryCheck.createdDate.goe(date))
                 .fetchOne();
 
         return diary;

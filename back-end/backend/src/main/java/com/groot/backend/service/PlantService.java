@@ -1,9 +1,7 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.request.PlantSearchDTO;
-import com.groot.backend.dto.response.PlantDetailDTO;
-import com.groot.backend.dto.response.PlantIdentificationDTO;
-import com.groot.backend.dto.response.PlantThumbnailDTO;
+import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.PlantEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,5 +22,15 @@ public interface PlantService {
      * @return result of identification
      * @throws Exception : InvalidContentTypeException, IOException, Exception
      */
-    public PlantIdentificationDTO identifyPlant(MultipartFile multipartFile) throws Exception;
+    public PlantWithCharacterDTO identifyPlant(MultipartFile multipartFile) throws Exception;
+
+    public PlantEnvironmentDTO getAdequateEnv(Long plantId) throws Exception;
+
+    /**
+     * returns Plant information
+     * @param plantId
+     * @return PlantWithCharacterDTO
+     * @throws java.util.NoSuchElementException for plant not found
+     */
+    public PlantWithCharacterDTO getIntroduction(Long plantId) throws Exception;
 }

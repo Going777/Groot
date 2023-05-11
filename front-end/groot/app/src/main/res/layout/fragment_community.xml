@@ -1,24 +1,28 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.community.CommunityFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/layout_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
             app:tabGravity="center"
+            app:tabIndicatorColor="@color/main"
             app:tabMode="scrollable"
-            app:tabTextColor="@color/grey"
             app:tabSelectedTextColor="@color/main"
-            app:tabIndicatorColor="@color/main" />
+            app:tabTextColor="@color/grey" />
+
+        <View
+            style="@style/BASIC_LINE" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/community_pager"
@@ -33,8 +37,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:contentDescription="+"
-        app:srcCompat="@drawable/ic_post"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_post" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

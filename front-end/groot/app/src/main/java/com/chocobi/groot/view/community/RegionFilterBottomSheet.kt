@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.chocobi.groot.R
@@ -22,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.GlobalScope
+import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,11 +31,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Suppress("DEPRECATION")
-class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
-
+class RegionFilterBottomSheet(context: Context, limitCnt: Int) : BottomSheetDialogFragment() {
+    private val LIMITCNT = limitCnt
     private lateinit var chipRegionGroup: ChipGroup
+    private lateinit var regionInfoText: TextView
     private lateinit var regionList: ArrayList<String>
     private lateinit var regionFullList: ArrayList<String>
+    private lateinit var autoCompleteTextView: AutoCompleteTextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +53,15 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
         val rootView = inflater.inflate(R.layout.bottom_sheet_region_filter, container, false)
         chipRegionGroup = rootView.findViewById(R.id.chipRegionGroup)
 
+        findView(rootView)
+
 //        자동완성으로 보여줄 내용들
         val regionNames =
             GlobalVariables.prefs.getString("region_names", "")?.split(", ") ?: emptyList()
         val items = regionNames.toTypedArray()
 
-        var autoCompleteTextView =
-            rootView.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
+//        var autoCompleteTextView =
+//            rootView.findViewById<AutoCompleteTextView>(R.id.autoCompleteTextView)
         var adapter = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_dropdown_item_1line,
@@ -67,39 +73,49 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
                 GlobalVariables.hideKeyboard(requireActivity())
-//                3개 초과 불가
-                if (chipRegionGroup.childCount == 3) {
-                    Toast.makeText(requireContext(), "최대 3개까지 설정할 수 있습니다", Toast.LENGTH_SHORT)
-                        .show()
-                    autoCompleteTextView.setText("")
-                } else {
-                    val selectedItem = parent.getItemAtPosition(position).toString()
-                    val regionName = selectedItem.split(" ").last() // '동' 정보만 뽑아서 저장
-
-                    autoCompleteTextView.setText("")
-                    val isChipAlreadyExist = (0 until chipRegionGroup.childCount)
-                        .map { chipRegionGroup.getChildAt(it) }
-                        .filterIsInstance<Chip>()
-                        .any { it.tag == selectedItem }
-                    if (isChipAlreadyExist) {
-                        Toast.makeText(requireContext(), "이미 추가된 지역입니다", Toast.LENGTH_SHORT).show()
-                    } else {
-                        chipRegionGroup.addView(
-                            Chip(
-                                requireContext(),
-                                null,
-                                R.style.REGION_CHIP_ICON
-                            ).apply {
-                                text = regionName // chip 텍스트 설정
-                                tag = selectedItem // chip 태그 설정
-                                isCloseIconVisible = true // chip에서 X 버튼 보이게 하기
-                                setOnCloseIconClickListener { chipRegionGroup.removeView(this) } // X버튼 누르면 chip 없어지게 하기
-                            })
-                    }
-                }
+                addChip(LIMITCNT, parent, position)
             }
 
         return rootView
+    }
+
+    private fun findView(view: View) {
+        autoCompleteTextView =
+            view.findViewById(R.id.autoCompleteTextView)
+        regionInfoText = view.findViewById(R.id.regionInfoText)
+        regionInfoText.text = "* 최대 ${LIMITCNT}개 지역까지 선택 가능합니다!"
+    }
+
+    private fun addChip(limitCnt: Int, parent: AdapterView<*>, position: Int) {
+        if (chipRegionGroup.childCount == limitCnt) {
+            Toast.makeText(requireContext(), "최대 ${limitCnt}개까지 설정할 수 있습니다", Toast.LENGTH_SHORT)
+                .show()
+            autoCompleteTextView.setText("")
+        } else {
+            val selectedItem = parent.getItemAtPosition(position).toString()
+            val regionName = selectedItem.split(" ").last() // '동' 정보만 뽑아서 저장
+
+            autoCompleteTextView.setText("")
+            val isChipAlreadyExist = (0 until chipRegionGroup.childCount)
+                .map { chipRegionGroup.getChildAt(it) }
+                .filterIsInstance<Chip>()
+                .any { it.tag == selectedItem }
+            if (isChipAlreadyExist) {
+                Toast.makeText(requireContext(), "이미 추가된 지역입니다", Toast.LENGTH_SHORT).show()
+            } else {
+                chipRegionGroup.addView(
+                    Chip(
+                        requireContext(),
+                        null,
+                        R.style.REGION_CHIP_ICON
+                    ).apply {
+                        text = regionName // chip 텍스트 설정
+                        tag = selectedItem // chip 태그 설정
+                        isCloseIconVisible = true // chip에서 X 버튼 보이게 하기
+                        setOnCloseIconClickListener { chipRegionGroup.removeView(this) } // X버튼 누르면 chip 없어지게 하기
+                    })
+            }
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -114,17 +130,30 @@ class RegionFilterBottomSheet(context: Context) : BottomSheetDialogFragment() {
                 regionList.add(chip.text.toString())
                 regionFullList.add(chip.getTag().toString())
             }
-//            데이터 전달
-            val bundle = Bundle().apply {
-                putStringArrayList("region_list", regionList)
-                putStringArrayList("region_full_list", regionFullList)
+            if (LIMITCNT == 3) {
+                //            데이터 전달
+                val bundle = Bundle().apply {
+                    putStringArrayList("region_list", regionList)
+                    putStringArrayList("region_full_list", regionFullList)
+                }
+                val passBundleBFragment = CommunityFragment().apply {
+                    arguments = bundle
+                }
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fl_container, passBundleBFragment)
+                    .commit()
+            } else if(LIMITCNT == 1) {
+                val bundle = Bundle().apply {
+                    putStringArrayList("region_full_list", regionFullList)
+                }
+                val passBundleBFragment = CommunityShareFragment().apply {
+                    arguments = bundle
+                }
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.fl_container, passBundleBFragment)
+                    .commit()
+
             }
-            val passBundleBFragment = CommunityFragment().apply {
-                arguments = bundle
-            }
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.fl_container, passBundleBFragment)
-                .commit()
         }
     }
 }

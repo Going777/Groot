@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.redis.RedisConnectionFailureException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,9 +41,17 @@ public class ArticleController {
 
     // 게시글 작성
     @PostMapping()
-    public ResponseEntity createArticle(@RequestPart(value = "images", required = false) MultipartFile[] images,
+    public ResponseEntity createArticle(HttpServletRequest request,
+                                        @RequestPart(value = "images", required = false) MultipartFile[] images,
            @Valid @RequestPart(value = "articleDTO") ArticleDTO articleDTO) throws Exception {
         resultMap = new HashMap<>();
+
+        if(request.getHeader("Authorization") == null) {
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "토큰이 존재하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
+
         if(!userService.isExistedId(articleDTO.getUserPK())){
             resultMap.put("result", FAIL);
             resultMap.put("msg","존재하지 않는 사용자입니다.");
@@ -56,11 +66,27 @@ public class ArticleController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
+        // 나눔일 경우 shareState와 shareRegion 존재 여부 확인
+        if(category.equals("나눔")){
+            if((articleDTO.getShareStatus() == null || articleDTO.getShareRegion() == null || articleDTO.getShareRegion().equals(""))){
+                resultMap.put("result", FAIL);
+                resultMap.put("msg","shareStatus 또는 shareRegion 값이 존재하지 않습니다.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
+        }
+
         // title, content 확인
         if(articleDTO.getTitle().equals("") || articleDTO.getContent().equals("")){
             resultMap.put("result", FAIL);
             resultMap.put("msg","title 또는 content 내용이 존재하지 않습니다.");
             return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+        if(userPK != articleDTO.getUserPK()){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","수정 권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
         }
 
         // 이미지 업로드
@@ -70,7 +96,7 @@ public class ArticleController {
         }
 
         try {
-            articleService.createArticle(articleDTO, imgPaths);
+            articleService.createArticle(userPK, articleDTO, imgPaths);
             resultMap.put("result", SUCCESS);
             resultMap.put("msg","게시물이 등록되었습니다.");
             return ResponseEntity.ok().body(resultMap);
@@ -124,15 +150,23 @@ public class ArticleController {
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시물 목록 조회 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
 
     // 게시글 수정
     @PutMapping()
-    public ResponseEntity updateArticle(@RequestPart(value = "images", required = false) MultipartFile[] images,
+    public ResponseEntity updateArticle(HttpServletRequest request,
+                                        @RequestPart(value = "images", required = false) MultipartFile[] images,
                                         @Valid @RequestPart(value = "articleDTO") ArticleDTO articleDTO) throws Exception {
         resultMap = new HashMap<>();
+
+        if(request.getHeader("Authorization") == null) {
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "토큰이 존재하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
 
         // 게시글 존재 여부 확인
         if(!articleService.existedArticleId(articleDTO.getArticleId())){
@@ -147,12 +181,28 @@ public class ArticleController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
+        Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+        if(userPK != articleDTO.getUserPK()){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","수정 권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
+        }
+
         // 카테고리 확인
         String category = articleDTO.getCategory();
         if(!(category.equals("나눔") || category.equals("자유") || category.equals("QnA") || category.equals("Tip"))){
             resultMap.put("result", FAIL);
             resultMap.put("msg","존재하지 않는 카테고리입니다.");
             return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        // 나눔일 경우 shareState와 shareRegion 존재 여부 확인
+        if(category.equals("나눔")){
+            if((articleDTO.getShareStatus() == null || articleDTO.getShareRegion() == null || articleDTO.getShareRegion().equals(""))){
+                resultMap.put("result", FAIL);
+                resultMap.put("msg","shareStatus 또는 shareRegion 값이 존재하지 않습니다.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
         }
 
         // 새 이미지 업로드
@@ -203,29 +253,44 @@ public class ArticleController {
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시글 조회 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
 
     // 게시글 삭제
     @DeleteMapping("/{articleId}")
-    public ResponseEntity deleteArticle(@PathVariable Long articleId){
+    public ResponseEntity deleteArticle(HttpServletRequest request,
+                                        @PathVariable Long articleId) {
         resultMap = new HashMap<>();
-        if(!articleService.existedArticleId(articleId)){
+
+        if (!articleService.existedArticleId(articleId)) {
             resultMap.put("result", FAIL);
-            resultMap.put("msg","존재하지 않는 게시글입니다.");
+            resultMap.put("msg", "존재하지 않는 게시글입니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
 
-        try{
-            articleService.deleteArticle(articleId);
+        if (request.getHeader("Authorization") == null) {
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "토큰이 존재하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
+
+        try {
+            Long userPK = jwtTokenProvider.getIdByAccessToken(request);
+            articleService.deleteArticle(userPK, articleId);
             resultMap.put("result", SUCCESS);
-            resultMap.put("msg","게시글이 삭제되었습니다.");
+            resultMap.put("msg", "게시글이 삭제되었습니다.");
             return ResponseEntity.ok().body(resultMap);
-        }catch (Exception e){
+        } catch (AccessDeniedException e) {
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","삭제 권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
+        } catch (Exception e){
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시글 삭제 실패.");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
@@ -258,6 +323,7 @@ public class ArticleController {
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","북마크 수정 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
@@ -301,6 +367,7 @@ public class ArticleController {
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시글 조회 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
@@ -366,6 +433,7 @@ public class ArticleController {
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시글 조회 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
 
@@ -391,13 +459,10 @@ public class ArticleController {
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","게시글 조회 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
-
-    // 태그 자동완성
-
-
 
     // 지역 반환
     @GetMapping("/regions/list")
@@ -414,6 +479,7 @@ public class ArticleController {
             e.printStackTrace();
             resultMap.put("result", FAIL);
             resultMap.put("msg","지역 리스트 조회 실패");
+            resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
