@@ -55,24 +55,26 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <LinearLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/carouselSection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/carousel_pager"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="230dp"
                     android:layout_marginTop="20dp" />
 
@@ -81,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="10dp"
                     android:layout_marginBottom="5dp" />
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/shareStateSection"
@@ -184,7 +186,7 @@
                             android:id="@+id/detailProfileImg"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/sample_plant_image" />
+                            android:src="@drawable/basic_profile" />
 
                         <TextView
                             android:id="@+id/detailNickName"
@@ -281,8 +283,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/tagList"
-                    android:layout_width="200dp"
-                    android:layout_height="100dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/fragment_community_article_tag_item" />
             </LinearLayout>
@@ -334,12 +336,12 @@
                     android:id="@+id/communityCommentFragment"
                     android:name="com.chocobi.groot.view.community.CommunityCommentFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="800dp" />
+                    android:layout_height="wrap_content"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 
-        </LinearLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.core.widget.NestedScrollView>
 

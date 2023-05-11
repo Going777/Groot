@@ -48,7 +48,9 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
     private val TAG = "PotBottomSheet"
 
     private var potId: Int = 0
+    private var plantId: Int = 0
     private var potName: String = ""
+    private var potPlant: String = ""
     private lateinit var mActivity: MainActivity
     private lateinit var dialog: AlertDialog.Builder
     private lateinit var potImgSection: LinearLayout
@@ -62,8 +64,16 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
         potId = id
     }
 
+    fun setPlantId(id: Int) {
+        plantId = id
+    }
+
     fun setPotName(name: String) {
         potName = name
+    }
+
+    fun setPotPlant(name: String) {
+        potPlant = name
     }
 
 
@@ -116,6 +126,7 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
             changePotImg(potId, null, imgFile)
         }
 
+
 //        화분 이미지 변경 갤러리 버튼
         val potScanBtn = view.findViewById<ImageButton>(R.id.potScanBtn)
         potScanBtn.setOnClickListener {
@@ -126,6 +137,8 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
         val potPositionBtn = view.findViewById<ImageButton>(R.id.potPosition)
         potPositionBtn.setOnClickListener {
             var intent = Intent(requireContext(), SensorActivity::class.java)
+            intent.putExtra("plantId", plantId)
+            intent.putExtra("plantName", potPlant)
             startActivity(intent)
         }
 
@@ -199,7 +212,6 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
                         Toast.LENGTH_LONG
                     ).show()
                     mActivity.changeFragment("pot")
-
                 } else {
                     Log.d(TAG, "실패1")
                 }
@@ -209,7 +221,6 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
                 Log.d(TAG, "실패2")
             }
         })
-
     }
 
     private fun gonePot(potId: Int) {

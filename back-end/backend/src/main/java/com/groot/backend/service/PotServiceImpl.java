@@ -8,12 +8,14 @@ import com.groot.backend.repository.*;
 import com.groot.backend.util.PlantCodeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -41,8 +43,10 @@ public class PotServiceImpl implements PotService{
 
 
         try {
-            imgPath = s3Service.upload(multipartFile, "pot");
-            logger.info("image uploaded : {}", imgPath);
+            if(multipartFile != null && !multipartFile.isEmpty()) {
+                imgPath = s3Service.upload(multipartFile, "pot");
+                logger.info("image uploaded : {}", imgPath);
+            }
 
             PlantEntity plantEntity = plantRepository.findById(potRegisterDTO.getPlantId()).get();
             UserEntity userEntity = userRepository.findById(userPK).get();
@@ -53,7 +57,7 @@ public class PotServiceImpl implements PotService{
                             .userEntity(userEntity)
                             .plantEntity(plantEntity)
                             .name(potRegisterDTO.getPotName())
-                            .imgPath(imgPath)
+                            .imgPath(imgPath == "" ? plantEntity.getImg() : imgPath)
                             // default values might be modified
                             .temperature(potRegisterDTO.getTemperature() == 0 ? 20 : potRegisterDTO.getTemperature())
                             .illuminance(potRegisterDTO.getIlluminance() == 0 ? 500 : potRegisterDTO.getIlluminance())
@@ -222,6 +226,7 @@ public class PotServiceImpl implements PotService{
     }
 
     @Override
+    @Transactional
     public int deletePot(Long userPK, Long potId) throws Exception{
         logger.info("delete pot : {}", potId);
 
@@ -232,11 +237,13 @@ public class PotServiceImpl implements PotService{
         if(potEntity.getUserId() != userPK) throw new AccessDeniedException("Unauthorized");
 
         potRepository.delete(potEntity); // IllegalArgumentException
-
+        planRepository.deleteAllByPotId(potId);
+        
         return 0;
     }
 
     @Override
+    @Transactional
     public boolean toggleStatus(Long userPK, Long potId) throws Exception {
         logger.info("toggle status : {}", potId);
 
@@ -246,10 +253,21 @@ public class PotServiceImpl implements PotService{
 
         logger.info("pot {} found with status : {}", potId, potEntity.getSurvival());
 
-        boolean ret = potEntity.toggleSurvival();
-        potRepository.save(potEntity);
+        if(potEntity.getSurvival()) {
+            potEntity.toggleSurvival();
+            potRepository.save(potEntity);
 
-        return ret;
+            planRepository.deleteAllByPotId(potId);
+
+            return false;
+        }
+        else {
+            // not implemented yet
+//            potEntity.toggleSurvival();
+//            potRepository.save(potEntity);
+//            return true;
+            throw new NotYetImplementedException();
+        }
     }
 
     /**

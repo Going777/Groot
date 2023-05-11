@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
@@ -14,18 +15,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.databinding.CalendarDayBinding
 import com.chocobi.groot.databinding.FragmentPotCalendarBinding
 import com.chocobi.groot.view.pot.adapter.PotCalendarRVAdapter
 import com.chocobi.groot.view.pot.model.DateDiaryResponse
 import com.chocobi.groot.view.pot.model.Diary
+import com.chocobi.groot.view.pot.model.DiaryRequest
 import com.chocobi.groot.view.pot.model.PotService
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -198,7 +204,7 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
     }
 
     fun setRecyclerView(diaryList: List<Diary>) {
-        rvAdapter = PotCalendarRVAdapter(diaryList)
+        rvAdapter = PotCalendarRVAdapter(requireContext(), diaryList)
         rv.layoutManager = LinearLayoutManager(activity)
         rv.adapter = rvAdapter
 
@@ -209,9 +215,13 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
             }
 
             override fun onCheckClick(view: View, position: Int) {
+//                postDiary(diaryList?.get(position)?.potId ?: 0, diaryList?.get(position)?.code!!)
             }
         })
     }
+
+
+
     private fun showFirstView() {
         potFirstView.visibility = View.VISIBLE
         rv.visibility = View.GONE

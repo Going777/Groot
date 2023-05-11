@@ -11,4 +11,6 @@ public interface PlanRepository extends JpaRepository<PlanEntity, Long>, PlanRep
     Boolean existsByDateTimeAndCode(LocalDateTime dateTime, Integer code);
 
     List<PlanEntity> findAllByPotId(Long potId);
+
+    Integer deleteAllByPotId(Long potId);
 }

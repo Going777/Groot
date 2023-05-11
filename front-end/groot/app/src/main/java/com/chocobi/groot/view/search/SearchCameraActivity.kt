@@ -58,9 +58,9 @@ class SearchCameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_camera)
 
-        growType = "다육형,직립형"
-        mgmtLevel = "초보자"
-        characterGlbPath = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/straight_0.glb"
+//        growType = "다육형,직립형"
+//        mgmtLevel = "초보자"
+//        characterGlbPath = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/straight_0.glb"
 
         plantNameText = findViewById(R.id.plantNameText)
         plantSciText = findViewById(R.id.plantSciText)
@@ -149,9 +149,9 @@ class SearchCameraActivity : AppCompatActivity() {
                         plantId = body.plant.plantId
                         plantName = body.plant.krName
                         plantSci = body.plant.sciName
-//                        growType = body.plant.grwType
-//                        mgmtLevel = body.plant.mgmtLevel
-//                        characterGlbPath = body.character.glbPath
+                        growType = body.plant.grwType
+                        mgmtLevel = body.plant.mgmtLevel
+                        characterGlbPath = body.character.glbPath
                         hideProgress()
                     } else {
                         Log.d(TAG, "${response.errorBody()}")

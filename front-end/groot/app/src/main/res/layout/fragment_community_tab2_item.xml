@@ -138,6 +138,7 @@
 
                 android:text="조회수"/>
             <ImageView
+                android:id="@+id/commentIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_marginHorizontal="3dp"

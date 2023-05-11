@@ -16,10 +16,11 @@ import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
+import com.chocobi.groot.view.community.model.CommunityShareItemResponse
 import java.lang.ref.WeakReference
 
 
-class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapter<ItemViewHolder>() {
+class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapter<CommentItemViewHolder>() {
 
     interface RecyclerViewAdapterDelegate {
         fun onLoadMore()
@@ -30,15 +31,15 @@ class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapt
 
     var delegate: RecyclerViewAdapterDelegate? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_community_comment_item, parent, false)
-        return ItemViewHolder(view)
+        return CommentItemViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CommentItemViewHolder, position: Int) {
         holder.communityCommentResponse = mutableList[position]
 
-        holder.delegate = object : ItemViewHolder.ItemViewHolderDelegate {
+        holder.delegate = object : CommentItemViewHolder.CommentItemViewHolderDelegate {
 
         }
 
@@ -64,29 +65,14 @@ class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapt
         this.mutableList.addAll(mutableList)
         notifyItemRangeChanged(this.mutableList.size - mutableList.size, mutableList.size)
     }
-
-
-    fun addItem(communityCommentResponse: CommunityCommentResponse) {
-        val isScrollAtBottom = (recyclerView.computeVerticalScrollRange() - recyclerView.computeVerticalScrollOffset() - recyclerView.height) <= 0
-
-        this.mutableList.add(communityCommentResponse)
-        notifyItemInserted(mutableList.size - 1)
-
-        // 새로운 아이템이 추가된 후 스크롤을 가장 아래로 이동합니다.
-        if (isScrollAtBottom) {
-            recyclerView.postDelayed({
-                recyclerView.scrollToPosition(mutableList.size - 1)
-            }, 100)
-        }
-    }
 }
 
 
-class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    interface ItemViewHolderDelegate {
+    interface CommentItemViewHolderDelegate {
         fun onItemViewClick(communityCommentResponse: CommunityCommentResponse) {
-            Log.d("ItemViewHolder", "clicked")
+            Log.d("ShareItemViewHolder", "clicked")
         }
     }
 
@@ -100,7 +86,8 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private lateinit var updateTime: TextView
     private lateinit var profile: ImageView
 
-    var delegate: ItemViewHolderDelegate? = null
+
+    var delegate: CommentItemViewHolderDelegate? = null
     lateinit var communityCommentResponse: CommunityCommentResponse
 
     init {
@@ -110,12 +97,11 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private fun findView() {
         view.get()?.let {
-//            commentId = it.findViewById(R.id.commentId)
-//            userPK = it.findViewById(R.id.userPK)
+            profile = it.findViewById(R.id.commentProfileImg)
             content = it.findViewById(R.id.commentContext)
             nickName = it.findViewById(R.id.commentNickname)
             createTime= it.findViewById(R.id.commentDate)
-            profile = it.findViewById(R.id.commentProfileImg)
+
         }
     }
 
@@ -127,11 +113,26 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     @SuppressLint("SetTextI18n")
     fun updateView() {
-        content.text = communityCommentResponse.comment.content[0].content
-        nickName.text = communityCommentResponse.comment.content[0].nickName
-//        profile.text = communityCommentResponse.comment.content[0].commentCnt.toString()
-        val koreahour = communityCommentResponse.comment.content[0].createTime.time.hour + 9
-        createTime.text = communityCommentResponse.comment.content[0].createTime.date.year.toString() + '.'+ communityCommentResponse.comment.content[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment.content[0].createTime.date.day.toString() + ' ' + koreahour + ':'+ communityCommentResponse.comment.content[0].createTime.time.minute.toString()
+        nickName.text = communityCommentResponse.comment[0].nickName
+        val koreahour = communityCommentResponse.comment[0].createTime.time.hour + 9
+        createTime.text = communityCommentResponse.comment[0].createTime.date.year.toString() + '.'+ communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + koreahour + ':'+ communityCommentResponse.comment[0].createTime.time.minute.toString()
+        content.text = communityCommentResponse.comment[0].content
+        profile.post {
+            view.get()?.let {
+                ThreadUtil.startThread {
+                    val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                        .asBitmap()
+                        .load(communityCommentResponse.comment.getOrNull(0)?.profile)
+                        .submit(profile.width, profile.height)
+
+                    val bitmap = futureTarget.get()
+
+                    ThreadUtil.startUIThread(0) {
+                        profile.setImageBitmap(bitmap)
+                    }
+                }
+            }
+        }
 
     }
 }
