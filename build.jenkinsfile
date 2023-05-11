@@ -126,10 +126,10 @@ pipeline {
             script {
               if(env.FLASK_CONTAINER_ID != null) {
                 echo 'unload flask container'
-                echo "${env.CONTAINER_ID}"
-                sh "docker stop ${env.CONTAINER_ID}"
+                echo "${env.FLASK_CONTAINER_ID}"
+                sh "docker stop ${env.FLASK_CONTAINER_ID}"
                 echo 'remove docker container'
-                sh "docker rm ${env.CONTAINER_ID}"
+                sh "docker rm ${env.FLASK_CONTAINER_ID}"
               }
             }
           }
