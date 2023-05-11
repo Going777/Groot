@@ -100,6 +100,11 @@ class CommunityTab1Fragment : Fragment() {
         return view
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        clickItem()
+    }
+
     //        필터 데이터 받기
     private fun getFilterData() {
         regionFilterList = arguments?.getStringArrayList("region_list")
@@ -289,6 +294,14 @@ class CommunityTab1Fragment : Fragment() {
         val popularTagList =
             GlobalVariables.prefs.getString("popular_tags", "")?.split(", ") ?: emptyList()
         return popularTagList
+    }
+
+    private fun clickItem() {
+        popularTagAdapter.itemClick = object : PopularTagAdapter.ItemClick {
+            override fun onClick(view: View, position: Int, item: String) {
+                communitySearchView.setQuery(item, true)
+            }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
