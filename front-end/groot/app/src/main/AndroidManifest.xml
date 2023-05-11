@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!--    광고 ID 삭제-->
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+    <meta-data
+        android:name="google_analytics_adid_collection_enabled"
+        android:value="false" />
+
     <!-- 카메라 권한 -->
     <uses-permission android:name="android.permission.CAMERA" /> <!-- 갤러리 권한 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -43,8 +51,8 @@
             android:exported="false" />
         <activity
             android:name=".view.addpot.Pot2Activity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".CharacterActivity"
             android:exported="false" />
@@ -53,8 +61,7 @@
             android:exported="false" />
         <activity
             android:name=".ShortcutActivity"
-            android:exported="false">
-        </activity>
+            android:exported="false"></activity>
         <activity
             android:name=".view.login.LoginActivity"
             android:exported="false" />
