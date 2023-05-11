@@ -72,7 +72,7 @@ def plant_recommend():
         dict_result = plantDataToVector(plant_dataFrame, user_v)
 
         # 10개만 자르기
-        res = dict_result[0:20]
+        res = dict_result[0:10]
 
         # json 형태로 바꾸기
         datas = listToJson(res)
