@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+<!--    알림 관련 권한-->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!--    광고 ID 삭제-->
     <uses-permission
@@ -12,7 +14,8 @@
         android:value="false" />
 
     <!-- 카메라 권한 -->
-    <uses-permission android:name="android.permission.CAMERA" /> <!-- 갤러리 권한 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 갤러리 권한 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
