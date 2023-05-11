@@ -520,7 +520,7 @@ public class DiaryServiceImpl implements DiaryService{
                     month %= 12;
                 }
             }
-            while (day >= monthDate[month]) {
+            while (day > monthDate[month]) {
                 day -= monthDate[month];
                 month += 1;
                 if (month > 12) {
