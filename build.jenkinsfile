@@ -21,8 +21,9 @@ pipeline {
         echo 'init pipeline, check changes'
         // git 'fetch'
         script {
-          echo "start build : ${env.BUILD_CAUSE}"
-          if(env.BUILD_CASE == 'MANUALTRIGGER') {
+          def buildCause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
+          echo "manually started by ${buildCause}"
+          if(buildCause.isEmpty()) {
             echo "triggerd by user"
             springboot = true
             flask = true
