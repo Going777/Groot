@@ -94,12 +94,12 @@ pipeline {
     stage('unload') {
       parallel {
         stage('down-spring') {
-          when {
-            expression{ springboot }
-          }
           environment {
           // CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
             CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}').trim()
+          }
+          when {
+            expression{ springboot && env.CONTAINER_ID != null }
           }
           steps {
             updateGitlabCommitStatus name: 'unload', state: 'pending'
@@ -112,11 +112,11 @@ pipeline {
           }
         }
         stage('down-flask') {
-          when {
-            expression { flask }
-          }
           environment {
             CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep flask | awk \'{print $1\'}').trim()
+          }
+          when {
+            expression { flask && env.CONTAINER_ID != null }
           }
           steps {
             echo 'unload flask container'
