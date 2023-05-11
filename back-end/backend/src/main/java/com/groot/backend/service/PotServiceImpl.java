@@ -43,8 +43,10 @@ public class PotServiceImpl implements PotService{
 
 
         try {
-            imgPath = s3Service.upload(multipartFile, "pot");
-            logger.info("image uploaded : {}", imgPath);
+            if(multipartFile != null && !multipartFile.isEmpty()) {
+                imgPath = s3Service.upload(multipartFile, "pot");
+                logger.info("image uploaded : {}", imgPath);
+            }
 
             PlantEntity plantEntity = plantRepository.findById(potRegisterDTO.getPlantId()).get();
             UserEntity userEntity = userRepository.findById(userPK).get();
@@ -55,7 +57,7 @@ public class PotServiceImpl implements PotService{
                             .userEntity(userEntity)
                             .plantEntity(plantEntity)
                             .name(potRegisterDTO.getPotName())
-                            .imgPath(imgPath)
+                            .imgPath(imgPath == "" ? plantEntity.getImg() : imgPath)
                             // default values might be modified
                             .temperature(potRegisterDTO.getTemperature() == 0 ? 20 : potRegisterDTO.getTemperature())
                             .illuminance(potRegisterDTO.getIlluminance() == 0 ? 500 : potRegisterDTO.getIlluminance())
