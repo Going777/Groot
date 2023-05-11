@@ -41,4 +41,17 @@ public class CommentResponseDTO {
 
         return dtoList;
     }
+
+    public CommentResponseDTO toDto(CommentEntity comment){
+        CommentResponseDTO result = CommentResponseDTO.builder()
+                .id(comment.getId())
+                .userPK(comment.getUserEntity().getId())
+                .nickName(comment.getUserEntity().getNickName())
+                .profile(comment.getUserEntity().getProfile())
+                .content(comment.getContent())
+                .createTime(comment.getCreatedDate())
+                .updateTime(comment.getLastModifiedDate())
+                .build();
+        return result;
+    }
 }
