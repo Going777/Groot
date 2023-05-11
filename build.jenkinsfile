@@ -121,6 +121,7 @@ pipeline {
           steps {
             echo 'unload flask container'
             echo "${env.CONTAINER_ID}"
+            sh "docker stop ${env.CONTAINER_ID}"
             echo 'remove docker container'
             sh "docker rm ${env.CONTAINER_ID}"
           }
