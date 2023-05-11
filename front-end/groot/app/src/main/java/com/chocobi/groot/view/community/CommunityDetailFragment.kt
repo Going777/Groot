@@ -579,6 +579,7 @@ class CommunityDetailFragment : Fragment() {
         }
         Log.d("CommunityCommentFragmentList", list.toString())
         return list
+    }
 
 
     private fun deleteArticle(articleId: Int) {
