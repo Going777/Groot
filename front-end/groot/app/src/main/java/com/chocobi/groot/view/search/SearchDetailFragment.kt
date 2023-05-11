@@ -137,7 +137,7 @@ class SearchDetailFragment : Fragment() {
     private fun identifyPlant() {
         val retrofit = RetrofitClient.basicClient()!!
         val searchService = retrofit.create(SearchService::class.java)
-        searchService.getRecomm(plantId!!.toInt())
+        searchService.getPlantInfoForAdd(plantId!!.toInt())
             .enqueue(object : Callback<PlantIdentifyResponse> {
                 override fun onResponse(
                     call: Call<PlantIdentifyResponse>,
