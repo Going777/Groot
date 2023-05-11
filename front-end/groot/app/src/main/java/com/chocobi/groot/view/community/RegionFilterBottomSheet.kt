@@ -6,12 +6,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.fragment.app.DialogFragment
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
@@ -72,7 +76,12 @@ class RegionFilterBottomSheet(context: Context, limitCnt: Int) : BottomSheetDial
 //        자동 완성 필터 눌렀을 때 처리
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-                GlobalVariables.hideKeyboard(requireActivity())
+//                GlobalVariables.hideKeyboard(requireActivity())
+
+//                bottomsheet 키보드 숨기기
+                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                autoCompleteTextView.requestFocus() // 포커스를 설정합니다.
+                inputMethodManager.hideSoftInputFromWindow(rootView.windowToken, 0)
                 addChip(LIMITCNT, parent, position)
             }
 
