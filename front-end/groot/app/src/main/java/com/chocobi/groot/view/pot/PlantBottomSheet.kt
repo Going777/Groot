@@ -182,7 +182,7 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
 
     private fun search(targetText: String?) {
         if (targetText == "") {
-            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
         }
         requestSearchPlant(targetText)
 

@@ -89,8 +89,10 @@ class SearchCameraActivity : AppCompatActivity() {
         //        디테일 버튼 조작
         detailBtn = findViewById(R.id.detailBtn)
         detailBtn.setOnClickListener {
+            Log.d("SearchCameraActivity","onCreate() ${plantId}볼랲ㅍ")
             var intent = Intent(this, MainActivity::class.java)
             intent.putExtra("toPage", "search_detail")
+            intent.putExtra("plant_id", plantId.toString())
             startActivity(intent)
         }
 
