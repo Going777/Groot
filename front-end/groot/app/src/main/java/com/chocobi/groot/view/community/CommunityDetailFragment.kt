@@ -13,6 +13,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
@@ -20,16 +21,25 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.ArticleTagAdapter
+import com.chocobi.groot.view.community.adapter.CommentAdapter
 import com.chocobi.groot.view.community.model.Article
 import com.chocobi.groot.view.community.model.BookmarkResponse
+import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
+import com.chocobi.groot.view.community.model.CommunityCommentResponse
+import com.chocobi.groot.view.community.model.CreateTime
+import com.chocobi.groot.view.community.model.Date
+import com.chocobi.groot.view.community.model.Time
+import com.chocobi.groot.view.community.model.UpdateTime
 import com.chocobi.groot.view.community.model.CommunityService
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -45,10 +55,17 @@ class CommunityDetailFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private var tagList: List<String> = emptyList()
 
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var commentRecyclerView: RecyclerView
+    private lateinit var commentAdapter: CommentAdapter
+    private lateinit var frameLayoutProgress: FrameLayout
+    private lateinit var getCommentData: CommunityCommentResponse
+    private var articleId: Int = 0
+    private lateinit var frameLayoutComment: FrameLayout
+
 
 //    private var commentList = arrayListOf<CommunityCommentResponse>()
 
-    val commentFragment = CommunityCommentFragment()
 
     private val imagesList: MutableList<String?> = arrayListOf()
 
@@ -69,25 +86,20 @@ class CommunityDetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_detail, container, false)
         val articleId = arguments?.getInt("articleId")
         Log.d("CommunityDetailFragmentArticleId", articleId.toString())
-
+        val userPK = UserData.getUserPK()
+        val nickname = UserData.getNickName()
+        val profile = UserData.getProfile()
         val args = Bundle()
         if (articleId != null) {
             args.putInt("articleId", articleId)
 
         }
-        val communityCommentFragment = CommunityCommentFragment()
         val communityUserShareFragment = CommunityUserShareFragment()
 
-        Log.d("CommunityCommentFragment", "$args")
-        communityCommentFragment.arguments = args
         communityUserShareFragment.arguments = args
         childFragmentManager.beginTransaction()
             .add(R.id.communityUserShareFragment, communityUserShareFragment)
             .commit()
-        childFragmentManager.beginTransaction()
-            .add(R.id.communityCommentFragment, communityCommentFragment)
-            .commit()
-
 
         var detailCategory = view.findViewById<TextView>(R.id.detailCategory)
         var detailTitle = view.findViewById<TextView>(R.id.detailTitle)
@@ -116,11 +128,12 @@ class CommunityDetailFragment : Fragment() {
             var content = postCommentInput?.text.toString()
             if (articleId != null) {
                 postComment(articleId, content)
+
+
             }
 
             Log.d("CommunityDetailFragmentArticleId", articleId.toString())
             Log.d("CommunityDetailFragmentArticleId", content.toString())
-
 
             // 입력창 리셋 및 키보드 닫기
             postCommentInput?.setText("")
@@ -295,7 +308,7 @@ class CommunityDetailFragment : Fragment() {
 
 //        북마크 수정 api
 
-        val userPK = UserData.getUserPK()
+
         val communityBookmarkService = retrofit.create(CommunityBookmarkService::class.java)
         bookmarkButton = view.findViewById(R.id.bookmarkLine)
         bookmarkButton.setOnClickListener {
@@ -367,6 +380,51 @@ class CommunityDetailFragment : Fragment() {
         }
 
 
+//        댓글
+        findViews(view)
+        setListeners()
+        initList()
+
+        showProgress()
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        commentRecyclerView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
+        frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+        commentRecyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(context)
+        commentRecyclerView.layoutManager = layoutManager
+
+
+        // retrofit 객체 만들기
+        var commentRetrofit = RetrofitClient.getClient()!!
+        var communityCommentService = commentRetrofit.create(CommunityCommentService::class.java)
+
+        communityCommentService.requestCommunityComment(articleId).enqueue(object :
+            Callback<CommunityCommentResponse>  {
+            override fun onResponse(call: Call<CommunityCommentResponse>, response: Response<CommunityCommentResponse>) {
+                if (response.code() == 200) {
+                    Log.d("CommunityCommentFragment", "성공")
+                    val checkResponse =  response.body()?.comment
+                    getCommentData = response.body()!!
+                    Log.d("CommunityCommentFragment", "$checkResponse")
+
+                    val list = createDummyData()
+                    ThreadUtil.startUIThread(1000) {
+                        commentAdapter.reload(list)
+                        hideProgress()
+
+                    }
+
+
+                } else {
+                    Log.d("CommunityCommentFragment", "실패1")
+                }
+            }
+            override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
+                Log.d("CommunityCommentFragment실패", "실패2")
+            }
+        })
+
 
         return view
     }
@@ -436,9 +494,17 @@ class CommunityDetailFragment : Fragment() {
                     call: Call<BasicResponse>,
                     response: Response<BasicResponse>
                 ) {
-                    val body = response.body()
-                    Log.d("CommunityPostFragmentBody", "$body")
-                    Log.d("CommunityDetailFragmentArticleId", response.code().toString())
+                    if (response.isSuccessful) {
+                        Log.d("commentResponse", response.body().toString())
+//                        val comment = response.body().comments(
+//                            userPK = userPK,
+//                            nickname = nickname,
+//                            content = content,
+//                            createTime = createTime,
+//                            updateTime = updateTime
+//                        )
+//                        commentAdapter.addComment(comment)
+                    }
                 }
 
                 override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
@@ -446,6 +512,74 @@ class CommunityDetailFragment : Fragment() {
                 }
             })
     }
+
+
+//    댓글 리사이클러뷰
+    private fun findViews(view: View) {
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        commentRecyclerView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
+        frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+    }
+
+    private fun setListeners() {
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun initList() {
+        commentAdapter = CommentAdapter(commentRecyclerView)
+        commentRecyclerView.adapter = commentAdapter // RecyclerView에 Adapter 설정
+        val size = commentAdapter.itemCount
+        commentRecyclerView.scrollToPosition(size - 1)
+
+        commentAdapter.delegate = object : CommentAdapter.RecyclerViewAdapterDelegate {
+            override fun onLoadMore() {
+            }
+
+            fun reload(mutableList: MutableList<CommunityCommentResponse>) {
+                TODO("Not yet implemented")
+            }
+            fun loadMore(mutableList: MutableList<CommunityCommentResponse>) {
+                TODO("Not yet implemented")
+            }
+        }
+        commentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        commentRecyclerView.adapter = commentAdapter
+    }
+    private fun showProgress() {
+        frameLayoutProgress.visibility = View.VISIBLE
+    }
+    private fun hideProgress() {
+        frameLayoutProgress.visibility = View.GONE
+    }
+    private fun createDummyData(): MutableList<CommunityCommentResponse> {
+        val list: MutableList<CommunityCommentResponse> = mutableListOf()
+
+// API response를 이용하여 데이터 생성
+        val comments = getCommentData.comment
+        Log.d("CommunityCommentFragmentComments", comments.toString())
+        for (commentitem in comments) {
+            val communityCommentResponse = CommunityCommentResponse(
+                comment = listOf(
+                    Comment(
+                        userPK = commentitem.userPK ?: 0,
+                        nickName = commentitem.nickName ?: "",
+                        commentId = commentitem.commentId ?: 0,
+                        content = commentitem.content ?: "",
+                        profile = commentitem.profile ?: "",
+                        createTime = commentitem.createTime,
+                        updateTime = commentitem.updateTime
+                    )
+                ),
+                result = getCommentData.result,
+                msg = getCommentData.msg
+            )
+            list.add(communityCommentResponse)
+        }
+        Log.d("CommunityCommentFragmentList", list.toString())
+        return list
+
 
     private fun deleteArticle(articleId: Int) {
         val retrofit = RetrofitClient.getClient()!!
