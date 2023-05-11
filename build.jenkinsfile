@@ -36,7 +36,8 @@ pipeline {
             for(def file : changedFiles) {
               echo "new file : ${file}"
               if(file.contains('/')) {
-                def dir = file.substring(0, file.lastIndexOf('/'))
+                // def dir = file.substring(0, file.lastIndexOf('/'))
+                def dir = file.split('/')[0]
                 changedDirs.add(dir)
                 echo "modified : ${dir}"
               }
