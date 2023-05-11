@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -52,7 +54,7 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
 
         findView(view)
         setAutocompltete()
-        searchPlant()
+        searchPlant(view)
 
         return view
     }
@@ -86,12 +88,14 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
         autoCompleteTextView.setAdapter(adapter)
     }
 
-    private fun searchPlant() {
+    private fun searchPlant(view: View) {
 //        자동완성 클릭 했을 때
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-                GlobalVariables.hideKeyboard(requireActivity())
                 autoCompleteTextView.clearFocus()
+                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
+
                 plantName = parent.getItemAtPosition(position).toString()
                 requestSearchPlant(plantName)
             }
@@ -99,11 +103,32 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
 //        돋보기 버튼 클릭 했을 때
         searchPlantBtn.setOnClickListener {
 //            키보드 내리기
-            GlobalVariables.hideKeyboard(requireActivity())
+            // bottomsheet 키보드 숨기기
+            val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
             autoCompleteTextView.clearFocus()
 //            검색 api 요청
             plantName = autoCompleteTextView.text.toString()
             search(plantName)
+        }
+
+//        엔터키 눌렀을 때
+        autoCompleteTextView.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                // 검색 버튼 또는 Enter 키가 눌렸을 때의 동작을 여기에 작성합니다.
+
+                // bottomsheet 키보드 숨기기
+                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                autoCompleteTextView.clearFocus()
+
+//            검색 api 요청
+                plantName = autoCompleteTextView.text.toString()
+                search(plantName)
+                true // true를 반환하여 텍스트를 유지합니다.
+            } else {
+                false
+            }
         }
     }
 

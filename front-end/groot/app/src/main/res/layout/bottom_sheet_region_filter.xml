@@ -54,7 +54,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:backgroundTint="@color/white"
-                android:src="@drawable/ic_search" />
+                android:src="@drawable/ic_search"
+                android:imeOptions="actionSearch"
+                android:inputType="text"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
