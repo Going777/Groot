@@ -1,5 +1,5 @@
 def springboot = false
-def falsk = false
+def flask = false
 def android = false
 
 pipeline {
@@ -49,6 +49,9 @@ pipeline {
       }
     }
     stage('build-spring') {
+      when {
+        expression { springboot }
+      }
       steps {
         updateGitlabCommitStatus name: 'build-spring', state: 'pending'
         echo 'move directory'
@@ -63,6 +66,9 @@ pipeline {
       }
     }
     stage('build-flask') {
+      when {
+        expression { flask }
+      }
       steps {
         updateGitlabCommitStatus name: 'build-flask', state: 'pending'
         echo 'move directory'
