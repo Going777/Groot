@@ -30,6 +30,7 @@ import com.chocobi.groot.view.community.adapter.ArticleTagAdapter
 import com.chocobi.groot.view.community.model.Article
 import com.chocobi.groot.view.community.model.BookmarkResponse
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
+import com.chocobi.groot.view.community.model.CommunityService
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import retrofit2.Call
@@ -49,7 +50,7 @@ class CommunityDetailFragment : Fragment() {
 
     val commentFragment = CommunityCommentFragment()
 
-    private val imagesList:MutableList<String?> = arrayListOf()
+    private val imagesList: MutableList<String?> = arrayListOf()
 
     private lateinit var getData: CommunityArticleDetailResponse
 
@@ -57,11 +58,14 @@ class CommunityDetailFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
 
-
     }
 
     @SuppressLint("NotifyDataSetChanged", "MissingInflatedId")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_community_detail, container, false)
         val articleId = arguments?.getInt("articleId")
         Log.d("CommunityDetailFragmentArticleId", articleId.toString())
@@ -109,7 +113,7 @@ class CommunityDetailFragment : Fragment() {
 
         postCommentBtn.setOnClickListener {
 
-            var content =  postCommentInput?.text.toString()
+            var content = postCommentInput?.text.toString()
             if (articleId != null) {
                 postComment(articleId, content)
             }
@@ -134,138 +138,158 @@ class CommunityDetailFragment : Fragment() {
 //                retrofit 객체 만들기
         val retrofit = RetrofitClient.getClient()!!
 
-        val communityArticleDetailService = retrofit.create(CommunityArticleDetailService::class.java)
+        val communityArticleDetailService =
+            retrofit.create(CommunityArticleDetailService::class.java)
 
         communityArticleDetailService.requestCommunityArticleDetail(articleId!!).enqueue(object :
             Callback<CommunityArticleDetailResponse> {
-                @SuppressLint("SetTextI18n")
-                override fun onResponse(call: Call<CommunityArticleDetailResponse>, response: Response<CommunityArticleDetailResponse>) {
-                    if (response.code() == 200) {
-                        Log.d(TAG, "성공")
-                        val responseData =  response.body()?.article
-                        getData = response.body()!!
-                        Log.d(TAG, "$responseData")
+            @SuppressLint("SetTextI18n")
+            override fun onResponse(
+                call: Call<CommunityArticleDetailResponse>,
+                response: Response<CommunityArticleDetailResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "성공")
+                    val responseData = response.body()?.article
+                    getData = response.body()!!
+                    Log.d(TAG, "$responseData")
 
-                        val article = getData.article
-                        val articleDetailData = CommunityArticleDetailResponse(
-                            article = Article(
-                                category = article.category,
-                                imgs = article.imgs,
-                                userPK = article.userPK,
-                                nickName = article.nickName,
-                                title = article.title,
-                                tags = article.tags,
-                                views = article.views,
-                                commentCnt = article.commentCnt,
-                                bookmark = article.bookmark,
-                                shareRegion = article.shareRegion,
-                                content = article.content,
-                                shareStatus = article.shareStatus,
-                                createTime = article.createTime,
-                                updateTime = article.updateTime
-                            )
+                    val article = getData.article
+                    val articleDetailData = CommunityArticleDetailResponse(
+                        article = Article(
+                            category = article.category,
+                            imgs = article.imgs,
+                            userPK = article.userPK,
+                            nickName = article.nickName,
+                            title = article.title,
+                            tags = article.tags,
+                            views = article.views,
+                            commentCnt = article.commentCnt,
+                            bookmark = article.bookmark,
+                            shareRegion = article.shareRegion,
+                            content = article.content,
+                            shareStatus = article.shareStatus,
+                            createTime = article.createTime,
+                            updateTime = article.updateTime
                         )
-                        detailCategory.text = articleDetailData.article.category
-                        detailTitle.text = articleDetailData.article.title
-                        detailNickName.text = articleDetailData.article.nickName
-                        detailViews.text = articleDetailData.article.views.toString()
-                        val koreahour = articleDetailData.article.createTime.time.hour + 9
-                        detailCreateTime.text = articleDetailData.article.createTime.date.year.toString() + '.'+ articleDetailData.article.createTime.date.month.toString() + '.' + articleDetailData.article.createTime.date.day.toString() + ' ' + koreahour + ':'+ articleDetailData.article.createTime.time.minute.toString()
-                        detailContent.text = articleDetailData.article.content
-                        tagList = articleDetailData.article.tags
-                        sharePosition.text = articleDetailData.article.shareRegion
-                        detailCommentCnt.text = "댓글 (" + articleDetailData.article.commentCnt.toString() + ")"
+                    )
+                    detailCategory.text = articleDetailData.article.category
+                    detailTitle.text = articleDetailData.article.title
+                    detailNickName.text = articleDetailData.article.nickName
+                    detailViews.text = articleDetailData.article.views.toString()
+                    val koreahour = articleDetailData.article.createTime.time.hour + 9
+                    detailCreateTime.text =
+                        articleDetailData.article.createTime.date.year.toString() + '.' + articleDetailData.article.createTime.date.month.toString() + '.' + articleDetailData.article.createTime.date.day.toString() + ' ' + koreahour + ':' + articleDetailData.article.createTime.time.minute.toString()
+                    detailContent.text = articleDetailData.article.content
+                    tagList = articleDetailData.article.tags
+                    sharePosition.text = articleDetailData.article.shareRegion
+                    detailCommentCnt.text =
+                        "댓글 (" + articleDetailData.article.commentCnt.toString() + ")"
 
-                        Log.d("CommunityDetailFragmentImgs", articleDetailData.article.imgs.toString())
-                        Log.d("CommunityDetailFragmentImgs", articleDetailData.article.imgs?.size.toString())
+                    Log.d("CommunityDetailFragmentImgs", articleDetailData.article.imgs.toString())
+                    Log.d(
+                        "CommunityDetailFragmentImgs",
+                        articleDetailData.article.imgs?.size.toString()
+                    )
 
-                        if (articleDetailData.article.imgs!!.isNotEmpty()){
-                            for (i in 1..articleDetailData.article.imgs.size) {
-                                imagesList.add(articleDetailData.article.imgs[i-1])
-                                Log.d("carouselImagesList", imagesList.toString())
-                            }
-                        } else if (articleDetailData.article.imgs.isEmpty()){
-                            carouselSection.visibility = View.GONE
-                            val layoutParams = detailTitle.layoutParams as ViewGroup.MarginLayoutParams
-                            layoutParams.setMargins(0, 80, 0, 0)
-                            detailTitle.layoutParams = layoutParams
+                    if (articleDetailData.article.imgs!!.isNotEmpty()) {
+                        for (i in 1..articleDetailData.article.imgs.size) {
+                            imagesList.add(articleDetailData.article.imgs[i - 1])
+                            Log.d("carouselImagesList", imagesList.toString())
                         }
-
-
-                        val viewPager: ViewPager2 = view.findViewById(R.id.carousel_pager)
-                        Log.d("CommunityDetailFragmentCount중", imagesList.size.toString())
-
-
-                        viewPager.adapter = imageAdapter
-                        val tabLayout: TabLayout = view.findViewById(R.id.carousel_layout)
-
-                        var tabList = listOf<String>()
-
-                        when (imagesList.size) {
-                            0 -> {tabList = listOf<String>()}
-                            1 -> {tabList = listOf<String>("")}
-                            2 -> {tabList = listOf<String>("", "")}
-                            3 -> {tabList = listOf<String>("", "", "")}
-                        }
-
-                        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                            tab.text = tabList[position]
-
-                        }.attach()
-
-
-
-
-                        // 카테고리별 섹션 구별
-                        if (detailCategory.text == "나눔") {
-                            if (articleDetailData.article.shareStatus == true) {
-                                shareStateSection.visibility = View.VISIBLE
-                            } else if (articleDetailData.article.shareStatus == false ){
-                                shareStateSection.visibility = View.GONE
-                            }
-                            sharePositionSection.visibility = View.VISIBLE
-                            shareSection.visibility = View.VISIBLE
-                            commentSection.visibility = View.GONE
-                            commentInputSection.visibility = View.GONE
-                        } else {
-                            shareStateSection.visibility = View.GONE
-                            sharePositionSection.visibility = View.GONE
-                            shareSection.visibility = View.GONE
-                            commentSection.visibility = View.VISIBLE
-                            commentInputSection.visibility = View.VISIBLE
-                        }
-
-
-                        bookmarkStatus = articleDetailData.article.bookmark
-                        // 북마크
-                        bookmarkButton = view.findViewById(R.id.bookmarkLine)
-                        if (bookmarkStatus == true) {
-                            bookmarkButton.setImageResource(R.drawable.ic_bookmark_fill)
-                        } else {
-                            bookmarkButton.setImageResource(R.drawable.ic_bookmark)
-                        }
-
-
-                        Log.d( "CommunityDetailFragment", articleDetailData.toString())
-
-                        // 태그
-                        recyclerView = view.findViewById(R.id.tagList)
-                        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-
-                        // Adapter 설정
-                        val tagAdapter = ArticleTagAdapter(tagList)
-                        recyclerView.adapter = tagAdapter
-
-                    } else {
-                        Log.d(TAG, "실패1")
-                        Log.d(TAG, response.toString())
-
+                    } else if (articleDetailData.article.imgs.isEmpty()) {
+                        carouselSection.visibility = View.GONE
+                        val layoutParams = detailTitle.layoutParams as ViewGroup.MarginLayoutParams
+                        layoutParams.setMargins(0, 80, 0, 0)
+                        detailTitle.layoutParams = layoutParams
                     }
-                }
-                override fun onFailure(call: Call<CommunityArticleDetailResponse>, t: Throwable) {
-                    Log.d(TAG, "실패2")
+
+
+                    val viewPager: ViewPager2 = view.findViewById(R.id.carousel_pager)
+                    Log.d("CommunityDetailFragmentCount중", imagesList.size.toString())
+
+
+                    viewPager.adapter = imageAdapter
+                    val tabLayout: TabLayout = view.findViewById(R.id.carousel_layout)
+
+                    var tabList = listOf<String>()
+
+                    when (imagesList.size) {
+                        0 -> {
+                            tabList = listOf<String>()
+                        }
+
+                        1 -> {
+                            tabList = listOf<String>("")
+                        }
+
+                        2 -> {
+                            tabList = listOf<String>("", "")
+                        }
+
+                        3 -> {
+                            tabList = listOf<String>("", "", "")
+                        }
+                    }
+
+                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                        tab.text = tabList[position]
+
+                    }.attach()
+
+
+                    // 카테고리별 섹션 구별
+                    if (detailCategory.text == "나눔") {
+                        if (articleDetailData.article.shareStatus == true) {
+                            shareStateSection.visibility = View.VISIBLE
+                        } else if (articleDetailData.article.shareStatus == false) {
+                            shareStateSection.visibility = View.GONE
+                        }
+                        sharePositionSection.visibility = View.VISIBLE
+                        shareSection.visibility = View.VISIBLE
+                        commentSection.visibility = View.GONE
+                        commentInputSection.visibility = View.GONE
+                    } else {
+                        shareStateSection.visibility = View.GONE
+                        sharePositionSection.visibility = View.GONE
+                        shareSection.visibility = View.GONE
+                        commentSection.visibility = View.VISIBLE
+                        commentInputSection.visibility = View.VISIBLE
+                    }
+
+
+                    bookmarkStatus = articleDetailData.article.bookmark
+                    // 북마크
+                    bookmarkButton = view.findViewById(R.id.bookmarkLine)
+                    if (bookmarkStatus == true) {
+                        bookmarkButton.setImageResource(R.drawable.ic_bookmark_fill)
+                    } else {
+                        bookmarkButton.setImageResource(R.drawable.ic_bookmark)
+                    }
+
+
+                    Log.d("CommunityDetailFragment", articleDetailData.toString())
+
+                    // 태그
+                    recyclerView = view.findViewById(R.id.tagList)
+                    recyclerView.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+
+                    // Adapter 설정
+                    val tagAdapter = ArticleTagAdapter(tagList)
+                    recyclerView.adapter = tagAdapter
+
+                } else {
+                    Log.d(TAG, "실패1")
+                    Log.d(TAG, response.toString())
+
                 }
             }
+
+            override fun onFailure(call: Call<CommunityArticleDetailResponse>, t: Throwable) {
+                Log.d(TAG, "실패2")
+            }
+        }
         )
 
 
@@ -275,7 +299,13 @@ class CommunityDetailFragment : Fragment() {
         val communityBookmarkService = retrofit.create(CommunityBookmarkService::class.java)
         bookmarkButton = view.findViewById(R.id.bookmarkLine)
         bookmarkButton.setOnClickListener {
-            communityBookmarkService.requestCommunityBookmark(BookmarkRequest(articleId, userPK, bookmarkStatus)).enqueue(object :
+            communityBookmarkService.requestCommunityBookmark(
+                BookmarkRequest(
+                    articleId,
+                    userPK,
+                    bookmarkStatus
+                )
+            ).enqueue(object :
                 Callback<BookmarkResponse> {
                 override fun onResponse(
                     call: Call<BookmarkResponse>,
@@ -309,14 +339,20 @@ class CommunityDetailFragment : Fragment() {
         spinner.adapter = adapter
 
         try {
-            val method = Spinner::class.java.getDeclaredMethod("setSpinnerButton", ImageButton::class.java)
+            val method =
+                Spinner::class.java.getDeclaredMethod("setSpinnerButton", ImageButton::class.java)
             method.invoke(spinner, spinnerButton)
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
                 val selectedOption = options[position]
 //                Toast.makeText(requireContext(), selectedOption, Toast.LENGTH_SHORT).show()
             }
@@ -343,6 +379,7 @@ class CommunityDetailFragment : Fragment() {
     }
 
     private var nowTab: Int = 0
+
     private inner class CommunityTabAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int {
             return imagesList.size
@@ -358,6 +395,7 @@ class CommunityDetailFragment : Fragment() {
                         else -> CommunityTab1Fragment()
                     }
                 }
+
                 2 -> {
                     nowTab = position
                     return when (position) {
@@ -366,6 +404,7 @@ class CommunityDetailFragment : Fragment() {
                         else -> CommunityTab1Fragment()
                     }
                 }
+
                 3 -> {
                     nowTab = position
                     return when (position) {
@@ -375,6 +414,7 @@ class CommunityDetailFragment : Fragment() {
                         else -> CommunityTab1Fragment()
                     }
                 }
+
                 else -> {
                     return CommunityTab1Fragment()
                 }
@@ -407,4 +447,33 @@ class CommunityDetailFragment : Fragment() {
             })
     }
 
+    private fun deleteArticle(articleId: Int) {
+        val retrofit = RetrofitClient.getClient()!!
+        val communityService = retrofit.create(CommunityService::class.java)
+
+        communityService.deleteArticle(articleId)
+            .enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val res = response.body()
+                        if (res != null) {
+                            Log.d("CommunityDetailFragment", "onResponse() 삭제 성공 $res")
+                            Log.d("CommunityDetailFragment", "onResponse() 삭제 성공 ${res?.msg}")
+//                            성공했으면 게시글 페이지로 돌아가야 함
+
+
+                        }
+                    } else {
+                        Log.d("CommunityDetailFragment", "onResponse() 삭제 실패1 $response")
+                    }
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                    Log.d("CommunityDetailFragment", "onResponse() 삭제 실패2")
+                }
+            })
+    }
 }
