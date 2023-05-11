@@ -79,7 +79,6 @@ class Pot2Activity : AppCompatActivity() {
 //        potNameText.text = tempPotName
 //        potNameEdit.setText(tempPotName)
 
-
         scrollView = findViewById(R.id.scrollView)
         characterSceneView = findViewById(R.id.characterSceneView)
         lottieView = findViewById(R.id.lottieView)
@@ -110,9 +109,13 @@ class Pot2Activity : AppCompatActivity() {
                 Log.d(TAG, plantId.toString())
                 Log.d(TAG, potName)
                 Log.d(TAG, imageUri.toString())
-                if (plantId > 0 && potName != "" && imageUri != null) {
+                if (plantId > 0) {
+                    Log.d("Pot2Activity","onCreate() ${plantId}// ${imageUri}//")
+                    var file: File? = null
+                    if (imageUri != null) {
+                        file = uriToFile(imageUri.toUri())
+                    }
 
-                    var file = uriToFile(imageUri.toUri())
                     addPot(this, plantId, potNameEdit.text.toString(), file)
                 }
             }
@@ -173,6 +176,7 @@ class Pot2Activity : AppCompatActivity() {
     }
 
     private fun addPot(context: Context, plantId: Int, potName: String, file: File?) {
+        Log.d("Pot2Activity","addPot() 요청을 하겠어요")
         var retrofit = RetrofitClient.getClient()!!
         var AddPotService = retrofit.create(AddPotService::class.java)
 

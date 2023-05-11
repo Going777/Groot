@@ -37,6 +37,7 @@ public class CommentController {
         }
         resultMap.put("msg", "댓글 작성을 성공하였습니다.");
         resultMap.put("result", SUCCESS);
+        resultMap.put("comment", new CommentResponseDTO().toDto(result));
         return ResponseEntity.ok().body(resultMap);
     }
 
@@ -57,6 +58,7 @@ public class CommentController {
         }
         resultMap.put("msg", "댓글 수정을 성공하였습니다.");
         resultMap.put("result", SUCCESS);
+        resultMap.put("comment", new CommentResponseDTO().toDto(result));
         return ResponseEntity.ok().body(resultMap);
     }
 

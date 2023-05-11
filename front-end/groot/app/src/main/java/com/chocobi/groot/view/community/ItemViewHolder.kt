@@ -38,6 +38,7 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     private lateinit var shareStatus: TextView
     private var tagList: List<String> = emptyList()
     private lateinit var recyclerView: RecyclerView
+    private lateinit var commentIcon: ImageView
 
     var delegate: ItemViewHolderDelegate? = null
     lateinit var communityArticleListResponse: CommunityArticleListResponse
@@ -53,6 +54,7 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             textViewTitle = it.findViewById(R.id.textViewTitle)
             textViewNickName = it.findViewById(R.id.textViewWriter)
             eyeCnt = it.findViewById(R.id.eyeCnt)
+            commentIcon = it.findViewById(R.id.commentIcon)
             commentCnt = it.findViewById(R.id.commentCnt)
             createTime= it.findViewById(R.id.createTime)
             position = it.findViewById(R.id.position)
@@ -93,6 +95,9 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         } else {
             position.text = communityArticleListResponse.articles.content[0].shareRegion
             position.visibility = View.VISIBLE
+            commentIcon.visibility = View.GONE
+            commentCnt.visibility = View.GONE
+
             if (communityArticleListResponse.articles.content[0].shareStatus == false) {
                 shareStatus.visibility = View.GONE
             } else {

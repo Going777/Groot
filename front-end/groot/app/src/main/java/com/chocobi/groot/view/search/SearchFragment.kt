@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -43,21 +44,10 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SearchFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SearchFragment : Fragment() {
     private var plantName: String? = null
     private var plants: Array<PlantMetaData>? = null
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
-//    private lateinit var recmAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 
     private lateinit var firstView: ConstraintLayout
     private lateinit var blankView: ConstraintLayout
@@ -94,6 +84,12 @@ class SearchFragment : Fragment() {
     private var growth5: String? = null
     private var growth6: String? = null
 
+    private fun isAllBlank() =
+        (plantName == null || plantName == "") && difficulty1 == null && difficulty2 == null && difficulty3 == null
+                && lux1 == null && lux2 == null && lux3 == null &&
+                growth1 == null && growth2 == null && growth3 == null && growth4 == null && growth5 == null && growth6 == null
+
+
     private fun setupRecyclerView() {
         // RecyclerView 설정
     }
@@ -101,6 +97,7 @@ class SearchFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 맨 처음 시작했을 때 추천 받아오기 뜨기
+//        requestRecommendations()
     }
 
     override fun onCreateView(
@@ -114,6 +111,7 @@ class SearchFragment : Fragment() {
         val mActivity = activity as MainActivity
 
         findView(rootView)
+//        추천 식물 받아오기
         requestRecommendations()
         filterChipGroup()
 
@@ -165,21 +163,23 @@ class SearchFragment : Fragment() {
             }
 
 //        엔터키 클릭 -> 검색
-//        autoCompleteTextView.setOnKeyListener { v, keyCode, event ->
-//            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
-//                // 엔터 눌렀을때 행동
-//                // 엔터 눌렀을 때 필터 닫기
-////                autoCompleteTextView.dismissDropDown()
-//                // 키보드 내리기
-//                GlobalVariables.hideKeyboard(requireActivity())
-//                // 검색 api 요청
-//                val inputText = autoCompleteTextView.text.toString()
-//                search(inputText)
-//            }
-//            true
-//        }
-//
-////        돋보기 버튼 클릭 -> 검색
+        autoCompleteTextView.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                // 검색 버튼 또는 Enter 키가 눌렸을 때의 동작을 여기에 작성합니다.
+                //            키보드 내리기
+                GlobalVariables.hideKeyboard(requireActivity())
+                autoCompleteTextView.clearFocus()
+
+//            검색 api 요청
+                plantName = autoCompleteTextView.text.toString()
+                search(plantName)
+                true // true를 반환하여 텍스트를 유지합니다.
+            } else {
+                false
+            }
+        }
+
+//        돋보기 버튼 클릭 -> 검색
         val searchPlantBtn = rootView.findViewById<ImageButton>(R.id.searchPlantBtn)
         searchPlantBtn.setOnClickListener {
 //            키보드 내리기
@@ -192,38 +192,6 @@ class SearchFragment : Fragment() {
         }
 
         addPot(mActivity)
-
-//        firstView.setOnClickListener {
-//            var dialog = AlertDialog.Builder(requireContext())
-//            dialog.setTitle("새 화분 등록하기")
-//            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
-//
-//            dialog.setItems(dialogArray) { _, which ->
-//                when (which) {
-//                    0 -> {
-//                        mActivity.setCameraStatus("addPot")
-//                        mActivity.requirePermissions(
-//                            arrayOf(android.Manifest.permission.CAMERA),
-//                            PERMISSION_CAMERA
-//                        )
-//                    }
-//
-//                    1 -> {
-//                        val plantBottomSheet = PlantBottomSheet(requireContext())
-//                        plantBottomSheet.show(
-//                            mActivity.supportFragmentManager,
-//                            plantBottomSheet.tag
-//                        )
-//                    }
-//                }
-//            }
-//            dialog.setNegativeButton(
-//                "취소",
-//                DialogInterface.OnClickListener { dialog, which ->
-//                    dialog.dismiss()
-//                })
-//            dialog.show()
-//        }
 
         return rootView
     }
@@ -256,9 +224,6 @@ class SearchFragment : Fragment() {
         rvAdapter = DictRVAdapter(emptyArray())
         rv.layoutManager = GridLayoutManager(activity, 3)
         rv.adapter = rvAdapter
-//        recmAdapter = DictRVAdapter(emptyArray())
-//        recmRv.adapter = recmAdapter
-
         recmRv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         recmRv.adapter = rvAdapter
 
@@ -282,68 +247,106 @@ class SearchFragment : Fragment() {
     private fun filterChipGroup() {
         difficultyEasy.setOnCheckedChangeListener { buttonView, isChecked ->
             difficulty1 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         difficultyMedium.setOnCheckedChangeListener { buttonView, isChecked ->
             difficulty2 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         difficultyHard.setOnCheckedChangeListener { buttonView, isChecked ->
             difficulty3 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         luxLow.setOnCheckedChangeListener { buttonView, isChecked ->
             lux1 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         luxMedium.setOnCheckedChangeListener { buttonView, isChecked ->
             lux2 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         luxHigh.setOnCheckedChangeListener { buttonView, isChecked ->
             lux3 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         growthStraight.setOnCheckedChangeListener { buttonView, isChecked ->
             growth1 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         growthTree.setOnCheckedChangeListener { buttonView, isChecked ->
             growth2 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         growthVine.setOnCheckedChangeListener { buttonView, isChecked ->
             growth3 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         growthFleshy.setOnCheckedChangeListener { buttonView, isChecked ->
             growth4 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         growthCrawl.setOnCheckedChangeListener { buttonView, isChecked ->
             growth5 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
         growthGrass.setOnCheckedChangeListener { buttonView, isChecked ->
             growth6 = if (isChecked) buttonView.text.toString() else null
-            requestSearchPlant()
+            if (isAllBlank()) {
+                requestRecommendations()
+            } else {
+                requestSearchPlant()
+            }
         }
     }
 
     private fun requestSearchPlant() {
         plantName = autoCompleteTextView.text.toString()
-
-        Log.d("SearchFragment", "requestSearchPlant() api 호출 식물이름 $plantName")
-        Log.d(
-            "SearchFragment",
-            "requestSearchPlant() api 호출 난이도 $difficulty1 $difficulty2 $difficulty3"
-        )
-        Log.d("SearchFragment", "requestSearchPlant() api 호출 빛 $lux1 $lux2 $lux3")
-        Log.d("SearchFragment", "requestSearchPlant() api 호출 생육 $growth1 $growth2 $growth3")
         val retrofit = RetrofitClient.basicClient()!!
-
         val plantSearchService = retrofit.create(SearchService::class.java)
-
         plantSearchService.requestSearchPlants(
             plantName,
             difficulty1,
@@ -391,64 +394,57 @@ class SearchFragment : Fragment() {
     }
 
     private fun search(targetText: String?) {
-        if (targetText == "") {
-            Log.d("SearchFragment","search() 여기 들어오나?")
+        if (isAllBlank() || targetText == "") {
             requestRecommendations()
-//            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
-        }
-        else {
+        } else {
             requestSearchPlant()
         }
     }
 
     private fun requestRecommendations() {
-//        val retrofit = RetrofitClient.basicClient()!!
-//        val searchService = retrofit.create(SearchService::class.java)
-//        searchService.getRecomm(UserData.getUserPK())
-//            .enqueue(object : Callback<PlantSearchResponse> {
-//                override fun onResponse(
-//                    call: Call<PlantSearchResponse>,
-//                    response: Response<PlantSearchResponse>
-//                ) {
-//                    if (response.code() == 200) {
-//                        val searchBody = response.body()
-//                        Log.d("SearchFragment", "requestRecommendations() api 성공 $searchBody")
-//                        if (searchBody != null) {
-//                            plants = searchBody.plants
-//                            if (plants == null) {
-//                                rv.visibility = View.GONE
-//                                firstView.visibility = View.VISIBLE
-//                            } else {
-//                                rvAdapter.setData(plants!!)
-//                            }
-//                        }
-//                    } else
-//                        Log.d("SearchFragment", "requestRecommendations() api 실패1 ")
-//                }
-//
-//                override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
-//                }
-//            })
-        plants = null
-        if (plants == null) {
-            rv.visibility = View.GONE
-            recmmView.visibility = View.GONE
-            firstView.visibility = View.VISIBLE
-            blankView.visibility = View.GONE
-        }
-        else {
-            rv.visibility = View.GONE
-            recmmView.visibility = View.VISIBLE
-            firstView.visibility = View.GONE
-            blankView.visibility = View.GONE
-        }
+        Log.d("SearchFragment", "requestRecommendations() 추천 요청 보내기")
+        val retrofit = RetrofitClient.basicClient()!!
+        val searchService = retrofit.create(SearchService::class.java)
+        searchService.getRR(UserData.getUserPK())
+            .enqueue(object : Callback<PlantSearchResponse> {
+                override fun onResponse(
+                    call: Call<PlantSearchResponse>,
+                    response: Response<PlantSearchResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val searchBody = response.body()
+                        Log.d("SearchFragment", "requestRecommendations() api 성공 $searchBody")
+                        if (searchBody != null) {
+                            plants = searchBody.plants
+                            if (plants == null) {
+                                rv.visibility = View.GONE
+                                recmmView.visibility = View.GONE
+                                firstView.visibility = View.VISIBLE
+                                blankView.visibility = View.GONE
+                            } else {
+                                rv.visibility = View.GONE
+                                recmmView.visibility = View.VISIBLE
+                                firstView.visibility = View.GONE
+                                blankView.visibility = View.GONE
+                                rvAdapter.setData(plants!!)
+                            }
+                        }
+                    } else
+                        Log.d("SearchFragment", "requestRecommendations() api 실패1")
+                }
+
+                override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
+                    Log.d("SearchFragment", "requestRecommendations() api 실패2")
+                }
+            })
     }
+
 
     private fun addPot(activity: MainActivity) {
         firstView.setOnClickListener {
             var dialog = AlertDialog.Builder(requireContext())
             dialog.setTitle("새 화분 등록하기")
-            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+            val dialogArray = arrayOf("카메라로 등록", "식물 이름으로 등록")
 
             dialog.setItems(dialogArray) { _, which ->
                 when (which) {

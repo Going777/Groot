@@ -3,15 +3,19 @@ package com.chocobi.groot.view.community.model
 // output을 만든다 : response
 
 data class CommunityCommentResponse(
-    val comment: Comment,
+    val comment: List<Comment>,
     val result: String,
     val msg: String,
 )
 
 data class Comment (
-    val total: Int,
-    val content: List<CommentContent>,
-    val pageable: Pageable
+    val commentId: Int,
+    val userPK: Int,
+    val nickName: String,
+    val content: String,
+    val profile: String?,
+    val createTime: CreateTime,
+    val updateTime: UpdateTime
 )
 
 data class CommentContent (
@@ -21,6 +25,6 @@ data class CommentContent (
     val content: String,
     val profile: String?,
     val createTime: CreateTime,
-    val updateTime: UpdateTime?
+    val updateTime: UpdateTime
 )
 

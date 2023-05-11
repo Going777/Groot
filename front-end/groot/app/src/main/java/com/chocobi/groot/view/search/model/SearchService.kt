@@ -51,8 +51,14 @@ interface SearchService {
         @Part filePart: MultipartBody.Part
     ): Call<PlantIdentifyResponse>
 
+//    바껴야 함
     @GET("/api/plants/{plantId}/introductions")
-    fun getRecomm(
+    fun getPlantInfoForAdd(
         @Path("plantId") plantId: Int
     ): Call<PlantIdentifyResponse>
+
+    @GET("/api/recommendations")
+    fun getRR(
+        @Query("id") userId: Int
+    ): Call<PlantSearchResponse>
 }

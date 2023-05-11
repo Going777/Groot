@@ -71,6 +71,11 @@ class CommunityTab2Fragment : Fragment() {
         return view
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        clickItem()
+    }
+
     private fun findViews(view: View) {
         communitySearchView = view.findViewById(R.id.communitySearchView)
         communityRecyclerView = view.findViewById(R.id.communityRecyclerView)
@@ -239,6 +244,14 @@ class CommunityTab2Fragment : Fragment() {
         val popularTagList =
             GlobalVariables.prefs.getString("popular_tags", "")?.split(", ") ?: emptyList()
         return popularTagList
+    }
+
+    private fun clickItem() {
+        popularTagAdapter.itemClick = object : PopularTagAdapter.ItemClick {
+            override fun onClick(view: View, position: Int, item: String) {
+                communitySearchView.setQuery(item, true)
+            }
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
