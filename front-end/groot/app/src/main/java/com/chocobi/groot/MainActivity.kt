@@ -95,6 +95,7 @@ class MainActivity : AppCompatActivity() {
     //        fragment 조작
     fun changeFragment(index: String) {
         var fragment: Fragment? = null
+
         when (index) {
             "pot" -> {
                 bnv_main.run { selectedItemId = R.id.potFragment }
@@ -134,7 +135,12 @@ class MainActivity : AppCompatActivity() {
             }
 
             "search_detail" -> {
+                val bundle = Bundle()
+                bundle.putString(
+                    "plant_id", intent.getStringExtra("plant_id")
+                )
                 fragment = SearchDetailFragment()
+                fragment.arguments = bundle
             }
 
             "community_share" -> {
@@ -350,14 +356,14 @@ class MainActivity : AppCompatActivity() {
         //        화분 정보 받아왔는지 체크
         val isExistPlantData = GlobalVariables.prefs.getString("plant_names", "")
         if (isExistPlantData == "") {
-            Toast.makeText(this, "지역 / 식물 다 받아올 거임", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "지역 / 식물 다 받아올 거임", Toast.LENGTH_SHORT).show()
 //        화분 이름 받아오기
             getPlantNameList()
 //            지역 받아오기
             getRegionNameList()
         } else {
 //            GlobalVariables.prefs.setString("plant_names", "")
-            Toast.makeText(this, "지역 / 식물 다 받아옴", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, "지역 / 식물 다 받아옴", Toast.LENGTH_SHORT).show()
         }
 
 //        인기태그 가져오기
@@ -462,8 +468,8 @@ class MainActivity : AppCompatActivity() {
 
         //        특정 프레그먼트로 이동
         var toPage = intent.getStringExtra("toPage")
+        val plantId = intent.getStringExtra("plant_id")
         if (toPage != null) {
-
             Log.d(TAG, "toPage" + toPage)
 
             when (toPage) {
@@ -472,6 +478,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             changeFragment(toPage)
+
         }
     }
 
