@@ -46,7 +46,7 @@ class PotDiaryFragment : Fragment() {
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var firstView: ConstraintLayout
     private var potList: MutableList<Pot>? = null
-    private var potPosition: Int = 0
+    private var potPosition: Int = -1
     private val firstItem: Pot = Pot(
         0,
         0,
@@ -79,7 +79,7 @@ class PotDiaryFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_pot_diary, container, false)
         val mActivity = activity as MainActivity
         findViews(rootView)
-        potPosition = arguments?.getInt("potPosition") ?: 0
+        potPosition = arguments?.getInt("potPosition") ?: -1
         Log.d(TAG, "oncreateview$potPosition")
         setListeners()
         initList()
@@ -207,7 +207,7 @@ class PotDiaryFragment : Fragment() {
                     potList = body.pots.toMutableList()
                     potList!!.add(0, firstItem)
 
-                    if (potPosition > 0) {
+                    if (potPosition >= 0) {
                         selectedPotId = potList!![potPosition].potId
                     } else {
                         selectedPotId = 0
@@ -233,8 +233,8 @@ class PotDiaryFragment : Fragment() {
     }
 
     fun setRecyclerView(potList: List<Pot>, mActivity: MainActivity) {
-        if (potPosition != 0) {
-            potRvAdapter = PotListRVAdapter(potList, 0)
+        if (potPosition >= 0) {
+            potRvAdapter = PotListRVAdapter(potList, potPosition)
         } else {
             potRvAdapter = PotListRVAdapter(potList, 0)
         }

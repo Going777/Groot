@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     private var potName: String = "화분 이름"
     private var potPlant: String = "화분 식물"
     private var potCharImg: String = "화분 이미지 URL"
-    private var potPosition: Int = 0
+    private var potPosition: Int = -1
     private lateinit var bnv_main: BottomNavigationView
 
     fun setPotId(id: Int) {

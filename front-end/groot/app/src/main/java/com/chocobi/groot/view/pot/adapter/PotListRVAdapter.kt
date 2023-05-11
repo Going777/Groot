@@ -25,6 +25,7 @@ class PotListRVAdapter(val items: List<Pot>, val position: Int?) :
 
     private val TAG = "PotListRVAdapter"
     private var selectedPosition = 0
+    private var isFirst : Boolean = true
 
 
     override fun onCreateViewHolder(
@@ -35,9 +36,12 @@ class PotListRVAdapter(val items: List<Pot>, val position: Int?) :
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_pot_list_item, parent, false)
 
-//        if (position is Int) {
-//            selectedPosition = position
-//        }
+        if (position is Int && isFirst) {
+            selectedPosition = position
+            isFirst = false
+        }
+        Log.d(TAG, "oncreateviewholder $selectedPosition")
+        Log.d(TAG, "oncreateviewholder $isFirst")
 
         return ViewHolder(view)
     }
