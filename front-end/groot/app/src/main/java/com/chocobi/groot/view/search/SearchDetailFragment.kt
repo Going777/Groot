@@ -34,11 +34,13 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 class SearchDetailFragment : Fragment() {
     private val TAG = "SearchDetailFragment"
     private var plantId : String? = null
+    private var targetPlantId: Int? = null
     private var plantName : String? = null
     private var plantSci : String? = null
     private var growType: String? = null
@@ -75,6 +77,7 @@ class SearchDetailFragment : Fragment() {
         plantId = arguments?.getString("plant_id")
 
         plantId?.let { getDetail(it.toInt()) }
+        targetPlantId = plantId?.let {it.toInt()}
     }
 
     @SuppressLint("MissingInflatedId")
@@ -98,7 +101,7 @@ class SearchDetailFragment : Fragment() {
             var intent = Intent(requireContext(), Pot1Activity::class.java)
             intent.putExtra("imageUrl", plantImgUrl)
             intent.putExtra("plantName", plantName)
-            intent.putExtra("plantId", plantId)
+            intent.putExtra("plantId", targetPlantId)
             intent.putExtra("growType", growType)
             intent.putExtra("mgmtLevel", mgmtLevel)
             intent.putExtra("characterGlbPath", characterGlbPath)

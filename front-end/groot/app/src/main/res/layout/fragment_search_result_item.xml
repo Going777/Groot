@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_plant_image"
+            android:src="@drawable/plant_default_color"
             />
     </androidx.cardview.widget.CardView>
 
@@ -28,7 +28,6 @@
         android:id="@+id/dictRvItemName"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:text="rv"
         android:textSize="13sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

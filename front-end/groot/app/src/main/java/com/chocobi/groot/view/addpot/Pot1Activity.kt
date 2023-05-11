@@ -42,6 +42,7 @@ class Pot1Activity : AppCompatActivity() {
 
         val plantName = intent.getStringExtra("plantName")
         val plantId = intent.getIntExtra("plantId", 0)
+        Log.d("Pot2Activity","onCreate() 플랜트 아이디 ${plantId}")
         val plantNameSplit = plantName?.split(" ")?.get(0) ?: ""
         val userName = UserData.getNickName()
         var tempPotName = userName + "의 " + plantNameSplit
