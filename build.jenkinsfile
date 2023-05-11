@@ -1,0 +1,84 @@
+pipeline {
+  agent any
+	post {
+    failure {
+      updateGitlabCommitStatus name: 'result', state: 'failed'
+    }
+    success {
+      updateGitlabCommitStatus name: 'result', state: 'success'
+    }
+    aborted {
+      updateGitlabCommitStatus name: 'result', state: 'canceled'
+    }
+  }
+  stages {
+    stage('init') {
+      steps {
+        echo 'init pipeline'
+      }
+    }
+    stage('cofing') {
+      steps {
+        echo 'copy configuration files'
+        sh 'pwd'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application-keys.properties ./back-end/backend/src/main/resources'
+      }
+    }
+    stage('build') {
+      steps {
+        updateGitlabCommitStatus name: 'build', state: 'pending'
+        echo 'move directory'
+        dir('./back-end/backend/') {
+          sh 'pwd'
+          sh 'ls -l'
+          echo 'start build'
+          sh 'chmod +x ./gradlew'
+          sh './gradlew clean build'
+        }
+        updateGitlabCommitStatus name: 'build', state: 'success'
+      }
+    }
+    stage('unload') {
+      environment {
+        // CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+        CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}').trim()
+      }
+      steps {
+        // script {
+        //   def output = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}')
+        //   withEnv(['CONTAINER_I=' +  output.trim()]) {
+        //     echo "${env.CONTAINER_I}"
+        //   }
+        // }
+        updateGitlabCommitStatus name: 'unload', state: 'pending'
+        echo 'unload docker container'
+        echo "${env.CONTAINER_ID}"
+        sh "docker stop ${env.CONTAINER_ID}"
+        echo 'remove docker container'
+        sh "docker rm ${env.CONTAINER_ID}"
+        updateGitlabCommitStatus name: 'unload', state: 'success'
+      }
+    }
+    stage('deploy') {
+      steps {
+        updateGitlabCommitStatus name: 'deploy', state: 'pending'
+        sh 'pwd'
+        dir('./back-end/backend/') {
+          echo 'build docker image'
+          sh 'docker build --no-cache -t springboot .'
+          echo 'run docker image'
+          sh 'docker run --name spring -d -p 8080:8080 springboot'
+        }
+        updateGitlabCommitStatus name: 'deploy', state: 'success'
+      }
+    }
+    // will be integrated with python server clean
+    stage('clean') {
+      steps {
+        echo 'clean unused image'
+        sh 'docker image prune --force'
+      }
+    }
+  }
+}
