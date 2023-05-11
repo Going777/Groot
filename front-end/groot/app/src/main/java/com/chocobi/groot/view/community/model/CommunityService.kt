@@ -1,7 +1,10 @@
 package com.chocobi.groot.view.community.model
 
+import com.chocobi.groot.data.BasicResponse
 import retrofit2.Call
+import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CommunityService {
@@ -19,4 +22,9 @@ interface CommunityService {
 
     @GET("/api/articles/tag")
     fun requestPopularTags(): Call<PopularTagResponse>
+
+    @DELETE("/api/articles/{articleId}")
+    fun deleteArticle(
+        @Path("articleId") articleId: Int
+    ): Call<BasicResponse>
 }
