@@ -164,6 +164,7 @@
                 <com.google.android.material.chip.Chip
                     android:id="@+id/tabBtn1"
                     style="@style/PLANT_CHIP"
+                    android:checked="true"
                     app:chipBackgroundColor="@color/plant_chip_water_checked_bg_color"
                     app:chipIcon="@drawable/ic_water"
                     app:chipIconTint="@color/plant_chip_water_checked_icon_color"
@@ -222,7 +223,7 @@
                 android:id="@+id/tab_container"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
                 android:background="@drawable/round_rectangle"
                 android:elevation="4dp"
                 android:padding="20dp">
@@ -240,7 +241,8 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/toDiaryBtn"
                 style="@style/GO_TO_DIARY_BTN"
-                android:layout_marginTop="15dp" />
+                android:layout_marginTop="15dp"
+                android:layout_marginHorizontal="10dp"/>
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
