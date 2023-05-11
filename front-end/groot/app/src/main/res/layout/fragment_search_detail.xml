@@ -29,9 +29,9 @@
         <ImageView
             android:id="@+id/plantImage"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="250dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/sample_plant_image"
+            android:src="@drawable/plant_default_color"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

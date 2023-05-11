@@ -1,6 +1,8 @@
 package com.chocobi.groot.view.pot.adapter
 
 
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,16 +11,25 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.BasicResponse
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.pot.model.Diary
+import com.chocobi.groot.view.pot.model.DiaryRequest
+import com.chocobi.groot.view.pot.model.PotService
 import de.hdodenhof.circleimageview.CircleImageView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.ref.WeakReference
 
-class PotCalendarRVAdapter(val items: List<Diary>) :
+class PotCalendarRVAdapter(val context: Context, val items: List<Diary>) :
     RecyclerView.Adapter<PotCalendarRVAdapter.ViewHolder>() {
 
     private val TAG = "PotCalendarRVAdapter"
@@ -55,8 +66,29 @@ class PotCalendarRVAdapter(val items: List<Diary>) :
             )
             if (checkBox.isChecked) {
 //                다이어리 쓰기
+                var dialog = AlertDialog.Builder(
+                    context,
+                    android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
+                )
+                dialog.setTitle("식물 미션")
+                dialog.setMessage("화분에게 물을 주었나요?")
+                dialog.setPositiveButton(
+                    "완료",
+                    DialogInterface.OnClickListener { dialog, which ->
+                        postDiary(items[position].potId, items[position].code)
+                        dialog.dismiss()
+                    })
+                dialog.setNegativeButton(
+                    "취소",
+                    DialogInterface.OnClickListener { dialog, which ->
+                        checkBox.isChecked = false
+                        dialog.dismiss()
+                    })
+                dialog.show()
             } else {
 //                다이어리 삭제
+                Toast.makeText(context, "이미 완료한 미션이에요.", Toast.LENGTH_SHORT).show()
+                checkBox.isChecked = true
             }
         }
         potImg.setOnClickListener {
@@ -81,6 +113,11 @@ class PotCalendarRVAdapter(val items: List<Diary>) :
             } else {
                 potMission.text = "영양제"
             }
+            val checkBox = itemView.findViewById<CheckBox>(R.id.checkbox)
+            if (item.done) {
+                checkBox.isChecked = true
+            }
+
 
             potImg.post {
                 view.get()?.let {
@@ -99,5 +136,51 @@ class PotCalendarRVAdapter(val items: List<Diary>) :
                 }
             }
         }
+    }
+    private fun postDiary(potId: Int, code: Int) {
+        val retrofit = RetrofitClient.getClient()!!
+        val potService = retrofit.create(PotService::class.java)
+        var water: Boolean = false
+        var nutrients: Boolean = false
+        var info: String = ""
+        if (code == 0) {
+            water = true
+            info = "물 주기"
+        } else {
+            nutrients = true
+            info = "영양제 주기"
+        }
+
+        potService.requestPostDiary(
+            DiaryRequest(
+                potId,
+                null,
+                water,
+                null,
+                null,
+                null,
+                nutrients
+            ), null
+        )
+            .enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    if (response.code() == 200) {
+                        var body = response.body()
+                        Log.d(TAG, "$body")
+                        if (body != null) {
+                            Toast.makeText(context, "$info 가 완료되었습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Log.d(TAG, "onResponse() 메인 체크 실패ㅜㅜㅜ $response")
+                    }
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                    Log.d(TAG, "메인 체크 실패")
+                }
+            })
     }
 }

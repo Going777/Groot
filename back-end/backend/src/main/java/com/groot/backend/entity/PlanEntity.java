@@ -53,6 +53,7 @@ public class PlanEntity {
         List<PlanDTO> dtoList = new ArrayList<>();
         for(PlanEntity plan: planEntities){
             PlanDTO result = PlanDTO.builder()
+                    .planId(plan.getId())
                     .code(plan.getCode())
                     .imgPath(plan.getPotEntity().getImgPath())
                     .potName(plan.getPotEntity().getName())

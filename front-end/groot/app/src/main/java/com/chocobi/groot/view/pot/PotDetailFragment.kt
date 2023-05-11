@@ -28,6 +28,7 @@ import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotResponse
 import com.chocobi.groot.view.pot.model.PotService
 import com.google.android.material.chip.Chip
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.github.sceneview.SceneView
 import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
@@ -51,6 +52,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     private lateinit var potPlantImg: ImageView
     private var potId: Int = 0
     private var modelNode: ModelNode? = null
+    private var toArBtn :Button? = null
 
     override fun onGetDetailRequested() {
         getPotDetail(potId)
@@ -94,17 +96,22 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             )
         }
 //        다이어리 버튼 클릭시
-        val potPostDiaryBtn = rootView.findViewById<ImageButton>(R.id.potPostDiaryBtn)
+        val potPostDiaryBtn = rootView.findViewById<FloatingActionButton>(R.id.potPostDiaryBtn)
+
         potPostDiaryBtn.setOnClickListener {
             if (potId is Int) {
                 mActivity.setPotId(potId)
             }
+            mActivity.setPotName(pot?.potName.toString())
+            mActivity.setPotPlant(pot?.plantKrName.toString())
+            mActivity.setPotCharImg(pot?.characterPNGPath.toString())
             mActivity.changeFragment("pot_diary_create")
         }
 
 //        만나러가기 버튼 클릭시
 //        dialog 띄우기
         val safeAlertDialog = AlertDialog.Builder(requireContext())
+
         safeAlertDialog.setMessage("AR 모드를 사용할 때는 주변이 안전한지 먼저 확인하세요.")
         safeAlertDialog.setPositiveButton("OK") { dialog, which ->
             val intent = Intent(context, ArActivity::class.java)
@@ -115,9 +122,15 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             startActivity(intent)
         }
 
-        val toArBtn = rootView.findViewById<Button>(R.id.toArBtn)
-        toArBtn.setOnClickListener {
+        toArBtn = rootView.findViewById(R.id.toArBtn)
+
+        toArBtn?.setOnClickListener {
             safeAlertDialog.create().show()
+        }
+
+        val toDiaryBtn = rootView.findViewById<Button>(R.id.toDiaryBtn)
+        toDiaryBtn.setOnClickListener {
+            mActivity.changeFragment("pot_diary")
         }
         // Inflate the layout for this fragment
         return rootView
@@ -143,7 +156,10 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                 if (pot?.waterDate != null) {
                     putString("lastDate", changeDateFormat(pot?.waterDate!!))
                 }
-                putString("comingDate", changeDateFormat(plan!![0].dateTime))
+                if (plant != null && plan?.size!! > 0) {
+
+                    putString("comingDate", changeDateFormat(plan!![0].dateTime))
+                }
             }
             val tab1 = PotDetailTab1Fragment().apply {
                 arguments = bundle
@@ -156,7 +172,10 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                 if (pot?.pruningDate != null) {
                     putString("lastDate", changeDateFormat(pot?.pruningDate!!))
                 }
-                putString("comingDate", changeDateFormat(plan!![2].dateTime))
+                if (plant != null && plan?.size!! > 0) {
+
+                    putString("comingDate", changeDateFormat(plan!![2].dateTime))
+                }
             }
             val tab2 = PotDetailTab2Fragment().apply {
                 arguments = bundle
@@ -189,7 +208,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                 if (pot?.nutrientDate != null) {
                     putString("lastDate", changeDateFormat(pot?.nutrientDate!!))
                 }
-                putString("comingDate", changeDateFormat(plan!![1].dateTime))
+                if (plant != null && plan?.size!! > 0) {
+                    putString("comingDate", changeDateFormat(plan!![1].dateTime))
+                }
             }
             val tab5 = PotDetailTab5Fragment().apply {
                 arguments = bundle
@@ -256,6 +277,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         potNameText.text = pot?.potName
         potPlantText.text = pot?.plantKrName
         GlobalVariables.changeImgView(potPlantImg, pot?.imgPath.toString(), requireContext())
+        if (pot?.survival == false) {
+            toArBtn?.visibility = View.GONE
+        }
         val bundle = Bundle().apply {
             putString("waterCycle", plant?.waterCycle)
             putInt("minHumidity", plant?.minHumidity ?: 0)
@@ -263,7 +287,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             if (pot?.waterDate != null) {
                 putString("lastDate", changeDateFormat(pot?.waterDate!!))
             }
-            putString("comingDate", changeDateFormat(plan!![0].dateTime))
+            if (plan != null && plan?.size!! > 0) {
+                putString("comingDate", changeDateFormat(plan!![0].dateTime))
+            }
         }
         val tab1 = PotDetailTab1Fragment().apply {
             arguments = bundle

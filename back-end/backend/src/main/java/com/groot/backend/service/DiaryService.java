@@ -24,7 +24,7 @@ public interface DiaryService {
 
     DiaryEntity updateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException;
 
-    Boolean deleteDiary(Long diaryId);
+    Boolean deleteDiary(Long diaryId, Long planId);
 
     DiaryResponseDTO detailDiary(Long diaryId);
 

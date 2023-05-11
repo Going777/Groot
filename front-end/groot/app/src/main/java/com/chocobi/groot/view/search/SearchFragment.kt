@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -165,21 +166,23 @@ class SearchFragment : Fragment() {
             }
 
 //        엔터키 클릭 -> 검색
-//        autoCompleteTextView.setOnKeyListener { v, keyCode, event ->
-//            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KEYCODE_ENTER) {
-//                // 엔터 눌렀을때 행동
-//                // 엔터 눌렀을 때 필터 닫기
-////                autoCompleteTextView.dismissDropDown()
-//                // 키보드 내리기
-//                GlobalVariables.hideKeyboard(requireActivity())
-//                // 검색 api 요청
-//                val inputText = autoCompleteTextView.text.toString()
-//                search(inputText)
-//            }
-//            true
-//        }
-//
-////        돋보기 버튼 클릭 -> 검색
+        autoCompleteTextView.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                // 검색 버튼 또는 Enter 키가 눌렸을 때의 동작을 여기에 작성합니다.
+                //            키보드 내리기
+                GlobalVariables.hideKeyboard(requireActivity())
+                autoCompleteTextView.clearFocus()
+
+//            검색 api 요청
+                plantName = autoCompleteTextView.text.toString()
+                search(plantName)
+                true // true를 반환하여 텍스트를 유지합니다.
+            } else {
+                false
+            }
+        }
+
+//        돋보기 버튼 클릭 -> 검색
         val searchPlantBtn = rootView.findViewById<ImageButton>(R.id.searchPlantBtn)
         searchPlantBtn.setOnClickListener {
 //            키보드 내리기
@@ -192,38 +195,6 @@ class SearchFragment : Fragment() {
         }
 
         addPot(mActivity)
-
-//        firstView.setOnClickListener {
-//            var dialog = AlertDialog.Builder(requireContext())
-//            dialog.setTitle("새 화분 등록하기")
-//            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
-//
-//            dialog.setItems(dialogArray) { _, which ->
-//                when (which) {
-//                    0 -> {
-//                        mActivity.setCameraStatus("addPot")
-//                        mActivity.requirePermissions(
-//                            arrayOf(android.Manifest.permission.CAMERA),
-//                            PERMISSION_CAMERA
-//                        )
-//                    }
-//
-//                    1 -> {
-//                        val plantBottomSheet = PlantBottomSheet(requireContext())
-//                        plantBottomSheet.show(
-//                            mActivity.supportFragmentManager,
-//                            plantBottomSheet.tag
-//                        )
-//                    }
-//                }
-//            }
-//            dialog.setNegativeButton(
-//                "취소",
-//                DialogInterface.OnClickListener { dialog, which ->
-//                    dialog.dismiss()
-//                })
-//            dialog.show()
-//        }
 
         return rootView
     }
@@ -448,7 +419,7 @@ class SearchFragment : Fragment() {
         firstView.setOnClickListener {
             var dialog = AlertDialog.Builder(requireContext())
             dialog.setTitle("새 화분 등록하기")
-            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+            val dialogArray = arrayOf("카메라로 등록", "식물 이름으로 등록")
 
             dialog.setItems(dialogArray) { _, which ->
                 when (which) {
