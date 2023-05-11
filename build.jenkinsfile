@@ -21,7 +21,7 @@ pipeline {
         echo 'init pipeline, check changes'
         // git 'fetch'
         script {
-          def changedFiles = sh(returnStdout: true, script: 'git diff --name-only --diff-filter=ACMRT HEAD^ HEAD').trim().split('\n')
+          def changedFiles = sh(returnStdout: true, script: 'git diff --name-only --diff-filter=ACMRT HEAD^^ HEAD').trim().split('\n')
           def changedDirs = new HashSet()
           for(def file : changedFiles) {
             if(file.contains('/')) {
