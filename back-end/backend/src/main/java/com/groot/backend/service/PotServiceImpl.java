@@ -299,14 +299,15 @@ public class PotServiceImpl implements PotService{
      * @param survival
      * @return [png url, glb url]
      */
-    private String[] getAssets(String grwType, int exp, boolean survival) {
+    private String[] getAssets(String grwType, int exp, int level, boolean survival) {
         CharacterEntity characterEntity;
         if(!survival) {
             characterEntity =
                 characterRepository.findByType(PlantCodeUtil.characterCode("gone"));
         }
         else {
-            characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), expToLevel(exp));
+//            characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), expToLevel(exp));
+            characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), level);
         }
         return new String[] {characterEntity.getPngPath(), characterEntity.getGlbPath()};
     }
@@ -317,7 +318,7 @@ public class PotServiceImpl implements PotService{
      * @return PotListDTO
      */
     public PotListDTO buildListDTO(PotEntity potEntity) {
-        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getSurvival());
+        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getLevel(), potEntity.getSurvival());
         return PotListDTO.builder()
                 .potId(potEntity.getId())
                 .plantId(potEntity.getPlantId())
@@ -331,7 +332,8 @@ public class PotServiceImpl implements PotService{
                 .pruningDate(potEntity.getPruningDate())
                 .survival(potEntity.getSurvival())
                 .experience(potEntity.getExperience())
-                .level(expToLevel(potEntity.getExperience()))   // level?
+//                .level(expToLevel(potEntity.getExperience()))   // level?
+                .level(potEntity.getLevel())
                 .characterPNGPath(urls[0])
                 .characterGLBPath(urls[1])
                 .build();
