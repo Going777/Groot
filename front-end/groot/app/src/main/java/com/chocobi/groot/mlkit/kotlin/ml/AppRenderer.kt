@@ -138,12 +138,12 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
         view.useCloudMlSwitch.isChecked = gcpConfigured
         view.useCloudMlSwitch.isEnabled = gcpConfigured
         currentAnalyzer = if (gcpConfigured) configuredAnalyzer else mlKitAnalyzer
-
-        if (!gcpConfigured) {
-            showSnackbar(
-                "Google Cloud Vision isn't configured (see README). The Cloud ML switch will be disabled."
-            )
-        }
+//
+//        if (!gcpConfigured) {
+//            showSnackbar(
+//                "Google Cloud Vision isn't configured (see README). The Cloud ML switch will be disabled."
+//            )
+//        }
 
         view.resetButton.setOnClickListener {
             synchronized(arLabeledAnchors) { arLabeledAnchors.clear() }
