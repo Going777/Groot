@@ -72,9 +72,6 @@ public class PlantController {
     public ResponseEntity<Map<String, Object>> plantList(PlantSearchDTO plantSearchDTO) {
         logger.info("Get plant list : {}", plantSearchDTO);
         logger.info("param : name : {}", plantSearchDTO.getName());
-        logger.info("param : diff : {}", plantSearchDTO.getDifficulty());
-        logger.info("param : lux : {}", plantSearchDTO.getLux());
-        logger.info("param : growth : {}", plantSearchDTO.getGrowth());
         logger.info("page no : {}", plantSearchDTO.getPage());
 
         Map<String, Object> result = new HashMap<>();

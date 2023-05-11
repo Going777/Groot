@@ -235,7 +235,7 @@ public class PotController {
             result.put("msg", "아직 구현되지 않은 기능입니다.");
             status = HttpStatus.SERVICE_UNAVAILABLE;
         } catch (Exception e) {
-            logger.info("ERROR : {}", e.getStackTrace());
+            logger.info("ERROR : {}", e.getCause());
             result.put("msg", e.getCause());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
