@@ -99,7 +99,7 @@ pipeline {
             SPRING_CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}').trim()
           }
           when {
-            expression{ springboot && env.SPRING_CONTAINER_ID != null }
+            expression{ springboot && params.SPRING_CONTAINER_ID != null }
           }
           steps {
             updateGitlabCommitStatus name: 'unload', state: 'pending'
@@ -116,7 +116,7 @@ pipeline {
             FLASK_CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep flask | awk \'{print $1\'}').trim()
           }
           when {
-            expression { flask && env.FLASK_CONTAINER_ID != null }
+            expression { flask && params.FLASK_CONTAINER_ID != null }
           }
           steps {
             echo 'unload flask container'
