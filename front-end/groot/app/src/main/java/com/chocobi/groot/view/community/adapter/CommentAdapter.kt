@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.chocobi.groot.view.community.model.CommunityShareItemResponse
 import java.lang.ref.WeakReference
@@ -47,7 +48,6 @@ class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapt
 
         if (position == mutableList.size - 1) {
             delegate?.onLoadMore()
-
         }
     }
 
@@ -64,6 +64,10 @@ class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapt
     fun loadMore(mutableList: MutableList<CommunityCommentResponse>) {
         this.mutableList.addAll(mutableList)
         notifyItemRangeChanged(this.mutableList.size - mutableList.size, mutableList.size)
+    }
+    fun addComment(comment: CommunityCommentResponse) {
+        mutableList.add(comment)
+        notifyItemInserted(mutableList.size - 1)
     }
 }
 
@@ -115,7 +119,7 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     fun updateView() {
         nickName.text = communityCommentResponse.comment[0].nickName
         val koreahour = communityCommentResponse.comment[0].createTime.time.hour + 9
-        createTime.text = communityCommentResponse.comment[0].createTime.date.year.toString() + '.'+ communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + koreahour + ':'+ communityCommentResponse.comment[0].createTime.time.minute.toString()
+        createTime.text = communityCommentResponse.comment[0].createTime.date.year.toString() + '.'+ communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + communityCommentResponse.comment[0].createTime.time.hour + ':'+ communityCommentResponse.comment[0].createTime.time.minute.toString()
         content.text = communityCommentResponse.comment[0].content
         profile.post {
             view.get()?.let {
@@ -135,4 +139,6 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         }
 
     }
+
+
 }
