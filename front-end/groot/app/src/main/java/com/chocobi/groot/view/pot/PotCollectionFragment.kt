@@ -56,7 +56,7 @@ class PotCollectionFragment : Fragment() {
         potFirstView.setOnClickListener {
             var dialog = AlertDialog.Builder(requireContext())
             dialog.setTitle("새 화분 등록하기")
-            val dialogArray = arrayOf("카메라로 등록", "검색으로 등록")
+            val dialogArray = arrayOf("카메라로 등록", "식물 이름으로 등록")
 
             dialog.setItems(dialogArray) { _, which ->
                 when (which) {
