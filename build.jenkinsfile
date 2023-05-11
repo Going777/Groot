@@ -21,6 +21,7 @@ pipeline {
         echo 'init pipeline, check changes'
         // git 'fetch'
         script {
+          echo "start build : ${env.BUILD_CAUSE}"
           if(env.BUILD_CASE == 'MANUALTRIGGER') {
             echo "triggerd by user"
             springboot = true
