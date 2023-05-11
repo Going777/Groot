@@ -22,7 +22,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_weight="0"
-                android:src="@drawable/sample_plant_image"/>
+                android:src="@drawable/basic_profile"/>
             <TextView
                 android:id="@+id/commentNickname"
                 android:layout_width="fill_parent"

@@ -116,6 +116,7 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
             changePotImg(potId, null, imgFile)
         }
 
+
 //        화분 이미지 변경 갤러리 버튼
         val potScanBtn = view.findViewById<ImageButton>(R.id.potScanBtn)
         potScanBtn.setOnClickListener {
