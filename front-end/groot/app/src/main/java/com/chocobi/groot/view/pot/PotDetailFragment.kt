@@ -119,6 +119,11 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         toArBtn.setOnClickListener {
             safeAlertDialog.create().show()
         }
+
+        val toDiaryBtn = rootView.findViewById<Button>(R.id.toDiaryBtn)
+        toDiaryBtn.setOnClickListener {
+            mActivity.changeFragment("pot_diary")
+        }
         // Inflate the layout for this fragment
         return rootView
     }

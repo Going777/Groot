@@ -150,6 +150,7 @@ class PotCollectionFragment : Fragment() {
             }
 
             override fun onDetailBtnClick(view: View, position: Int) {
+                mActivity.setPotPosition(position+1)
                 mActivity.setPotId(potList?.get(position)?.potId ?: 0)
                 mActivity.changeFragment("pot_detail")
             }

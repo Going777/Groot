@@ -20,7 +20,7 @@ import com.chocobi.groot.view.pot.model.Time
 import de.hdodenhof.circleimageview.CircleImageView
 import java.lang.ref.WeakReference
 
-class PotListRVAdapter(val items: List<Pot>) :
+class PotListRVAdapter(val items: List<Pot>, val position: Int?) :
     RecyclerView.Adapter<PotListRVAdapter.ViewHolder>() {
 
     private val TAG = "PotListRVAdapter"
@@ -34,6 +34,10 @@ class PotListRVAdapter(val items: List<Pot>) :
         Log.d(TAG, "onCreateViewHolder() $items")
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_pot_list_item, parent, false)
+
+        if (position is Int) {
+            selectedPosition = position
+        }
 
         return ViewHolder(view)
     }
