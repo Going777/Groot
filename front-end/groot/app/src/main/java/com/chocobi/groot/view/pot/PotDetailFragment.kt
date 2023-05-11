@@ -28,6 +28,7 @@ import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotResponse
 import com.chocobi.groot.view.pot.model.PotService
 import com.google.android.material.chip.Chip
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.github.sceneview.SceneView
 import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
@@ -95,12 +96,15 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             )
         }
 //        다이어리 버튼 클릭시
-        val potPostDiaryBtn = rootView.findViewById<ImageButton>(R.id.potPostDiaryBtn)
+        val potPostDiaryBtn = rootView.findViewById<FloatingActionButton>(R.id.potPostDiaryBtn)
 
         potPostDiaryBtn.setOnClickListener {
             if (potId is Int) {
                 mActivity.setPotId(potId)
             }
+            mActivity.setPotName(pot?.potName.toString())
+            mActivity.setPotPlant(pot?.plantKrName.toString())
+            mActivity.setPotCharImg(pot?.characterPNGPath.toString())
             mActivity.changeFragment("pot_diary_create")
         }
 
