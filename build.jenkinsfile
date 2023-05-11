@@ -23,7 +23,7 @@ pipeline {
         script {
           def buildCause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
           echo "manually started by ${buildCause}"
-          if(buildCause.isEmpty()) {
+          if(!buildCause.isEmpty()) {
             echo "triggerd by user"
             springboot = true
             flask = true
@@ -92,37 +92,70 @@ pipeline {
       }
     }
     stage('unload') {
-      environment {
-        // CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
-        CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}').trim()
-      }
-      steps {
-        // script {
-        //   def output = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}')
-        //   withEnv(['CONTAINER_I=' +  output.trim()]) {
-        //     echo "${env.CONTAINER_I}"
-        //   }
-        // }
-        updateGitlabCommitStatus name: 'unload', state: 'pending'
-        echo 'unload docker container'
-        echo "${env.CONTAINER_ID}"
-        sh "docker stop ${env.CONTAINER_ID}"
-        echo 'remove docker container'
-        sh "docker rm ${env.CONTAINER_ID}"
-        updateGitlabCommitStatus name: 'unload', state: 'success'
+      parallel {
+        stage('down-spring') {
+          when {
+            expression{ springboot }
+          }
+          environment {
+          // CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+            CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}').trim()
+          }
+          steps {
+            updateGitlabCommitStatus name: 'unload', state: 'pending'
+            echo 'unload docker container'
+            echo "${env.CONTAINER_ID}"
+            sh "docker stop ${env.CONTAINER_ID}"
+            echo 'remove docker container'
+            sh "docker rm ${env.CONTAINER_ID}"
+            updateGitlabCommitStatus name: 'unload', state: 'success'
+          }
+        }
+        stage('down-flask') {
+          when {
+            expression { flask }
+          }
+          environment {
+            CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep flask | awk \'{print $1\'}').trim()
+          }
+          steps {
+            echo 'unload flask container'
+            echo "${env.CONTAINER_ID}"
+            echo 'remove docker container'
+            sh "docker rm ${env.CONTAINER_ID}"
+          }
+        }
       }
     }
     stage('deploy') {
-      steps {
-        updateGitlabCommitStatus name: 'deploy', state: 'pending'
-        sh 'pwd'
-        dir('./back-end/backend/') {
-          echo 'build docker image'
-          sh 'docker build --no-cache -t springboot .'
-          echo 'run docker image'
-          sh 'docker run --name spring -d -p 8080:8080 springboot'
+      parallel {
+        stage('deploy-spring') {
+          when {
+            expression { springboot }
+          }
+          steps {
+            updateGitlabCommitStatus name: 'deploy', state: 'pending'
+            sh 'pwd'
+            dir('./back-end/backend/') {
+              echo 'build docker image'
+              sh 'docker build --no-cache -t springboot .'
+              echo 'run docker image'
+              sh 'docker run --name spring -d -p 8080:8080 springboot'
+            }
+            updateGitlabCommitStatus name: 'deploy', state: 'success'
+          }
         }
-        updateGitlabCommitStatus name: 'deploy', state: 'success'
+        stage('deploy-flask') {
+          when {
+            expression { flask }
+          }
+          steps {
+            dir('./domain/') {
+              echo 'run docker container'
+              sh 'docker run -d -p 8082:5000 --name flask flask'
+            }
+          }
+        }
       }
     }
     // will be integrated with python server clean
