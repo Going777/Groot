@@ -46,6 +46,7 @@ class PotDiaryFragment : Fragment() {
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var firstView: ConstraintLayout
     private var potList: MutableList<Pot>? = null
+    private var potPosition: Int = -1
     private val firstItem: Pot = Pot(
         0,
         0,
@@ -67,6 +68,7 @@ class PotDiaryFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+
         }
     }
 
@@ -77,6 +79,8 @@ class PotDiaryFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_pot_diary, container, false)
         val mActivity = activity as MainActivity
         findViews(rootView)
+        potPosition = arguments?.getInt("potPosition") ?: -1
+        Log.d(TAG, "oncreateview$potPosition")
         setListeners()
         initList()
 //        reload()
@@ -85,8 +89,7 @@ class PotDiaryFragment : Fragment() {
 //        상단 화분 목록
         getPotList(mActivity)
 
-//        다이어리 리스트 불러오기
-        requestDiaryList("load")
+
 
         return rootView
     }
@@ -204,8 +207,18 @@ class PotDiaryFragment : Fragment() {
                     potList = body.pots.toMutableList()
                     potList!!.add(0, firstItem)
 
+                    if (potPosition >= 0) {
+                        selectedPotId = potList!![potPosition].potId
+                    } else {
+                        selectedPotId = 0
+                    }
+
+
 
                     setRecyclerView(potList!!, mActivity)
+
+                    //        다이어리 리스트 불러오기
+                    requestDiaryList("load")
 
 
                 } else {
@@ -220,8 +233,11 @@ class PotDiaryFragment : Fragment() {
     }
 
     fun setRecyclerView(potList: List<Pot>, mActivity: MainActivity) {
-
-        potRvAdapter = PotListRVAdapter(potList)
+        if (potPosition >= 0) {
+            potRvAdapter = PotListRVAdapter(potList, potPosition)
+        } else {
+            potRvAdapter = PotListRVAdapter(potList, 0)
+        }
         potListRV.layoutManager =
             LinearLayoutManager(mActivity, LinearLayoutManager.HORIZONTAL, false)
         potListRV.adapter = potRvAdapter
@@ -248,6 +264,7 @@ class PotDiaryFragment : Fragment() {
 
         var retrofit = RetrofitClient.getClient()!!
         var potService = retrofit.create(PotService::class.java)
+        Log.d(TAG, "$selectedPotId")
 
         potService.requestPotDiary(selectedPotId, diaryListPage, REQUESTPAGESIZE)
             .enqueue(object : Callback<DiaryListResponse> {
@@ -284,7 +301,6 @@ class PotDiaryFragment : Fragment() {
                                 adapter.reload(list)
                                 hideProgress()
                             }
-
                         }
                     } else {
                         if (diaryListPage == 0) {

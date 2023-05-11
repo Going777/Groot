@@ -87,6 +87,7 @@ class PotCalendarRVAdapter(val context: Context, val items: List<Diary>) :
                 dialog.show()
             } else {
 //                다이어리 삭제
+                Toast.makeText(context, "이미 완료한 미션이에요.", Toast.LENGTH_SHORT).show()
                 checkBox.isChecked = true
             }
         }
@@ -170,8 +171,7 @@ class PotCalendarRVAdapter(val context: Context, val items: List<Diary>) :
                         var body = response.body()
                         Log.d(TAG, "$body")
                         if (body != null) {
-                            Toast.makeText(context, "$info 가 완료되었습니다.", Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(context, "$info 가 완료되었습니다.", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Log.d(TAG, "onResponse() 메인 체크 실패ㅜㅜㅜ $response")

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.chocobi.groot.R
 
@@ -33,13 +34,18 @@ class PotDetailTab5Fragment : Fragment() {
         val nutrientLastDate = view.findViewById<TextView>(R.id.nutrientLastDate)
         val nutrientComingDate = view.findViewById<TextView>(R.id.nutrientComingDate)
         val nutrientLastDateInfo = view.findViewById<TextView>(R.id.nutrientLastDateInfo)
-
-        if ( lastDate == null) {
+        val nutrientComingDateSection =
+            view.findViewById<LinearLayout>(R.id.nutrientComingDateSection)
+        if (lastDate == null) {
             nutrientLastDateInfo.text = "아직 영양제를 주지 않았어요."
         } else {
             nutrientLastDate.text = lastDate
         }
-        nutrientComingDate.text = comingDate
+        if (comingDate == null) {
+            nutrientComingDateSection.visibility = View.GONE
+        } else {
+            nutrientComingDate.text = comingDate
+        }
 
         // Inflate the layout for this fragment
         return view

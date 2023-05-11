@@ -20,11 +20,12 @@ import com.chocobi.groot.view.pot.model.Time
 import de.hdodenhof.circleimageview.CircleImageView
 import java.lang.ref.WeakReference
 
-class PotListRVAdapter(val items: List<Pot>) :
+class PotListRVAdapter(val items: List<Pot>, val position: Int?) :
     RecyclerView.Adapter<PotListRVAdapter.ViewHolder>() {
 
     private val TAG = "PotListRVAdapter"
     private var selectedPosition = 0
+    private var isFirst : Boolean = true
 
 
     override fun onCreateViewHolder(
@@ -34,6 +35,13 @@ class PotListRVAdapter(val items: List<Pot>) :
         Log.d(TAG, "onCreateViewHolder() $items")
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_pot_list_item, parent, false)
+
+        if (position is Int && isFirst) {
+            selectedPosition = position
+            isFirst = false
+        }
+        Log.d(TAG, "oncreateviewholder $selectedPosition")
+        Log.d(TAG, "oncreateviewholder $isFirst")
 
         return ViewHolder(view)
     }
@@ -60,7 +68,6 @@ class PotListRVAdapter(val items: List<Pot>) :
 
 //                border 설정
                 holder.itemView.findViewById<CircleImageView>(R.id.potImage).borderWidth = 10
-
                 if (selectedPosition != position && selectedPosition != -1) {
                     notifyItemChanged(selectedPosition)
                 }
