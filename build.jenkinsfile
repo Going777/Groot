@@ -99,16 +99,20 @@ pipeline {
             SPRING_CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}').trim()
           }
           when {
-            expression{ springboot && params.SPRING_CONTAINER_ID != null }
+            expression{ springboot }
           }
           steps {
-            updateGitlabCommitStatus name: 'unload', state: 'pending'
-            echo 'unload docker container'
-            echo "${env.CONTAINER_ID}"
-            sh "docker stop ${env.CONTAINER_ID}"
-            echo 'remove docker container'
-            sh "docker rm ${env.CONTAINER_ID}"
-            updateGitlabCommitStatus name: 'unload', state: 'success'
+            script {
+              if(env.SPRING_CONTAINER_ID != null) {
+                updateGitlabCommitStatus name: 'unload', state: 'pending'
+                echo 'unload docker container'
+                echo "${env.SPRING_CONTAINER_ID}"
+                sh "docker stop ${env.SPRING_CONTAINER_ID}"
+                echo 'remove docker container'
+                sh "docker rm ${env.SPRING_CONTAINER_ID}"
+                updateGitlabCommitStatus name: 'unload', state: 'success'
+              }
+            }
           }
         }
         stage('down-flask') {
@@ -116,14 +120,18 @@ pipeline {
             FLASK_CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep flask | awk \'{print $1\'}').trim()
           }
           when {
-            expression { flask && params.FLASK_CONTAINER_ID != null }
+            expression { flask }
           }
           steps {
-            echo 'unload flask container'
-            echo "${env.CONTAINER_ID}"
-            sh "docker stop ${env.CONTAINER_ID}"
-            echo 'remove docker container'
-            sh "docker rm ${env.CONTAINER_ID}"
+            script {
+              if(env.FLASK_CONTAINER_ID != null) {
+                echo 'unload flask container'
+                echo "${env.CONTAINER_ID}"
+                sh "docker stop ${env.CONTAINER_ID}"
+                echo 'remove docker container'
+                sh "docker rm ${env.CONTAINER_ID}"
+              }
+            }
           }
         }
       }
