@@ -1,28 +1,20 @@
 package com.chocobi.groot.view.intro
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.Settings.Global
 import android.util.Log
 import android.widget.Button
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.view.login.LoginActivity
-import com.google.gson.Gson
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Headers
+
 
 class IntroActivity : AppCompatActivity() {
     private val TAG = "IntroActivity"
@@ -31,6 +23,9 @@ class IntroActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
+
+
+
 
 
 //        token 갱신
