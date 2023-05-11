@@ -18,7 +18,7 @@ pipeline {
     stage('init') {
       steps {
         echo 'init pipeline, check changes'
-        git 'fetch'
+        // git 'fetch'
         script {
           def changedFiles = sh(returnStdout: true, script: 'git diff --name-only --diff-filter=ACMRT HEAD^ HEAD').trim().split('\n')
           def changedDirs = new HashSet()
