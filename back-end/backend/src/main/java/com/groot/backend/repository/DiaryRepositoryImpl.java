@@ -38,4 +38,26 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom{
 
         return updateCnt;
     }
+
+    @Override
+    public Long updateIsUserLastById(Long id, Boolean setUserLast) {
+        QDiaryEntity qDiary = QDiaryEntity.diaryEntity;
+        Long updateCnt = queryFactory.update(qDiary)
+                .set(qDiary.isUserLast, setUserLast)
+                .where(qDiary.id.eq(id))
+                .execute();
+
+        return updateCnt;
+    }
+
+    @Override
+    public Long updateIsPotLastById(Long id, Boolean setPotLast) {
+        QDiaryEntity qDiary = QDiaryEntity.diaryEntity;
+        Long updateCnt = queryFactory.update(qDiary)
+                .set(qDiary.isPotLast, setPotLast)
+                .where(qDiary.id.eq(id))
+                .execute();
+
+        return updateCnt;
+    }
 }

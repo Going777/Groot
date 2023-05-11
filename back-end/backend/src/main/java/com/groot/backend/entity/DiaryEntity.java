@@ -73,6 +73,10 @@ public class DiaryEntity extends BaseEntity{
     @JsonBackReference
     private DiaryCheckEntity diaryCheckEntity;
 
+    @OneToMany(mappedBy = "diaryEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<PlanEntity> planEntities;
+
     public DiaryEntity addCheckId (DiaryCheckEntity diaryEntity){
         DiaryEntity result = DiaryEntity.builder()
                 .bug(diaryEntity.getBug())

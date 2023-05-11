@@ -48,6 +48,8 @@ public class QDiaryEntity extends EntityPathBase<DiaryEntity> {
 
     public final BooleanPath nutrients = createBoolean("nutrients");
 
+    public final ListPath<PlanEntity, QPlanEntity> planEntities = this.<PlanEntity, QPlanEntity>createList("planEntities", PlanEntity.class, QPlanEntity.class, PathInits.DIRECT2);
+
     public final QPotEntity potEntity;
 
     public final NumberPath<Long> potId = createNumber("potId", Long.class);
