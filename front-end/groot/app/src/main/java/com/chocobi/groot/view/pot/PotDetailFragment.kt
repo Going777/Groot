@@ -51,6 +51,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     private lateinit var potPlantImg: ImageView
     private var potId: Int = 0
     private var modelNode: ModelNode? = null
+    private var toArBtn :Button? = null
 
     override fun onGetDetailRequested() {
         getPotDetail(potId)
@@ -95,6 +96,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         }
 //        다이어리 버튼 클릭시
         val potPostDiaryBtn = rootView.findViewById<ImageButton>(R.id.potPostDiaryBtn)
+
         potPostDiaryBtn.setOnClickListener {
             if (potId is Int) {
                 mActivity.setPotId(potId)
@@ -105,6 +107,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
 //        만나러가기 버튼 클릭시
 //        dialog 띄우기
         val safeAlertDialog = AlertDialog.Builder(requireContext())
+
         safeAlertDialog.setMessage("AR 모드를 사용할 때는 주변이 안전한지 먼저 확인하세요.")
         safeAlertDialog.setPositiveButton("OK") { dialog, which ->
             val intent = Intent(context, ArActivity::class.java)
@@ -115,8 +118,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             startActivity(intent)
         }
 
-        val toArBtn = rootView.findViewById<Button>(R.id.toArBtn)
-        toArBtn.setOnClickListener {
+        toArBtn = rootView.findViewById(R.id.toArBtn)
+
+        toArBtn?.setOnClickListener {
             safeAlertDialog.create().show()
         }
 
@@ -269,6 +273,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         potNameText.text = pot?.potName
         potPlantText.text = pot?.plantKrName
         GlobalVariables.changeImgView(potPlantImg, pot?.imgPath.toString(), requireContext())
+        if (pot?.survival == false) {
+            toArBtn?.visibility = View.GONE
+        }
         val bundle = Bundle().apply {
             putString("waterCycle", plant?.waterCycle)
             putInt("minHumidity", plant?.minHumidity ?: 0)
