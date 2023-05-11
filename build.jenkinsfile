@@ -23,8 +23,13 @@ pipeline {
           def changedFiles = sh(returnStdout: true, script: 'git diff --name-only --diff-filter=ACMRT HEAD^ HEAD').trim().split('\n')
           def changedDirs = new HashSet()
           for(def file : changedFiles) {
-            def dir = file.substring(0, file.lastIndexOf('/'))
-            changedDirs.add(dir)
+            if(file.contains('/')) {
+              def dir = file.substring(0, file.lastIndexOf('/'))
+              changedDirs.add(dir)          
+            }
+            else {
+              changedDirs.add(file)
+            }
           }
           springboot = changedDirs.contains('back-end')
           flask = changedDirs.contains('domain')
