@@ -1,5 +1,6 @@
 def springboot = false
 def falsk = false
+def android = false
 
 pipeline {
   agent any
@@ -33,8 +34,9 @@ pipeline {
           }
           springboot = changedDirs.contains('back-end')
           flask = changedDirs.contains('domain')
+          android = changedDirs.contains('front-end')
         }
-        echo "spring : ${springboot}, flask : ${flask}"
+        echo "spring : ${springboot}, flask : ${flask}, android : ${android}"
       }
     }
     stage('cofing') {
@@ -46,9 +48,9 @@ pipeline {
         sh 'cp /var/jenkins_home/workspace/Groot_config/config.py ./domain'
       }
     }
-    stage('build') {
+    stage('build-spring') {
       steps {
-        updateGitlabCommitStatus name: 'build', state: 'pending'
+        updateGitlabCommitStatus name: 'build-spring', state: 'pending'
         echo 'move directory'
         dir('./back-end/backend/') {
           sh 'pwd'
@@ -57,7 +59,20 @@ pipeline {
           sh 'chmod +x ./gradlew'
           sh './gradlew clean build'
         }
-        updateGitlabCommitStatus name: 'build', state: 'success'
+        updateGitlabCommitStatus name: 'build-spring', state: 'success'
+      }
+    }
+    stage('build-flask') {
+      steps {
+        updateGitlabCommitStatus name: 'build-flask', state: 'pending'
+        echo 'move directory'
+        dir('./domain/') {
+          sh 'pwd'
+          sh 'ls -l'
+          echo 'start build'
+          sh 'docker build -t flask .'
+        }
+        updateGitlabCommitStatus name: 'build-flask', state: 'success'
       }
     }
     stage('unload') {
