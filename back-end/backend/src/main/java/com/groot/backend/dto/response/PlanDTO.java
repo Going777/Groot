@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class PlanDTO {
+    private Long planId;
     private Long potId;
     private Long userPK;
     private Integer code;  // 0이면 물, 1이면 영양제
