@@ -17,8 +17,10 @@ import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -121,6 +123,7 @@ class CommunityDetailFragment : Fragment() {
         var commentInputSection = view.findViewById<CardView>(R.id.commentInputSection)
 
         var carouselSection = view.findViewById<LinearLayoutCompat>(R.id.carouselSection)
+        var dropdownSection = view.findViewById<ConstraintLayout>(R.id.dropdownSection)
 
 
         postCommentBtn.setOnClickListener {
@@ -292,6 +295,54 @@ class CommunityDetailFragment : Fragment() {
                     val tagAdapter = ArticleTagAdapter(tagList)
                     recyclerView.adapter = tagAdapter
 
+
+                    // 드롭다운
+                    if (UserData.getUserPK() == articleDetailData.article.userPK) {
+
+
+                        val spinner: Spinner = view.findViewById(R.id.spinner)
+                        val spinnerButton: ImageButton = view.findViewById(R.id.spinnerButton)
+
+                        val options = arrayOf("  수정  ", "  삭제  ")
+                        spinner.setSelection(0)
+                        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, options)
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                        spinner.adapter = adapter
+
+                        try {
+                            val method =
+                                Spinner::class.java.getDeclaredMethod("setSpinnerButton", ImageButton::class.java)
+                            method.invoke(spinner, spinnerButton)
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+
+                        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                            override fun onItemSelected(
+                                parent: AdapterView<*>,
+                                view: View?,
+                                position: Int,
+                                id: Long
+                            ) {
+                                val selectedOption = options[position]
+                                if (selectedOption == "  삭제  ") {
+                                    deleteArticle(articleId)
+                                    requireActivity().supportFragmentManager.popBackStack()
+                                }
+
+                            }
+
+                            override fun onNothingSelected(parent: AdapterView<*>) {
+                                // 아무것도 선택하지 않은 경우 처리
+                            }
+                        }
+
+                        spinnerButton.setOnClickListener {
+                            spinner.performClick()
+                        }
+                    } else {
+                        dropdownSection.visibility = View.GONE
+                    }
                 } else {
                     Log.d(TAG, "실패1")
                     Log.d(TAG, response.toString())
@@ -343,41 +394,6 @@ class CommunityDetailFragment : Fragment() {
         }
 
 
-        val spinner: Spinner = view.findViewById(R.id.spinner)
-        val spinnerButton: ImageButton = view.findViewById(R.id.spinnerButton)
-
-        val options = arrayOf("  수정  ", "  삭제  ")
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, options)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
-
-        try {
-            val method =
-                Spinner::class.java.getDeclaredMethod("setSpinnerButton", ImageButton::class.java)
-            method.invoke(spinner, spinnerButton)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val selectedOption = options[position]
-//                Toast.makeText(requireContext(), selectedOption, Toast.LENGTH_SHORT).show()
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // 아무것도 선택하지 않은 경우 처리
-            }
-        }
-
-        spinnerButton.setOnClickListener {
-            spinner.performClick()
-        }
 
 
 //        댓글
