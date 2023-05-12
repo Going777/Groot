@@ -430,6 +430,7 @@ class SearchFragment : Fragment() {
                             }
                         }
                     } else {
+                        Log.d("SearchFragment", "requestRecommendations() api 실패1 $response")
                         rv.visibility = View.GONE
                         recmmView.visibility = View.GONE
                         firstView.visibility = View.VISIBLE

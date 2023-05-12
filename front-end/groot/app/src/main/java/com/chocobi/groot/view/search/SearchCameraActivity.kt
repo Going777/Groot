@@ -105,6 +105,8 @@ class SearchCameraActivity : AppCompatActivity() {
             intent.putExtra("plantId", plantId)
             intent.putExtra("growType", growType)
             intent.putExtra("mgmtLevel", mgmtLevel)
+            Log.d("Pot2Activity","onCreate() 보내는 값 ///생장 ${growType}///")
+            Log.d("Pot2Activity","onCreate() 보내는 값 ///숙련도 ${mgmtLevel}///")
             intent.putExtra("characterGlbPath", characterGlbPath)
             startActivity(intent)
         }
