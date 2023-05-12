@@ -57,7 +57,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="산세산세"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/pot_image"
@@ -67,7 +66,6 @@
                 android:id="@+id/plant_species"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="산세베리아"
                 android:textSize="10sp"
                 app:layout_constraintTop_toBottomOf="@+id/pot_name"
                 tools:ignore="MissingConstraints" />
@@ -88,7 +86,6 @@
             android:id="@+id/potMeetDay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/text1"
             app:layout_constraintStart_toEndOf="@+id/text1"
