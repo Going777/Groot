@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:layout_marginTop="10dp"
     android:orientation="vertical"
-    tools:context=".view.search.SearchFragment">
+    tools:context=".view.search.SearchFragment"
+    android:backgroundTint="@color/white"
+    android:background="@color/white">
 
     <!-- TODO: Update blank fragment layout -->
     <!--    <TextView-->
