@@ -73,7 +73,7 @@ public class PotServiceImpl implements PotService{
                     .userEntity(userEntity)
                     .code(0)
                     .dateTime(LocalDateTime.now()
-                            .plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000])
+//                            .plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000])
                             .withHour(9).withMinute(0).withSecond(0)
                     )
                     .done(false)
@@ -179,16 +179,22 @@ public class PotServiceImpl implements PotService{
 
         List<PlanEntity> planEntities = planRepository.findAllByPotId(potId);
 
-        List<PlanWithDateDTO> plans = new ArrayList<>(planEntities.size());
+        PlanWithDateDTO[] plans = new PlanWithDateDTO[3];
 
         planEntities.forEach(planEntity -> {
-            plans.add(PlanWithDateDTO.builder()
-                            .code(planEntity.getCode())
-                            .dateTime(planEntity.getDateTime())
-                            .build());
+            plans[planEntity.getCode()] = PlanWithDateDTO.builder()
+                                    .code(planEntity.getCode())
+                                    .dateTime(planEntity.getDateTime())
+                                    .build();
         });
 
-        return PotDetailDTO.builder().pot(potListDTO).plant(plantDetailDTO).plans(plans).build();
+        return PotDetailDTO.builder()
+                .pot(potListDTO)
+                .plant(plantDetailDTO)
+                .waterDate(plans[0])
+                .nutrientsDate(plans[1])
+                .pruningDate(plans[2])
+                .build();
     }
 
     @Override
