@@ -16,5 +16,10 @@ public class PotDetailDTO {
 
     private PlantDetailDTO plant;
 
-    private List<PlanWithDateDTO> plans;
+    private PlanWithDateDTO waterDate;
+
+    private PlanWithDateDTO nutrientsDate;
+
+    private PlanWithDateDTO pruningDate;
+
 }
