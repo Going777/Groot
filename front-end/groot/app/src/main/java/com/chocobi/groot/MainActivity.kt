@@ -68,11 +68,12 @@ class MainActivity : AppCompatActivity() {
     private var potName: String = "화분 이름"
     private var potPlant: String = "화분 식물"
     private var potCharImg: String = "화분 이미지 URL"
-    private var potPosition: Int = -1
+
     private lateinit var bnv_main: BottomNavigationView
 
     fun setPotId(id: Int) {
         potId = id
+        Log.d("potDiary", "$potId")
     }
 
     fun setPotName(name: String) {
@@ -87,9 +88,7 @@ class MainActivity : AppCompatActivity() {
         potCharImg = plant
     }
 
-    fun setPotPosition(id: Int) {
-        potPosition = id
-    }
+
 
 
     //        fragment 조작
@@ -103,8 +102,8 @@ class MainActivity : AppCompatActivity() {
 
             "pot_diary" -> {
                 val bundle = Bundle()
-                Log.d("PotDiaryFragment", "main$potPosition")
-                bundle.putInt("potPosition", potPosition)
+                bundle.putInt("detailPotId", potId)
+                Log.d("potDiary change page", "$potId")
                 fragment = PotDiaryFragment()
                 fragment.arguments = bundle
             }

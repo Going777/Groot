@@ -32,6 +32,7 @@ class PotFragment : Fragment() {
     }
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,6 +49,7 @@ class PotFragment : Fragment() {
 //        Pot Diary 페이지로 이동
         val toDiaryBtn = rootView.findViewById<Button>(R.id.toDiaryBtn)
         toDiaryBtn.setOnClickListener {
+            mActivity.setPotId(0)
             mActivity.changeFragment("pot_diary")
         }
 

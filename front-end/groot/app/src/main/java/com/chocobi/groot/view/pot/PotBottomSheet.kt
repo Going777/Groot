@@ -148,7 +148,7 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
         deletePotBtn.setOnClickListener {
             dialog = AlertDialog.Builder(requireContext())
             dialog.setTitle("화분 삭제")
-            dialog.setMessage("화분을 삭제하시겠습니까?")
+            dialog.setMessage("화분을 삭제하면 화분 다이어리 및 기록이 모두 삭제됩니다.\n화분을 삭제하시겠습니까?")
             dialog.setPositiveButton(
                 "삭제",
                 DialogInterface.OnClickListener { dialog, which ->
