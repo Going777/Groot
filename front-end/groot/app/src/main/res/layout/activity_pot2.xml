@@ -52,7 +52,7 @@
                 android:layout_marginRight="100dp"
                 android:breakStrategy="balanced"
                 android:lineSpacingExtra="-10dp"
-                android:text="김정원의 산세베리아"
+                android:text="그루트의\n 루티"
                 android:textSize="32sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
