@@ -73,7 +73,7 @@ public class PotServiceImpl implements PotService{
                     .userEntity(userEntity)
                     .code(0)
                     .dateTime(LocalDateTime.now()
-                            .plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000])
+//                            .plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000])
                             .withHour(9).withMinute(0).withSecond(0)
                     )
                     .done(false)
