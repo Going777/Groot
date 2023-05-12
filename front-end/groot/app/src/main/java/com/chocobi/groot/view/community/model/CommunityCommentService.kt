@@ -27,7 +27,7 @@ interface CommunityCommentPostService {
     @POST("api/comments")
     fun requestCommentPost(
         @Body params: CommentPostRequest
-    ) : Call<BasicResponse>
+    ) : Call<CommunityCommentResponse>
 }
 
 class CommentPostRequest internal constructor(
