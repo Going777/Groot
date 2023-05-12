@@ -40,44 +40,57 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginHorizontal="10dp">
-
-    <LinearLayout
-        android:id="@+id/level"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="5dp">
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/mgmtLevel"
-            android:layout_width="70dp"
-            android:layout_height="30dp"
-            android:background="@drawable/radius10"
-            android:backgroundTint="@color/sub"
-            android:text="초보자"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/plantKrName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="산세베리아"
-        android:textSize="22sp"
-        android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
-    <TextView
-        android:id="@+id/plantEnName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="Sansevieria trifasciata"
-        android:textColor="@color/grey"
-        android:textSize="10sp"
-        android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/plantKrName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/plantEnName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/grey"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/mgmtLevel"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/radius10"
+                    android:backgroundTint="@color/sub"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
 
     <ScrollView
@@ -97,7 +110,6 @@
                 android:orientation="vertical"
                 app:layout_constraintBottom_toTopOf="@+id/appCompatButton"
                 app:layout_constraintTop_toBottomOf="@id/plantImage">
-
 
 
                 <LinearLayout
@@ -121,7 +133,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity=""
-                            android:lineSpacingExtra="8sp"/>
+                            android:lineSpacingExtra="8sp" />
 
                     </LinearLayout>
 
@@ -152,7 +164,8 @@
                             android:id="@+id/typeText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:lineSpacingExtra="8sp"                            />
+                            android:lineSpacingExtra="8sp"
+                            android:bufferType="spannable"/>
 
                     </LinearLayout>
 
@@ -182,8 +195,8 @@
                             android:id="@+id/humidityText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/humidityText"
-                            android:lineSpacingExtra="8sp"/>
+                            android:lineSpacingExtra="8sp"
+                            android:text="@string/humidityText" />
 
 
                     </LinearLayout>
@@ -216,8 +229,8 @@
                             android:id="@+id/tempText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/tempText"
-                            android:lineSpacingExtra="8sp"/>
+                            android:lineSpacingExtra="8sp"
+                            android:text="@string/tempText" />
 
                     </LinearLayout>
 
@@ -249,8 +262,8 @@
                             android:id="@+id/tipText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/tipText"
-                            android:lineSpacingExtra="8sp"/>
+                            android:lineSpacingExtra="8sp"
+                            android:text="@string/tipText" />
 
                     </LinearLayout>
 
@@ -282,8 +295,8 @@
                             android:id="@+id/placeText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/placeText"
-                            android:lineSpacingExtra="8sp"/>
+                            android:lineSpacingExtra="8sp"
+                            android:text="@string/placeText" />
 
                     </LinearLayout>
 
@@ -310,8 +323,8 @@
                         android:id="@+id/insectInfoText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/insectInfoText"
-                        android:lineSpacingExtra="8sp"/>
+                        android:lineSpacingExtra="8sp"
+                        android:text="@string/insectInfoText" />
                 </LinearLayout>
             </LinearLayout>
 

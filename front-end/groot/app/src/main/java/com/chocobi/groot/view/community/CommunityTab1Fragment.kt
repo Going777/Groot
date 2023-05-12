@@ -112,15 +112,23 @@ class CommunityTab1Fragment : Fragment() {
 //        필터 모드인지 아닌지 구분
         isFiltered = !regionFilterList.isNullOrEmpty()
         if (isFiltered) {
-            for (item in regionFilterList!!) {
+            for (idx in 0..regionFilterList!!.count()-1) {
                 chipRegionGroup.addView(
                     Chip(
                         requireContext(),
                         null,
                         R.style.REGION_CHIP_ICON
                     ).apply {
-                        text = item
+                        text = regionFilterList!![idx]
                         isCloseIconVisible = false
+//                        isCloseIconVisible = true
+//                        setOnCloseIconClickListener {
+//                            chipRegionGroup.removeView(this) // X버튼 누르면 chip 없어지게 하기
+//                            regionFullFilterList!![idx] = ""
+//                            view?.post { // 다음 UI 갱신 주기에 실행되도록 예약
+//                                requestSearchAricle("load")
+//                            }
+//                        }
                     })
             }
         }
@@ -183,6 +191,7 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun requestSearchAricle(usage: String) {
+        Log.d("CommunityTab1Fragment","requestSearchAricle() 게시글을 받아옵니다")
         if (usage == "loadMore") {
             communityArticlePage++
         } else {
@@ -191,11 +200,15 @@ class CommunityTab1Fragment : Fragment() {
         val retrofit = RetrofitClient.getClient()!!
         val regionFilterService = retrofit.create(CommunityService::class.java)
         val regions = arrayListOf("", null, null)
+        Log.d("CommunityTab1Fragment","requestSearchAricle() 넘기게 될 지역 데이터 //$regionFullFilterList//")
         if (regionFullFilterList != null) {
             for (idx in 0..regionFullFilterList!!.count() - 1) {
                 regions[idx] = regionFullFilterList!![idx]
             }
         }
+        Log.d("CommunityTab1Fragment","requestSearchAricle() 보내는 ㄷ이터 ///${regions[0]}///")
+        Log.d("CommunityTab1Fragment","requestSearchAricle() 보내는 ㄷ이터 ///${regions[1]}///")
+        Log.d("CommunityTab1Fragment","requestSearchAricle() 보내는 ㄷ이터 ///${regions[2]}///")
 
         regionFilterService.requestSearchArticle(
             category = CATEGORY,
