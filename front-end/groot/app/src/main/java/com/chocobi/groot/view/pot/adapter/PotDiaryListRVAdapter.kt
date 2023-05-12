@@ -11,9 +11,16 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.PERMISSION_CAMERA
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.pot.model.DiaryListResponse
+import com.chocobi.groot.view.pot.model.PotService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class PotDiaryListRVAdapter(private val context: Context) :
     RecyclerView.Adapter<DiaryItemViewHolder>() {
@@ -129,6 +136,22 @@ class PotDiaryListRVAdapter(private val context: Context) :
     }
 
     private fun deleteDiary(id: Int) {
+        val retrofit = RetrofitClient.getClient()!!
+        val potService = retrofit.create(PotService::class.java)
+        val userPK = UserData.getUserPK()
+        potService.requestDeleteDiary(id, userPK, null).enqueue(object :Callback<BasicResponse>{
+            override fun onResponse(call: Call<BasicResponse>, response: Response<BasicResponse>) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "다이어리 삭제 성공")
+                } else {
+                    Log.d(TAG, "다이어리 삭제 실패")
+                }
+            }
+
+            override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                Log.d(TAG, "다이어리 삭제 요청도 실패")
+            }
+        })
 
     }
 
