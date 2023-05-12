@@ -494,9 +494,9 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public Page<ArticleListDTO> searchArticle(String category, String[] region, String keyword, Long userPK, Integer page, Integer size) {
+    public Page<ArticleListDTO> searchArticle(String category, String[] region, String keyword, Long userPK,  Boolean shareStatus, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<ArticleEntity> articleEntities = articleRepository.search(category, region, keyword,  pageRequest);
+        Page<ArticleEntity> articleEntities = articleRepository.search(category, region, keyword,  pageRequest, shareStatus);
         Page<ArticleListDTO> result = toDtoList(articleEntities, userPK);
         return result;
     }

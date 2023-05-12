@@ -22,7 +22,7 @@ public interface ArticleService {
     Page<ArticleListDTO> readArticleList(String category, Long userPK, Integer page, Integer size);
     void updateBookMark(BookmarkDTO bookmarkDTO);
     Page<ArticleListDTO> filterRegion(String[] region, Long userPK,Integer page, Integer size);
-    Page<ArticleListDTO> searchArticle(String category, String[] region, String keyword,Long userPK, Integer page, Integer size);
+    Page<ArticleListDTO> searchArticle(String category, String[] region, String keyword,Long userPK,  Boolean shareStatus, Integer page, Integer size);
     List<UserSharedArticleDTO> readUserShared(Long articleId);
     Page<ArticleListDTO> readUserArticles(Long userPK,Integer page, Integer size);
     Page<ArticleListDTO> readUserBookmarks(Long userPK,Integer page, Integer size);
