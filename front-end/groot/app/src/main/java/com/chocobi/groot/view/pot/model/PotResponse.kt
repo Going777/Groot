@@ -7,13 +7,19 @@ data class PotResponse(
     val msg: String,
     val pot: Pot,
     val plant: Plant,
-    val plan: List<Plan>
+    val waterDate: ComingDate?,
+    val pruningDate: ComingDate?,
+    val nutrientsDate: ComingDate?
+)
+data class ComingDate(
+    val code: Int,
+    val dateTime: DateTime
 )
 
-data class Plan(
-    val code: Int,
-    val dateTime: DateTime,
-)
+//data class Plan(
+//    val code: Int,
+//    val dateTime: DateTime,
+//)
 
 data class PotImgResponse(
     val msg: String,
@@ -60,7 +66,7 @@ data class Pot(
     val dates: Int,
     val createdTime: DateTime,
     val waterDate: DateTime?,
-    val nutrientDate: DateTime?,
+    val nutrientsDate: DateTime?,
     val pruningDate: DateTime?,
     val survival: Boolean,
     val level: Int,
