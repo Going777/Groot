@@ -505,14 +505,32 @@ class CommunityDetailFragment : Fragment() {
 
 
         communityCommentPostService.requestCommentPost(CommentPostRequest(articleId, content))
-            .enqueue(object : Callback<BasicResponse> {
+            .enqueue(object : Callback<CommunityCommentResponse> {
                 override fun onResponse(
-                    call: Call<BasicResponse>,
-                    response: Response<BasicResponse>
+                    call: Call<CommunityCommentResponse>,
+                    response: Response<CommunityCommentResponse>
                 ) {
                     if (response.isSuccessful) {
                         Log.d("commentResponse", response.body().toString())
-//                        val comment = response.body().comments(
+                        val commentitem = response.body()!!.comment[0]
+//                        for (commentReturn in response.body()!!.comment) {
+//                            val communityCommentResponse = CommunityCommentResponse(
+//                                comment = listOf(
+//                                    Comment(
+//                                        userPK = commentitem.userPK ?: 0,
+//                                        nickName = commentitem.nickName ?: "",
+//                                        commentId = commentitem.commentId ?: 0,
+//                                        content = commentitem.content ?: "",
+//                                        profile = commentitem.profile ?: "",
+//                                        createTime = commentitem.createTime,
+//                                        updateTime = commentitem.updateTime
+//                                    )
+//                                ),
+//                                result = getCommentData.result,
+//                                msg = getCommentData.msg
+//                            )
+//                        }
+
 //                            userPK = userPK,
 //                            nickname = nickname,
 //                            content = content,
@@ -520,11 +538,34 @@ class CommunityDetailFragment : Fragment() {
 //                            updateTime = updateTime
 //                        )
 //                        commentAdapter.addComment(comment)
+
+//                        val comments = getCommentData.comment
+//                        Log.d("CommunityCommentFragmentComments", comments.toString())
+//                        for (commentitem in comments) {
+//                            val communityCommentResponse = CommunityCommentResponse(
+//                                comment = listOf(
+//                                    Comment(
+//                                        userPK = commentitem.userPK ?: 0,
+//                                        nickName = commentitem.nickName ?: "",
+//                                        commentId = commentitem.commentId ?: 0,
+//                                        content = commentitem.content ?: "",
+//                                        profile = commentitem.profile ?: "",
+//                                        createTime = commentitem.createTime,
+//                                        updateTime = commentitem.updateTime
+//                                    )
+//                                ),
+//                                result = getCommentData.result,
+//                                msg = getCommentData.msg
+//                            )
+//                            commentAdapter.addComment(communityCommentResponse)
+//                        }
                     }
                 }
 
-                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
-                    TODO("Not yet implemented")
+
+                override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
+                    Log.d("CommunityDetailFragment", "댓글 작성 실패")
+                    Log.d("CommunityDetailFragmentCommentPost", "$t")
                 }
             })
     }

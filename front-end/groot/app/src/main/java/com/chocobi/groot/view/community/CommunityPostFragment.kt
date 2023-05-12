@@ -503,8 +503,14 @@ class CommunityPostFragment : Fragment() {
                     call: Call<CommunityPostResponse>,
                     response: Response<CommunityPostResponse>
                 ) {
-                    val body = response.body()
-                    Log.d("CommunityPostFragmentBody", "$body")
+                    if (response.code() == 200) {
+                        val body = response.body()
+                        Log.d("CommunityPostFragmentBody", "$body")
+                        requireActivity().supportFragmentManager.popBackStack()
+                    } else {
+                        Log.d("CommunityPostFragment", "게시글 작성 실패")
+                    }
+
                 }
 
                 override fun onFailure(call: Call<CommunityPostResponse>, t: Throwable) {
