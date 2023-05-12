@@ -334,7 +334,7 @@ public class ArticleController {
                                         @RequestParam String[] region,
                                         @RequestParam String category,
                                         @RequestParam String keyword,
-                                        @RequestParam Boolean shareStatus,
+                                        @RequestParam(required = false) Boolean shareStatus,
                                         @RequestParam Integer page,
                                         @RequestParam Integer size){
         resultMap = new HashMap<>();
