@@ -336,7 +336,9 @@ public class PotServiceImpl implements PotService{
                 .potName(potEntity.getName())
                 .imgPath(potEntity.getImgPath())
                 .plantKrName(potEntity.getPlantKrName())
-                .dates(calcPeriod(potEntity.getCreatedDate()))
+                .dates(calcPeriod((potEntity.getSurvival()) ?
+                        potEntity.getCreatedDate() :
+                        potEntity.getLastModifiedDate()))
                 .createdTime(potEntity.getCreatedDate())
                 .waterDate(potEntity.getWaterDate())
                 .nutrientsDate(potEntity.getNutrientsDate())
