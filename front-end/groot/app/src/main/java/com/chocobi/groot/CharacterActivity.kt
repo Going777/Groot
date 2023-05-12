@@ -39,10 +39,20 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     //    lateinit var placeModelButton: ExtendedFloatingActionButton
 //    lateinit var newModelButton: ExtendedFloatingActionButton
     lateinit var changeAnimationButton: ExtendedFloatingActionButton
-//    lateinit var stopAnimationButton: ExtendedFloatingActionButton
+
+    //    lateinit var stopAnimationButton: ExtendedFloatingActionButton
 //    lateinit var resumeAnimationButton: ExtendedFloatingActionButton
     private var animationIdx = 0
 //    private var time = System.currentTimeMillis()
+
+    //    뒤로가기 조작
+    override fun onBackPressed() {
+        // 다른 Activity로 이동하는 코드를 여기에 작성합니다.
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish() // 현재 Activity를 종료하려는 경우
+    }
+
 
     data class Model(
         val fileLocation: String,
@@ -71,12 +81,13 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 
         GLBfile = intent.getStringExtra("GLBfile").toString()
         level = intent.getStringExtra("level").toString()
-        Log.d("CharacterActivity","onCreate() ${level}레벨레벨")
-        Log.d("CharacterActivity","onCreate() ${GLBfile}파일 명")
+        Log.d("CharacterActivity", "onCreate() ${level}레벨레벨")
+        Log.d("CharacterActivity", "onCreate() ${GLBfile}파일 명")
         potName = intent.getStringExtra("potName").toString()
         potPlant = intent.getStringExtra("potPlant").toString()
 
-        animationIdx = if (level == "0" || level == "1" || level == "2" || level =="3" || level=="4") 9 else 0
+        animationIdx =
+            if (level == "0" || level == "1" || level == "2" || level == "3" || level == "4") 9 else 0
 
         setFullScreen(
             findViewById(R.id.rootView),
@@ -151,7 +162,8 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         val maxIdx = modelNode?.animator?.animationCount!!
         ++animationIdx
         if (animationIdx == maxIdx) {
-            animationIdx = if (level == "0" || level == "1" || level == "2" || level =="3" || level=="4") 9 else 0
+            animationIdx =
+                if (level == "0" || level == "1" || level == "2" || level == "3" || level == "4") 9 else 0
         }
 //        modelNode?.animator?.playbackSpeed =0.5f
         modelNode?.playAnimation(animationIdx)

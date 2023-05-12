@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
@@ -20,12 +21,25 @@ class IntroActivity : AppCompatActivity() {
     private val TAG = "IntroActivity"
     private var accessToken: String? = null
     private var refreshToken: String? = null
+
+    //    뒤로가기 조작
+    private var backPressedTime: Long = 0
+    private val backPressedInterval: Long = 2000 // 두 번째 뒤로가기 클릭 간의 시간 간격 (여기서는 2초로 설정)
+
+    override fun onBackPressed() {
+        if (System.currentTimeMillis() - backPressedTime < backPressedInterval) {
+            // 뒤로가기 버튼이 두 번 연속으로 클릭되었을 때 앱 종료
+            finishAffinity()
+        } else {
+            // 첫 번째 뒤로가기 클릭
+            backPressedTime = System.currentTimeMillis()
+            Toast.makeText(this, "뒤로가기 버튼을 한번 더 누르면 종료됩니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
-
-
-
 
 
 //        token 갱신
