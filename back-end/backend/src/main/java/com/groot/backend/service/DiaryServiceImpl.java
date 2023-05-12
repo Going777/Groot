@@ -121,8 +121,8 @@ public class DiaryServiceImpl implements DiaryService{
         }
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
-        if(tempExp>=tempLevel*100){  // 경험치는 해당 레벨의 x100을 얻어야 레벨업 가능
-            tempExp -= tempLevel*100;
+        if(tempExp>=tempLevel*10){  // 경험치는 해당 레벨의 x100을 얻어야 레벨업 가능
+            tempExp -= tempLevel*10;
             tempLevel+=1;
         }
 
@@ -217,12 +217,12 @@ public class DiaryServiceImpl implements DiaryService{
         }
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
-        if(tempExp>=pot.getLevel()*100){
-            tempExp -= pot.getLevel()*100;
+        if(tempExp>=pot.getLevel()*10){
+            tempExp -= pot.getLevel()*10;
             tempLevel+=1;
         }else if(tempExp < 0){
             tempLevel -= 1;
-            tempExp += tempLevel*100;
+            tempExp += tempLevel*10;
         }
         LocalDateTime now = LocalDateTime.now();
         PotEntity newPot = PotEntity.builder()
@@ -367,12 +367,12 @@ public class DiaryServiceImpl implements DiaryService{
         // 경험치 및 레벨 계산
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
-        if(tempExp>=pot.getLevel()*100){
-            tempExp -= pot.getLevel()*100;
+        if(tempExp>=pot.getLevel()*10){
+            tempExp -= pot.getLevel()*10;
             tempLevel+=1;
         }else if(tempExp < 0){
             tempLevel -= 1;
-            tempExp += tempLevel*100;
+            tempExp += tempLevel*10;
         }
 
         // 화분 경험치 및 레벨 업데이트
@@ -435,12 +435,12 @@ public class DiaryServiceImpl implements DiaryService{
             }
             int tempExp = pot.getExperience()+score;
             int tempLevel = pot.getLevel();
-            if(tempExp>pot.getLevel()*100){
-                tempExp -= pot.getLevel()*100;
+            if(tempExp>pot.getLevel()*10){
+                tempExp -= pot.getLevel()*10;
                 tempLevel+=1;
             }else if(tempExp < 0){
                 tempLevel -= 1;
-                tempExp += tempLevel*100;
+                tempExp += tempLevel*10;
             }
             // 화분 경험치 및 레벨 업데이트
             potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
@@ -563,7 +563,7 @@ public class DiaryServiceImpl implements DiaryService{
             planRepository.save(plan);
         }
         // 해당 미션 완료 표시 및 실행 날짜 업데이트
-        planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
+//        planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
         log.info("plan에 미션 완료 표시");
         addPlan(user, pot, code, LocalDateTime.now());
     }
