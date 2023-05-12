@@ -65,7 +65,7 @@ class PotCollectionRVAdapter(val items: List<Pot>) :
 
         scanBtn.setOnClickListener {
             val safeAlertDialog = AlertDialog.Builder(it.context)
-            safeAlertDialog.setMessage("AR 모드를 사용할 때는 주변이 안전한지 먼저 확인하세요.")
+            safeAlertDialog.setMessage("AR 모드를 사용할 때는 주변이 안전한지 먼저 확인하세요. 어린이의 경우 보호자와 함께 사용해주세요.")
             safeAlertDialog.setPositiveButton("OK") { dialog, which ->
                 scanBtnClickListner.onScanBtnClick(it, position)
             }

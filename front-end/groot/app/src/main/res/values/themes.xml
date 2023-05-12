@@ -3,6 +3,13 @@
     <style name="Base.Theme.Groot" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/main</item>
+        <item name="colorPrimaryDark">@color/main</item>
+        <item name="android:colorPrimaryDark">@color/main</item>
+        <item name="android:bottomDark">@color/main</item>
+        <item name="android:centerDark">@color/main</item>
+        <item name="android:fullDark">@color/main</item>
+        <item name="android:topDark">@color/main</item>
+
         <item name="colorOnSecondaryContainer">@color/white</item>
         <item name="colorOnSurfaceVariant">@color/grey</item>
         <item name="android:windowBackground">@color/white</item>
@@ -22,6 +29,7 @@
     <!--    bottom navigation bar active indicator-->
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">@color/main</item>
+
     </style>
 
 
@@ -39,6 +47,7 @@
         <item name="colorContainer">@color/white</item>
         <!--        FAB 버튼 아이콘색-->
         <item name="colorOnContainer">@color/main</item>
+
     </style>
 
 
