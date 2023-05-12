@@ -71,10 +71,12 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 
         GLBfile = intent.getStringExtra("GLBfile").toString()
         level = intent.getStringExtra("level").toString()
+        Log.d("CharacterActivity","onCreate() ${level}레벨레벨")
+        Log.d("CharacterActivity","onCreate() ${GLBfile}파일 명")
         potName = intent.getStringExtra("potName").toString()
         potPlant = intent.getStringExtra("potPlant").toString()
 
-        animationIdx = if (level == "0") 9 else 0
+        animationIdx = if (level == "0" || level == "1" || level == "2" || level =="3" || level=="4") 9 else 0
 
         setFullScreen(
             findViewById(R.id.rootView),
@@ -149,7 +151,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         val maxIdx = modelNode?.animator?.animationCount!!
         ++animationIdx
         if (animationIdx == maxIdx) {
-            animationIdx = if (level == "0") 9 else 0
+            animationIdx = if (level == "0" || level == "1" || level == "2" || level =="3" || level=="4") 9 else 0
         }
 //        modelNode?.animator?.playbackSpeed =0.5f
         modelNode?.playAnimation(animationIdx)
