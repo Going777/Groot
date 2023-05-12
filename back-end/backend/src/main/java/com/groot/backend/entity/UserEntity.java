@@ -38,6 +38,9 @@ public class UserEntity extends BaseEntity{
     @Column
     private String token;
 
+    @Column
+    private String firebaseToken;
+
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<PotEntity> potEntities;

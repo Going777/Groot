@@ -16,4 +16,6 @@ public class LoginDTO {
     private String userId;
     @NotNull
     private String password;
+
+    private String firebaseToken;
 }
