@@ -292,6 +292,11 @@ public class PotServiceImpl implements PotService{
         return (ret > 2) ? 2 : ret;
     }
 
+    private int levelToCharacter(int level) {
+        int ret = level / 5;
+        return ret > 2 ? 2 : ret;
+    }
+
     /**
      * returns character png and glb url
      * @param grwType
@@ -307,7 +312,7 @@ public class PotServiceImpl implements PotService{
         }
         else {
 //            characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), expToLevel(exp));
-            characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), level);
+            characterEntity = characterRepository.findByTypeAndLevel(PlantCodeUtil.characterCode(grwType), levelToCharacter(level));
         }
         return new String[] {characterEntity.getPngPath(), characterEntity.getGlbPath()};
     }
