@@ -334,6 +334,7 @@ public class ArticleController {
                                         @RequestParam String[] region,
                                         @RequestParam String category,
                                         @RequestParam String keyword,
+                                        @RequestParam Boolean shareStatus,
                                         @RequestParam Integer page,
                                         @RequestParam Integer size){
         resultMap = new HashMap<>();
@@ -353,7 +354,7 @@ public class ArticleController {
         }
 
         try{
-            Page<ArticleListDTO> result = articleService.searchArticle(category, region, keyword, userPK, page, size);
+            Page<ArticleListDTO> result = articleService.searchArticle(category, region, keyword, userPK, shareStatus, page, size);
             if(result == null){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg","존재하지 않는 page 번호 입니다.");
