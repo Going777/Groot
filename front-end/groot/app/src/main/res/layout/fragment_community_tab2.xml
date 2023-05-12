@@ -5,7 +5,9 @@
     android:id="@+id/community_tab2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.community.CommunityTab2Fragment">
+    tools:context=".view.community.CommunityTab2Fragment"
+    android:backgroundTint="@color/white"
+    android:background="@color/white">
 
     <RelativeLayout
         android:layout_width="match_parent"

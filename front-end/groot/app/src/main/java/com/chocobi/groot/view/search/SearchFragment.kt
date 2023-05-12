@@ -347,6 +347,17 @@ class SearchFragment : Fragment() {
         plantName = autoCompleteTextView.text.toString()
         val retrofit = RetrofitClient.basicClient()!!
         val plantSearchService = retrofit.create(SearchService::class.java)
+        Log.d("SearchFragment","requestSearchPlant() $difficulty1")
+        Log.d("SearchFragment","requestSearchPlant() $difficulty2")
+        Log.d("SearchFragment","requestSearchPlant() $difficulty3")
+        Log.d("SearchFragment","requestSearchPlant() $lux1")
+        Log.d("SearchFragment","requestSearchPlant() $lux1")
+        Log.d("SearchFragment","requestSearchPlant() $lux1")
+        Log.d("SearchFragment","requestSearchPlant() $growth5")
+        Log.d("SearchFragment","requestSearchPlant() $growth4")
+        Log.d("SearchFragment","requestSearchPlant() $growth3")
+        Log.d("SearchFragment","requestSearchPlant() $growth2")
+        Log.d("SearchFragment","requestSearchPlant() $growth1")
         plantSearchService.requestSearchPlants(
             plantName,
             difficulty1,
@@ -360,6 +371,7 @@ class SearchFragment : Fragment() {
             growth2,
             growth3,
             growth4,
+            growth6,
         )
             .enqueue(object : Callback<PlantSearchResponse> {
                 override fun onResponse(

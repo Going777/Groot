@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".view.search.SearchDetailFragment">
+    tools:context=".view.search.SearchDetailFragment"
+    android:backgroundTint="@color/white"
+    android:background="@color/white">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
