@@ -111,7 +111,7 @@ class PotDiaryFragment : Fragment() {
     }
 
     private fun initList() {
-        adapter = PotDiaryListRVAdapter()
+        adapter = PotDiaryListRVAdapter(requireContext())
         adapter.delegate = object : PotDiaryListRVAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
                 loadMore()
@@ -119,6 +119,11 @@ class PotDiaryFragment : Fragment() {
         }
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+        adapter.setItemClickListener(object: PotDiaryListRVAdapter.ItemClickListener{
+            override fun onSpinnerBtnClick(view: View, position: Int) {
+                Log.d(TAG, "spinner clicked ")
+            }
+        })
     }
 
     private fun reload() {

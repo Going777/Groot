@@ -66,6 +66,14 @@ interface PotService {
         @Part filePart: MultipartBody.Part?
     ): Call<BasicResponse>
 
+
+    @DELETE("/api/diaries/{diaryId}/{userPK}")
+    fun requestDeleteDiary(
+        @Path("diaryId") diaryId: Int?,
+        @Path("userPK") userPK: Int,
+        @Query("planId") planId: Int?
+    ): Call<BasicResponse>
+
     @GET("/api/diaries/check/{potId}")
     fun requestDiaryCheckState(
         @Path("potId") potId: Int
