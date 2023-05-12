@@ -55,6 +55,8 @@ class Pot1Activity : AppCompatActivity() {
 
         growType = intent.getStringExtra("growType")
         mgmtLevel = intent.getStringExtra("mgmtLevel")
+        Log.d("Pot2Activity","onCreate() ///생장 ${growType}///")
+        Log.d("Pot2Activity","onCreate() ///숙련도 ${mgmtLevel}///")
         characterGlbPath = intent.getStringExtra("characterGlbPath")
         potInfochipGroup = findViewById(R.id.potInfochipGroup)
 
@@ -76,7 +78,7 @@ class Pot1Activity : AppCompatActivity() {
 
         Log.d("Pot1Activity","onCreate() 숙련도 ${mgmtLevel}")
         Log.d("Pot1Activity","onCreate() 생장 ${growTypes}")
-        if (mgmtLevel != "") {
+        if (mgmtLevel != "" && mgmtLevel != null) {
             potInfochipGroup.addView(
                 Chip(this, null, R.style.REGION_CHIP_ICON).apply {
                     text = mgmtLevel
