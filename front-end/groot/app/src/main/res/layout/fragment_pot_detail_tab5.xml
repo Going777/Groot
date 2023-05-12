@@ -35,7 +35,8 @@
         android:id="@+id/nutrientTabContent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="" />
+        android:text=""
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/nutrientLastDateSection"
