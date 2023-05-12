@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.doOnLayout
@@ -17,6 +18,7 @@ import java.lang.ref.WeakReference
 
 class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    private val TAG = "DiaryItemViewHolder"
     interface ItemViewHolderDelegate {
         fun onItemViewClick(diaryListResponse: DiaryListResponse) {
             Log.d("ItemViewHolder", "clicked")
@@ -35,6 +37,7 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private lateinit var bugBadge: ImageView
     private lateinit var sunnnyBadge: ImageView
     private lateinit var pillBadge: ImageView
+    private lateinit var spinnerButton: ImageButton
 
     var delegate: ItemViewHolderDelegate? = null
     lateinit var diaryListResponse: DiaryListResponse
@@ -58,6 +61,8 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             bugBadge = it.findViewById(R.id.bugBadge)
             sunnnyBadge = it.findViewById(R.id.sunnnyBadge)
             pillBadge = it.findViewById(R.id.pillBadge)
+
+            spinnerButton = it.findViewById(R.id.spinnerButton)
         }
     }
 
@@ -97,6 +102,7 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             doOnLayout {
                 val lineCount = lineCount
                 val maxLine = 2
+                Log.d(TAG, "$lineCount")
                 if (lineCount > maxLine) {
                     maxLines = maxLine
                     ellipsize = TextUtils.TruncateAt.END
