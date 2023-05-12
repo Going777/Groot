@@ -114,7 +114,7 @@ class SearchCameraActivity : AppCompatActivity() {
         //        검색 등록 버튼 조작
         searchBtn = findViewById(R.id.searchBtn)
         searchBtn.setOnClickListener {
-            val plantBottomSheet = PlantBottomSheet(this)
+            val plantBottomSheet = PlantBottomSheet(this, "fail_serach")
             plantBottomSheet.show(
                 this.supportFragmentManager,
                 plantBottomSheet.tag
