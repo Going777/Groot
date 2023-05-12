@@ -429,8 +429,12 @@ class SearchFragment : Fragment() {
                                 rvAdapter.setData(plants!!)
                             }
                         }
-                    } else
-                        Log.d("SearchFragment", "requestRecommendations() api 실패1")
+                    } else {
+                        rv.visibility = View.GONE
+                        recmmView.visibility = View.GONE
+                        firstView.visibility = View.VISIBLE
+                        blankView.visibility = View.GONE
+                    }
                 }
 
                 override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
