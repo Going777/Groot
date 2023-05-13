@@ -3,6 +3,7 @@ package com.chocobi.groot.data
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
@@ -159,6 +160,14 @@ class GlobalVariables : Application() {
                     }
                 }
             }
+        }
+
+        fun defaultAlertDialog(context: Context, title: String? = null, message: String? = null) {
+            var dialog = AlertDialog.Builder(context)
+            dialog.setTitle(title)
+            dialog.setMessage(message)
+            dialog.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which -> })
+            dialog.show()
         }
 
         /** 날씨 관련 데이터 **/

@@ -1,81 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.login.LoginActivity">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/main_background" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/main_background" />
 
 
-    <ImageView
-        android:id="@+id/logoImageView"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:src="@drawable/logo_full"
-        app:layout_constraintBottom_toTopOf="@+id/loginIdInput"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/logoImageView"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
+            android:src="@drawable/logo_full"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/loginIdInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="280dp"
-        android:ems="10"
-        android:hint="아이디"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/loginCardView"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
 
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="15dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/logoImageView"
+            app:strokeColor="@color/white">
 
-    <EditText
-        android:id="@+id/loginPwInput"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:ems="10"
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:justifyContent="space_between">
 
-        android:hint="비밀번호"
-        android:inputType="textPassword"
-        app:layout_constraintStart_toStartOf="@+id/loginIdInput"
-        app:layout_constraintTop_toBottomOf="@+id/loginIdInput" />
+                <EditText
+                    android:id="@+id/loginIdInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:ems="13"
+                    android:hint="아이디"
+                    android:inputType="text" />
 
-    <TextView
-        android:id="@+id/toSignupText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Groot가 처음이신가요?"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@+id/loginPwInput"
-        app:layout_constraintTop_toBottomOf="@+id/loginPwInput" />
+                <ImageView
+                    android:id="@+id/loginIdInputImg"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_plant"
+                    app:tint="@color/grey" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/passwordCardView"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="15dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
+            app:layout_constraintStart_toStartOf="@+id/loginCardView"
+            app:layout_constraintTop_toBottomOf="@+id/loginCardView"
+            app:strokeColor="@color/white">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:justifyContent="space_between">
+
+                <EditText
+                    android:id="@+id/loginPwInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:ems="13"
+                    android:hint="비밀번호"
+                    android:inputType="textPassword" />
+
+                <ImageView
+                    android:id="@+id/loginPwInputImg"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_plant"
+                    app:tint="@color/grey" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!--    <EditText-->
+        <!--        android:id="@+id/loginPwInput"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_marginTop="44dp"-->
+        <!--        android:ems="10"-->
+
+        <!--        android:hint="비밀번호"-->
+        <!--        android:inputType="textPassword"-->
+        <!--        app:layout_constraintStart_toStartOf="@+id/loginIdInput"-->
+        <!--        app:layout_constraintTop_toBottomOf="@+id/loginIdInput" />-->
+
+        <TextView
+            android:id="@+id/toSignupText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:shadowColor="@color/white"
+            android:shadowRadius="4"
+            android:text="Groot가 처음이신가요?"
+            android:textColor="#138365"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/passwordCardView"
+            app:layout_constraintTop_toBottomOf="@+id/passwordCardView" />
 
 
-    <Button
-        android:id="@+id/basicLoginBtn"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
-        android:backgroundTint="@color/main"
-        android:text="login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginPwInput" />
+        <Button
+            android:id="@+id/basicLoginBtn"
+            style="@style/MAIN_BTN"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="60dp"
+            android:letterSpacing="0.15"
+            android:text="로그인"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/actionBarItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toSignupText" />
 
 
+<!--        <View-->
+<!--            android:id="@+id/overlayView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:visibility="gone" />-->
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>
