@@ -71,7 +71,7 @@ public class PotEntity extends BaseEntity{
     @Column(name = "experience", columnDefinition = "INT DEFAULT 0")
     private Integer experience;
 
-    @Column(name = "level", columnDefinition = "INT DEFAULT 0")
+    @Column(name = "level", columnDefinition = "INT DEFAULT 1")
     private Integer level;
 
     @Column(name = "plant_kr_name", nullable = false)
@@ -96,7 +96,7 @@ public class PotEntity extends BaseEntity{
     private List<PlanEntity> planEntities;
 
     public void modify(String imgPath, String name, double temperature, int illuminance, double humidity) {
-        this.imgPath = imgPath==""? this.imgPath : imgPath;
+        this.imgPath = "".equals(imgPath)? this.imgPath : imgPath;
         this.name = name == null? this.name : name;
         this.temperature = temperature == 0? this.temperature : temperature;
         this.illuminance = illuminance == 0? this.illuminance : illuminance;

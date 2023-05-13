@@ -3,6 +3,17 @@ import os
 from dotenv import load_dotenv
 
 
+def mgmt_level(mgmt_level):
+    if ("쉬움" in mgmt_level):
+        return 1
+
+    elif ("보통" in mgmt_level):
+        return 2
+
+    else:
+        return 3
+
+
 col = ['id', 'kr_name', 'sci_name', 'grw_type', 'grw_speed',
        'min_grw_temp', 'max_grw_temp', 'winter_min_temp',
        'min_humidity', 'max_humidity', 'light_demand',
@@ -49,14 +60,29 @@ for row in reader:
     data = row
 
     # grw_type
-    data[3] = data[3].split(",")[0]
+    # data[3] = data[3].split(",")[0]
 
-    # temp. soon will be modified
-    data[11] = 53003
+    if ("반그늘" in data[10]):
+        data[10] = 2
+
+    else:
+        data[10] = 3
+
+    if ("1 ~2" in data[11] or "두 번" in data[11]):
+        data[11] = 53003
+
+    else:
+        data[11] = 53004
+
+    data[12] = mgmt_level(data[12])
 
     data[15] = data[15].replace("\"", "\'")
 
-    data[17] = data[17].replace("\"", "\'")
+    data[21] = 25
+    data[22] = 30
+
+    data[23] = data[17].replace("\"", "\'")
+    data[17] = ""
 
     data.append(urls[cnt - 1])
     writer.writerow(data)

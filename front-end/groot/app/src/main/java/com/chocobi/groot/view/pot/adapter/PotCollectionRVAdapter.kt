@@ -65,7 +65,7 @@ class PotCollectionRVAdapter(val items: List<Pot>) :
 
         scanBtn.setOnClickListener {
             val safeAlertDialog = AlertDialog.Builder(it.context)
-            safeAlertDialog.setMessage("AR 모드를 사용할 때는 주변이 안전한지 먼저 확인하세요.")
+            safeAlertDialog.setMessage("AR 모드를 사용할 때는 주변이 안전한지 먼저 확인하세요.\n어린이의 경우 보호자와 함께 사용해주세요.")
             safeAlertDialog.setPositiveButton("OK") { dialog, which ->
                 scanBtnClickListner.onScanBtnClick(it, position)
             }
@@ -88,10 +88,12 @@ class PotCollectionRVAdapter(val items: List<Pot>) :
 
         fun bindItems(item: Pot) {
             val potNameText = itemView.findViewById<TextView>(R.id.potName)
+            val plantSpecies = itemView.findViewById<TextView>(R.id.plant_species)
             val characterImg = itemView.findViewById<ImageView>(R.id.characterImage)
             val potImg = itemView.findViewById<ImageView>(R.id.potImage)
             val potMeetDayText = itemView.findViewById<TextView>(R.id.potMeetDay)
             potNameText.text = item.potName
+            plantSpecies.text = item.plantKrName
             potMeetDayText.text = item.dates.toString()
 
             characterImg.post {

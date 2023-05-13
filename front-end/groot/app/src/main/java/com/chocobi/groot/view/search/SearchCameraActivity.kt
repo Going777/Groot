@@ -89,8 +89,10 @@ class SearchCameraActivity : AppCompatActivity() {
         //        디테일 버튼 조작
         detailBtn = findViewById(R.id.detailBtn)
         detailBtn.setOnClickListener {
+            Log.d("SearchCameraActivity","onCreate() ${plantId}볼랲ㅍ")
             var intent = Intent(this, MainActivity::class.java)
             intent.putExtra("toPage", "search_detail")
+            intent.putExtra("plant_id", plantId.toString())
             startActivity(intent)
         }
 
@@ -103,6 +105,8 @@ class SearchCameraActivity : AppCompatActivity() {
             intent.putExtra("plantId", plantId)
             intent.putExtra("growType", growType)
             intent.putExtra("mgmtLevel", mgmtLevel)
+            Log.d("Pot2Activity","onCreate() 보내는 값 ///생장 ${growType}///")
+            Log.d("Pot2Activity","onCreate() 보내는 값 ///숙련도 ${mgmtLevel}///")
             intent.putExtra("characterGlbPath", characterGlbPath)
             startActivity(intent)
         }
@@ -110,7 +114,7 @@ class SearchCameraActivity : AppCompatActivity() {
         //        검색 등록 버튼 조작
         searchBtn = findViewById(R.id.searchBtn)
         searchBtn.setOnClickListener {
-            val plantBottomSheet = PlantBottomSheet(this)
+            val plantBottomSheet = PlantBottomSheet(this, "fail_serach")
             plantBottomSheet.show(
                 this.supportFragmentManager,
                 plantBottomSheet.tag

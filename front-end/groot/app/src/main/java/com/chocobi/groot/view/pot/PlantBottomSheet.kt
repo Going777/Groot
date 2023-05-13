@@ -1,11 +1,14 @@
 package com.chocobi.groot.view.pot
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -15,6 +18,7 @@ import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
@@ -31,8 +35,10 @@ import retrofit2.Response
 import retrofit2.create
 
 
-class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
+class PlantBottomSheet(context: Context, requestPage: String? = null) :
+    BottomSheetDialogFragment() {
 
+    private val REQUEST_PAGE = requestPage
     private lateinit var plants: Array<PlantMetaData>
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
     private var plantName: String? = null
@@ -52,7 +58,7 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
 
         findView(view)
         setAutocompltete()
-        searchPlant()
+        searchPlant(view)
 
         return view
     }
@@ -77,7 +83,7 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
             GlobalVariables.prefs.getString("plant_names", "")?.split(", ") ?: emptyList()
         val items = plantNames.toTypedArray() // 괄호 제거하고 쉼표로 분리
 
-        Log.d("PlantBottomSheet","setAutocompltete() 자동완성 $plantNames")
+        Log.d("PlantBottomSheet", "setAutocompltete() 자동완성 $plantNames")
         var adapter = ArrayAdapter<String>(
             requireContext(),
             android.R.layout.simple_dropdown_item_1line,
@@ -86,12 +92,15 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
         autoCompleteTextView.setAdapter(adapter)
     }
 
-    private fun searchPlant() {
+    private fun searchPlant(view: View) {
 //        자동완성 클릭 했을 때
         autoCompleteTextView.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-                GlobalVariables.hideKeyboard(requireActivity())
                 autoCompleteTextView.clearFocus()
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(autoCompleteTextView.windowToken, 0)
+
                 plantName = parent.getItemAtPosition(position).toString()
                 requestSearchPlant(plantName)
             }
@@ -99,11 +108,34 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
 //        돋보기 버튼 클릭 했을 때
         searchPlantBtn.setOnClickListener {
 //            키보드 내리기
-            GlobalVariables.hideKeyboard(requireActivity())
+            // bottomsheet 키보드 숨기기
+            val inputMethodManager =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
             autoCompleteTextView.clearFocus()
 //            검색 api 요청
             plantName = autoCompleteTextView.text.toString()
             search(plantName)
+        }
+
+//        엔터키 눌렀을 때
+        autoCompleteTextView.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                // 검색 버튼 또는 Enter 키가 눌렸을 때의 동작을 여기에 작성합니다.
+
+                // bottomsheet 키보드 숨기기
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+                autoCompleteTextView.clearFocus()
+
+//            검색 api 요청
+                plantName = autoCompleteTextView.text.toString()
+                search(plantName)
+                true // true를 반환하여 텍스트를 유지합니다.
+            } else {
+                false
+            }
         }
     }
 
@@ -129,6 +161,7 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
                     Log.d("SearchFragment", "requestSearchPlant() api 실패1 ")
                 }
             }
+
             override fun onFailure(call: Call<PlantSearchResponse>, t: Throwable) {
                 Log.d("SearchFragment", "requestSearchPlant() api 실패2 ")
             }
@@ -139,15 +172,26 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
     private fun clickItem() {
         rvAdapter.itemClick = object : DictRVAdapter.ItemClick {
             override fun onClick(view: View, position: Int) {
-                val bundle = Bundle().apply {
-                    putString("plant_id", plants[position].plantId.toString())
+
+//                카메라로 식물 식별 했지만 못찾았거나 이름으로 다시 검색하는 경우
+                if (REQUEST_PAGE == "fail_serach") {
+                    var intent = Intent(requireContext(), MainActivity::class.java)
+                    intent.putExtra("toPage", "search_detail")
+                    intent.putExtra("plant_id", plants[position].plantId.toString())
+                    startActivity(intent)
                 }
-                val passBundleFragment = SearchDetailFragment().apply {
-                    arguments = bundle
+//                홈화면에서 검색 진행하는 경우
+                else {
+                    val bundle = Bundle().apply {
+                        putString("plant_id", plants[position].plantId.toString())
+                    }
+                    val passBundleFragment = SearchDetailFragment().apply {
+                        arguments = bundle
+                    }
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.fl_container, passBundleFragment)
+                        .commit()
                 }
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fl_container, passBundleFragment)
-                    .commit()
 
 //                bottomsheet닫기
                 dismiss()
@@ -157,7 +201,7 @@ class PlantBottomSheet(context: Context) : BottomSheetDialogFragment() {
 
     private fun search(targetText: String?) {
         if (targetText == "") {
-            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
         }
         requestSearchPlant(targetText)
 

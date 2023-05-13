@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:layout_marginTop="10dp"
     android:orientation="vertical"
-    tools:context=".view.search.SearchFragment">
+    tools:context=".view.search.SearchFragment"
+    android:backgroundTint="@color/white"
+    android:background="@color/white">
 
     <!-- TODO: Update blank fragment layout -->
     <!--    <TextView-->
@@ -14,33 +16,48 @@
     <!--        android:layout_height="match_parent"-->
     <!--        android:text="search" />-->
 
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal"
-        android:weightSum="1">
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="15dp"
+        android:backgroundTint="@color/white"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="8dp"
+        app:strokeColor="@color/white">
 
-        <AutoCompleteTextView
-            android:id="@+id/autoCompleteTextView"
-            android:layout_width="fill_parent"
-            android:layout_height="45dp"
-            android:layout_weight="1"
-            android:completionThreshold="1"
-            android:gravity="center_vertical"
-            android:hint="식물 이름을 입력해 주세요"
-            android:textColorHint="@color/grey" />
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="5dp"
+            android:weightSum="1">
 
-        <ImageButton
-            android:id="@+id/searchPlantBtn"
-            android:layout_width="45dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:backgroundTint="@color/white"
-            android:src="@drawable/ic_search" />
-    </LinearLayout>
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextView"
+                android:layout_width="fill_parent"
+                android:layout_height="45dp"
+                android:layout_weight="1"
+                android:backgroundTint="@android:color/transparent"
+                android:completionThreshold="1"
+                android:gravity="center_vertical"
+                android:hint="식물 이름을 입력해 주세요"
+                android:textColorHint="@color/grey"
+                android:imeOptions="actionSearch"
+                android:inputType="text"/>
+
+            <ImageButton
+                android:id="@+id/searchPlantBtn"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:backgroundTint="@color/white"
+                android:src="@drawable/ic_search" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <LinearLayout
         android:layout_width="match_parent"

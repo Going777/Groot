@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.chocobi.groot.R
 
@@ -40,6 +41,7 @@ class PotDetailTab1Fragment : Fragment() {
         val waterLastDate = view.findViewById<TextView>(R.id.waterLastDate)
         val waterLastDateInfo = view.findViewById<TextView>(R.id.waterLastDateInfo)
         val waterComingDate = view.findViewById<TextView>(R.id.waterComingDate)
+        val waterComingDateSection = view.findViewById<LinearLayout>(R.id.waterComingDateSection)
         // Inflate the layout for this fragment
         val waterDesc =
             "습도 ${minHumidity}~${maxHumidity}% 환경에서 잘 자라요.\n${waterCycle?.replace("함", "해 주세요.")}"!!
@@ -49,7 +51,12 @@ class PotDetailTab1Fragment : Fragment() {
         } else {
             waterLastDate.text = lastDate
         }
-        waterComingDate.text = comingDate
+        if (comingDate == null) {
+            waterComingDateSection.visibility = View.GONE
+
+        } else {
+            waterComingDate.text = comingDate
+        }
         return view
     }
 

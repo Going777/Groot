@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/community_tab3"
-    tools:context=".view.community.CommunityTab3Fragment">
+    tools:context=".view.community.CommunityTab3Fragment"
+    android:backgroundTint="@color/white"
+    android:background="@color/white">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"

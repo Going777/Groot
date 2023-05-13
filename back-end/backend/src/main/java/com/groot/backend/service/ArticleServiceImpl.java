@@ -73,14 +73,16 @@ public class ArticleServiceImpl implements ArticleService{
 
         // redis에 조회되는 값이 없으면 mysql에서 태그 데이터 가져오기
         if(result.size() == 0){
-            // mysql-tag table 태그 이름 redis에 올리기
-            List<TagEntity> tagEntities = tagRepository.findAll();
+        // mysql-tag table 태그 이름 redis에 올리기
+            // 전체 게시글에서 태그 집계 해오기
+            resetTagCount();
+            List<TagCountEntity> tagcounts = tagCountRepository.findAll();
 
-            // 태그 테이블에 데이터가 없으면 리턴
-            if(tagEntities.size() == 0) return result;
+            // tag count 테이블에 데이터가 없으면 리턴
+            if(tagcounts.size() == 0) return result;
 
-            for(TagEntity tagEntity : tagEntities){
-                ZSetOperations.add(key, tagEntity.getName(), 0);
+            for(TagCountEntity tagCountEntity : tagcounts){
+                ZSetOperations.add(key, tagCountEntity.getTag(), tagCountEntity.getCount());
             }
             ZSetOperations = redisTemplate.opsForZSet();
 
@@ -91,28 +93,6 @@ public class ArticleServiceImpl implements ArticleService{
             }
 
             result = typedTuples.stream().map(TagRankDTO::convertToTagRankDTO).collect(Collectors.toList());
-        }else{
-            // 조회되는 값은 있는데, 리셋 후 입력된 태그가 없으면 전날 데이터를 보여줌
-            if(Double.compare(result.get(0).getCount(), 0.0) == 0){
-                List<TagCountEntity> list = tagCountRepository.findAll(Sort.by(Sort.Direction.DESC, "count"));
-
-                // tagCount 데이터가 존재하지 않으면 태그 데이터만 보여줌
-                if(list.size() == 0) return result;
-
-                List<TagRankDTO> rankDTOS = new ArrayList<>();
-                if(list.size() != 0){
-                    List<TagCountEntity> sublist = (list.size() >= 5) ?  list.subList(0,4) : list;
-
-                    for(TagCountEntity tagCountEntity : sublist){
-                        TagRankDTO dto = TagRankDTO.builder()
-                                .tag(tagCountEntity.getTag())
-                                .count(tagCountEntity.getCount())
-                                .build();
-                        rankDTOS.add(dto);
-                    }
-                }
-                return rankDTOS;
-            }
         }
         return result;
     }
@@ -121,30 +101,19 @@ public class ArticleServiceImpl implements ArticleService{
     @Scheduled(cron = "0 0 18 * * *", zone = "UTC") // 시간 설정 : KST - 9 (새벽 3시에 리셋)
     @Override
     public void updateTagCountTable() {
-        // mysql tagcount 테이블 데이터 삭제
-        tagCountRepository.deleteAll();
+        // tag count 집계
+        resetTagCount();
 
-        // redis 내용 mysql에 저장
         String key = "ranking";
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
-        Set<ZSetOperations.TypedTuple<String>> typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, ZSetOperations.size(key));  //score순으로 정렬해서 보여줌
-
-        for(ZSetOperations.TypedTuple typedTuple : typedTuples) {
-            TagCountEntity tagCountEntity = TagCountEntity.builder()
-                    .tag(typedTuple.getValue().toString())
-                    .count(typedTuple.getScore())
-                    .build();
-
-            tagCountRepository.save(tagCountEntity);
-        }
 
         // redis 리셋
         ZSetOperations.getOperations().delete(key);
 
-        // mysql-tag table 태그 이름 redis에 올리기
-        List<TagEntity> tagEntities = tagRepository.findAll();
-        for(TagEntity tagEntity : tagEntities){
-            ZSetOperations.add(key, tagEntity.getName(), 0);
+        // tag_count 태그 이름 redis에 올리기
+        List<TagCountEntity> list = tagCountRepository.findAll();
+        for(TagCountEntity tagCount : list){
+            ZSetOperations.add(key, tagCount.getTag(), tagCount.getCount());
         }
 
         log.info("Updated TagCount Table, reset Redis");
@@ -439,6 +408,19 @@ public class ArticleServiceImpl implements ArticleService{
                 s3Service.delete(entity.getImg());
             }
         }
+
+        // redis에서 태그 삭제
+        ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
+        String key = "ranking";
+
+        List<ArticleTagEntity> entities = articleTagRepository.findByArticleId(articleId);
+        if(entities.size() != 0){
+            for(ArticleTagEntity entity : entities){
+                String tag = tagRepository.findById(entity.getTagId()).get().getName();
+                ZSetOperations.incrementScore(key, tag, -1);
+            }
+        }
+
         articleRepository.deleteById(articleId);
     }
 
@@ -494,9 +476,9 @@ public class ArticleServiceImpl implements ArticleService{
     }
 
     @Override
-    public Page<ArticleListDTO> searchArticle(String category, String[] region, String keyword, Long userPK, Integer page, Integer size) {
+    public Page<ArticleListDTO> searchArticle(String category, String[] region, String keyword, Long userPK,  Boolean shareStatus, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        Page<ArticleEntity> articleEntities = articleRepository.search(category, region, keyword,  pageRequest);
+        Page<ArticleEntity> articleEntities = articleRepository.search(category, region, keyword,  pageRequest, shareStatus);
         Page<ArticleListDTO> result = toDtoList(articleEntities, userPK);
         return result;
     }
@@ -571,6 +553,25 @@ public class ArticleServiceImpl implements ArticleService{
                         .updateTime(a.getLastModifiedDate())
                         .build());
         return dtoList;
+    }
+
+    // tag count 갱신 함수
+    public void resetTagCount(){
+        // article_tag 테이블에서 tag count 구하기
+       List<Object[]> list = articleTagRepository.findCountByTag();
+
+       // tag count 테이블 리셋
+       tagCountRepository.deleteAllInBatch();
+       List<TagCountEntity> counts = new ArrayList<>();
+       for(Object[] object : list){
+           TagCountEntity tagCountEntity = TagCountEntity.builder()
+                   .tag(String.valueOf(object[0]))
+                   .count(Double.parseDouble(String.valueOf(object[1])))
+                   .build();
+
+           counts.add(tagCountEntity);
+       }
+       tagCountRepository.saveAll(counts);
     }
 
     // 북마크 조회 함수

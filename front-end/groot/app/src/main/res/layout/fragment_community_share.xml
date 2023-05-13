@@ -9,7 +9,9 @@
     android:orientation="vertical"
     android:layout_marginHorizontal="10dp"
     android:layout_marginTop="10dp"
-    tools:context=".view.community.CommunityShareFragment">
+    tools:context=".view.community.CommunityShareFragment"
+    android:backgroundTint="@color/white"
+    android:background="@color/white">
 
 
     <ScrollView

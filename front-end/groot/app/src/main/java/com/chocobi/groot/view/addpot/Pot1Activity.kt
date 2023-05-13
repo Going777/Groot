@@ -12,6 +12,7 @@ import androidx.constraintlayout.utils.widget.ImageFilterButton
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.UserData
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -29,12 +30,19 @@ class Pot1Activity : AppCompatActivity() {
 
         //        imageUri 전달받기
         var imageUri = intent.getStringExtra("imageUri")
+        var imageUrl = intent.getStringExtra("imageUrl")
+
+        Log.d("Pot1Activity","onCreate() uri값 ${imageUri}//")
+        Log.d("Pot1Activity","onCreate() url값 ${imageUrl}//")
+
+
         var plantNameLong = findViewById<TextView>(R.id.plantNameLong)
         var plantNameShort = findViewById<TextView>(R.id.plantNameShort)
         var potName = findViewById<TextView>(R.id.potName)
 
         val plantName = intent.getStringExtra("plantName")
         val plantId = intent.getIntExtra("plantId", 0)
+        Log.d("Pot2Activity","onCreate() 플랜트 아이디 ${plantId}")
         val plantNameSplit = plantName?.split(" ")?.get(0) ?: ""
         val userName = UserData.getNickName()
         var tempPotName = userName + "의 " + plantNameSplit
@@ -47,6 +55,8 @@ class Pot1Activity : AppCompatActivity() {
 
         growType = intent.getStringExtra("growType")
         mgmtLevel = intent.getStringExtra("mgmtLevel")
+        Log.d("Pot2Activity","onCreate() ///생장 ${growType}///")
+        Log.d("Pot2Activity","onCreate() ///숙련도 ${mgmtLevel}///")
         characterGlbPath = intent.getStringExtra("characterGlbPath")
         potInfochipGroup = findViewById(R.id.potInfochipGroup)
 
@@ -66,9 +76,9 @@ class Pot1Activity : AppCompatActivity() {
 //        }
 
 
-        Log.d("Pot1Activity","onCreate() 숙련도 $mgmtLevel")
-        Log.d("Pot1Activity","onCreate() 숙련도 $growTypes")
-        if (mgmtLevel != "" || mgmtLevel != null ) {
+        Log.d("Pot1Activity","onCreate() 숙련도 ${mgmtLevel}")
+        Log.d("Pot1Activity","onCreate() 생장 ${growTypes}")
+        if (mgmtLevel != "" && mgmtLevel != null) {
             potInfochipGroup.addView(
                 Chip(this, null, R.style.REGION_CHIP_ICON).apply {
                     text = mgmtLevel
@@ -98,7 +108,11 @@ class Pot1Activity : AppCompatActivity() {
 
         //        image 띄우기
         var potPhoto = findViewById<ImageView>(R.id.potPhoto)
-        potPhoto.setImageURI(imageUri?.toUri())
+        if(imageUri == null) {
+            GlobalVariables.changeImgView(potPhoto, imageUrl!!, this)
+        } else {
+            potPhoto.setImageURI(imageUri?.toUri())
+        }
 
         val add1Btn = findViewById<ImageFilterButton>(R.id.add1Btn)
         add1Btn.setOnClickListener {
