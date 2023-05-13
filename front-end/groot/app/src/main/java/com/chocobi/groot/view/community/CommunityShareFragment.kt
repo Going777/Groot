@@ -447,7 +447,7 @@ class CommunityShareFragment : Fragment() {
                 val context: Context = requireContext()
                 postImageAdapter = PostImageAdapter(imageList, context)
                 recyclerView.adapter = postImageAdapter
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
                 if (imageList.isNotEmpty()) {
                     recyclerView.visibility = View.VISIBLE
