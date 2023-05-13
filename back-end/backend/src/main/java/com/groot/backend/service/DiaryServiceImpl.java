@@ -96,7 +96,9 @@ public class DiaryServiceImpl implements DiaryService{
         LocalDateTime startDateTime = LocalDateTime.of(LocalDate.from(LocalDateTime.now()), LocalTime.of(0, 0, 0));
         LocalDateTime endDateTime = LocalDateTime.of(LocalDate.from(LocalDateTime.now()), LocalTime.of(23, 59, 59));
         DiaryEntity find = diaryRepository.findTop1ByUserPKAndCreatedDateBetweenOrderByCreatedDateDesc(diary.getUserPK(), startDateTime, endDateTime);
-        diaryRepository.updateIsUserLastById(find.getId(), false);
+        if(find!=null) {
+            diaryRepository.updateIsUserLastById(find.getId(), false);
+        }
 
 //        diaryRepository.updateIsLastByUserId(user.getId(), LocalDateTime.now());
 //        log.info("result: "+result.getId());
@@ -122,8 +124,8 @@ public class DiaryServiceImpl implements DiaryService{
         }
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
-        if(tempExp>=tempLevel*100){  // 경험치는 해당 레벨의 x100을 얻어야 레벨업 가능
-            tempExp -= tempLevel*100;
+        while(tempExp>=tempLevel*10){  // 경험치는 해당 레벨의 x10을 얻어야 레벨업 가능
+            tempExp -= tempLevel*10;
             tempLevel+=1;
         }
 
@@ -218,12 +220,12 @@ public class DiaryServiceImpl implements DiaryService{
         }
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
-        if(tempExp>=pot.getLevel()*100){
-            tempExp -= pot.getLevel()*100;
+        if(tempExp>=pot.getLevel()*10){
+            tempExp -= pot.getLevel()*10;
             tempLevel+=1;
         }else if(tempExp < 0){
             tempLevel -= 1;
-            tempExp += tempLevel*100;
+            tempExp += tempLevel*10;
         }
         LocalDateTime now = LocalDateTime.now();
         PotEntity newPot = PotEntity.builder()
@@ -372,12 +374,12 @@ public class DiaryServiceImpl implements DiaryService{
         // 경험치 및 레벨 계산
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
-        if(tempExp>=pot.getLevel()*100){
-            tempExp -= pot.getLevel()*100;
+        if(tempExp>=pot.getLevel()*10){
+            tempExp -= pot.getLevel()*10;
             tempLevel+=1;
         }else if(tempExp < 0){
             tempLevel -= 1;
-            tempExp += tempLevel*100;
+            tempExp += tempLevel*10;
         }
 
         // 화분 경험치 및 레벨 업데이트
@@ -437,12 +439,12 @@ public class DiaryServiceImpl implements DiaryService{
             }
             int tempExp = pot.getExperience()+score;
             int tempLevel = pot.getLevel();
-            if(tempExp>pot.getLevel()*100){
-                tempExp -= pot.getLevel()*100;
+            if(tempExp>pot.getLevel()*10){
+                tempExp -= pot.getLevel()*10;
                 tempLevel+=1;
             }else if(tempExp < 0){
                 tempLevel -= 1;
-                tempExp += tempLevel*100;
+                tempExp += tempLevel*10;
             }
             // 화분 경험치 및 레벨 업데이트
             potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
@@ -513,27 +515,28 @@ public class DiaryServiceImpl implements DiaryService{
         int waterCyclenum = plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
         int waterCycle = PlantCodeUtil.waterCycle[waterCyclenum%53000];
         for (int i = 0; i < 3; i++) {
-//            if(code==0){
-//                day += waterCycle;
-//            }else{
-//                month += 6;
-//                if (month > 12) {
-//                    year += month / 12;
-//                    month %= 12;
-//                }
-//            }
-//            while (day > monthDate[month]) {
-//                day -= monthDate[month];
-//                month += 1;
-//                if (month > 12) {
-//                    year += month / 12;
-//                    month %= 12;
-//                }
-//                log.info("day "+day);
-//            }
+            if(code==0){
+                day += waterCycle;
+            }else{
+                month += 6;
+                if (month > 12) {
+                    year += month / 12;
+                    month %= 12;
+                }
+            }
+            while (day > monthDate[month]) {
+                day -= monthDate[month];
+                month += 1;
+                if (month > 12) {
+                    year += month / 12;
+                    month %= 12;
+                }
+                log.info("day "+day);
+            }
 
 
-            LocalDateTime newDate = LocalDateTime.of(LocalDate.from(code==1?start.plusMonths(6):start.plusDays(waterCycle)), LocalTime.of(9, 0, 0));
+//            LocalDateTime newDate = LocalDateTime.of(LocalDate.from(code==1?start.plusMonths(6):start.plusDays(waterCycle)), LocalTime.of(9, 0, 0));
+            LocalDateTime newDate = LocalDateTime.of(year, month, day, 9, 0, 0);
             PlanEntity newOne = PlanEntity.builder()
                     .userEntity(user)
                     .potEntity(pot)
@@ -571,7 +574,7 @@ public class DiaryServiceImpl implements DiaryService{
             planRepository.save(plan);
         }
         // 해당 미션 완료 표시 및 실행 날짜 업데이트
-        planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
+//        planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
         log.info("plan에 미션 완료 표시");
         addPlan(user, pot, code, LocalDateTime.now());
     }

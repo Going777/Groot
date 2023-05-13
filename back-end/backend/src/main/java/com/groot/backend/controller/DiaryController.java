@@ -96,10 +96,9 @@ public class DiaryController {
     }
 
     @DeleteMapping("/{diaryId}/{userPK}")    // 다이어리 삭제
-    public ResponseEntity deleteDiary(@PathVariable Long diaryId, @PathVariable Long userPK, @RequestParam Long planId, HttpServletRequest request){
+    public ResponseEntity deleteDiary(@PathVariable Long diaryId, @PathVariable Long userPK, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        Long planPK = planId==null?0:planId;
         if(userId != userPK){
             resultMap.put("msg", "삭제 권한이 없습니다.");
             resultMap.put("result", FAIL);

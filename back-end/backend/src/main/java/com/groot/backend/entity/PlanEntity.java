@@ -52,7 +52,7 @@ public class PlanEntity {
     @JsonManagedReference
     private UserEntity userEntity;
 
-    @ManyToOne(targetEntity = DiaryEntity.class, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = DiaryEntity.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "diary_id")
     @JsonManagedReference
     private DiaryEntity diaryEntity;

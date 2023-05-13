@@ -73,7 +73,7 @@ public class DiaryEntity extends BaseEntity{
     @JsonBackReference
     private DiaryCheckEntity diaryCheckEntity;
 
-    @OneToMany(mappedBy = "diaryEntity", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "diaryEntity", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<PlanEntity> planEntities;
 
