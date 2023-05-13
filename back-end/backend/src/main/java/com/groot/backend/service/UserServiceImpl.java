@@ -160,6 +160,7 @@ public class UserServiceImpl implements UserService{
                 .password(passwordEncoder.encode(userPasswordDTO.getNewPassword()))
                 .profile(userEntity.getProfile())
                 .token(userEntity.getToken())
+                .firebaseToken(userEntity.getFirebaseToken())
                 .build();
         userRepository.save(newUserEntity);
         return true;
@@ -196,6 +197,7 @@ public class UserServiceImpl implements UserService{
                 .password(userEntity.getPassword())
                 .profile(imgPath)
                 .token(userEntity.getToken())
+                .firebaseToken(userEntity.getFirebaseToken())
                 .build();
 
         UserEntity result = userRepository.save(newUserEntity);
