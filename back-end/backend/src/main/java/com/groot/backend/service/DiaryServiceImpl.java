@@ -397,8 +397,10 @@ public class DiaryServiceImpl implements DiaryService{
             if(diaryEntity.getImgPath()!=null && s3Service.delete(diaryEntity.getImgPath())>0) return false;
             PotEntity pot = diaryEntity.getPotEntity();
             // 다이어리 삭제
+
+            log.info(""+diaryEntity.getDiaryId());
+            DiaryCheckEntity diaryCheck = diaryCheckRepository.findById(diaryEntity.getDiaryId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리Check를 찾을 수 없습니다."));
             diaryRepository.deleteById(diaryId);
-            DiaryCheckEntity diaryCheck = diaryCheckRepository.findById(diaryEntity.getDiaryId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
             // check 테이블 수정
             DiaryCheckEntity newCheckDiary = DiaryCheckEntity.builder()
                     .id(diaryEntity.getDiaryId())
