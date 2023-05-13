@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.pot.PotDetailFragment"
+    android:background="@color/white"
     android:backgroundTint="@color/white"
-    android:background="@color/white">
+    tools:context=".view.pot.PotDetailFragment">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -124,20 +123,24 @@
                         app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-                <!--    <ImageView-->
-                <!--        android:id="@+id/imageView"-->
-                <!--        android:layout_width="match_parent"-->
-                <!--        android:layout_height="wrap_content"-->
-                <!--        android:src="@drawable/sample_character" />-->
-
-                <io.github.sceneview.SceneView
-                    android:id="@+id/characterSceneView"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="300dp" />
+                    android:layout_height="300dp">
 
+                    <com.airbnb.lottie.LottieAnimationView
+                        android:id="@+id/lottieView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:lottie_loop="true"
+                        app:lottie_autoPlay="true"
+                        app:lottie_rawRes="@raw/light_effect" />
 
-
+                    <io.github.sceneview.SceneView
+                        android:id="@+id/characterSceneView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:nestedScrollingEnabled="false" />
+                </RelativeLayout>
 
                 <ProgressBar
                     android:id="@+id/progressBar"
@@ -232,8 +235,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="20dp"
-                        android:tag="info_sub"
-                        />
+                        android:tag="info_sub" />
                 </FrameLayout>
 
 
@@ -244,7 +246,7 @@
                     android:layout_marginTop="15dp" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/potPostDiaryBtn"

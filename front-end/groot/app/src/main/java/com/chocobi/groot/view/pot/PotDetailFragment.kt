@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import com.chocobi.groot.MainActivity
@@ -62,8 +64,6 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         super.onCreate(savedInstanceState)
         arguments?.let {
         }
-
-
     }
 
     override fun onCreateView(
@@ -77,6 +77,16 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         getPotDetail(potId)
         potPlantImg = rootView.findViewById(R.id.potPlantImg)
         characterSceneView = rootView.findViewById(R.id.characterSceneView)
+
+        characterSceneView.setOnTouchListener { v, event ->
+            when (event.action) {
+//                부모뷰 스크롤 막기
+                MotionEvent.ACTION_UP -> characterSceneView.parent.requestDisallowInterceptTouchEvent(false)
+                MotionEvent.ACTION_DOWN -> characterSceneView.parent.requestDisallowInterceptTouchEvent(true)
+            }
+//            본인 뷰 이벤트는 적용
+            false
+        }
 
         Log.d(TAG, "${pot}")
         potNameText = rootView.findViewById(R.id.potName)
@@ -255,19 +265,18 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             characterSceneView.removeChild(modelNode!!)
         }
 
-        characterSceneView.backgroundColor = Color(255.0f, 255.0f, 255.0f, 255.0f)
+        characterSceneView.backgroundColor = Color(255.0f, 255.0f, 255.0f, 0.0f)
 
         modelNode = ModelNode().apply {
             loadModelGlbAsync(
                 glbFileLocation = pot?.characterGLBPath
                     ?: "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
                 autoAnimate = false,
-                scaleToUnits = 1.0f,
+                scaleToUnits = 0.8f,
                 centerOrigin = Position(x = 0f, y = 0f, z = 0f),
             )
         }
         if (modelNode != null) {
-
             characterSceneView.addChild(modelNode!!)
         }
     }
