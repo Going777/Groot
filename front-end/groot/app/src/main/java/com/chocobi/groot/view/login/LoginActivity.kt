@@ -30,7 +30,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginPwInput: EditText
     private lateinit var loginIdInputImg: ImageView
     private lateinit var loginPwInputImg: ImageView
-    private lateinit var overlayView: View
+//    private lateinit var overlayView: View
     private var textId: String = ""
     private var textPw: String = ""
 
