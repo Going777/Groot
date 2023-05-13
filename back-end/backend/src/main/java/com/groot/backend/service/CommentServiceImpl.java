@@ -1,8 +1,11 @@
 package com.groot.backend.service;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.groot.backend.dto.request.CommentDTO;
 import com.groot.backend.dto.response.CommentResponseDTO;
-import com.groot.backend.dto.response.Message;
 import com.groot.backend.dto.response.NotificationResponseDTO;
 import com.groot.backend.entity.ArticleEntity;
 import com.groot.backend.entity.CommentEntity;
@@ -23,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import javax.xml.stream.events.Comment;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +37,7 @@ public class CommentServiceImpl implements CommentService{
     private final ArticleRepository articleRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final NotificationService notificationService;
+    private final FirebaseMessaging firebaseMessaging;
 
     @Override
     @Transactional
@@ -47,7 +52,38 @@ public class CommentServiceImpl implements CommentService{
         CommentEntity result = commentRepository.save(comment);
 
         UserEntity recieiver = articleRepository.findById(commentDTO.getArticleId()).orElseThrow().getUserEntity();
-        notificationService.send(recieiver, writer.getNickName()+"님이 '"+article.getTitle()+"'글에 댓글을 작성하였습니다.", "", "article", commentDTO.getArticleId());
+//        notificationService.send(recieiver, writer.getNickName()+"님이 '"+article.getTitle()+"'글에 댓글을 작성하였습니다.", "", "article", commentDTO.getArticleId());
+
+
+        String title = "댓글 알림";
+        String body = writer.getNickName()+"님이 '"+article.getTitle()+"'글에 댓글을 작성하였습니다.";
+
+        Optional<UserEntity> user = userRepository.findById(recieiver.getId());
+        if(user.isPresent()){
+            if(user.get().getFirebaseToken() != null){
+                Notification notification = Notification.builder()
+                        .setTitle(title)
+                        .setBody(body)
+                        .build();
+
+                com.google.firebase.messaging.Message message = Message.builder()
+                        .setToken(user.get().getFirebaseToken())
+                        .setNotification(notification)
+                        .build();
+
+                try{
+                    firebaseMessaging.send(message);
+//                    return "알림을 성공적으로 전송했습니다. targetUserId="+recieiver.getId();
+                } catch (FirebaseMessagingException e){
+                    e.printStackTrace();
+//                    return "알림 보내기를 실패하였습니다. targetUserId="+'${recieiver.getId()}';
+                }
+            } else{
+//                return "서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserId="+requestDTO.getTargetUserId();
+            }
+        } else{
+//            return "해당 유저가 존재하지 않습니다. targetUserId="+requestDTO.getTargetUserId();
+        }
 
 //        NotificationResponseDTO noti = NotificationResponseDTO.builder().receiver(user).content("write comment").isRead(false).url("/comments").build();
 //        eventPublisher.publishEvent(noti);
