@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService{
                 .password(userEntity.getPassword())
                 .profile(userEntity.getProfile())
                 .token(refreshToken)
+                .firebaseToken(loginDTO.getFirebaseToken())
                 .build();
 
         userRepository.save(newUserEntity);

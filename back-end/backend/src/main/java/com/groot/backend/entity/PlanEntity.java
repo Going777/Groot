@@ -39,6 +39,9 @@ public class PlanEntity {
     @Column(name = "done")
     private boolean done;
 
+    @Column(name = "diary_id", updatable = false, insertable = false)
+    private Long diaryId;
+
     @ManyToOne(targetEntity = PotEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "pot_id")
     @JsonManagedReference
@@ -48,6 +51,11 @@ public class PlanEntity {
     @JoinColumn(name = "user_id")
     @JsonManagedReference
     private UserEntity userEntity;
+
+    @ManyToOne(targetEntity = DiaryEntity.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "diary_id")
+    @JsonManagedReference
+    private DiaryEntity diaryEntity;
 
     public List<PlanDTO> toPlanDTOList(List<PlanEntity> planEntities){
         List<PlanDTO> dtoList = new ArrayList<>();

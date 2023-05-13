@@ -56,7 +56,6 @@ public class DiaryController {
             }
             resultMap.put("msg","다이어리 추가 및 수정 완료");
             resultMap.put("result", SUCCESS);
-            resultMap.put("diaryId", diaryUpdate.getId());
             return ResponseEntity.ok().body(resultMap);
         }
         DiaryEntity diarySave = diaryService.saveDiary(userId, file, diaryDTO);
@@ -67,7 +66,6 @@ public class DiaryController {
         }
         resultMap.put("msg","다이어리 추가 및 작성 완료");
         resultMap.put("result", SUCCESS);
-        resultMap.put("diaryId", diarySave.getId());
         return ResponseEntity.ok().body(resultMap);
 
     }
@@ -98,16 +96,15 @@ public class DiaryController {
     }
 
     @DeleteMapping("/{diaryId}/{userPK}")    // 다이어리 삭제
-    public ResponseEntity deleteDiary(@PathVariable Long diaryId, @PathVariable Long userPK, @RequestParam Long planId, HttpServletRequest request){
+    public ResponseEntity deleteDiary(@PathVariable Long diaryId, @PathVariable Long userPK, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        Long planPK = planId==null?0:planId;
         if(userId != userPK){
             resultMap.put("msg", "삭제 권한이 없습니다.");
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
-        if(!diaryService.deleteDiary(diaryId, planPK)){
+        if(!diaryService.deleteDiary(diaryId)){
             resultMap.put("msg", "다이어리 삭제 실패");
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("다이어리 삭제 실패");
