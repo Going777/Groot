@@ -257,14 +257,14 @@ public class PlantServiceImpl implements PlantService{
             String[][] plantOrder = countPlantFreq(regex);
 
             for(int i=0; i<plantOrder.length; i++) {
-                logger.info("Find escherichia : {} th : {}", i, plantOrder[i][0]);
+                logger.info("Find genus : {} th : {}", i, plantOrder[i][0]);
                 String[][] candidates = getCandidates(result, plantOrder[i][0]);
-                String escherichia = plantOrder[i][0];
+                String genus = plantOrder[i][0];
                 if(candidates.length < 1 || plantEntities.stream().noneMatch(plantEntity -> {
-                    return plantEntity.getSciName().startsWith(escherichia);
+                    return plantEntity.getSciName().startsWith(genus);
                 })) continue;
 
-                logger.info("{} Found", escherichia);
+                logger.info("{} Found", genus);
 
                 PlantEntity plantEntity = null;
 
@@ -343,17 +343,17 @@ public class PlantServiceImpl implements PlantService{
     }
 
     /**
-     * get candidates of species by escherichia
+     * get candidates of species by genus
      * @param result
-     * @param escherichia
+     * @param genus
      * @return species names and compensated scores
      */
-    private String[][] getCandidates(String[][] result, String escherichia) {
+    private String[][] getCandidates(String[][] result, String genus) {
         float total_score = 0;
         List<String[]> candidates = new ArrayList<>();
 
         for(int i=0; i<result.length; i++) {
-            if(result[i][0].contains(escherichia)) {
+            if(result[i][0].contains(genus)) {
                 candidates.add(result[i]);
                 total_score += Float.parseFloat(result[i][1]);
             }
