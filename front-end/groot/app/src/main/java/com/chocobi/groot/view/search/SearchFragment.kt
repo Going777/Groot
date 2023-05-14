@@ -9,6 +9,7 @@ import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_ENTER
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -38,6 +39,7 @@ import com.chocobi.groot.view.search.model.SearchService
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -70,6 +72,12 @@ class SearchFragment : Fragment() {
     private lateinit var growthFleshy: Chip
     private lateinit var growthCrawl: Chip
     private lateinit var growthGrass: Chip
+    private lateinit var youtubePlayer1: YouTubePlayerView
+    private lateinit var youtubePlayer2: YouTubePlayerView
+    private lateinit var youtubePlayer3: YouTubePlayerView
+    private lateinit var youtubePlayer4: YouTubePlayerView
+    private lateinit var youtubePlayer5: YouTubePlayerView
+    private lateinit var youtubePlayer6: YouTubePlayerView
 
     private var difficulty1: String? = null
     private var difficulty2: String? = null
@@ -115,18 +123,31 @@ class SearchFragment : Fragment() {
         requestRecommendations()
         filterChipGroup()
 
-
 //        Camera 버튼 클릭
         val cameraBtn = rootView.findViewById<ImageButton>(R.id.cameraBtn)
         cameraBtn.setOnClickListener {
-            mActivity.setCameraStatus("searchPlant")
-            mActivity.requirePermissions(
-                arrayOf(android.Manifest.permission.CAMERA),
-                PERMISSION_CAMERA
-            )
+            var dialog = AlertDialog.Builder(requireContext())
+            dialog.setMessage("카메라로 식물을 알아보시겠습니까?")
+            dialog.setPositiveButton("확인") {dialog, which ->
+                mActivity.setCameraStatus("searchPlant")
+                mActivity.requirePermissions(
+                    arrayOf(android.Manifest.permission.CAMERA),
+                    PERMISSION_CAMERA
+                )
+            }
+            dialog.setNegativeButton("취소") {dialog, which ->
+                dialog.dismiss()
+            }
+            dialog.show()
         }
 
         recyclerViewSetting()
+        youtubeViewSetting(youtubePlayer1)
+        youtubeViewSetting(youtubePlayer2)
+        youtubeViewSetting(youtubePlayer3)
+        youtubeViewSetting(youtubePlayer4)
+        youtubeViewSetting(youtubePlayer5)
+        youtubeViewSetting(youtubePlayer6)
 
 //        if(plants == null) {
 //            firstView.visibility = View.VISIBLE
@@ -218,7 +239,55 @@ class SearchFragment : Fragment() {
         growthFleshy = view.findViewById(R.id.growthFleshy)
         growthCrawl = view.findViewById(R.id.growthCrawl)
         growthGrass = view.findViewById(R.id.growthGrass)
+
+        youtubePlayer1 = view.findViewById(R.id.youtubePlayer1)
+        youtubePlayer2 = view.findViewById(R.id.youtubePlayer2)
+        youtubePlayer3 = view.findViewById(R.id.youtubePlayer3)
+        youtubePlayer4 = view.findViewById(R.id.youtubePlayer4)
+        youtubePlayer5 = view.findViewById(R.id.youtubePlayer5)
+        youtubePlayer6 = view.findViewById(R.id.youtubePlayer6)
     }
+
+
+    private fun youtubeViewSetting(youtubeView: YouTubePlayerView) {
+        var isHorizontalScrolling = false
+        var lastX = 0f
+        var lastY = 0f
+
+        youtubeView.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    lastX = event.x
+                    lastY = event.y
+                    youtubeView.parent.requestDisallowInterceptTouchEvent(true)
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    val deltaX = Math.abs(event.x - lastX)
+                    val deltaY = Math.abs(event.y - lastY)
+                    isHorizontalScrolling = deltaX > deltaY
+                    lastX = event.x
+                    lastY = event.y
+                    youtubeView.parent.requestDisallowInterceptTouchEvent(true)
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    youtubeView.parent.requestDisallowInterceptTouchEvent(false)
+                    if (!isHorizontalScrolling) {
+                        // Handle the click event when not scrolling horizontally
+                    }
+                }
+            }
+            false
+        }
+
+        youtubeView.setOnClickListener {
+            if (!isHorizontalScrolling) {
+                // Handle the click event when not scrolling horizontally
+            }
+        }
+    }
+
 
     private fun recyclerViewSetting() {
         rvAdapter = DictRVAdapter(emptyArray())
@@ -347,17 +416,17 @@ class SearchFragment : Fragment() {
         plantName = autoCompleteTextView.text.toString()
         val retrofit = RetrofitClient.basicClient()!!
         val plantSearchService = retrofit.create(SearchService::class.java)
-        Log.d("SearchFragment","requestSearchPlant() $difficulty1")
-        Log.d("SearchFragment","requestSearchPlant() $difficulty2")
-        Log.d("SearchFragment","requestSearchPlant() $difficulty3")
-        Log.d("SearchFragment","requestSearchPlant() $lux1")
-        Log.d("SearchFragment","requestSearchPlant() $lux1")
-        Log.d("SearchFragment","requestSearchPlant() $lux1")
-        Log.d("SearchFragment","requestSearchPlant() $growth5")
-        Log.d("SearchFragment","requestSearchPlant() $growth4")
-        Log.d("SearchFragment","requestSearchPlant() $growth3")
-        Log.d("SearchFragment","requestSearchPlant() $growth2")
-        Log.d("SearchFragment","requestSearchPlant() $growth1")
+        Log.d("SearchFragment", "requestSearchPlant() $difficulty1")
+        Log.d("SearchFragment", "requestSearchPlant() $difficulty2")
+        Log.d("SearchFragment", "requestSearchPlant() $difficulty3")
+        Log.d("SearchFragment", "requestSearchPlant() $lux1")
+        Log.d("SearchFragment", "requestSearchPlant() $lux1")
+        Log.d("SearchFragment", "requestSearchPlant() $lux1")
+        Log.d("SearchFragment", "requestSearchPlant() $growth5")
+        Log.d("SearchFragment", "requestSearchPlant() $growth4")
+        Log.d("SearchFragment", "requestSearchPlant() $growth3")
+        Log.d("SearchFragment", "requestSearchPlant() $growth2")
+        Log.d("SearchFragment", "requestSearchPlant() $growth1")
         plantSearchService.requestSearchPlants(
             plantName,
             difficulty1,

@@ -250,7 +250,7 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSION_CAMERA -> Toast.makeText(
                 this,
-                "카메라 권한을 승인해야 카메라를 사용할 수 있습니다.",
+                "카메라 권한을 승인해야 해당 기능을 사용할 수 있습니다.",
                 Toast.LENGTH_LONG
             ).show()
 
