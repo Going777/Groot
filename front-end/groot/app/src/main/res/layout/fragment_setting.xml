@@ -9,6 +9,9 @@
     android:backgroundTint="@color/white"
     android:background="@color/white">
 
+    <include
+        layout="@layout/top_category_navbar" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

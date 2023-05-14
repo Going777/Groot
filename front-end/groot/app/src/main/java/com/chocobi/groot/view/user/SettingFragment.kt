@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import com.chocobi.groot.view.intro.IntroActivity
@@ -56,6 +57,15 @@ class SettingFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_setting, container, false)
         // Inflate the layout for this fragment
         val mActivity = activity as MainActivity
+
+        val categoryNameTextView = rootView.findViewById<TextView>(R.id.categoryName)
+        val categoryIcon = rootView.findViewById<ImageView>(R.id.categoryIcon)
+        categoryNameTextView.text = "설정"
+        categoryIcon.setImageResource(R.drawable.ic_setting)
+
+//        뒤로 가기 버튼 처리해야 하는 곳
+        val backBtn = rootView.findViewById<ImageView>(R.id.backBtn)
+
         val editProfileText = rootView.findViewById<TextView>(R.id.editProfileText)
         val profileBottomSheet = ProfileBottomSheet(requireContext())
         editProfileText.setOnClickListener {
