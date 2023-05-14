@@ -141,14 +141,10 @@ class CommunityTab2Fragment : Fragment() {
             communityArticlePage = 0
         }
         val retrofit = RetrofitClient.getClient()!!
-        val regionFilterService = retrofit.create(CommunityService::class.java)
-        val regions = arrayListOf("", null, null)
+        val CommunityService = retrofit.create(CommunityService::class.java)
 
-        regionFilterService.requestSearchArticle(
+        CommunityService.requestSearchArticle(
             category = CATEGORY,
-            region1 = regions[0],
-            region2 = regions[1],
-            region3 = regions[2],
             keyword = keyword,
             pageInput = communityArticlePage,
             sizeInput = REQUESTPAGESIZE
