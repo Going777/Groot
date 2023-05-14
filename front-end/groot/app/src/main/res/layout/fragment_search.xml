@@ -30,23 +30,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:orientation="horizontal"
             android:paddingHorizontal="5dp"
-            android:weightSum="1"
-            android:layout_gravity="center">
+            android:weightSum="1">
 
             <AutoCompleteTextView
                 android:id="@+id/autoCompleteTextView"
                 android:layout_width="fill_parent"
                 android:layout_height="45dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:backgroundTint="@android:color/transparent"
                 android:completionThreshold="1"
-                android:layout_gravity="center"
                 android:hint="식물 이름을 입력해 주세요"
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:textColorHint="@color/grey" />
+
             <ImageButton
                 android:id="@+id/searchPlantBtn"
                 android:layout_width="37dp"
@@ -55,6 +56,7 @@
                 android:layout_weight="0"
                 android:backgroundTint="@color/white"
                 android:src="@drawable/ic_search" />
+
             <ImageButton
                 android:id="@+id/cameraBtn"
                 android:layout_width="37dp"
@@ -62,7 +64,7 @@
                 android:layout_gravity="center"
                 android:layout_weight="0"
                 android:backgroundTint="@color/white"
-                android:src="@drawable/ic_camera_24"/>
+                android:src="@drawable/ic_camera_24" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -218,39 +220,6 @@
                     android:text="풀모양" />
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
-
-        <!--        <LinearLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:gravity="center_vertical"-->
-        <!--            android:orientation="vertical">-->
-
-        <!--            <TextView-->
-        <!--                android:layout_width="70dp"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:text="크기"-->
-        <!--                android:textStyle="bold" />-->
-
-        <!--            <com.google.android.material.chip.ChipGroup-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content">-->
-
-        <!--                <com.google.android.material.chip.Chip-->
-        <!--                    android:id="@+id/chip19"-->
-        <!--                    style="@style/BASIC_CHIP"-->
-        <!--                    android:text="소형" />-->
-
-        <!--                <com.google.android.material.chip.Chip-->
-        <!--                    android:id="@+id/chip20"-->
-        <!--                    style="@style/BASIC_CHIP"-->
-        <!--                    android:text="중형" />-->
-
-        <!--                <com.google.android.material.chip.Chip-->
-        <!--                    android:id="@+id/chip21"-->
-        <!--                    style="@style/BASIC_CHIP"-->
-        <!--                    android:text="대형" />-->
-        <!--            </com.google.android.material.chip.ChipGroup>-->
-        <!--        </LinearLayout>-->
     </LinearLayout>
 
     <View
@@ -260,13 +229,8 @@
         android:background="@drawable/round_rectangle"
         android:backgroundTint="@color/light_grey" />
 
-
-    <!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-    <!--        android:id="@+id/dictSwipeRefreshLayout"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent">-->
-
     <ScrollView
+        android:id="@+id/contentScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -375,13 +339,13 @@
                     android:visibility="gone" />
 
 
-                <!--            android:visibility="gone"-->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/recmmView"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:layout_marginHorizontal="10dp"
                     android:backgroundTint="@color/background"
+                    android:visibility="gone"
                     app:cardCornerRadius="20dp"
                     app:strokeColor="@color/white">
 
@@ -412,15 +376,17 @@
 
             <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/youtubeViews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="25dp"
+                    android:layout_marginTop="10dp"
                     android:text="✨ 식물 키우기 TIP"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -434,8 +400,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_gravity="center_vertical">
+                        android:layout_gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
                             android:id="@+id/youtubePlayer1"
@@ -489,20 +455,20 @@
 
             </LinearLayout>
 
-<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent">-->
+            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="match_parent">-->
 
-<!--                <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--                    android:id="@+id/cameraBtn"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_margin="16dp"-->
-<!--                    android:contentDescription="camera"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:srcCompat="@drawable/ic_camera" />-->
-<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
+            <!--                <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+            <!--                    android:id="@+id/cameraBtn"-->
+            <!--                    android:layout_width="wrap_content"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_margin="16dp"-->
+            <!--                    android:contentDescription="camera"-->
+            <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                    app:srcCompat="@drawable/ic_camera" />-->
+            <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
         </LinearLayout>
     </ScrollView>
 

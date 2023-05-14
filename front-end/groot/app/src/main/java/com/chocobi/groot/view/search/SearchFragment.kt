@@ -18,6 +18,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -60,6 +62,7 @@ class SearchFragment : Fragment() {
     private lateinit var rv: RecyclerView
     private lateinit var recmmView: MaterialCardView
     private lateinit var recmRv: RecyclerView
+    private lateinit var contentScrollView: ScrollView
     private lateinit var difficultyEasy: Chip
     private lateinit var difficultyMedium: Chip
     private lateinit var difficultyHard: Chip
@@ -72,6 +75,7 @@ class SearchFragment : Fragment() {
     private lateinit var growthFleshy: Chip
     private lateinit var growthCrawl: Chip
     private lateinit var growthGrass: Chip
+    private lateinit var youtubeViews: LinearLayout
     private lateinit var youtubePlayer1: YouTubePlayerView
     private lateinit var youtubePlayer2: YouTubePlayerView
     private lateinit var youtubePlayer3: YouTubePlayerView
@@ -128,14 +132,14 @@ class SearchFragment : Fragment() {
         cameraBtn.setOnClickListener {
             var dialog = AlertDialog.Builder(requireContext())
             dialog.setMessage("카메라로 식물을 알아보시겠습니까?")
-            dialog.setPositiveButton("확인") {dialog, which ->
+            dialog.setPositiveButton("확인") { dialog, which ->
                 mActivity.setCameraStatus("searchPlant")
                 mActivity.requirePermissions(
                     arrayOf(android.Manifest.permission.CAMERA),
                     PERMISSION_CAMERA
                 )
             }
-            dialog.setNegativeButton("취소") {dialog, which ->
+            dialog.setNegativeButton("취소") { dialog, which ->
                 dialog.dismiss()
             }
             dialog.show()
@@ -193,7 +197,7 @@ class SearchFragment : Fragment() {
 
 //            검색 api 요청
                 plantName = autoCompleteTextView.text.toString()
-                search(plantName)
+                search()
                 true // true를 반환하여 텍스트를 유지합니다.
             } else {
                 false
@@ -209,7 +213,7 @@ class SearchFragment : Fragment() {
 
 //            검색 api 요청
             plantName = autoCompleteTextView.text.toString()
-            search(plantName)
+            search()
         }
 
         addPot(mActivity)
@@ -226,6 +230,7 @@ class SearchFragment : Fragment() {
         rv = view.findViewById(R.id.dictRecyclerView)
         recmmView = view.findViewById(R.id.recmmView)
         recmRv = view.findViewById(R.id.recmRecyclerView)
+        contentScrollView = view.findViewById(R.id.contentScrollView)
 
         difficultyEasy = view.findViewById(R.id.difficultyEasy)
         difficultyMedium = view.findViewById(R.id.difficultyMedium)
@@ -240,6 +245,7 @@ class SearchFragment : Fragment() {
         growthCrawl = view.findViewById(R.id.growthCrawl)
         growthGrass = view.findViewById(R.id.growthGrass)
 
+        youtubeViews = view.findViewById(R.id.youtubeViews)
         youtubePlayer1 = view.findViewById(R.id.youtubePlayer1)
         youtubePlayer2 = view.findViewById(R.id.youtubePlayer2)
         youtubePlayer3 = view.findViewById(R.id.youtubePlayer3)
@@ -316,103 +322,57 @@ class SearchFragment : Fragment() {
     private fun filterChipGroup() {
         difficultyEasy.setOnCheckedChangeListener { buttonView, isChecked ->
             difficulty1 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         difficultyMedium.setOnCheckedChangeListener { buttonView, isChecked ->
             difficulty2 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         difficultyHard.setOnCheckedChangeListener { buttonView, isChecked ->
             difficulty3 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         luxLow.setOnCheckedChangeListener { buttonView, isChecked ->
             lux1 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         luxMedium.setOnCheckedChangeListener { buttonView, isChecked ->
             lux2 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         luxHigh.setOnCheckedChangeListener { buttonView, isChecked ->
             lux3 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         growthStraight.setOnCheckedChangeListener { buttonView, isChecked ->
             growth1 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         growthTree.setOnCheckedChangeListener { buttonView, isChecked ->
             growth2 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         growthVine.setOnCheckedChangeListener { buttonView, isChecked ->
             growth3 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         growthFleshy.setOnCheckedChangeListener { buttonView, isChecked ->
             growth4 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         growthCrawl.setOnCheckedChangeListener { buttonView, isChecked ->
             growth5 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
         growthGrass.setOnCheckedChangeListener { buttonView, isChecked ->
             growth6 = if (isChecked) buttonView.text.toString() else null
-            if (isAllBlank()) {
-                requestRecommendations()
-            } else {
-                requestSearchPlant()
-            }
+            search()
         }
     }
 
     private fun requestSearchPlant() {
+        // 요청할 때마다 제일 최상단으로 스크롤 위치 이동
+        contentScrollView.scrollTo(0, 0)
         plantName = autoCompleteTextView.text.toString()
         val retrofit = RetrofitClient.basicClient()!!
         val plantSearchService = retrofit.create(SearchService::class.java)
@@ -454,6 +414,7 @@ class SearchFragment : Fragment() {
                             plants = searchBody.plants
                             Log.d("SearchFragment", "onResponse() 요청된 것 보기 $plants")
                             recmmView.visibility = View.GONE
+                            youtubeViews.visibility = View.GONE
                             firstView.visibility = View.GONE
                             blankView.visibility = View.GONE
                             rv.visibility = View.VISIBLE
@@ -463,6 +424,7 @@ class SearchFragment : Fragment() {
                         Log.d("SearchFragment", "onResponse() 아무것도 값이 없어요")
                         rv.visibility = View.GONE
                         recmmView.visibility = View.GONE
+                        youtubeViews.visibility = View.GONE
                         firstView.visibility = View.GONE
                         blankView.visibility = View.VISIBLE
                     }
@@ -474,8 +436,8 @@ class SearchFragment : Fragment() {
             })
     }
 
-    private fun search(targetText: String?) {
-        if (isAllBlank() || targetText == "") {
+    private fun search() {
+        if (isAllBlank()) {
             requestRecommendations()
         } else {
             requestSearchPlant()
@@ -483,6 +445,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun requestRecommendations() {
+        // 요청할 때마다 제일 최상단으로 스크롤 위치 이동
+        contentScrollView.scrollTo(0, 0)
         Log.d("SearchFragment", "requestRecommendations() 추천 요청 보내기")
         val retrofit = RetrofitClient.basicClient()!!
         val searchService = retrofit.create(SearchService::class.java)
@@ -500,11 +464,13 @@ class SearchFragment : Fragment() {
                             if (plants == null) {
                                 rv.visibility = View.GONE
                                 recmmView.visibility = View.GONE
+                                youtubeViews.visibility = View.GONE
                                 firstView.visibility = View.VISIBLE
                                 blankView.visibility = View.GONE
                             } else {
                                 rv.visibility = View.GONE
                                 recmmView.visibility = View.VISIBLE
+                                youtubeViews.visibility = View.VISIBLE
                                 firstView.visibility = View.GONE
                                 blankView.visibility = View.GONE
                                 rvAdapter.setData(plants!!)
@@ -514,6 +480,7 @@ class SearchFragment : Fragment() {
                         Log.d("SearchFragment", "requestRecommendations() api 실패1 $response")
                         rv.visibility = View.GONE
                         recmmView.visibility = View.GONE
+                        youtubeViews.visibility = View.GONE
                         firstView.visibility = View.VISIBLE
                         blankView.visibility = View.GONE
                     }

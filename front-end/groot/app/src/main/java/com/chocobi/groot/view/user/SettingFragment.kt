@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -70,13 +71,13 @@ class SettingFragment : Fragment() {
 //        로그아웃
         val logoutText = rootView.findViewById<TextView>(R.id.logoutText)
         logoutText.setOnClickListener {
-            logout()
+            GlobalVariables.defaultAlertDialog(context = requireContext(), title="로그아웃 알림", message = "접속중인 기기에서 로그아웃 하시겠습니까?", positiveFtn = ::logout, existNegativeBtn = true)
         }
 
 //        회원탈퇴
         val deleteUserText = rootView.findViewById<TextView>(R.id.deleteUserText)
         deleteUserText.setOnClickListener {
-            deleteUser()
+            GlobalVariables.defaultAlertDialog(context = requireContext(), title="회원탈퇴 알림", message = "계정을 삭제하면 모든 데이터가 디바이스에서 삭제됩니다.\n\n정말로 회원탈퇴를 진행하시겠습니까?", positiveFtn = ::deleteUser, existNegativeBtn = true)
         }
 
         return rootView
@@ -109,10 +110,7 @@ class SettingFragment : Fragment() {
 //                    Log.d("SettingFragment", m.toString())
 //                    Log.d("SettingFragment", "$b")
                     Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
-//                    토큰 초기화
-                    initializeAccessToken()
-//                    인트로 페이지로 이동
-                    goToIntro()
+                    afterUserRequestSuccess()
                 }
 
                 override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
@@ -134,26 +132,36 @@ class SettingFragment : Fragment() {
 //        요청 보내기
         val accessToken = GlobalVariables.prefs.getString("access_token", "")
         if (accessToken != "") {
-            userService.deleteUser(accessToken!!).enqueue(object : Callback<BasicResponse> {
+            userService.deleteUser().enqueue(object : Callback<BasicResponse> {
                 override fun onResponse(
                     call: Call<BasicResponse>,
                     response: Response<BasicResponse>
                 ) {
-
-                    Toast.makeText(requireContext(), "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
-//                    토큰 초기화
-                    initializeAccessToken()
-//                    인트로 페이지로 이동
-                    goToIntro()
+//                    회원 탈퇴 성공
+                    if(response.code() == 200) {
+                        GlobalVariables.defaultAlertDialog(context=requireContext(), title = "회원탈퇴 알림", message = "성공적으로 회원탈퇴처리 되었습니다. \n\n그동안 Groot를 이용해주셔서 감사합니다.\n더 좋은 서비스를 제공하기 위해서 열심히 노력하겠습니다.",
+                        positiveFtn = ::afterUserRequestSuccess)
+                    }
+//                    회원 탈퇴 실패 (없는 아이디 or 없는 토큰)
+                    else {
+                        GlobalVariables.defaultAlertDialog(context=requireContext(), title = "회원탈퇴 알림", message = "회원탈퇴 처리에 실패했습니다.",
+                            positiveFtn = ::afterUserRequestSuccess)
+                    }
                 }
 
                 override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
-                    Toast.makeText(requireContext(), "회원탈퇴 실패", Toast.LENGTH_SHORT).show()
+                    GlobalVariables.defaultAlertDialog(context=requireContext(), title = "회원탈퇴 알림", message = "회원탈퇴 처리에 실패했습니다.",
+                        positiveFtn = ::afterUserRequestSuccess)
                 }
             })
         } else {
             Toast.makeText(requireContext(), "액세스 토큰 없음", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun afterUserRequestSuccess() {
+        initializeAccessToken()
+        goToIntro()
     }
 
     //    토큰 초기화
@@ -170,4 +178,6 @@ class SettingFragment : Fragment() {
         val intent = Intent(requireContext(), IntroActivity::class.java)
         startActivity(intent)
     }
+
+
 }

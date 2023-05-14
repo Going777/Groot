@@ -162,11 +162,18 @@ class GlobalVariables : Application() {
             }
         }
 
-        fun defaultAlertDialog(context: Context, title: String? = null, message: String? = null) {
+        fun defaultAlertDialog(context: Context, title: String? = null, message: String? = null, positiveFtn: (() -> Unit)? = null, existNegativeBtn: Boolean = false) {
             var dialog = AlertDialog.Builder(context)
             dialog.setTitle(title)
             dialog.setMessage(message)
-            dialog.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which -> })
+            dialog.setPositiveButton("확인", DialogInterface.OnClickListener { dialog, which ->
+                positiveFtn?.invoke()
+            })
+            if(existNegativeBtn) {
+                dialog.setNegativeButton("취소", DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            }
             dialog.show()
         }
 
