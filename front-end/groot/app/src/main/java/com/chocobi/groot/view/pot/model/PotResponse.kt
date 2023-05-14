@@ -121,6 +121,19 @@ class DiaryRequest internal constructor(
     val nutrients: Boolean?
 )
 
+class EditDiaryRequest internal constructor(
+    val id:Int,
+    val potId: Int,
+    val content: String?,
+    val water: Boolean?,
+    val pruning: Boolean?,
+    val bug: Boolean?,
+    val sun: Boolean?,
+    val nutrients: Boolean?,
+    val userPK: Int,
+    val diaryId: Int
+)
+
 data class DiaryCheckStatusResponse(
     val result: String,
     val msg: String,
