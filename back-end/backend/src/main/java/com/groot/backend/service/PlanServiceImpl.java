@@ -1,18 +1,23 @@
 package com.groot.backend.service;
 
-import com.groot.backend.entity.DiaryCheckEntity;
-import com.groot.backend.entity.DiaryEntity;
-import com.groot.backend.entity.PlanEntity;
-import com.groot.backend.entity.PotEntity;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import com.groot.backend.controller.exception.CustomException;
+import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,14 +29,15 @@ public class PlanServiceImpl implements PlanService{
     private final PotRepository potRepository;
     private final DiaryRepository diaryRepository;
     private final DiaryCheckRepository diaryCheckRepository;
-
+    private final FirebaseMessaging firebaseMessaging;
 
     @Override
     public void deletePlan(Long planId) {
 
         // plan 삭제
         PlanEntity plan = planRepository.findById(planId).orElseThrow();
-        planRepository.deleteById(planId);
+//        planRepository.deleteById(planId);
+        planRepository.updateDoneById(planId);
 
         // 관련 diary 수정
         DiaryEntity diary = diaryRepository.findById(plan.getDiaryId()).orElseThrow();
@@ -98,5 +104,48 @@ public class PlanServiceImpl implements PlanService{
         potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
     }
 
+    @Scheduled(cron = "0 0 2 * * *", zone = "UTC") // 오전 11시
+    public void alarmPlan(){
+        LocalDateTime now = LocalDateTime.now().plusHours(9);
+        LocalDateTime start = LocalDateTime.of(LocalDate.from(now), LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.of(LocalDate.from(now), LocalTime.of(23, 59, 59));
+        List<PlanEntity> planEntities = planRepository.findAllByDoneAndDateTimeBetween(false, start, end);
+
+        for(PlanEntity plan : planEntities){
+            PotEntity pot = potRepository.findById(plan.getPotId()).orElseThrow();
+            String title = "";
+            String body = "";
+            if(plan.getCode()==0) {
+                title = "물주기 알림";
+                body = pot.getName() + "에게 물을 줄 시간입니다!";
+            } else {
+                title = "영양제 알림";
+                body = pot.getName() + "에게 영양제를 줄 시간입니다!";
+            }
+            Optional<UserEntity> user = userRepository.findById(plan.getUserPK());
+            if(user.isPresent()) {
+                if (user.get().getFirebaseToken() != null) {
+                    Notification notification = Notification.builder()
+                            .setTitle(title)
+                            .setBody(body)
+                            .build();
+
+                    com.google.firebase.messaging.Message message = Message.builder()
+                            .setToken(user.get().getFirebaseToken())
+                            .setNotification(notification)
+                            .build();
+
+                    try {
+                        firebaseMessaging.send(message);
+//                    return "알림을 성공적으로 전송했습니다. targetUserId="+recieiver.getId();
+                    } catch (FirebaseMessagingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+        }
+
+    }
 
 }

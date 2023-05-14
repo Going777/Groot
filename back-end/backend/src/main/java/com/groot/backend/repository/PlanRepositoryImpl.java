@@ -65,4 +65,35 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
                 .fetchOne();
         return date;
     }
+
+    @Override
+    public long updateDoneById(Long planId) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        long updateCnt = queryFactory.update(qPlan)
+                .set(qPlan.done, false)
+                .where(qPlan.id.eq(planId))
+                .execute();
+        return updateCnt;
+    }
+
+    @Override
+    public boolean existsByCodeAndDateTimeBetween(Integer code, LocalDateTime start, LocalDateTime end) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        List<PlanEntity> plans = queryFactory.selectFrom(qPlan)
+                .where(qPlan.dateTime.between(start, end), qPlan.code.eq(code))
+                .fetch();
+        return !plans.isEmpty();
+    }
+
+    @Override
+    public List<PlanEntity> findAllByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        List<PlanEntity> plans = queryFactory.selectFrom(qPlan)
+                .where(qPlan.dateTime.between(start, end), qPlan.done.eq(done))
+                .fetch();
+        return plans;
+    }
 }
