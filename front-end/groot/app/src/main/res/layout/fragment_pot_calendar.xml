@@ -87,7 +87,10 @@
         <androidx.appcompat.widget.AppCompatButton
             style="@style/MAIN_BTN"
             android:id="@+id/missionComplete"
-            android:text="오늘의 미션 완료" />
+            android:text="오늘의 미션 완료"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/actionBarItemBackground"/>
     </LinearLayout>
 
 </LinearLayout>

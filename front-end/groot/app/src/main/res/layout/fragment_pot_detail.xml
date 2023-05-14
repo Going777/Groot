@@ -39,7 +39,10 @@
                 android:translationZ="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/main" />
+                app:tint="@color/main"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"/>
 
             <ImageButton
                 android:id="@+id/settingBtn"
@@ -52,7 +55,10 @@
                 android:src="@drawable/ic_list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white" />
+                app:tint="@color/white"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"/>
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
@@ -120,7 +126,10 @@
                         android:text="만나러 가기"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/actionBarItemBackground"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <RelativeLayout
@@ -243,7 +252,10 @@
                     android:id="@+id/toDiaryBtn"
                     style="@style/GO_TO_DIARY_BTN"
                     android:layout_marginHorizontal="10dp"
-                    android:layout_marginTop="15dp" />
+                    android:layout_marginTop="15dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/actionBarItemBackground"/>
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

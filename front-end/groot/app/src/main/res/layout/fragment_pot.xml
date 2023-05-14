@@ -71,7 +71,10 @@
                 android:id="@+id/toDiaryBtn"
                 style="@style/GO_TO_DIARY_BTN"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginVertical="15dp" />
+                android:layout_marginVertical="15dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"/>
         </LinearLayout>
     </ScrollView>
 

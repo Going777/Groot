@@ -26,7 +26,10 @@
             android:translationZ="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/main" />
+            app:tint="@color/main"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/actionBarItemBackground"/>
 
         <ImageView
             android:id="@+id/plantImage"
@@ -335,7 +338,10 @@
                 style="@style/MAIN_BTN"
                 android:layout_gravity="bottom"
                 android:layout_marginVertical="20dp"
-                android:text="식물 등록하기" />
+                android:text="식물 등록하기"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"/>
         </LinearLayout>
     </ScrollView>
 
