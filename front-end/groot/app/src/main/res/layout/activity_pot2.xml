@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView"
@@ -9,166 +9,171 @@
     android:orientation="vertical"
     tools:context=".view.addpot.Pot2Activity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainLayout"
+    <include layout="@layout/top_category_navbar" />
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/plantNameContainer"
+            android:id="@+id/mainLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="40dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/plantNameShort"
-                android:layout_width="wrap_content"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/plantNameContainer"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="-10dp"
-                android:rotation="270"
-                android:text="산세베리아"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/line"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:layout_marginBottom="40dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <View
-                android:id="@+id/line"
-                android:layout_width="2dp"
-                android:layout_height="120dp"
-                android:layout_marginRight="20dp"
-                android:background="@android:color/black"
-                app:layout_constraintEnd_toStartOf="@+id/potNameText"
-                tools:ignore="MissingConstraints" />
+                <TextView
+                    android:id="@+id/plantNameShort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="-10dp"
+                    android:rotation="270"
+                    android:text="산세베리아"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/line"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/potNameText"
-                android:layout_width="150dp"
+                <View
+                    android:id="@+id/line"
+                    android:layout_width="2dp"
+                    android:layout_height="120dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@android:color/black"
+                    app:layout_constraintEnd_toStartOf="@+id/potNameText"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/potNameText"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="100dp"
+                    android:breakStrategy="balanced"
+                    android:lineSpacingExtra="-10dp"
+                    android:text="그루트의\n 루티"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <RelativeLayout
+                android:id="@+id/characterSection"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="100dp"
-                android:breakStrategy="balanced"
-                android:lineSpacingExtra="-10dp"
-                android:text="그루트의\n 루티"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/plantNameContainer">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/lottieView"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:layout_marginVertical="10dp"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/congratulation" />
+
+                <io.github.sceneview.SceneView
+                    android:id="@+id/characterSceneView"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:layout_marginVertical="10dp" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/guideText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/characterSection">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="식물 정령 "
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="'루티'"
+                    android:textColor="@color/main"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text=" 를 만났다!"
+                    android:textSize="23sp" />
+            </LinearLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/potNameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginTop="20dp"
+                android:hint="루티에게 이름을 지어주세요"
+                app:boxStrokeWidth="0dp"
+                app:counterEnabled="true"
+                app:counterMaxLength="10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideText">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/potNameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:inputType="text"
+                    android:maxLength="10"
+                    android:textAlignment="center" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:id="@+id/underline"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginHorizontal="70dp"
+                android:layout_marginTop="53dp"
+                android:background="@color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/potNameLayout" />
+
+            <androidx.constraintlayout.utils.widget.ImageFilterButton
+                android:id="@+id/add2Btn"
+                android:layout_width="75dp"
+                android:layout_height="80dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="30dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/step2_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/potNameLayout" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-        <RelativeLayout
-            android:id="@+id/characterSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/plantNameContainer">
-
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottieView"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:layout_marginVertical="10dp"
-                app:lottie_rawRes="@raw/congratulation"
-                app:lottie_loop="true"/>
-
-            <io.github.sceneview.SceneView
-                android:id="@+id/characterSceneView"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:layout_marginVertical="10dp"/>
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/guideText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/characterSection">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="식물 정령 "
-                android:textSize="23sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="'루티'"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:textColor="@color/main"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text=" 를 만났다!"
-                android:textSize="23sp" />
-        </LinearLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/potNameLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginHorizontal="60dp"
-            android:hint="루티에게 이름을 지어주세요"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/guideText"
-            app:boxStrokeWidth="0dp"
-            app:counterMaxLength="10"
-            app:counterEnabled="true"
-            >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/potNameEdit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:maxLength="10"
-                android:textAlignment="center"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <View
-            android:id="@+id/underline"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:layout_marginTop="53dp"
-            android:layout_marginHorizontal="70dp"
-            android:background="@color/black"
-            app:layout_constraintTop_toTopOf="@id/potNameLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            />
-
-        <androidx.constraintlayout.utils.widget.ImageFilterButton
-            android:id="@+id/add2Btn"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="30dp"
-            android:layout_width="75dp"
-            android:layout_height="80dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/step2_btn"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/potNameLayout"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</LinearLayout>

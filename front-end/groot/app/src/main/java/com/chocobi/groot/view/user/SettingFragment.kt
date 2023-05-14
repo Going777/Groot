@@ -63,8 +63,12 @@ class SettingFragment : Fragment() {
         categoryNameTextView.text = "설정"
         categoryIcon.setImageResource(R.drawable.ic_setting)
 
+//        ================================================================
+//        ================================================================
 //        뒤로 가기 버튼 처리해야 하는 곳
         val backBtn = rootView.findViewById<ImageView>(R.id.backBtn)
+//        ================================================================
+//        ================================================================
 
         val editProfileText = rootView.findViewById<TextView>(R.id.editProfileText)
         val profileBottomSheet = ProfileBottomSheet(requireContext())

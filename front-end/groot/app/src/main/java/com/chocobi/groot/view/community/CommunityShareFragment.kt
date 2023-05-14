@@ -91,6 +91,17 @@ class CommunityShareFragment : Fragment() {
         recyclerView.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
 
+        val categoryNameTextView = view.findViewById<TextView>(R.id.categoryName)
+        val categoryIcon = view.findViewById<ImageView>(R.id.categoryIcon)
+        categoryNameTextView.text = "나눔"
+        categoryIcon.setImageResource(R.drawable.ic_post)
+
+//        ================================================================
+//        ================================================================
+//        뒤로 가기 버튼 처리해야 하는 곳
+        val backBtn = view.findViewById<ImageView>(R.id.backBtn)
+//        ================================================================
+//        ================================================================
 
         // 태그를 보여줄 RecyclerView와 입력을 받을 EditText를 레이아웃에서 참조합니다.
         tagRecyclerView = view.findViewById(R.id.tagRecyclerView)
@@ -184,17 +195,6 @@ class CommunityShareFragment : Fragment() {
             var content = contentInput?.text.toString()
             postArticle(category, title, content, imageList)
         })
-
-        // 뒤로가기 버튼 클릭시 게시판 목록으로 돌아가기
-        val backBtn = view.findViewById<ImageButton>(R.id.backBtn)
-        backBtn.contentDescription = "뒤로가기"
-        backBtn.setOnClickListener {
-//            val transaction = parentFragmentManager.beginTransaction()
-//            transaction.replace(R.id.fragment_container, previousFragment)
-//            transaction.addToBackStack(null)
-//            transaction.commit()
-        }
-
 
         // 제목과 내용 글자 수 체크 및 제한
         var titleCnt = view.findViewById<TextView>(R.id.titleCnt)

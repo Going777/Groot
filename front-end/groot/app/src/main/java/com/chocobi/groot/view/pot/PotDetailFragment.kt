@@ -88,7 +88,13 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             false
         }
 
-        Log.d(TAG, "${pot}")
+//        ================================================================
+//        ================================================================
+//        뒤로 가기 버튼 처리해야 하는 곳
+        val backBtn = rootView.findViewById<ImageView>(R.id.backBtn)
+//        ================================================================
+//        ================================================================
+
         potNameText = rootView.findViewById(R.id.potName)
         potPlantText = rootView.findViewById(R.id.potPlant)
 

@@ -43,8 +43,6 @@
             android:text="다이어리"
             android:textColor="@color/grey"
             android:textSize="18sp"
-            android:textStyle="bold"
-
             />
 
     </LinearLayout>
