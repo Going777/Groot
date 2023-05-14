@@ -1,6 +1,8 @@
 package com.chocobi.groot
 
+import android.app.NotificationManager
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -8,11 +10,13 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -88,6 +92,15 @@ class MainActivity : AppCompatActivity() {
         potCharImg = plant
     }
 
+    //    알림 요청
+    val notificationPermissionRequestCode = 1001
+
+    // 알림 권한을 요청하는 메서드
+    private fun openAppNotificationSettings() {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        startActivity(intent)
+    }
 
     //        fragment 조작
     fun changeFragment(index: String) {
@@ -163,6 +176,7 @@ class MainActivity : AppCompatActivity() {
                 .commitAllowingStateLoss()
         }
     }
+
 
     private fun checkPotDetailFragmentInBackStack(): Boolean {
         val fragmentManager = supportFragmentManager
@@ -325,6 +339,20 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Unit {
         super.onActivityResult(requestCode, resultCode, data)
 
+        if (requestCode == notificationPermissionRequestCode) {
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (notificationManager.isNotificationPolicyAccessGranted) {
+                // 권한이 부여된 경우 처리할 작업 수행
+                // 예: 알림 사용 코드 작성
+                Toast.makeText(this, "알림이 허용 되었습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "알림이 거부 되었습니다.", Toast.LENGTH_SHORT).show()
+                // 권한이 거부된 경우 처리할 작업 수행
+            }
+        }
+
+
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 REQUEST_CAMERA -> {
@@ -366,6 +394,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        알림 설정
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (!notificationManager.areNotificationsEnabled()) {
+            var dialog = AlertDialog.Builder(this)
+            dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")
+            dialog.setPositiveButton("확인") { dialog, which ->
+                openAppNotificationSettings()
+            }
+            dialog.setNegativeButton("취소") { dialog, which ->
+                dialog.dismiss()
+            }
+            dialog.show()
+
+        }
+
 
 //        requestSubscribe()
 
