@@ -1,10 +1,10 @@
 package com.chocobi.groot.view.pot
 
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -12,9 +12,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
@@ -56,6 +56,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     private var nutrientComingDate: ComingDate? = null
     private var pruningComingDate: ComingDate? = null
 
+
     override fun onGetDetailRequested() {
         getPotDetail(potId)
     }
@@ -77,6 +78,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         getPotDetail(potId)
         potPlantImg = rootView.findViewById(R.id.potPlantImg)
         characterSceneView = rootView.findViewById(R.id.characterSceneView)
+//        characterSceneView.visibility = View.GONE
 
         characterSceneView.setOnTouchListener { v, event ->
             when (event.action) {
@@ -115,6 +117,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         val potPostDiaryBtn = rootView.findViewById<FloatingActionButton>(R.id.potPostDiaryBtn)
 
         potPostDiaryBtn.setOnClickListener {
+
             if (potId is Int) {
                 mActivity.setPotId(potId)
             }
@@ -148,6 +151,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         toDiaryBtn.setOnClickListener {
             mActivity.changeFragment("pot_diary")
         }
+
         // Inflate the layout for this fragment
         return rootView
     }
@@ -155,6 +159,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
 
 //        탭 조작
@@ -310,12 +315,19 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         val tab1 = PotDetailTab1Fragment().apply {
             arguments = bundle
         }
+
         childFragmentManager.beginTransaction().replace(R.id.tab_container, tab1).commit()
     }
 
     private fun changeDateFormat(date: DateTime): String {
         return date.date.year.toString() + "년 " + date.date.month.toString() + "월 " + date.date.day.toString() + "일"
     }
+
+
+
+
+
+
 
 }
 

@@ -227,16 +227,8 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/round_rectangle"
                     android:elevation="4dp"
-                    android:padding="20dp">
+                    android:padding="20dp" />
 
-                    <fragment
-                        android:id="@+id/frame"
-                        android:name="com.chocobi.groot.view.pot.PotDetailTab1Fragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:tag="info_sub" />
-                </FrameLayout>
 
 
                 <androidx.appcompat.widget.AppCompatButton
