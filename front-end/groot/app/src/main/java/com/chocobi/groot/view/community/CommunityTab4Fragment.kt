@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.community
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -14,10 +17,12 @@ import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.community.adapter.PopularTagAdapter
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.ArticleContent
+import com.chocobi.groot.view.community.model.CommunityService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,13 +31,25 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class CommunityTab4Fragment : Fragment() {
     private val TAG = "CommunityTab4Fragment"
+    private val CATEGORY = "Tip"
+    private val REQUESTPAGESIZE = 10
+    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
+    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
+
+
+    private lateinit var communitySearchView: SearchView
+    private lateinit var communityRecyclerView: RecyclerView
+    private lateinit var popularTagAdapter: PopularTagAdapter
+    private lateinit var popularTagSection: LinearLayout
+    private lateinit var overlayView: View
+
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityArticleListResponse
-    private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
-    private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
+
+    private var keyword: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,67 +59,34 @@ class CommunityTab4Fragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_tab4, container, false)
         Log.d("CommunityTab4Fragment", "onCreateView()")
         findViews(view)
+        //        태그 데이터 세팅
+        createPopularTagData()
+//        서치뷰 제어
+        searchViewListner()
         setListeners()
         initList()
 //        reload()
-
         showProgress()
-
-//                retrofit 객체 만들기
-        var retrofit = RetrofitClient.getClient()!!
-
-
-        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "Tip"
-        var communityArticlePage = 0
-        var communityArticleSize = 10
-
-        communityArticleListService.requestCommunityArticleList(
-            communityArticleCategory,
-            communityArticlePage,
-            communityArticleSize
-        ).enqueue(object :
-            Callback<CommunityArticleListResponse> {
-            override fun onResponse(
-                call: Call<CommunityArticleListResponse>,
-                response: Response<CommunityArticleListResponse>
-            ) {
-                if (response.code() == 200) {
-                    Log.d(TAG, "성공")
-                    val checkResponse = response.body()?.articles?.content
-                    getData = response.body()!!
-                    Log.d(TAG, "$checkResponse")
-
-                    val totalElements = getData.articles.total // 전체 데이터 수
-                    val currentPage = communityArticlePage // 현재 페이지 번호
-                    val pageSize = 10 // 페이지 당 아이템 수
-                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                        isLastPage = true
-                    }
-
-                    val list = createDummyData(0, 10)
-                    ThreadUtil.startUIThread(1000) {
-                        adapter.reload(list)
-                        hideProgress()
-                    }
-                } else {
-                    Log.d(TAG, "실패1")
-                }
-            }
-
-            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
-            }
-
-        })
-
+        requestSearchAricle("load")
         return view
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        clickItem()
+    }
+
     private fun findViews(view: View) {
-        Log.d("CommunityTab4Fragment", "findViews()")
+        communitySearchView = view.findViewById(R.id.communitySearchView)
+        communityRecyclerView = view.findViewById(R.id.communityRecyclerView)
+        popularTagSection = view.findViewById(R.id.popularTagSection)
+        popularTagAdapter = PopularTagAdapter(createPopularTagData())
+        communityRecyclerView.adapter = popularTagAdapter
+        overlayView = view.findViewById(R.id.overlayView)
+
+        communityRecyclerView.setHasTransientState(true)
+        communityRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
@@ -129,113 +113,16 @@ class CommunityTab4Fragment : Fragment() {
     }
 
     private fun reload() {
-        Log.d("CommunityTab4Fragment", "reload()")
-        var retrofit = RetrofitClient.getClient()!!
-
-
-        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "자유"
-        var communityArticlePage = 0
-        var communityArticleSize = 10
-
-        communityArticleListService.requestCommunityArticleList(
-            communityArticleCategory,
-            communityArticlePage,
-            communityArticleSize
-        ).enqueue(object :
-            Callback<CommunityArticleListResponse> {
-            override fun onResponse(
-                call: Call<CommunityArticleListResponse>,
-                response: Response<CommunityArticleListResponse>
-            ) {
-                if (response.code() == 200) {
-                    Log.d(TAG, "성공")
-                    val checkResponse = response.body()?.articles?.content
-                    getData = response.body()!!
-                    Log.d(TAG, "$checkResponse")
-
-                    val list = createDummyData(0, 10)
-                    ThreadUtil.startUIThread(1000) {
-                        adapter.reload(list)
-                        hideProgress()
-                    }
-                } else {
-                    Log.d(TAG, "실패1")
-                }
-            }
-
-            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
-            }
-
-        })
+        requestSearchAricle("reload")
     }
 
-
-
-
     private fun loadMore() {
-        Log.d("CommunityTab4Fragment", "loadMore()")
         if (isLastPage) { // 마지막 페이지라면, 로딩을 멈춥니다.
             return
         }
-
         showProgress()
-
-        // 페이지 번호를 1 증가시킵니다.
-        communityArticlePage++
-
-        // Retrofit을 사용하여 새로운 데이터를 받아옵니다.
-        var retrofit = RetrofitClient.getClient()!!
-
-
-        var communityArticleListService = retrofit.create(CommunityArticleListService::class.java)
-        var communityArticleCategory = "자유"
-        var communityArticleSize = 10
-
-        communityArticleListService.requestCommunityArticleList(
-            communityArticleCategory,
-            communityArticlePage,
-            communityArticleSize
-        ).enqueue(object :
-            Callback<CommunityArticleListResponse> {
-            override fun onResponse(
-                call: Call<CommunityArticleListResponse>,
-                response: Response<CommunityArticleListResponse>
-            ) {
-                if (response.code() == 200) {
-                    Log.d("loadmore", "성공")
-                    val checkResponse = response.body()?.articles?.content
-                    getData = response.body()!!
-                    Log.d("loadmore", "$checkResponse")
-
-                    val totalElements = getData.articles.total // 전체 데이터 수
-                    val currentPage = communityArticlePage // 현재 페이지 번호
-                    val pageSize = 10 // 페이지 당 아이템 수
-                    val isLast = (currentPage + 1) * pageSize >= totalElements // 마지막 페이지 여부를 판단합니다.
-
-                    if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
-                        isLastPage = true
-                    }
-
-                    val list = createDummyData(0, 10)
-
-                    ThreadUtil.startUIThread(1000) {
-                        adapter.loadMore(list)
-                        hideProgress()
-                    }
-                } else {
-                    Log.d("loadmore", "실패1")
-                }
-            }
-
-            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d("loadmore", "실패2")
-            }
-
-        })
+        requestSearchAricle("loadMore")
     }
-
 
     private fun showProgress() {
         Log.d("CommunityTab4Fragment", "showProgress()")
@@ -246,6 +133,61 @@ class CommunityTab4Fragment : Fragment() {
         Log.d("CommunityTab4Fragment", "hideProgress()")
         frameLayoutProgress.visibility = View.GONE
     }
+
+    private fun requestSearchAricle(usage: String) {
+        if (usage == "loadMore") {
+            communityArticlePage++
+        } else {
+            communityArticlePage = 0
+        }
+        val retrofit = RetrofitClient.getClient()!!
+        val CommunityService = retrofit.create(CommunityService::class.java)
+
+        CommunityService.requestSearchArticle(
+            category = CATEGORY,
+            keyword = keyword,
+            pageInput = communityArticlePage,
+            sizeInput = REQUESTPAGESIZE
+        ).enqueue(object :
+            Callback<CommunityArticleListResponse> {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
+                if (response.code() == 200) {
+                    getData = response.body()!!
+                    val list = createDummyData(0, REQUESTPAGESIZE)
+                    if (usage != "reload") {
+                        val totalElements = getData.articles.total // 전체 데이터 수
+                        val currentPage = communityArticlePage // 현재 페이지 번호
+                        val isLast =
+                            (currentPage + 1) * REQUESTPAGESIZE >= totalElements // 마지막 페이지 여부를 판단합니다.
+                        if (isLast) { // 마지막 페이지라면, isLastPage를 true로 설정합니다.
+                            isLastPage = true
+                        }
+                    }
+                    if (usage == "loadMore") {
+                        ThreadUtil.startUIThread(1000) {
+                            adapter.loadMore(list)
+                            hideProgress()
+                        }
+                    } else {
+                        ThreadUtil.startUIThread(1000) {
+                            adapter.reload(list)
+                            hideProgress()
+                        }
+                    }
+                } else {
+                    Log.d(TAG, "실패1 $response")
+                }
+            }
+
+            override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
+                Log.d("RegionFilterBottomSheet", "onFailure() 지역 필터링 게시글 요청 실패")
+            }
+        })
+    }
+
 
     private fun createDummyData(
         offset: Int,
@@ -295,5 +237,63 @@ class CommunityTab4Fragment : Fragment() {
         return list
     }
 
+    private fun createPopularTagData(): List<String> {
+        val popularTagList =
+            GlobalVariables.prefs.getString("popular_tags", "")?.split(", ") ?: emptyList()
+        return popularTagList
+    }
 
+    private fun clickItem() {
+        popularTagAdapter.itemClick = object : PopularTagAdapter.ItemClick {
+            override fun onClick(view: View, position: Int, item: String) {
+                communitySearchView.setQuery(item, true)
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun searchViewListner() {
+        communitySearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                Log.d(
+                    "CommunityTab1Fragment",
+                    "onQueryTextSubmit() ${communitySearchView.query.toString()}"
+                )
+                if (communitySearchView.query.toString() == "") {
+                    Log.d("CommunityTab1Fragment", "onQueryTextSubmit() 검색어가 비었어요")
+                }
+                keyword = communitySearchView.query.toString()
+                overlayView.visibility = View.GONE
+                popularTagSection.visibility = View.GONE
+                communitySearchView.clearFocus()
+                requestSearchAricle("load")
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+//                filterList(nextText)
+                return true
+            }
+        })
+
+        communitySearchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                // input 창을 눌렀을 때의 동작 처리
+                overlayView.visibility = View.VISIBLE
+                popularTagSection.visibility = View.VISIBLE
+            } else {
+                // input 창에서 focus를 잃었을 때의 동작 처리
+                overlayView.visibility = View.GONE
+                popularTagSection.visibility = View.GONE
+            }
+        }
+
+        overlayView.setOnTouchListener { _, _ ->
+            overlayView.visibility = View.GONE
+            popularTagSection.visibility = View.GONE
+            communitySearchView.setQuery("", false)
+            GlobalVariables.hideKeyboard(requireActivity())
+            true
+        }
+    }
 }

@@ -2,8 +2,14 @@ package com.chocobi.groot.view.search
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
@@ -39,10 +46,10 @@ import kotlin.random.Random
 
 class SearchDetailFragment : Fragment() {
     private val TAG = "SearchDetailFragment"
-    private var plantId : String? = null
+    private var plantId: String? = null
     private var targetPlantId: Int? = null
-    private var plantName : String? = null
-    private var plantSci : String? = null
+    private var plantName: String? = null
+    private var plantSci: String? = null
     private var growType: String? = null
     private var mgmtLevel: String? = null
     private var characterGlbPath: String? = null
@@ -77,7 +84,7 @@ class SearchDetailFragment : Fragment() {
         plantId = arguments?.getString("plant_id")
 
         plantId?.let { getDetail(it.toInt()) }
-        targetPlantId = plantId?.let {it.toInt()}
+        targetPlantId = plantId?.let { it.toInt() }
     }
 
     @SuppressLint("MissingInflatedId")
@@ -146,7 +153,7 @@ class SearchDetailFragment : Fragment() {
                 ) {
                     var body = response.body()
                     var msg = response.body()?.msg
-                    Log.d("SearchDetailFragment","onResponse() 요청 성공 $body")
+                    Log.d("SearchDetailFragment", "onResponse() 요청 성공 $body")
                     if (body != null) {
                         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                         plantName = body.plant.krName
@@ -187,6 +194,7 @@ class SearchDetailFragment : Fragment() {
                     }
                 }
             }
+
             override fun onFailure(call: Call<PlantDetailResponse>, t: Throwable) {
                 Log.d(TAG, "onFailure() 정보조회 실패")
             }
@@ -194,11 +202,16 @@ class SearchDetailFragment : Fragment() {
     }
 
     private fun updateView() {
-        val typeDesc = "${plant?.grwType?.replace(",",", ")!!} 형태로 자라는 식물이에요"
-        val waterDesc = "${plant?.minHumidity}~${plant?.maxHumidity}% 환경에서 잘 자라요\n${plant?.waterCycle?.replace("함","해 주세요")}"!!
-        val tempDesc = "${plant?.minGrwTemp}~${plant?.maxGrwTemp}°C 환경에서 잘 자라요"
-        val placeDesc = plant?.place?.replace(",","\n")!!
-        val insectDesc = "${plant?.insectInfo?.replace(",",", ")} 주의가 필요해요"!!
+        val typeDesc = "${plant?.grwType?.replace(",", ", ")!!} 형태로 자라는 식물이에요."
+        val waterDesc = "${plant?.minHumidity}~${plant?.maxHumidity}% 환경에서 잘 자라요.\n${
+            plant?.waterCycle?.replace(
+                "함",
+                "해 주세요."
+            )
+        }"!!
+        val tempDesc = "${plant?.minGrwTemp}~${plant?.maxGrwTemp}°C 환경에서 잘 자라요."
+        val placeDesc = plant?.place?.replace(",", "\n")!!
+        val insectDesc = "${plant?.insectInfo?.replace(",", ", ")} 주의가 필요해요."!!
 
         plantKrName?.text = plant?.krName
         plantEnName?.text = plant?.sciName
@@ -206,20 +219,81 @@ class SearchDetailFragment : Fragment() {
         GlobalVariables.changeImgView(plantImg!!, plant!!.img, requireContext())
         isExist(plant?.mgmtLevel!!, levelLinearLayout!!, mgmtLevelBtn!!)
         isExist(plant?.description!!, docLinearLayout!!, descriptionText!!)
-        isExist(typeDesc, typeLinearLayout!!, typeText!!)
-        isExist(waterDesc, humidityLinearLayout!!, humidityText!!)
-        isExist(tempDesc, tempLinearLayout!!, tempText!!)
+        convertSpannableString(
+            typeDesc,
+            "${plant?.grwType?.replace(",", ", ")!!}",
+            typeLinearLayout!!,
+            typeText!!,
+            ContextCompat.getColor(requireContext(), R.color.detail_leaf)
+        )
+        convertSpannableString(
+            waterDesc,
+            "${plant?.minHumidity}~${plant?.maxHumidity}%",
+            humidityLinearLayout!!,
+            humidityText!!,
+            ContextCompat.getColor(requireContext(), R.color.detail_water)
+        )
+        convertSpannableString(
+            tempDesc,
+            "$${plant?.minGrwTemp}~${plant?.maxGrwTemp}°C",
+            tempLinearLayout!!,
+            tempText!!,
+            ContextCompat.getColor(requireContext(), R.color.detail_temp)
+        )
         isExist(plant?.mgmtTip!!, tipLinearLayout!!, tipText!!)
         isExist(placeDesc, placeLinearLayout!!, placeText!!)
-        isExist(insectDesc, insectLinearLayout!!, insectInfoText!!)
+        convertSpannableString(
+            insectDesc,
+            "${plant?.insectInfo?.replace(",", ", ")}",
+            insectLinearLayout!!,
+            insectInfoText!!,
+            ContextCompat.getColor(requireContext(), R.color.detail_bug)
+        )
     }
 
     private fun isExist(targetText: String, linearLayout: LinearLayout, textView: TextView) {
-        if(targetText == "") {
+        if (targetText == "") {
             linearLayout!!.visibility = View.GONE
-        }
-        else {
+        } else {
             textView!!.text = targetText
+        }
+    }
+
+    private fun convertSpannableString(
+        fullText: String,
+        targetText: String,
+        linearLayout: LinearLayout,
+        textView: TextView,
+        color: Int?
+    ) {
+        if (fullText == "") {
+            linearLayout!!.visibility = View.GONE
+        } else {
+            val spannableString = SpannableString(fullText)
+            val sizeSpan = AbsoluteSizeSpan(50)
+            val boldSpan = StyleSpan(Typeface.BOLD)
+            val colorSpan =
+                ForegroundColorSpan(color!!)
+            spannableString.setSpan(
+                sizeSpan,
+                0,
+                targetText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannableString.setSpan(
+                colorSpan,
+                0,
+                targetText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            spannableString.setSpan(
+                boldSpan,
+                0,
+                targetText.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+
+            textView.text = spannableString
         }
     }
 }

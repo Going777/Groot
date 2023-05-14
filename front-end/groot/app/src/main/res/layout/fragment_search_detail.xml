@@ -26,7 +26,10 @@
             android:translationZ="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/main" />
+            app:tint="@color/main"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/actionBarItemBackground"/>
 
         <ImageView
             android:id="@+id/plantImage"
@@ -160,7 +163,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:src="@drawable/ic_leaf"
-                            app:tint="#408145" />
+                            app:tint="@color/detail_leaf" />
 
                         <TextView
                             android:id="@+id/typeText"
@@ -191,7 +194,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:src="@drawable/ic_water_drop"
-                            app:tint="#5A73EF" />
+                            app:tint="@color/detail_water" />
 
                         <TextView
                             android:id="@+id/humidityText"
@@ -225,7 +228,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:src="@drawable/ic_temp"
-                            app:tint="#EDCB50" />
+                            app:tint="@color/detail_temp" />
 
                         <TextView
                             android:id="@+id/tempText"
@@ -319,7 +322,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
                         android:src="@drawable/ic_bugs"
-                        app:tint="#FF5252" />
+                        app:tint="@color/detail_bug" />
 
                     <TextView
                         android:id="@+id/insectInfoText"
@@ -335,7 +338,10 @@
                 style="@style/MAIN_BTN"
                 android:layout_gravity="bottom"
                 android:layout_marginVertical="20dp"
-                android:text="식물 등록하기" />
+                android:text="식물 등록하기"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"/>
         </LinearLayout>
     </ScrollView>
 

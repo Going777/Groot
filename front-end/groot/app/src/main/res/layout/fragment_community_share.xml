@@ -6,13 +6,12 @@
     android:id="@+id/community_share_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.community.CommunityShareFragment"
+    android:background="@color/white"
     android:backgroundTint="@color/white"
-    android:background="@color/white">
+    android:orientation="vertical"
+    tools:context=".view.community.CommunityShareFragment">
 
-    <include
-        layout="@layout/top_category_navbar" />
+    <include layout="@layout/top_category_navbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -257,6 +256,9 @@
                         android:id="@+id/toPostListBtn"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:foreground="?android:attr/actionBarItemBackground"
                         android:text="등록" />
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>

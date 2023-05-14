@@ -11,8 +11,7 @@
     android:orientation="vertical"
     tools:context=".view.community.CommunityPostFragment">
 
-    <include
-        layout="@layout/top_category_navbar" />
+    <include layout="@layout/top_category_navbar" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -187,10 +186,13 @@
             </androidx.cardview.widget.CardView>
 
             <Button
-                    android:id="@+id/toPostListBtn"
+                android:id="@+id/toPostListBtn"
                 style="@style/MAIN_BTN"
                 android:layout_marginVertical="12dp"
-                android:text="등록"/>
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"
+                android:text="등록" />
         </LinearLayout>
     </ScrollView>
 
