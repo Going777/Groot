@@ -74,16 +74,17 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun updateView() {
-        potNickname.text = diaryListResponse.diary.content[0].potName
+        val diary = diaryListResponse.diary.content[0]
+        potNickname.text = diary.potName
         postedTime.text =
-            diaryListResponse.diary.content[0].createTime.date.year.toString() + "-" + diaryListResponse.diary.content[0].createTime.date.month.toString()
-        if (diaryListResponse.diary.content[0].imgPath != null && diaryListResponse.diary.content[0].imgPath != "") {
+            diary.createTime.date.year.toString() + "-" + diary.createTime.date.month.toString()
+        if (diary.imgPath != null && diary.imgPath != "") {
             diaryPhoto.post {
                 view.get()?.let {
                     ThreadUtil.startThread {
                         val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
                             .asBitmap()
-                            .load(diaryListResponse.diary.content[0].imgPath)
+                            .load(diary.imgPath)
                             .submit(diaryPhoto.width, diaryPhoto.height)
                         val bitmap = futureTarget.get()
                         ThreadUtil.startUIThread(0) {
@@ -97,7 +98,7 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             diaryPhoto.visibility = View.GONE
         }
 
-        diaryContent.text = diaryListResponse.diary.content[0].content
+        diaryContent.text = diary.content
         diaryContent.run {
             doOnLayout {
                 val lineCount = lineCount
@@ -126,19 +127,19 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
         }
 
-        if (diaryListResponse.diary.content[0].water) {
+        if (diary.water) {
             waterBadge.visibility = View.VISIBLE
         }
-        if (diaryListResponse.diary.content[0].pruning) {
+        if (diary.pruning) {
             potBadge.visibility = View.VISIBLE
         }
-        if (diaryListResponse.diary.content[0].bug) {
+        if (diary.bug) {
             bugBadge.visibility = View.VISIBLE
         }
-        if (diaryListResponse.diary.content[0].sun) {
+        if (diary.sun) {
             sunnnyBadge.visibility = View.VISIBLE
         }
-        if (diaryListResponse.diary.content[0].nutrients) {
+        if (diary.nutrients) {
             pillBadge.visibility = View.VISIBLE
         }
     }
