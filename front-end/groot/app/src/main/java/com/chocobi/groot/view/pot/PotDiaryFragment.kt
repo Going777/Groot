@@ -33,6 +33,7 @@ import retrofit2.Response
 
 class PotDiaryFragment : Fragment() {
     private val TAG = "PotDiaryFragment"
+    private lateinit var mActivity: MainActivity
     private lateinit var getData: DiaryListResponse
     private var REQUESTPAGESIZE = 10
     private var diaryListPage = 0 // 초기 페이지 번호를 0으로 설정합니다.
@@ -78,7 +79,7 @@ class PotDiaryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_pot_diary, container, false)
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
         findViews(rootView)
 
         selectedPotId = arguments?.getInt("detailPotId") ?: 0
@@ -116,7 +117,7 @@ class PotDiaryFragment : Fragment() {
     }
 
     private fun initList() {
-        adapter = PotDiaryListRVAdapter(requireContext())
+        adapter = PotDiaryListRVAdapter(requireContext(), mActivity)
         adapter.delegate = object : PotDiaryListRVAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
                 loadMore()
@@ -127,6 +128,8 @@ class PotDiaryFragment : Fragment() {
         adapter.setItemClickListener(object : PotDiaryListRVAdapter.ItemClickListener {
             override fun onSpinnerBtnClick(view: View, position: Int) {
                 Log.d(TAG, "spinner clicked ")
+                reload()
+                swipeRefreshLayout.isRefreshing = false
             }
         })
     }

@@ -89,11 +89,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
     //        fragment 조작
     fun changeFragment(index: String) {
         var fragment: Fragment? = null
+
+
 
         when (index) {
             "pot" -> {
@@ -162,6 +162,23 @@ class MainActivity : AppCompatActivity() {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commitAllowingStateLoss()
         }
+    }
+
+    private fun checkPotDetailFragmentInBackStack(): Boolean {
+        val fragmentManager = supportFragmentManager
+        val fragmentCount = fragmentManager.backStackEntryCount
+
+        if (fragmentCount > 0) {
+            val topFragment = fragmentManager.getBackStackEntryAt(fragmentCount - 1)
+            if (topFragment.name == PotDetailFragment::class.java.name) {
+                Log.d("MainActivity", "PotDetailFragment is at the top of the backstack")
+                return true
+            } else {
+                return false
+            }
+        }
+        return false
+
     }
 
     //    camera 조작
@@ -498,8 +515,20 @@ class MainActivity : AppCompatActivity() {
         else if (tag4 != null && tag4.isVisible()) navigation.getMenu().findItem(R.id.userFragment)
             .setChecked(true)
         else {
-            var intent = Intent(this, IntroActivity::class.java)
-            startActivity(intent)
+
+//            스택 아무것도 없을 때 인트로로
+            val tag5: Fragment? = supportFragmentManager.findFragmentByTag("pot_diary")
+            val tag6: Fragment? = supportFragmentManager.findFragmentByTag("pot_diary_create")
+            val tag7: Fragment? = supportFragmentManager.findFragmentByTag("pot_detail")
+            val tag8: Fragment? = supportFragmentManager.findFragmentByTag("search_detail")
+            val tag9: Fragment? = supportFragmentManager.findFragmentByTag("community_share")
+            val tag10: Fragment? = supportFragmentManager.findFragmentByTag("community_post")
+            val tag11: Fragment? = supportFragmentManager.findFragmentByTag("setting")
+
+            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null) {
+                var intent = Intent(this, IntroActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
