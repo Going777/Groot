@@ -13,10 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.model.DiaryListResponse
 import com.chocobi.groot.view.pot.model.PotService
@@ -26,6 +24,8 @@ import retrofit2.Response
 
 class PotDiaryListRVAdapter(private val context: Context, private val mActivity: MainActivity) :
     RecyclerView.Adapter<DiaryItemViewHolder>() {
+
+    private var isZero = true
 
     private val TAG = "PotDiaryListRVAdapter"
 
@@ -64,12 +64,14 @@ class PotDiaryListRVAdapter(private val context: Context, private val mActivity:
     }
 
     override fun onBindViewHolder(holder: DiaryItemViewHolder, position: Int) {
+        Log.d(TAG, "onBindViewHolder ${isZero}")
+        holder.setIsZero(isZero)
         holder.diaryListResponse = mutableList[position]
         val diary = holder.diaryListResponse.diary.content[0]
         val spinnerBtn = holder.itemView.findViewById<ImageButton>(R.id.spinnerButton)
         spinnerBtn.setOnClickListener {
             val diaryId = diary.id
-            Log.d(TAG, "${diaryId}")
+
             var dialog = AlertDialog.Builder(context)
             dialog.setTitle("다이어리 설정")
             val dialogArray = arrayOf("수정", "삭제")
@@ -116,23 +118,7 @@ class PotDiaryListRVAdapter(private val context: Context, private val mActivity:
         holder.delegate = object : DiaryItemViewHolder.ItemViewHolderDelegate {
             override fun onItemViewClick(diaryListResponse: DiaryListResponse) {
                 val context = holder.itemView.context
-//                if (context is FragmentActivity) {
-//                    val fragmentManager = context.supportFragmentManager
-//                    val communityDetailFragment = CommunityDetailFragment()
-//
-//                    // articleId 값을 CommunityDetailFragment에 전달하기 위해 인수(bundle)를 설정합니다.
-//                    val args = Bundle()
-//                    args.putInt("articleId", diaryListResponse.articles.content[0].articleId)
-//                    communityDetailFragment.arguments = args
-//                    Log.d("CommunityDetailFragmentArticleId", communityDetailFragment.arguments.toString())
-//
-//                    fragmentManager.beginTransaction()
-//                        .replace(R.id.fl_container, communityDetailFragment)
-//                        .addToBackStack(null)
-//                        .commit()
-//                }
             }
-
         }
 
 
@@ -142,6 +128,9 @@ class PotDiaryListRVAdapter(private val context: Context, private val mActivity:
             delegate?.onLoadMore()
         }
 
+    }
+    fun setIsZero(flag:Boolean) {
+        isZero = flag
     }
 
     fun reload(mutableList: MutableList<DiaryListResponse>) {
@@ -174,5 +163,6 @@ class PotDiaryListRVAdapter(private val context: Context, private val mActivity:
         })
 
     }
+
 
 }

@@ -16,9 +16,17 @@ import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.pot.model.DiaryListResponse
 import java.lang.ref.WeakReference
 
-class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+class DiaryItemViewHolder(itemView: View) :
+    RecyclerView.ViewHolder(itemView) {
+    private var isZero = false
     private val TAG = "DiaryItemViewHolder"
+    private var dateList = mutableListOf<String>()
+
+    fun setIsZero(flag: Boolean) {
+        isZero = flag
+
+    }
+
     interface ItemViewHolderDelegate {
         fun onItemViewClick(diaryListResponse: DiaryListResponse) {
             Log.d("ItemViewHolder", "clicked")
@@ -29,6 +37,7 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private lateinit var potNickname: TextView
     private lateinit var postedTime: TextView
+    private lateinit var titleDateText: TextView
     private lateinit var diaryPhoto: ImageView
     private lateinit var diaryContent: TextView
     private lateinit var detailOption: TextView
@@ -51,6 +60,7 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         view.get()?.let {
             potNickname = it.findViewById(R.id.potNickname)
             postedTime = it.findViewById(R.id.postedTime)
+            titleDateText = it.findViewById(R.id.titleDateText)
             diaryPhoto = it.findViewById(R.id.diaryPhoto)
 
             diaryContent = it.findViewById(R.id.diaryContent)
@@ -74,16 +84,62 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
     fun updateView() {
-        potNickname.text = diaryListResponse.diary.content[0].potName
-        postedTime.text =
-            diaryListResponse.diary.content[0].createTime.date.year.toString() + "-" + diaryListResponse.diary.content[0].createTime.date.month.toString()
-        if (diaryListResponse.diary.content[0].imgPath != null && diaryListResponse.diary.content[0].imgPath != "") {
+        val diary = diaryListResponse.diary.content[0]
+        potNickname.text = diary.potName
+        val dateText =
+            diary.createTime.date.year.toString() + "년 " + diary.createTime.date.month.toString() + "월 " + diary.createTime.date.day.toString() + "일"
+//        if (dateList.size == 0) {
+//            titleDateText.text = dateText
+//            dateList.add(dateText)
+//        } else if (dateList.last() != dateText) {
+//            titleDateText.text = dateText
+//            dateList.add(dateText)
+//        } else {
+//            titleDateText.visibility = View.GONE
+//        }
+
+        Log.d("wowwow", "$isZero")
+        if (isZero) {
+            if (diary.isUserLast) {
+                titleDateText.visibility = View.VISIBLE
+                titleDateText.text =
+                    dateText
+            } else {
+                titleDateText.visibility = View.GONE
+            }
+        } else {
+            if (diary.isPotLast) {
+                titleDateText.visibility = View.VISIBLE
+                titleDateText.text =
+                    dateText
+            } else {
+                titleDateText.visibility = View.GONE
+            }
+        }
+        var hourText = ""
+        var minuteText = ""
+
+        if (diary.createTime.time.hour < 10) {
+            hourText = "0" + diary.createTime.time.hour.toString()
+        } else {
+            hourText = diary.createTime.time.hour.toString()
+        }
+
+        if (diary.createTime.time.minute < 10) {
+            minuteText = "0" + diary.createTime.time.minute.toString()
+        } else {
+            minuteText = diary.createTime.time.minute.toString()
+        }
+
+        postedTime.text = hourText + ":" + minuteText
+
+        if (diary.imgPath != null && diary.imgPath != "") {
             diaryPhoto.post {
                 view.get()?.let {
                     ThreadUtil.startThread {
                         val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
                             .asBitmap()
-                            .load(diaryListResponse.diary.content[0].imgPath)
+                            .load(diary.imgPath)
                             .submit(diaryPhoto.width, diaryPhoto.height)
                         val bitmap = futureTarget.get()
                         ThreadUtil.startUIThread(0) {
@@ -97,7 +153,7 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             diaryPhoto.visibility = View.GONE
         }
 
-        diaryContent.text = diaryListResponse.diary.content[0].content
+        diaryContent.text = diary.content
         diaryContent.run {
             doOnLayout {
                 val lineCount = lineCount
@@ -126,19 +182,19 @@ class DiaryItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
         }
 
-        if (diaryListResponse.diary.content[0].water) {
+        if (diary.water) {
             waterBadge.visibility = View.VISIBLE
         }
-        if (diaryListResponse.diary.content[0].pruning) {
+        if (diary.pruning) {
             potBadge.visibility = View.VISIBLE
         }
-        if (diaryListResponse.diary.content[0].bug) {
+        if (diary.bug) {
             bugBadge.visibility = View.VISIBLE
         }
-        if (diaryListResponse.diary.content[0].sun) {
+        if (diary.sun) {
             sunnnyBadge.visibility = View.VISIBLE
         }
-        if (diaryListResponse.diary.content[0].nutrients) {
+        if (diary.nutrients) {
             pillBadge.visibility = View.VISIBLE
         }
     }
