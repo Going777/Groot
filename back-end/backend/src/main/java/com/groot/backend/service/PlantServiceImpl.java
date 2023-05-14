@@ -260,7 +260,7 @@ public class PlantServiceImpl implements PlantService{
                 logger.info("Find escherichia : {} th : {}", i, plantOrder[i][0]);
                 String[][] candidates = getCandidates(result, plantOrder[i][0]);
                 String escherichia = plantOrder[i][0];
-                if(candidates.length == 0 || plantEntities.stream().noneMatch(plantEntity -> {
+                if(candidates.length < 1 || plantEntities.stream().noneMatch(plantEntity -> {
                     return plantEntity.getSciName().startsWith(escherichia);
                 })) continue;
 
@@ -278,7 +278,7 @@ public class PlantServiceImpl implements PlantService{
                             logger.info("{} found, return", plantEntity.getSciName());
 
                             return PlantWithCharacterDTO.builder()
-                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, result[0][1]))
+                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[j][1]))
                                     .characterAssetDTO(getAsset(plantEntity))
                                     .build();
                         }
@@ -286,7 +286,7 @@ public class PlantServiceImpl implements PlantService{
                 }
                 logger.info("No exact matches found : {}", plantOrder[i][0]);
                 return PlantWithCharacterDTO.builder()
-                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, result[0][1]))
+                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[0][1]))
                         .characterAssetDTO(getAsset(plantEntity))
                         .build();
             }
