@@ -13,6 +13,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -64,6 +65,18 @@ class Pot2Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pot2)
+
+        val categoryNameTextView = findViewById<TextView>(R.id.categoryName)
+        val categoryIcon = findViewById<ImageView>(R.id.categoryIcon)
+        categoryNameTextView.text = "화분"
+        categoryIcon.setImageResource(R.drawable.ic_pot)
+
+//        ================================================================
+//        ================================================================
+//        뒤로 가기 버튼 처리해야 하는 곳
+        val backBtn = findViewById<ImageView>(R.id.backBtn)
+//        ================================================================
+//        ================================================================
 
         plantNameSplit = intent.getStringExtra("plantNameSplit").toString()
         plantId = intent.getIntExtra("plantId", 0)

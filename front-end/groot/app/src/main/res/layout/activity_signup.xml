@@ -16,6 +16,20 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/main_background" />
 
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/circle_button_background"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_back"
+        android:translationZ="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/main" />
+
     <ImageView
         android:id="@+id/logoImageView"
         android:layout_width="250dp"
@@ -187,7 +201,7 @@
                     android:background="@null"
                     android:ems="12"
                     android:hint="비밀번호"
-                    android:inputType="text" />
+                    android:inputType="textPassword" />
 
                 <ImageView
                     android:id="@+id/signupPwInputImg"
@@ -235,7 +249,7 @@
                     android:background="@null"
                     android:ems="12"
                     android:hint="비밀번호 확인"
-                    android:inputType="text" />
+                    android:inputType="textPassword" />
 
                 <ImageView
                     android:id="@+id/signupConfPwInputImg"

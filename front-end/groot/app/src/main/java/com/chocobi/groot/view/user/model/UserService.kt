@@ -22,10 +22,8 @@ interface UserService {
     fun logout(
     ): Call<BasicResponse>
 
-    @Headers("content-type: application/json")
     @DELETE("/api/users")
     fun deleteUser(
-        @Header("Authorization") accessToken: String
     ): Call<BasicResponse>
 
     @GET("/api/users")

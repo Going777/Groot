@@ -88,11 +88,12 @@ class SearchDetailFragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_search_detail, container, false)
         val mActivity = activity as MainActivity
 
-//        뒤로가기
-        val backBtn = rootView.findViewById<ImageButton>(R.id.backBtn)
-        backBtn.setOnClickListener {
-            mActivity.changeFragment("search")
-        }
+//        ================================================================
+//        ================================================================
+//        뒤로 가기 버튼 처리해야 하는 곳
+        val backBtn = rootView.findViewById<ImageView>(R.id.backBtn)
+//        ================================================================
+//        ================================================================
 
         findView(rootView)
         identifyPlant()

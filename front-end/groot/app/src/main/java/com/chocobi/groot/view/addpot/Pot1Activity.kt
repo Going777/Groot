@@ -28,6 +28,18 @@ class Pot1Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pot1)
 
+        val categoryNameTextView = findViewById<TextView>(R.id.categoryName)
+        val categoryIcon = findViewById<ImageView>(R.id.categoryIcon)
+        categoryNameTextView.text = "화분"
+        categoryIcon.setImageResource(R.drawable.ic_pot)
+
+//        ================================================================
+//        ================================================================
+//        뒤로 가기 버튼 처리해야 하는 곳
+        val backBtn = findViewById<ImageView>(R.id.backBtn)
+//        ================================================================
+//        ================================================================
+
         //        imageUri 전달받기
         var imageUri = intent.getStringExtra("imageUri")
         var imageUrl = intent.getStringExtra("imageUrl")
