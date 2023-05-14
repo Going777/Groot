@@ -11,8 +11,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="2023년 5월 14일"
+        android:textColor="@color/main"
         android:layout_marginLeft="20dp"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:background="@color/background"
+        android:paddingHorizontal="5dp"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/potDiaryItem"

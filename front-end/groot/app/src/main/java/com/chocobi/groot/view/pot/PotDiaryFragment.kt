@@ -48,7 +48,6 @@ class PotDiaryFragment : Fragment() {
     private lateinit var firstView: ConstraintLayout
     private var potList: MutableList<Pot>? = null
     private var potPosition: Int = 0
-    private var detailPotId: Int? = null
     private val firstItem: Pot = Pot(
         0,
         0,
@@ -271,6 +270,7 @@ class PotDiaryFragment : Fragment() {
     private fun clickDiaryPot(potId: Int) {
         showProgress()
         selectedPotId = potId
+        adapter.setIsZero(potId == 0)
 //            화분 다이어리 조회
         requestDiaryList("load")
     }
@@ -293,6 +293,7 @@ class PotDiaryFragment : Fragment() {
                     response: Response<DiaryListResponse>
                 ) {
                     if (response.code() == 200) {
+//                        adapter.setIsZero(selectedPotId == 0)
                         Log.d(TAG, "성공")
                         getData = response.body()!!
                         val list = createDummyData(0, REQUESTPAGESIZE)
