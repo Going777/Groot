@@ -259,7 +259,7 @@ public class DiaryServiceImpl implements DiaryService{
     @Override
     public DiaryEntity updateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO) throws IOException {
         DiaryEntity diaryEntity = diaryRepository.findById(diaryDTO.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
-        DiaryCheckEntity diaryCheck = diaryCheckRepository.findById(diaryDTO.getDiaryId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "당일 다이어리 정보를 찾을 수 없습니다."));
+        DiaryCheckEntity diaryCheck = diaryCheckRepository.findById(diaryEntity.getDiaryId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "당일 다이어리 정보를 찾을 수 없습니다."));
         String storedFileName = null;
         if(diaryEntity.getImgPath()!=null) {
             s3Service.delete(diaryEntity.getImgPath());
