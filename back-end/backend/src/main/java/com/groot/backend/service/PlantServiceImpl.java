@@ -12,6 +12,7 @@ import com.groot.backend.util.RestTemplateErrorHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,9 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +49,7 @@ public class PlantServiceImpl implements PlantService{
     private String plantNetApiKey;
 
     private String plantNetUrl = "https://my-api.plantnet.org/v2/identify/all?include-related-images=false&no-reject=false&lang=en&api-key=";
+//    private String plantNetUrl = "https://my-api.plantnet.org/v2/identify/prosea?include-related-images=false&no-reject=false&lang=en&api-key=";
 
     @Override
     public List<String> getNameList() {
@@ -242,43 +242,129 @@ public class PlantServiceImpl implements PlantService{
         logger.info("search {} from database", result[0][0]);
         String regex = "";
         for(int i=0; i< result.length; i++) {
-//            regex += result[i][0].split(" ")[0];
-            // 2 depth searching
-            regex += result[i][0];
+            regex += result[i][0].split(" ")[0];
             if(i != result.length - 1) regex += "|";
         };
-        logger.info("[2 depth] select REGEXP : {}", regex);
+
+        logger.info("Load all matched plants from DB : {}", regex);
         List<PlantEntity> plantEntities = plantRepository.findBySciNameRegex(regex);
 
         logger.info("plants found : {}", plantEntities.size());
-        if(plantEntities.size() == 0) {
-            regex = "";
-            for(int i=0; i<result.length; i++) {
-                regex += result[i][0].split(" ")[0];
-                if(i != result.length - 1) regex += "|";
-            }
-            logger.info("[1 depth] select REGEXP : {}", regex);
-            plantEntities = plantRepository.findBySciNameRegex(regex);
-        }
 
         if(plantEntities.size() > 0) {
             logger.info("searching found : {}", plantEntities.size());
-            PlantEntity plantEntity = plantEntities.get(0);
+            // order might be changed - current : counts
+            String[][] plantOrder = countPlantFreq(regex);
 
-            return PlantWithCharacterDTO.builder()
-                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, result[0][1]))
-                    .characterAssetDTO(getAsset(plantEntity))
-                    .build();
+            for(int i=0; i<plantOrder.length; i++) {
+                logger.info("Find escherichia : {} th : {}", i, plantOrder[i][0]);
+                String[][] candidates = getCandidates(result, plantOrder[i][0]);
+                String escherichia = plantOrder[i][0];
+                if(candidates.length == 0 || plantEntities.stream().noneMatch(plantEntity -> {
+                    return plantEntity.getSciName().startsWith(escherichia);
+                })) continue;
+
+                logger.info("{} Found", escherichia);
+
+                PlantEntity plantEntity = null;
+
+                for(int j=0; j<candidates.length; j++) {
+                    for(int k=0; k<plantEntities.size(); k++) {
+                        if(plantEntity == null && plantEntities.get(k).getSciName().startsWith(plantOrder[i][0])) {
+                            plantEntity = plantEntities.get(k);
+                        }
+                        if(plantEntities.get(k).getSciName().startsWith(candidates[j][0])) {
+                            plantEntity = plantEntities.get(k);
+                            logger.info("{} found, return", plantEntity.getSciName());
+
+                            return PlantWithCharacterDTO.builder()
+                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, result[0][1]))
+                                    .characterAssetDTO(getAsset(plantEntity))
+                                    .build();
+                        }
+                    }
+                }
+                logger.info("No exact matches found : {}", plantOrder[i][0]);
+                return PlantWithCharacterDTO.builder()
+                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, result[0][1]))
+                        .characterAssetDTO(getAsset(plantEntity))
+                        .build();
+            }
+            throw new NotYetImplementedException();
         }
         // return for not found
         else {
-            logger.info("Failed to find plant from db (1 depth)");
+            logger.info("Failed to find plant from db");
             return PlantWithCharacterDTO.builder()
                     .plantIdentificationDTO(defaultReturn(11))
                     .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
                     .build();
         }
 //        return null;
+    }
+
+    /**
+     * Count numbers of species[0] in regex
+     * @param regex
+     * @return array with name and cound
+     */
+    public String[][] countPlantFreq(String regex) {
+        logger.info("Get frequency from : {}", regex);
+        Map<String, Integer> map = new HashMap<>();
+        List<Integer> counts = new ArrayList<>();
+        String[] species = regex.split("\\|");
+        int index = 0;
+
+        for(int i=0; i<species.length; i++) {
+            if (map.get(species[i]) == null) {
+                map.put(species[i], index);
+                counts.add(index++, 1);
+            } else {
+                int idx = map.get(species[i]);
+                int cnt = counts.get(idx);
+                counts.remove(idx);
+                counts.add(idx, cnt + 1);
+            }
+        }
+
+        String[][] ret = new String[index][2];
+
+        map.forEach((key, value) -> {
+            ret[value][0] = key;
+            ret[value][1] = Integer.toString(counts.get(value));
+            logger.info("count results : {}, {}", ret[value][0], ret[value][1]);
+        });
+
+        Arrays.sort(ret, (o1, o2) -> {
+            return Integer.parseInt(o2[1]) - Integer.parseInt(o1[1]);
+        });
+        logger.info("Best match : {}, {}", ret[0][0], ret[0][1]);
+        return ret;
+    }
+
+    /**
+     * get candidates of species by escherichia
+     * @param result
+     * @param escherichia
+     * @return species names and compensated scores
+     */
+    private String[][] getCandidates(String[][] result, String escherichia) {
+        float total_score = 0;
+        List<String[]> candidates = new ArrayList<>();
+
+        for(int i=0; i<result.length; i++) {
+            if(result[i][0].contains(escherichia)) {
+                candidates.add(result[i]);
+                total_score += Float.parseFloat(result[i][1]);
+            }
+        }
+
+        String[][] ret = new String[candidates.size()][2];
+        for(int i=0; i<candidates.size(); i++) {
+            ret[i][0] = candidates.get(i)[0];
+            ret[i][1] = Float.toString(Float.parseFloat(candidates.get(i)[1]) / total_score);
+        }
+        return ret;
     }
 
     /**
