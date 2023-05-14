@@ -272,7 +272,6 @@ public class DiaryServiceImpl implements DiaryService{
         DiaryEntity newDiary = DiaryEntity.builder()
                 .id(diaryEntity.getId())
                 .userEntity(diaryEntity.getUserEntity())
-                .diaryCheckEntity(diaryEntity.getDiaryCheckEntity())
                 .potEntity(pot)
                 .diaryCheckEntity(diaryCheck)
                 .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():diaryEntity.getBug())
@@ -561,16 +560,18 @@ public class DiaryServiceImpl implements DiaryService{
 //        PlanEntity plan = planRepository.findTop1ByCodeAndCreatedDateBetweenOrderByCreatedDateDesc(code, start, end);
 
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime date = LocalDateTime.of(LocalDate.from(now), LocalTime.of(9, 0, 0));
-        if(planRepository.existsByDateTimeAndCode(date, code)){
-            planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
+        LocalDateTime start = LocalDateTime.of(LocalDate.from(now), LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.of(LocalDate.from(now), LocalTime.of(23, 59, 59));
+        PlanEntity exist = planRepository.existsByCodeAndPotIdAndDateTimeBetween(code, pot.getId(), start, end);
+        if(exist!=null){
+            planRepository.updateDoneById(exist.getId(), true);
         }else{
             PlanEntity plan = PlanEntity.builder()
                     .done(true)
                     .potEntity(pot)
                     .userEntity(user)
                     .code(code)
-                    .dateTime(date)
+                    .dateTime(now)
                     .diaryEntity(diary)
                     .build();
             planRepository.save(plan);

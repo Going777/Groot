@@ -67,24 +67,23 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
     }
 
     @Override
-    public long updateDoneById(Long planId) {
+    public long updateDoneById(Long planId, boolean done) {
         QPlanEntity qPlan = QPlanEntity.planEntity;
-
         long updateCnt = queryFactory.update(qPlan)
-                .set(qPlan.done, false)
+                .set(qPlan.done, done)
                 .where(qPlan.id.eq(planId))
                 .execute();
         return updateCnt;
     }
 
     @Override
-    public boolean existsByCodeAndDateTimeBetween(Integer code, LocalDateTime start, LocalDateTime end) {
+    public PlanEntity existsByCodeAndPotIdAndDateTimeBetween(Integer code, Long potId, LocalDateTime start, LocalDateTime end) {
         QPlanEntity qPlan = QPlanEntity.planEntity;
 
         List<PlanEntity> plans = queryFactory.selectFrom(qPlan)
-                .where(qPlan.dateTime.between(start, end), qPlan.code.eq(code))
+                .where(qPlan.dateTime.between(start, end), qPlan.code.eq(code), qPlan.potId.eq(potId))
                 .fetch();
-        return !plans.isEmpty();
+        return plans.get(0);
     }
 
     @Override

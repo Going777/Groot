@@ -25,9 +25,9 @@ public interface PlanRepositoryCustom {
 
     @Transactional
     @Modifying
-    long updateDoneById(Long planId);
+    long updateDoneById(Long planId, boolean done);
 
-    boolean existsByCodeAndDateTimeBetween(Integer code, LocalDateTime start, LocalDateTime end);
+    PlanEntity existsByCodeAndPotIdAndDateTimeBetween(Integer code, Long potId, LocalDateTime start, LocalDateTime end);
 
     List<PlanEntity> findAllByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
 }

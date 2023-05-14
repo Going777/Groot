@@ -37,7 +37,7 @@ public class PlanServiceImpl implements PlanService{
         // plan 삭제
         PlanEntity plan = planRepository.findById(planId).orElseThrow();
 //        planRepository.deleteById(planId);
-        planRepository.updateDoneById(planId);
+        planRepository.updateDoneById(planId, false);
 
         // 관련 diary 수정
         DiaryEntity diary = diaryRepository.findById(plan.getDiaryId()).orElseThrow();
@@ -104,9 +104,9 @@ public class PlanServiceImpl implements PlanService{
         potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
     }
 
-    @Scheduled(cron = "0 0 2 * * *", zone = "UTC") // 오전 11시
+    @Scheduled(cron = "0 15 4 * * *", zone = "Asia/Seoul") // 오전 11시
     public void alarmPlan(){
-        LocalDateTime now = LocalDateTime.now().plusHours(9);
+        LocalDateTime now = LocalDateTime.now();
         LocalDateTime start = LocalDateTime.of(LocalDate.from(now), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.of(LocalDate.from(now), LocalTime.of(23, 59, 59));
         List<PlanEntity> planEntities = planRepository.findAllByDoneAndDateTimeBetween(false, start, end);
