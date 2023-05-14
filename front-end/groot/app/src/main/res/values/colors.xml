@@ -26,6 +26,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
 
-
-
+    <color name="detail_leaf">#408145</color>
+    <color name="detail_water">#5A73EF</color>
+    <color name="detail_temp">#EDCB50</color>
+    <color name="detail_bug">#FF5252</color>
 </resources>

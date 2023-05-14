@@ -160,7 +160,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:src="@drawable/ic_leaf"
-                            app:tint="#408145" />
+                            app:tint="@color/detail_leaf" />
 
                         <TextView
                             android:id="@+id/typeText"
@@ -191,7 +191,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:src="@drawable/ic_water_drop"
-                            app:tint="#5A73EF" />
+                            app:tint="@color/detail_water" />
 
                         <TextView
                             android:id="@+id/humidityText"
@@ -225,7 +225,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginRight="10dp"
                             android:src="@drawable/ic_temp"
-                            app:tint="#EDCB50" />
+                            app:tint="@color/detail_temp" />
 
                         <TextView
                             android:id="@+id/tempText"
@@ -319,7 +319,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="10dp"
                         android:src="@drawable/ic_bugs"
-                        app:tint="#FF5252" />
+                        app:tint="@color/detail_bug" />
 
                     <TextView
                         android:id="@+id/insectInfoText"
