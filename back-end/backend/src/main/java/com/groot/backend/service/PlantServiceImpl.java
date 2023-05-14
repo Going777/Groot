@@ -48,8 +48,8 @@ public class PlantServiceImpl implements PlantService{
     @Value("${plantnet.apiKey}")
     private String plantNetApiKey;
 
-//    private String plantNetUrl = "https://my-api.plantnet.org/v2/identify/all?include-related-images=false&no-reject=false&lang=en&api-key=";
-    private String plantNetUrl = "https://my-api.plantnet.org/v2/identify/prosea?include-related-images=false&no-reject=false&lang=en&api-key=";
+    private String plantNetUrl = "https://my-api.plantnet.org/v2/identify/all?include-related-images=false&no-reject=false&lang=en&api-key=";
+//    private String plantNetUrl = "https://my-api.plantnet.org/v2/identify/prosea?include-related-images=false&no-reject=false&lang=en&api-key=";
 
     @Override
     public List<String> getNameList() {
@@ -198,6 +198,7 @@ public class PlantServiceImpl implements PlantService{
             fos.close();
         } catch (IOException e) {
             logger.info("Failed to create file");
+            logger.info("{}", e.getStackTrace());
             logger.info("Delete file : {}", retFile.delete());
             throw new IOException();
         }
