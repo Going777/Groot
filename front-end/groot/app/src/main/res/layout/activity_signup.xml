@@ -187,7 +187,7 @@
                     android:background="@null"
                     android:ems="12"
                     android:hint="비밀번호"
-                    android:inputType="text" />
+                    android:inputType="textPassword" />
 
                 <ImageView
                     android:id="@+id/signupPwInputImg"
@@ -235,7 +235,7 @@
                     android:background="@null"
                     android:ems="12"
                     android:hint="비밀번호 확인"
-                    android:inputType="text" />
+                    android:inputType="textPassword" />
 
                 <ImageView
                     android:id="@+id/signupConfPwInputImg"
