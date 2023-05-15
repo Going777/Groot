@@ -163,15 +163,15 @@ class MainActivity : AppCompatActivity() {
             }
 
             "community_post" -> {
-                fragment = CommunityPostFragment()
+                fragment = CommunityPostFragment("자유")
             }
 
             "community_qna" -> {
-                fragment = CommunityQnaFragment()
+                fragment = CommunityPostFragment("QnA")
             }
 
             "community_tip" -> {
-                fragment = CommunityTipFragment()
+                fragment = CommunityPostFragment("Tip")
             }
 
             "setting" -> {

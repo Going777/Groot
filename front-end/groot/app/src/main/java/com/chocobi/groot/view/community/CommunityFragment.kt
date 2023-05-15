@@ -88,6 +88,7 @@ class CommunityFragment : Fragment() {
             object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     nowTab = tab.position
+                    Log.d(TAG, tab.position.toString())
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -106,8 +107,6 @@ class CommunityFragment : Fragment() {
         }
 
         override fun createFragment(position: Int): Fragment {
-            nowTab = position
-            Log.d(TAG, nowTab.toString())
 
             return when (position) {
                 0 -> {
