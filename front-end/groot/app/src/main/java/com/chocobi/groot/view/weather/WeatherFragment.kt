@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import com.chocobi.groot.BuildConfig
 
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
@@ -42,7 +43,7 @@ private const val ARG_PARAM2 = "param2"
 class WeatherFragment : Fragment() {
 
     companion object {
-        const val API_KEY: String = "28cad4ba682e9a7b543ea7dfe3b5d05b"
+        const val API_KEY: String = BuildConfig.WEATHER_API_KEY
         const val MIN_TIME: Long = 5000
         const val MIN_DISTANCE: Float = 1000F
         const val WEATHER_REQUEST: Int = 102
