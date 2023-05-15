@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class ChattingEntity extends BaseEntity implements Serializable{
 
     @Column(name = "room_id")
-    private Long roomId;
+    private String roomId;
 
     @Id
     @ManyToOne(targetEntity = UserEntity.class, fetch = FetchType.LAZY)
