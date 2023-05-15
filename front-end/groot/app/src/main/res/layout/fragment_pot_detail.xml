@@ -76,10 +76,10 @@
                     android:id="@+id/potPlant"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
                     android:text="산세베리아"
-                    android:layout_margin="20dp"
-                    android:textColor="@color/main"
                     android:textAlignment="center"
+                    android:textColor="@color/main"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -105,44 +105,62 @@
                         android:nestedScrollingEnabled="false" />
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/potName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="-10dp"
-                    android:text="산세산세"
-                    android:textSize="32sp"
-                    android:textStyle="bold" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <ProgressBar
-                    android:layout_marginVertical="10dp"
-                    android:id="@+id/progressBar"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:progress="60"
-                    android:progressBackgroundTint="@color/grey"
-                    android:progressTint="@color/point" />
-                <LinearLayout
-                    android:id="@+id/levelSection"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
                     <TextView
+                        android:id="@+id/potName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Lv "
+                        android:lineSpacingExtra="-10dp"
+                        android:text="산세산세"
+                        android:textSize="32sp"
                         android:textStyle="bold"
-                        android:textColor="@color/grey"/>
-                    <TextView
-                        android:id="@+id/levelText"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ProgressBar
+                        android:id="@+id/progressBar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:progress="60"
+                        android:progressBackgroundTint="@color/grey"
+                        android:progressTint="@color/point"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/potName" />
+
+                    <LinearLayout
+                        android:id="@+id/levelSection"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:textColor="@color/grey"
-                        android:text="7"
-                        android:layout_marginRight="10dp"/>
-                </LinearLayout>
+                        android:orientation="horizontal"
+                        android:layout_marginTop="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/progressBar">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lv "
+                            android:textColor="@color/grey"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/levelText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:text="7"
+                            android:textColor="@color/grey"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <Button
                     android:id="@+id/toArBtn"
