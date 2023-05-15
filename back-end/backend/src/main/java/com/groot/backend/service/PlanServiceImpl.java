@@ -110,6 +110,11 @@ public class PlanServiceImpl implements PlanService{
         LocalDateTime now = LocalDateTime.now().plusHours(9);
         LocalDateTime start = LocalDateTime.of(LocalDate.from(now), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.of(LocalDate.from(now), LocalTime.of(23, 59, 59));
+
+        // 지났지만 done이 0인 친구들 하루씩 미뤄주기\
+        planRepository.updateDateTimeByDoneAndDateTimeBetween(false, start.minusDays(1), end.minusDays(1));
+
+
         List<PlanEntity> planEntities = planRepository.findAllByDoneAndDateTimeBetween(false, start, end);
 
         for(PlanEntity plan : planEntities){

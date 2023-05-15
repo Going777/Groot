@@ -261,10 +261,11 @@ public class DiaryServiceImpl implements DiaryService{
         DiaryEntity diaryEntity = diaryRepository.findById(diaryDTO.getId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
         DiaryCheckEntity diaryCheck = diaryCheckRepository.findById(diaryEntity.getDiaryId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "당일 다이어리 정보를 찾을 수 없습니다."));
         String storedFileName = null;
-        if(diaryEntity.getImgPath()!=null) {
-            s3Service.delete(diaryEntity.getImgPath());
+        if(diaryDTO.getImgPath()!=null) {
+            s3Service.delete(diaryDTO.getImgPath());
         }
         if(image != null){
+            s3Service.delete(diaryEntity.getImgPath());
             storedFileName = s3Service.upload(image, "diary");
         }
         PotEntity pot = diaryEntity.getPotEntity();
