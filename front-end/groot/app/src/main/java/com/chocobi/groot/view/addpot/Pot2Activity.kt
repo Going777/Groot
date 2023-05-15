@@ -48,7 +48,7 @@ import io.github.sceneview.math.Rotation
 class Pot2Activity : AppCompatActivity() {
     private val TAG = "Pot2Activity"
     private var plantId: Int = 0
-    private var plantNameSplit: String = ""
+    private var plantName: String = ""
     private var isSuccessed = false
 
     private lateinit var scrollView: LinearLayout
@@ -82,7 +82,7 @@ class Pot2Activity : AppCompatActivity() {
 //        ================================================================
 //        ================================================================
 
-        plantNameSplit = intent.getStringExtra("plantNameSplit").toString()
+        plantName = intent.getStringExtra("plantName").toString()
         plantId = intent.getIntExtra("plantId", 0)
         val tempPotName = intent.getStringExtra("tempPotName")
 //        val tempPotName = "루티"
@@ -92,7 +92,8 @@ class Pot2Activity : AppCompatActivity() {
         potNameTextView = findViewById<TextView>(R.id.potNameText)
         potNameEdit = findViewById<TextInputEditText>(R.id.potNameEdit)
 
-        plantNameShort.text = plantNameSplit
+        plantNameShort.text = plantName
+        potNameTextView.text = tempPotName
 //        potNameText.text = tempPotName
 //        potNameEdit.setText(tempPotName)
 
@@ -232,7 +233,7 @@ class Pot2Activity : AppCompatActivity() {
                         intent.putExtra("toPage", "pot_detail")
                         intent.putExtra("potId", body.potId)
                         intent.putExtra("potName", potName)
-                        intent.putExtra("potPlant", plantNameSplit)
+                        intent.putExtra("potPlant", plantName)
                         startActivity(intent)
                     }
                 }

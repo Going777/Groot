@@ -58,11 +58,10 @@ class Pot1Activity : AppCompatActivity() {
         val plantName = intent.getStringExtra("plantName")
         val plantId = intent.getIntExtra("plantId", 0)
         Log.d("Pot2Activity","onCreate() 플랜트 아이디 ${plantId}")
-        val plantNameSplit = plantName?.split(" ")?.get(0) ?: ""
         val userName = UserData.getNickName()
-        var tempPotName = userName + "의 " + plantNameSplit
+        var tempPotName = userName + "의\n" + plantName
         plantNameLong.text = plantName
-        plantNameShort.text = plantNameSplit
+        plantNameShort.text = plantName
         potName.text = tempPotName
 
 
@@ -134,7 +133,7 @@ class Pot1Activity : AppCompatActivity() {
             var intent = Intent(this, Pot2Activity::class.java)
 //            intent.putExtra("toPage", "plant_add1")
             intent.putExtra("tempPotName", tempPotName)
-            intent.putExtra("plantNameSplit", plantNameSplit)
+            intent.putExtra("plantName", plantName)
             intent.putExtra("plantId", plantId)
             intent.putExtra("imageUri", imageUri)
             intent.putExtra("growType", growType)
