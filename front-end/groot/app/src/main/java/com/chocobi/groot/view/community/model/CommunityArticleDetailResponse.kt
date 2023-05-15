@@ -9,6 +9,7 @@ data class Article (
     val imgs: List<String>?,
     val userPK: Int,
     val nickName: String,
+    val profile: String,
     val title: String,
     val tags: List<String>,
     val views: Int,

@@ -89,7 +89,7 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
         Log.d("share", communityArticleListResponse.articles.content[0].shareRegion.toString())
         // 나눔 아니면 공간차지 X
-        if (communityArticleListResponse.articles.content[0].shareRegion == null) {
+        if (communityArticleListResponse.articles.content[0].shareRegion == "" || communityArticleListResponse.articles.content[0].shareRegion == null) {
             position.visibility = View.GONE
             shareStatus.visibility = View.GONE
         } else {

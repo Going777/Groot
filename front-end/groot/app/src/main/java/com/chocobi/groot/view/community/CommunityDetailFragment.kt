@@ -2,6 +2,7 @@ package com.chocobi.groot.view.community
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -19,6 +21,7 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -27,6 +30,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.BasicResponse
@@ -46,6 +51,7 @@ import com.chocobi.groot.view.community.model.UpdateTime
 import com.chocobi.groot.view.community.model.CommunityService
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import de.hdodenhof.circleimageview.CircleImageView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -122,10 +128,14 @@ class CommunityDetailFragment : Fragment() {
         var bookmarkLine = view.findViewById<ImageButton>(R.id.bookmarkLine)
         var detailContent = view.findViewById<TextView>(R.id.detailContent)
         var detailCommentCnt = view.findViewById<TextView>(R.id.detailCommentCnt)
+        var detailProfileImg = view.findViewById<CircleImageView>(R.id.detailProfileImg)
         var bookmarkStatus = false
         var postCommentBtn = view.findViewById<Button>(R.id.postCommentBtn)
         var postCommentInput = view.findViewById<EditText>(R.id.postCommentInput)
         var sharePosition = view.findViewById<TextView>(R.id.sharePosition)
+        var shareStatus = false
+
+        var userProfile = view.findViewById<CircleImageView>(R.id.userProfile)
 
         var sharePositionSection = view.findViewById<LinearLayoutCompat>(R.id.sharePositionSection)
         var shareStateSection = view.findViewById<LinearLayoutCompat>(R.id.shareStateSection)
@@ -135,6 +145,21 @@ class CommunityDetailFragment : Fragment() {
 
         var carouselSection = view.findViewById<LinearLayoutCompat>(R.id.carouselSection)
         var dropdownSection = view.findViewById<ConstraintLayout>(R.id.dropdownSection)
+
+        userProfile.post {
+            ThreadUtil.startThread {
+                val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
+                    .asBitmap()
+                    .load(UserData.getProfile())
+                    .submit(userProfile.width, userProfile.height)
+
+                val bitmap = futureTarget.get()
+
+                ThreadUtil.startUIThread(0) {
+                    userProfile.setImageBitmap(bitmap)
+                }
+            }
+        }
 
 
         postCommentBtn.setOnClickListener {
@@ -185,6 +210,7 @@ class CommunityDetailFragment : Fragment() {
                     val articleDetailData = CommunityArticleDetailResponse(
                         article = Article(
                             category = article.category,
+                            profile = article.profile,
                             imgs = article.imgs,
                             userPK = article.userPK,
                             nickName = article.nickName,
@@ -213,11 +239,25 @@ class CommunityDetailFragment : Fragment() {
                     detailCommentCnt.text =
                         "댓글 (" + articleDetailData.article.commentCnt.toString() + ")"
 
-                    Log.d("CommunityDetailFragmentImgs", articleDetailData.article.imgs.toString())
-                    Log.d(
-                        "CommunityDetailFragmentImgs",
-                        articleDetailData.article.imgs?.size.toString()
-                    )
+                    Log.d("CommunityDetailFragment", articleDetailData.article.toString())
+                    Log.d("CommunityDetailFragmentImgs", articleDetailData.article.profile)
+
+                    detailProfileImg.post {
+                        ThreadUtil.startThread {
+                            val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
+                                .asBitmap()
+                                .load(articleDetailData.article.profile)
+                                .submit(detailProfileImg.width, detailProfileImg.height)
+
+                            val bitmap = futureTarget.get()
+
+                            ThreadUtil.startUIThread(0) {
+                                detailProfileImg.setImageBitmap(bitmap)
+                            }
+                        }
+                    }
+
+
 
                     if (articleDetailData.article.imgs!!.isNotEmpty()) {
                         for (i in 1..articleDetailData.article.imgs.size) {
@@ -314,39 +354,77 @@ class CommunityDetailFragment : Fragment() {
                         val spinner: Spinner = view.findViewById(R.id.spinner)
                         val spinnerButton: ImageButton = view.findViewById(R.id.spinnerButton)
 
-                        val options = arrayOf("  수정  ", "  삭제  ")
-                        spinner.setSelection(0)
-                        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, options)
+                        val options: Array<String>
+                        if (detailCategory.text == "나눔") {
+                            options = arrayOf("  수정  ", "  삭제  ", " 나눔 완료 ")
+                        } else {
+                            options = arrayOf("  수정  ", "  삭제  ")
+                        }
+                        // spinner 설정 이전에 아래 코드 추가
+
+                        val adapter = ArrayAdapter(
+                            requireContext(),
+                            android.R.layout.simple_spinner_item,
+                            options
+                        )
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         spinner.adapter = adapter
 
+                        var isFirstSelection = true
                         try {
                             val method =
-                                Spinner::class.java.getDeclaredMethod("setSpinnerButton", ImageButton::class.java)
+                                Spinner::class.java.getDeclaredMethod(
+                                    "setSpinnerButton",
+                                    ImageButton::class.java
+                                )
                             method.invoke(spinner, spinnerButton)
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
 
-                        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(
-                                parent: AdapterView<*>,
-                                view: View?,
-                                position: Int,
-                                id: Long
-                            ) {
-                                val selectedOption = options[position]
-                                if (selectedOption == "  삭제  ") {
-                                    deleteArticle(articleId)
-                                    requireActivity().supportFragmentManager.popBackStack()
+                        spinner.onItemSelectedListener =
+                            object : AdapterView.OnItemSelectedListener {
+                                override fun onItemSelected(
+                                    parent: AdapterView<*>,
+                                    view: View?,
+                                    position: Int,
+                                    id: Long
+                                ) {
+                                    if (isFirstSelection) {
+                                        isFirstSelection = false
+                                    } else {
+
+                                        var selectedOption = options[position]
+                                        if (selectedOption == "  삭제  ") {
+                                            val dialog = AlertDialog.Builder(requireContext())
+                                            dialog.setTitle("글을 삭제하시겠습니까?")
+                                            dialog.setPositiveButton("네") { dialog, which ->
+                                                deleteArticle(articleId)
+                                                requireActivity().supportFragmentManager.popBackStack()
+                                            }
+                                            dialog.setNegativeButton("아니요") { dialog, which ->
+                                                dialog.dismiss()
+                                            }
+                                            dialog.show()
+                                        } else if (selectedOption == " 수정 ") {
+
+                                        } else if (selectedOption == " 나눔 완료 ") {
+                                            options[position] = " 나눔 취소 " // "나눔 완료"를 "나눔 취소"로 변경
+                                            adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
+                                            spinner.setSelection(position) // 선택한 위치를 유지하도록 설정
+                                        } else if (selectedOption == " 나눔 취소 ") {
+                                            options[position] = " 나눔 완료 " // "나눔 취소"를 "나눔 완료"로 변경
+                                            spinner.setSelection(position) // 선택한 위치를 유지하도록 설정
+                                            adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
+                                        }
+                                    }
+
                                 }
 
+                                override fun onNothingSelected(parent: AdapterView<*>) {
+                                    // 아무것도 선택하지 않은 경우 처리
+                                }
                             }
-
-                            override fun onNothingSelected(parent: AdapterView<*>) {
-                                // 아무것도 선택하지 않은 경우 처리
-                            }
-                        }
 
                         spinnerButton.setOnClickListener {
                             spinner.performClick()
@@ -405,8 +483,6 @@ class CommunityDetailFragment : Fragment() {
         }
 
 
-
-
 //        댓글
         findViews(view)
         setListeners()
@@ -417,7 +493,8 @@ class CommunityDetailFragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         commentRecyclerView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
-        commentRecyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        commentRecyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         val layoutManager = LinearLayoutManager(context)
         commentRecyclerView.layoutManager = layoutManager
 
@@ -427,11 +504,14 @@ class CommunityDetailFragment : Fragment() {
         var communityCommentService = commentRetrofit.create(CommunityCommentService::class.java)
 
         communityCommentService.requestCommunityComment(articleId).enqueue(object :
-            Callback<CommunityCommentResponse>  {
-            override fun onResponse(call: Call<CommunityCommentResponse>, response: Response<CommunityCommentResponse>) {
+            Callback<CommunityCommentResponse> {
+            override fun onResponse(
+                call: Call<CommunityCommentResponse>,
+                response: Response<CommunityCommentResponse>
+            ) {
                 if (response.code() == 200) {
                     Log.d("CommunityCommentFragment", "성공")
-                    val checkResponse =  response.body()?.comment
+                    val checkResponse = response.body()?.comment
                     getCommentData = response.body()!!
                     Log.d("CommunityCommentFragment", "$checkResponse")
 
@@ -447,6 +527,7 @@ class CommunityDetailFragment : Fragment() {
                     Log.d("CommunityCommentFragment", "실패1")
                 }
             }
+
             override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
                 Log.d("CommunityCommentFragment실패", "실패2")
             }
@@ -524,6 +605,7 @@ class CommunityDetailFragment : Fragment() {
                     if (response.isSuccessful) {
                         Log.d("commentResponse", response.body().toString())
                         val commentitem = response.body()!!.comment[0]
+                        Log.d("commentItem", commentitem.toString())
 //                        for (commentReturn in response.body()!!.comment) {
 //                            val communityCommentResponse = CommunityCommentResponse(
 //                                comment = listOf(
@@ -582,7 +664,7 @@ class CommunityDetailFragment : Fragment() {
     }
 
 
-//    댓글 리사이클러뷰
+    //    댓글 리사이클러뷰
     private fun findViews(view: View) {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         commentRecyclerView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
@@ -608,6 +690,7 @@ class CommunityDetailFragment : Fragment() {
             fun reload(mutableList: MutableList<CommunityCommentResponse>) {
                 TODO("Not yet implemented")
             }
+
             fun loadMore(mutableList: MutableList<CommunityCommentResponse>) {
                 TODO("Not yet implemented")
             }
@@ -615,12 +698,15 @@ class CommunityDetailFragment : Fragment() {
         commentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         commentRecyclerView.adapter = commentAdapter
     }
+
     private fun showProgress() {
         frameLayoutProgress.visibility = View.VISIBLE
     }
+
     private fun hideProgress() {
         frameLayoutProgress.visibility = View.GONE
     }
+
     private fun createDummyData(): MutableList<CommunityCommentResponse> {
         val list: MutableList<CommunityCommentResponse> = mutableListOf()
 

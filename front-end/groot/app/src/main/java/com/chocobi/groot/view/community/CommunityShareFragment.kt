@@ -39,7 +39,6 @@ import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -48,7 +47,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
-import kotlin.math.log
 
 
 @Suppress("DEPRECATION")
@@ -118,6 +116,7 @@ class CommunityShareFragment : Fragment() {
         // RecyclerView에 레이아웃 매니저와 어댑터를 설정합니다.
         tagRecyclerView.layoutManager = flexboxLayoutManager
         tagRecyclerView.adapter = tagAdapter
+        val tagList = mutableListOf<String>()
 
         // EditText의 키보드 액션을 설정합니다.
         tagInput.setOnEditorActionListener { v, actionId, event ->
@@ -127,6 +126,7 @@ class CommunityShareFragment : Fragment() {
                 if (tag.isNotEmpty()) {
                     // 태그 어댑터에 태그를 추가합니다.
                     tagAdapter.addTag(tag)
+                    tagList.add(tag)
                     // EditText의 내용을 리셋합니다.
                     tagInput.setText("")
                 }
@@ -144,6 +144,7 @@ class CommunityShareFragment : Fragment() {
                 if (tag.isNotEmpty()) {
                     // 태그 어댑터에 태그를 추가합니다.
                     tagAdapter.addTag(tag)
+                    tagList.add(tag)
                     // EditText의 내용을 리셋합니다.
                     tagInput.setText("")
                 }
@@ -190,10 +191,10 @@ class CommunityShareFragment : Fragment() {
         // 등록 버튼 클릭 시 제목과 내용 입력값
         toPostListBtn.setOnClickListener(View.OnClickListener {
 
-            val category = "자유"
+            val category = "나눔"
             var title = titleInput?.text.toString()
             var content = contentInput?.text.toString()
-            postArticle(category, title, content, imageList)
+            postArticle(category, title, content, tagList, region.toString(), false, imageList)
         })
 
         // 제목과 내용 글자 수 체크 및 제한
@@ -479,7 +480,10 @@ class CommunityShareFragment : Fragment() {
         category: String,
         title: String,
         content: String,
-        files: ArrayList<File?>?
+        tags: MutableList<String>,
+        shareRegion: String,
+        shareStatus: Boolean,
+        files: ArrayList<File?>?,
     ) {
         val retrofit = RetrofitClient.getClient()!!
         val communityPostService = retrofit.create(CommunityPostService::class.java)
@@ -550,7 +554,10 @@ class CommunityShareFragment : Fragment() {
                 userPK,
                 category,
                 title,
-                content
+                content,
+                tags,
+                shareRegion,
+                shareStatus
             ), thelist[0], thelist[1], thelist[2]
         )
             .enqueue(object : Callback<CommunityPostResponse> {
@@ -560,6 +567,8 @@ class CommunityShareFragment : Fragment() {
                 ) {
                     val body = response.body()
                     Log.d("CommunityPostFragmentBody", "$body")
+                    requireActivity().supportFragmentManager.popBackStack()
+
                 }
 
                 override fun onFailure(call: Call<CommunityPostResponse>, t: Throwable) {

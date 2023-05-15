@@ -11,6 +11,51 @@
     <include
         layout="@layout/top_category_navbar"/>
 
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_weight="0">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:cardBackgroundColor="@color/main"
+            app:cardCornerRadius="40dp"
+            tools:ignore="MissingConstraints">
+
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/main"
+                android:src="@drawable/ic_back" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            tools:ignore="MissingConstraints">
+
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_article"
+                app:tint="@color/grey" />
+
+            <TextView
+                android:id="@+id/detailCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="자유"
+                android:textColor="@color/grey"
+                android:textSize="20dp" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,8 +72,8 @@
                 android:id="@+id/carouselSection"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:layout_gravity="center"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <androidx.viewpager2.widget.ViewPager2
@@ -47,15 +92,16 @@
                 android:id="@+id/shareStateSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="3dp"
-                    android:paddingHorizontal="5dp"
-                    android:text="나눔완료"
+                    android:background="@drawable/radius5"
                     android:backgroundTint="@color/dark_grey"
-                    android:textColor="@color/white"
-                    android:background="@drawable/radius5"/>
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:text="나눔완료"
+                    android:textColor="@color/white" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -74,9 +120,9 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/dropdownSection"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:gravity="right"
-                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
                     <!-- Spinner 정의 -->
                     <Spinner
@@ -116,14 +162,14 @@
                     android:id="@+id/sharePosition"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingVertical="3dp"
-                    android:paddingHorizontal="5dp"
-                    android:text="역삼동"
-                    android:textSize="13dp"
-                    android:backgroundTint="@color/sub"
-                    android:textColor="@color/white"
                     android:layout_marginVertical="3dp"
-                    android:background="@drawable/radius5"/>
+                    android:background="@drawable/radius5"
+                    android:backgroundTint="@color/sub"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="3dp"
+                    android:text="역삼동"
+                    android:textColor="@color/white"
+                    android:textSize="13dp" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -147,7 +193,9 @@
                             android:id="@+id/detailProfileImg"
                             android:layout_width="30dp"
                             android:layout_height="30dp"
-                            android:src="@drawable/basic_profile" />
+                            android:src="@drawable/basic_profile"
+                            app:civ_border_color="@color/point"
+                            app:civ_border_width="3dp" />
 
                         <TextView
                             android:id="@+id/detailNickName"
@@ -217,12 +265,12 @@
                 <Button
                     android:layout_width="50dp"
                     android:layout_height="28dp"
-                    android:layout_weight="0"
-                    android:padding="0dp"
-                    android:background="@drawable/radius5"
-                    android:text="채팅"
                     android:layout_gravity="center"
+                    android:layout_weight="0"
+                    android:background="@drawable/radius5"
                     android:gravity="center"
+                    android:padding="0dp"
+                    android:text="채팅"
                     android:textSize="14sp" />
 
 
@@ -262,16 +310,8 @@
                 android:id="@+id/shareSection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/shareListTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="3dp"
-                    android:textSize="18dp"
-                    android:text="사용자가 나눔 중인 다른 식물"
-                    android:textStyle="bold" />
+
                 <fragment
                     android:id="@+id/communityUserShareFragment"
                     android:name="com.chocobi.groot.view.community.CommunityUserShareFragment"
@@ -289,37 +329,33 @@
                     android:id="@+id/detailCommentCnt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp"
                     android:layout_margin="3dp"
                     android:text="댓글 (2)"
+                    android:textSize="18dp"
                     android:textStyle="bold" />
 
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/commentRecycleView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/commentRecycleView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                <FrameLayout
+                    android:id="@+id/frameLayoutProgress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone">
 
+                    <!--        <ProgressBar-->
+                    <!--            android:layout_gravity="center"-->
+                    <!--            android:layout_width="wrap_content"-->
+                    <!--            android:layout_height="wrap_content"/>-->
 
-
-                    <FrameLayout
-                        android:id="@+id/frameLayoutProgress"
-                        android:visibility="gone"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <!--        <ProgressBar-->
-                        <!--            android:layout_gravity="center"-->
-                        <!--            android:layout_width="wrap_content"-->
-                        <!--            android:layout_height="wrap_content"/>-->
-
-                    </FrameLayout>
+                </FrameLayout>
             </androidx.appcompat.widget.LinearLayoutCompat>
-
 
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -346,11 +382,12 @@
 
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/userProfile"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="10dp"
                 android:layout_weight="0"
-                android:src="@drawable/sample_plant_image" />
+                android:src="@drawable/basic_profile" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
