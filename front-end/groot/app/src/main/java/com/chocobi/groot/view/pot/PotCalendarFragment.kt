@@ -71,7 +71,6 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
 //        val rootView = super.onCreateView(inflater, container, savedInstanceState)
         mActivity = activity as MainActivity
         potFirstView = rootView.findViewById(R.id.firstView)
-        missionComplete = rootView.findViewById(R.id.missionComplete)
         val items = mutableListOf<Diary>()
         items.add(
             Diary(
