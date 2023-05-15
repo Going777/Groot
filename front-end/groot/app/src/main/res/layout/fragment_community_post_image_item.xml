@@ -32,6 +32,7 @@
         android:layout_height="20dp"
         android:background="@drawable/ic_cancle"
         android:textColor="#ffffff"
+        android:translationZ="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         tools:ignore="MissingConstraints" />
 

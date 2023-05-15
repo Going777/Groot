@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -28,6 +29,8 @@ class CommunityUserShareFragment()  : Fragment() {
     private lateinit var adapter: ShareItemAdapter
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: CommunityShareItemResponse
+    private lateinit var shareListSection: FrameLayout
+    private lateinit var shareListTitle: TextView
     private var articleId: Int = 0
 
     @SuppressLint("MissingInflatedId")
@@ -42,6 +45,8 @@ class CommunityUserShareFragment()  : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById<RecyclerView>(R.id.shareItemList)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+        shareListSection = view.findViewById(R.id.shareListSection)
+        shareListTitle = view.findViewById(R.id.shareListTitle)
 
         recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
 
@@ -62,7 +67,6 @@ class CommunityUserShareFragment()  : Fragment() {
 
 
         var communityShareItemService = retrofit.create(CommunityShareItemService::class.java)
-        var communityArticleId = 32
 
         communityShareItemService.requestCommunityShareItem(articleId).enqueue(object :
             Callback<CommunityShareItemResponse>  {
@@ -73,6 +77,10 @@ class CommunityUserShareFragment()  : Fragment() {
                     getData = response.body()!!
                     Log.d("CommunityUserShareFragment", "$checkResponse")
 
+                    if (response.body()!!.articles.isEmpty()) {
+                        shareListSection.visibility = View.GONE
+                        shareListTitle.visibility = View.GONE
+                    }
 
 
                     val list = createDummyData()

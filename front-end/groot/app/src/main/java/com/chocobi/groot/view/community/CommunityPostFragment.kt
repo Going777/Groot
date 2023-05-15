@@ -17,6 +17,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -35,7 +37,7 @@ import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import okhttp3.MediaType
+import kotlinx.coroutines.NonDisposableHandle.parent
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -59,9 +61,12 @@ class CommunityPostFragment : Fragment() {
     private var imageFiles: ArrayList<File> = ArrayList()
     private var imageArray: Array<File?>? = null
     private var thelist: MutableList<MultipartBody.Part?> = mutableListOf(null, null, null)
-
     private lateinit var tagRecyclerView: RecyclerView
     private lateinit var tagInput: EditText
+
+
+    private val tagList = mutableListOf<String>()
+
 
 
     override fun onCreateView(
@@ -72,12 +77,11 @@ class CommunityPostFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_post, container, false)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
-
+        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, true)
         val context: Context = requireContext()
         postImageAdapter = PostImageAdapter(imageList, context)
         recyclerView.adapter = postImageAdapter
-        recyclerView.layoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+
 
 
         // 태그를 보여줄 RecyclerView와 입력을 받을 EditText를 레이아웃에서 참조합니다.
@@ -95,6 +99,7 @@ class CommunityPostFragment : Fragment() {
         // RecyclerView에 레이아웃 매니저와 어댑터를 설정합니다.
         tagRecyclerView.layoutManager = flexboxLayoutManager
         tagRecyclerView.adapter = tagAdapter
+        val tagList = mutableListOf<String>()
 
         // EditText의 키보드 액션을 설정합니다.
         tagInput.setOnEditorActionListener { v, actionId, event ->
@@ -104,6 +109,7 @@ class CommunityPostFragment : Fragment() {
                 if (tag.isNotEmpty()) {
                     // 태그 어댑터에 태그를 추가합니다.
                     tagAdapter.addTag(tag)
+                    tagList.add(tag)
                     // EditText의 내용을 리셋합니다.
                     tagInput.setText("")
                 }
@@ -121,11 +127,15 @@ class CommunityPostFragment : Fragment() {
                 if (tag.isNotEmpty()) {
                     // 태그 어댑터에 태그를 추가합니다.
                     tagAdapter.addTag(tag)
+                    tagList.add(tag)
                     // EditText의 내용을 리셋합니다.
                     tagInput.setText("")
                 }
             }
         }
+
+
+
 
 
 
@@ -171,7 +181,9 @@ class CommunityPostFragment : Fragment() {
             val category = "자유"
             var title = titleInput?.text.toString()
             var content = contentInput?.text.toString()
-            postArticle(category, title, content, imageList)
+            var shareRegion = ""
+            var shareStatus = false
+            postArticle(category, title, content, tagList, shareRegion, shareStatus, imageList)
         })
 
         // 뒤로가기 버튼 클릭시 게시판 목록으로 돌아가기
@@ -424,6 +436,9 @@ class CommunityPostFragment : Fragment() {
         category: String,
         title: String,
         content: String,
+        tags: MutableList<String>,
+        shareRegion: String?,
+        shareStatus: Boolean?,
         files: ArrayList<File?>?
     ) {
         val retrofit = RetrofitClient.getClient()!!
@@ -495,7 +510,10 @@ class CommunityPostFragment : Fragment() {
                 userPK,
                 category,
                 title,
-                content
+                content,
+                tags,
+                shareRegion,
+                shareStatus == false
             ), thelist[0], thelist[1], thelist[2]
         )
             .enqueue(object : Callback<CommunityPostResponse> {

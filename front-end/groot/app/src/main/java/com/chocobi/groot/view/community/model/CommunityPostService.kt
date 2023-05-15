@@ -24,6 +24,9 @@ class ArticlePostRequest internal constructor(
     val category: String,
     val title: String,
     val content: String,
+    val tags: MutableList<String>,
+    val shareRegion: String?,
+    val shareStatus: Boolean,
 //    val shareStatus: Boolean?,
 //    val shareRegion: String?,
 //    val tags: Array<String>?
