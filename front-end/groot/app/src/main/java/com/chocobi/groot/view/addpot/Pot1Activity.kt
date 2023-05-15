@@ -51,7 +51,7 @@ class Pot1Activity : AppCompatActivity() {
         Log.d("Pot1Activity","onCreate() url값 ${imageUrl}//")
 
 
-        var plantNameLong = findViewById<TextView>(R.id.plantNameLong)
+        var plantNameText = findViewById<TextView>(R.id.plantNameText)
 
 
 
@@ -59,8 +59,8 @@ class Pot1Activity : AppCompatActivity() {
         val plantId = intent.getIntExtra("plantId", 0)
         Log.d("Pot2Activity","onCreate() 플랜트 아이디 ${plantId}")
         val userName = UserData.getNickName()
-        var tempPotName = userName + "의\n" + plantName
-        plantNameLong.text = plantName
+        val tempPlantName = plantName!!.replace(" (", "\n(").replace(" ‘","\n‘")
+        plantNameText.text = tempPlantName
 
 
 
@@ -132,8 +132,7 @@ class Pot1Activity : AppCompatActivity() {
         add1Btn.setOnClickListener {
             var intent = Intent(this, Pot2Activity::class.java)
 //            intent.putExtra("toPage", "plant_add1")
-            intent.putExtra("tempPotName", tempPotName)
-            intent.putExtra("plantName", plantName)
+            intent.putExtra("plantName", tempPlantName)
             intent.putExtra("plantId", plantId)
             intent.putExtra("imageUri", imageUri)
             intent.putExtra("growType", growType)

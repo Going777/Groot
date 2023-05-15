@@ -31,6 +31,7 @@
                 android:textColor="@color/main"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -42,7 +43,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/plantNameLong">
+                app:layout_constraintTop_toBottomOf="@+id/plantName">
 
                 <com.airbnb.lottie.LottieAnimationView
                     android:id="@+id/lottieView"
