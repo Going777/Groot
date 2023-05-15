@@ -87,7 +87,7 @@ class Pot2Activity : AppCompatActivity() {
         val tempPotName = intent.getStringExtra("tempPotName")
 //        val tempPotName = "루티"
         var imageUri = intent.getStringExtra("imageUri")
-        val plantNameText = findViewById<TextView>(R.id.plantName)
+        val plantNameText = findViewById<TextView>(R.id.plantNameText)
         plantNameText.text = plantName
 
         potNameEdit = findViewById<TextInputEditText>(R.id.potNameEdit)
