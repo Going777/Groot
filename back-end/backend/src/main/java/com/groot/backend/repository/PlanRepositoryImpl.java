@@ -96,4 +96,15 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
                 .fetch();
         return plans;
     }
+
+    @Override
+    public long updateDateTimeByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        long updateCnt = queryFactory.update(qPlan)
+                .set(qPlan.dateTime, LocalDateTime.now())
+                .where(qPlan.done.eq(done), qPlan.dateTime.between(start, end))
+                .execute();
+        return updateCnt;
+    }
 }

@@ -30,4 +30,8 @@ public interface PlanRepositoryCustom {
     boolean existsByCodeAndDateTimeBetween(Integer code, LocalDateTime start, LocalDateTime end);
 
     List<PlanEntity> findAllByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
+
+    @Transactional
+    @Modifying
+    long updateDateTimeByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
 }
