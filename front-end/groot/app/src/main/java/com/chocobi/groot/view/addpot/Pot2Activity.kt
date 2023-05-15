@@ -55,7 +55,7 @@ class Pot2Activity : AppCompatActivity() {
     private lateinit var characterSceneView: SceneView
     private lateinit var lottieView: LottieAnimationView
     private lateinit var potNameLayout: TextInputLayout
-    private lateinit var potNameTextView: TextView
+
     private lateinit var potNameEdit: TextInputEditText
 
     private var growType: String? = null
@@ -87,13 +87,11 @@ class Pot2Activity : AppCompatActivity() {
         val tempPotName = intent.getStringExtra("tempPotName")
 //        val tempPotName = "루티"
         var imageUri = intent.getStringExtra("imageUri")
+        val plantNameText = findViewById<TextView>(R.id.plantName)
+        plantNameText.text = plantName
 
-        var plantNameShort = findViewById<TextView>(R.id.plantNameShort)
-        potNameTextView = findViewById<TextView>(R.id.potNameText)
         potNameEdit = findViewById<TextInputEditText>(R.id.potNameEdit)
 
-        plantNameShort.text = plantName
-        potNameTextView.text = tempPotName
 //        potNameText.text = tempPotName
 //        potNameEdit.setText(tempPotName)
 

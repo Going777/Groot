@@ -52,8 +52,8 @@ class Pot1Activity : AppCompatActivity() {
 
 
         var plantNameLong = findViewById<TextView>(R.id.plantNameLong)
-        var plantNameShort = findViewById<TextView>(R.id.plantNameShort)
-        var potName = findViewById<TextView>(R.id.potName)
+
+
 
         val plantName = intent.getStringExtra("plantName")
         val plantId = intent.getIntExtra("plantId", 0)
@@ -61,8 +61,8 @@ class Pot1Activity : AppCompatActivity() {
         val userName = UserData.getNickName()
         var tempPotName = userName + "의\n" + plantName
         plantNameLong.text = plantName
-        plantNameShort.text = plantName
-        potName.text = tempPotName
+
+
 
 
 
