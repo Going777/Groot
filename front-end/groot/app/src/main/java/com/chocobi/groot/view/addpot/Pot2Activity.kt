@@ -76,6 +76,9 @@ class Pot2Activity : AppCompatActivity() {
 //        ================================================================
 //        뒤로 가기 버튼 처리해야 하는 곳
         val backBtn = findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            this.onBackPressed()
+        }
 //        ================================================================
 //        ================================================================
 

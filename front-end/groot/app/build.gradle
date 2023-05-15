@@ -22,7 +22,7 @@ android {
         applicationId "com.chocobi.groot"
         minSdk 28
         targetSdk 33
-        versionCode 7
+        versionCode 8
         versionName "1.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

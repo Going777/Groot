@@ -50,7 +50,6 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
     private lateinit var rv: RecyclerView
     private var rvAdapter: PotCalendarRVAdapter? = null
     private lateinit var potFirstView: ConstraintLayout
-    private lateinit var missionComplete: Button
 
     override val titleRes: Int = R.string.example_7_title
 
@@ -224,12 +223,10 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
     private fun showFirstView() {
         potFirstView.visibility = View.VISIBLE
         rv.visibility = View.GONE
-        missionComplete.visibility = View.GONE
     }
 
     private fun hideFirstView() {
         potFirstView.visibility = View.GONE
         rv.visibility = View.VISIBLE
-        missionComplete.visibility = View.VISIBLE
     }
 }
