@@ -104,7 +104,7 @@ public class PlanServiceImpl implements PlanService{
         potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
     }
 
-    @Scheduled(cron = "0 18 9 * * *", zone = "Asia/Seoul") // 오전 11시
+    @Scheduled(cron = "0 0 11 * * *", zone = "Asia/Seoul") // 오전 11시
     @Override
     public void alarmPlan(){
         LocalDateTime now = LocalDateTime.now().plusHours(9);
