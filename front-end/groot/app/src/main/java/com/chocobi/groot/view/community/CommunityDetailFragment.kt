@@ -118,6 +118,9 @@ class CommunityDetailFragment : Fragment() {
 //        ================================================================
 //        뒤로 가기 버튼 처리해야 하는 곳
         val backBtn = view.findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
 //        ================================================================
 //        ================================================================
 
