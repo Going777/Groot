@@ -488,13 +488,19 @@ public class ArticleController {
 
     @PutMapping("/shareStatus")
     public ResponseEntity updateShareStatus(HttpServletRequest request,
-                                            @RequestBody ShareStatusDTO shareStatusDTO){
+                                            @Valid @RequestBody ShareStatusDTO shareStatusDTO){
         resultMap = new HashMap<>();
         // 작성자 확인
         if(request.getHeader("Authorization") == null) {
             resultMap.put("result", FAIL);
             resultMap.put("msg", "토큰이 존재하지 않습니다.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
+
+        if(!userService.isExistedId(shareStatusDTO.getUserPK())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 사용자입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
         }
 
         Long userPK = jwtTokenProvider.getIdByAccessToken(request);
@@ -507,6 +513,12 @@ public class ArticleController {
         if(!articleService.existedArticleId(shareStatusDTO.getArticleId())) {
             resultMap.put("result", FAIL);
             resultMap.put("msg","존재하지 않는 게시글입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        if(!userService.isExistedId(shareStatusDTO.getUserPK())){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 사용자입니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
 
