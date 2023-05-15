@@ -22,6 +22,11 @@ interface LoginService {
     @GET("/api/notifications/subscribe")
     fun requestSubscribe():Call<SubscribeResponse>
 
+    @POST("/api/users")
+    fun requestSocialLogin(
+
+    ): Call<LoginResponse>
+
 }
 
 class LoginRequest internal constructor(

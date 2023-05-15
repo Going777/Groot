@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="40dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         app:alignItems="center"
         app:flexDirection="row"
         app:justifyContent="space_between"
@@ -109,7 +109,7 @@
         android:id="@+id/basicSignupBtn"
         style="@style/MAIN_BTN"
         android:layout_marginHorizontal="40dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="80dp"
         android:letterSpacing="0.15"
 
         android:text="가입 완료"

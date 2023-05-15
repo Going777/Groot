@@ -49,7 +49,8 @@ class LoginActivity : AppCompatActivity() {
 
     private var email: String = ""
     private var gender: String = ""
-    private var name: String = ""
+    private var nickname: String? = null
+    private var profileImg: String? = null
 
     private var textId: String = ""
     private var textPw: String = ""
@@ -58,7 +59,53 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+//        소셜 로그인 처리
         kakaoLoginBtn = findViewById(R.id.kakaoLoginBtn)
+        naverLoginBtn = findViewById(R.id.naverLoginBtn)
+        handleKakaoLogin()
+        handleNaverLogin()
+
+        val basicLoginBtn = findViewById<Button>(R.id.basicLoginBtn)
+        val toSignupText = findViewById<TextView>(R.id.toSignupText)
+        loginIdInput = findViewById(R.id.loginIdInput)
+        loginPwInput = findViewById(R.id.loginPwInput)
+        loginIdInputImg = findViewById(R.id.loginIdInputImg)
+        loginPwInputImg = findViewById(R.id.loginPwInputImg)
+//        overlayView = findViewById(R.id.overlayView)
+
+        checkEditText(loginIdInput, loginIdInputImg)
+        checkEditText(loginPwInput, loginPwInputImg)
+
+//        로그인 버튼 클릭시
+        basicLoginBtn.setOnClickListener {
+            Log.d("LoginActivity", "onCreate() ${textId}// 아이디")
+            Log.d("LoginActivity", "onCreate() ${textPw}// 비번")
+//            아이디 입력 안했을 때
+            if (textId.isBlank()) {
+                GlobalVariables.defaultAlertDialog(context = this, message = "아이디를 입력해주세요.")
+//            비밀번호 입력 안했을 때
+            } else if (textPw.isBlank()) {
+                GlobalVariables.defaultAlertDialog(context = this, message = "비밀번호를 입력해주세요.")
+//            로그인 함수 실행
+            } else {
+                login(this)
+            }
+        }
+
+//        회원가입 안내 텍스트 클릭시
+        toSignupText.setOnClickListener {
+            var intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
+        }
+
+        //        회원가입 안내 텍스트 클릭시
+        toSignupText.setOnClickListener {
+            var intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun handleKakaoLogin() {
         kakaoLoginBtn.setOnClickListener {
             // 카카오계정으로 로그인 공통 callback 구성
             // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
@@ -106,29 +153,28 @@ class LoginActivity : AppCompatActivity() {
                 UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
             }
         }
+    }
 
-
-
-        naverLoginBtn = findViewById(R.id.naverLoginBtn)
+    private fun handleNaverLogin() {
         naverLoginBtn.setOnClickListener {
             val oAuthLoginCallback = object : OAuthLoginCallback {
                 override fun onSuccess() {
                     // 네이버 로그인 API 호출 성공 시 유저 정보를 가져온다
                     NidOAuthLogin().callProfileApi(object : NidProfileCallback<NidProfileResponse> {
                         override fun onSuccess(result: NidProfileResponse) {
-                            name = result.profile?.name.toString()
-                            email = result.profile?.email.toString()
-                            gender = result.profile?.gender.toString()
                             val naverAccessToken = NaverIdLoginSDK.getAccessToken()
+                            nickname = result.profile?.nickname.toString()
+                            profileImg = result.profile?.profileImage.toString()
 
                             val intent =
                                 Intent(this@LoginActivity, SocialSignupActivity::class.java)
+                            intent.putExtra("nickname", nickname)
+                            intent.putExtra("profileImg", profileImg)
+                            intent.putExtra("social_access_token", naverAccessToken)
+                            intent.putExtra("type", "naver")
                             startActivity(intent)
-//                            GlobalVariables.defaultAlertDialog(this@LoginActivity, title = "로그인 성공", "반갑습니다!!")
-                            Log.d("LoginActivity", "onSuccess() 로그인 성공 ${result}")
-//                            Log.e(TAG, "네이버 로그인한 유저 정보 - 이름 : $name")
-//                            Log.e(TAG, "네이버 로그인한 유저 정보 - 이메일 : $email")
-//                            Log.e(TAG, "네이버 로그인한 유저 정보 - 성별 : $gender")
+                            Log.d("LoginActivity", "onSuccess() 네이버 로그인 성공 ${result}")
+                            Log.d("LoginActivity", "onSuccess() 네이버 로그인 성공 ${naverAccessToken}")
                         }
 
                         override fun onError(errorCode: Int, message: String) {
@@ -158,46 +204,6 @@ class LoginActivity : AppCompatActivity() {
                 "Groot"
             )
             NaverIdLoginSDK.authenticate(this@LoginActivity, oAuthLoginCallback)
-        }
-
-
-        val basicLoginBtn = findViewById<Button>(R.id.basicLoginBtn)
-        val toSignupText = findViewById<TextView>(R.id.toSignupText)
-        loginIdInput = findViewById(R.id.loginIdInput)
-        loginPwInput = findViewById(R.id.loginPwInput)
-        loginIdInputImg = findViewById(R.id.loginIdInputImg)
-        loginPwInputImg = findViewById(R.id.loginPwInputImg)
-//        overlayView = findViewById(R.id.overlayView)
-
-        checkEditText(loginIdInput, loginIdInputImg)
-        checkEditText(loginPwInput, loginPwInputImg)
-
-//        로그인 버튼 클릭시
-        basicLoginBtn.setOnClickListener {
-            Log.d("LoginActivity", "onCreate() ${textId}// 아이디")
-            Log.d("LoginActivity", "onCreate() ${textPw}// 비번")
-//            아이디 입력 안했을 때
-            if (textId.isBlank()) {
-                GlobalVariables.defaultAlertDialog(context = this, message = "아이디를 입력해주세요.")
-//            비밀번호 입력 안했을 때
-            } else if (textPw.isBlank()) {
-                GlobalVariables.defaultAlertDialog(context = this, message = "비밀번호를 입력해주세요.")
-//            로그인 함수 실행
-            } else {
-                login(this)
-            }
-        }
-
-//        회원가입 안내 텍스트 클릭시
-        toSignupText.setOnClickListener {
-            var intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
-        }
-
-        //        회원가입 안내 텍스트 클릭시
-        toSignupText.setOnClickListener {
-            var intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
         }
     }
 
