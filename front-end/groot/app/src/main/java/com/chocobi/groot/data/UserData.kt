@@ -10,6 +10,7 @@ class UserData : Application() {
         private var profile : String? = null
         private var registerDate = 0
         private var firebaseToken = ""
+        private var socialLoginCategory: String = ""
 
         fun getUserFirebase() : String {
             return firebaseToken
@@ -57,6 +58,14 @@ class UserData : Application() {
 
         fun setRegisterDate(registerDateNum: Int) {
             registerDate = registerDateNum
+        }
+
+        fun getIsSocialLogined(): String {
+            return socialLoginCategory
+        }
+
+        fun setIsSocialLogined(category: String) {
+            socialLoginCategory = category
         }
     }
 }

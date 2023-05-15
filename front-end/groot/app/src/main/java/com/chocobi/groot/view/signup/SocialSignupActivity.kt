@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -31,6 +32,7 @@ import retrofit2.Response
 class SocialSignupActivity : AppCompatActivity() {
     private lateinit var basicSignupBtn: Button
     private lateinit var dupNameBtn: Button
+    private lateinit var backBtn: ImageButton
     private lateinit var signupNameInputImg: ImageView
     private lateinit var signupNameInput: EditText
 
@@ -47,6 +49,11 @@ class SocialSignupActivity : AppCompatActivity() {
 
         getData()
         findView()
+
+//        뒤로가기 버튼 눌렀을 때
+        backBtn.setOnClickListener {
+            this.onBackPressed()
+        }
 
 //        중복 확인 버튼 눌렀을 때
         dupNameBtn.setOnClickListener {
@@ -95,19 +102,23 @@ class SocialSignupActivity : AppCompatActivity() {
     private fun findView() {
         basicSignupBtn = findViewById(R.id.basicSignupBtn)
         dupNameBtn = findViewById(R.id.dupNameBtn)
+        backBtn = findViewById(R.id.backBtn)
         signupNameInput = findViewById(R.id.signupNameInput)
         signupNameInputImg = findViewById(R.id.signupNameInputImg)
-        signupNameInput.setText(nickname ?: "닉네임")
 
-        if (nickname?.isNotEmpty()!! || nickname != "") {
-            signupNameInputImg.setColorFilter(
-                ContextCompat.getColor(
-                    applicationContext,
-                    R.color.point
+        if (nickname != null) {
+            signupNameInput.setText(nickname)
+            if(nickname != "") {
+                signupNameInputImg.setColorFilter(
+                    ContextCompat.getColor(
+                        applicationContext,
+                        R.color.point
+                    )
                 )
-            )
+            }
+        } else {
+            signupNameInput.hint = "닉네임"
         }
-
         checkEditText(signupNameInput, signupNameInputImg)
     }
 
@@ -117,6 +128,8 @@ class SocialSignupActivity : AppCompatActivity() {
         val loginService = retrofit.create(LoginService::class.java)
         val firebaseToken = UserData.getUserFirebase()
         val nickname = signupNameInput.text.toString()
+        Log.d("SocialSignupActivity","signup() 닉네임 $socialAccessToken")
+        Log.d("SocialSignupActivity","signup() 닉네임 $nickname")
         loginService.requestSocialLogin(
             SocialLoginRequest(
                 accessToken = socialAccessToken!!,
@@ -139,31 +152,13 @@ class SocialSignupActivity : AppCompatActivity() {
                             GlobalVariables.prefs.setString("access_token", loginBody.accessToken)
                             GlobalVariables.prefs.setString("refresh_token", loginBody.accessToken)
                             GlobalVariables.getUser()
+                            UserData.setIsSocialLogined(type!!)
 
                             GlobalVariables.defaultAlertDialog(
                                 this@SocialSignupActivity,
                                 "회원가입 성공",
                                 "Groot에 오신 것을 환영합니다!", ::moveToMain, false
                             )
-//                            var dialog = AlertDialog.Builder(
-//                                this@SocialSignupActivity,
-//                                android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
-//                            )
-//
-//                            dialog.setTitle("환영합니다!")
-//                            dialog.setMessage("회원가입 되었습니다.")
-//                            dialog.setPositiveButton(
-//                                "확인",
-//                                DialogInterface.OnClickListener { dialog, which ->
-//
-//                                    var intent =
-//                                        Intent(
-//                                            this@SocialSignupActivity,
-//                                            MainActivity::class.java
-//                                        )
-//                                    startActivity(intent)
-//                                })
-//                            dialog.show()
                         }
                     } else {
                         Log.d("SocialSignupActivity", "onResponse() 실패 $resources")

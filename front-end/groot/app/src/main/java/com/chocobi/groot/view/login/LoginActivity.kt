@@ -70,7 +70,6 @@ class LoginActivity : AppCompatActivity() {
         loginPwInput = findViewById(R.id.loginPwInput)
         loginIdInputImg = findViewById(R.id.loginIdInputImg)
         loginPwInputImg = findViewById(R.id.loginPwInputImg)
-//        overlayView = findViewById(R.id.overlayView)
 
         checkEditText(loginIdInput, loginIdInputImg)
         checkEditText(loginPwInput, loginPwInputImg)
@@ -121,7 +120,7 @@ class LoginActivity : AppCompatActivity() {
                             socialAccessToken = token.accessToken
                             nickname = user.kakaoAccount?.profile?.nickname
                             profileImg = user.kakaoAccount?.profile?.thumbnailImageUrl
-                            socialLogin()
+                            socialLogin("카카오")
                         }
                     }
                 }
@@ -150,7 +149,7 @@ class LoginActivity : AppCompatActivity() {
                                 socialAccessToken = token.accessToken
                                 nickname = user.kakaoAccount?.profile?.nickname
                                 profileImg = user.kakaoAccount?.profile?.thumbnailImageUrl
-                                socialLogin()
+                                socialLogin("카카오")
                             }
                         }
                     }
@@ -171,7 +170,8 @@ class LoginActivity : AppCompatActivity() {
                             socialAccessToken = NaverIdLoginSDK.getAccessToken()
                             nickname = result.profile?.nickname.toString()
                             profileImg = result.profile?.profileImage.toString()
-                            socialLogin()
+                            Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
+//                            socialLogin("네이버)
                         }
 
                         override fun onError(errorCode: Int, message: String) {
@@ -204,7 +204,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun socialLogin() {
+    private fun socialLogin(type: String) {
         Log.d("LoginActivity","socialLogin() 소셜 로그인 요청")
         val retrofit = RetrofitClient.basicClient()!!
         val loginService = retrofit.create(LoginService::class.java)
@@ -224,6 +224,7 @@ class LoginActivity : AppCompatActivity() {
                             GlobalVariables.prefs.setString("access_token", loginBody.accessToken)
                             GlobalVariables.prefs.setString("refresh_token", loginBody.accessToken)
                             GlobalVariables.getUser()
+                            UserData.setIsSocialLogined(type)
                         }
 
                         var intent = Intent(this@LoginActivity, MainActivity::class.java)
@@ -231,13 +232,25 @@ class LoginActivity : AppCompatActivity() {
                     }
 //                    우리 서버에 존재 안하는 경우
                     else {
+
+                        // 토큰 정보 보기
+                        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+                            if (error != null) {
+                                Log.e(TAG, "토큰 정보 보기 실패", error)
+                            }
+                            else if (tokenInfo != null) {
+                                Log.i(TAG, "토큰 정보 보기 성공" +
+                                        "\n회원번호: ${tokenInfo.id}" +
+                                        "\n만료시간: ${tokenInfo.expiresIn} 초")
+                            }
+                        }
                         Log.d("LoginActivity", "onResponse() $response")
                         val intent =
                             Intent(this@LoginActivity, SocialSignupActivity::class.java)
                         intent.putExtra("nickname", nickname)
                         intent.putExtra("profile_img", profileImg)
                         intent.putExtra("social_access_token", socialAccessToken)
-                        intent.putExtra("type", "naver")
+                        intent.putExtra("type", type)
                         startActivity(intent)
                     }
                 }
