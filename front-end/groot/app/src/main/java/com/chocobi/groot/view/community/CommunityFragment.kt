@@ -65,6 +65,11 @@ class CommunityFragment : Fragment() {
             }
         }
 
+        val communityChatFab = rootView.findViewById<FloatingActionButton>(R.id.communityChatFab)
+        communityChatFab.setOnClickListener {
+            mActivity.changeFragment("chat_user_list")
+        }
+
         // Inflate the layout for this fragment
         return rootView
     }
