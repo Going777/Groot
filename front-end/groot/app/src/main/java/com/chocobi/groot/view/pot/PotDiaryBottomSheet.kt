@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings.Global
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -103,6 +104,7 @@ class PotDiaryBottomSheet(
         super.onCreateView(inflater, container, savedInstanceState)
         val rootView = inflater.inflate(R.layout.bottom_sheet_pot_diary, container, false)
 
+
         mActivity = activity as MainActivity
 
         findView(rootView)
@@ -126,31 +128,35 @@ class PotDiaryBottomSheet(
 //        사진 첨부 취소 버튼
         val attachCancleBtn = rootView.findViewById<ImageButton>(R.id.attachCancleBtn)
 
-        attachPhotoSection!!.setOnClickListener {
+//        기존 사진 첨부시 삭제 버튼이 적용 안되어서 주석처리함
+//        attachPhotoSection!!.setOnClickListener {
 //        사진 첨부 섹션
-            val attachPhotoSection = rootView.findViewById<LinearLayout>(R.id.attachPhotoSection)
+        val attachPhotoSection = rootView.findViewById<LinearLayout>(R.id.attachPhotoSection)
 //        첨부된 이미지 섹션
-            val attachedPhotoSection =
-                rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
+        val attachedPhotoSection =
+            rootView.findViewById<ConstraintLayout>(R.id.attachedPhotoSection)
 
-            myImageView = rootView.findViewById(R.id.attachedPhoto)
+        myImageView = rootView.findViewById(R.id.attachedPhoto)
 
-            attachPhotoSection.setOnClickListener {
-                mActivity.setGalleryStatus("pot_diary_create")
-                mActivity.requirePermissions(
-                    arrayOf(
-                        android.Manifest.permission.READ_MEDIA_IMAGES,
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE
-                    ),
-                    PERMISSION_GALLERY
-                )
-            }
-            attachCancleBtn.setOnClickListener {
-                attachPhotoSection!!.visibility = View.VISIBLE
-                attachedPhotoSection!!.visibility = View.GONE
-                imageFile = null
-            }
+
+
+        attachPhotoSection.setOnClickListener {
+            mActivity.setGalleryStatus("pot_diary_edit")
+            mActivity.requirePermissions(
+                arrayOf(
+                    android.Manifest.permission.READ_MEDIA_IMAGES,
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE
+                ),
+                PERMISSION_GALLERY
+            )
         }
+        attachCancleBtn.setOnClickListener {
+            Log.d(TAG, "클릭클릭")
+            attachPhotoSection!!.visibility = View.VISIBLE
+            attachedPhotoSection!!.visibility = View.GONE
+            imageFile = null
+        }
+//        }
 
         return rootView
     }
@@ -174,6 +180,12 @@ class PotDiaryBottomSheet(
         bugChip.isChecked = diaryBug ?: false
         sunChip.isChecked = diarySun ?: false
         pillChip.isChecked = diaryNutrients ?: false
+
+        if (pastImgPath != null) {
+            GlobalVariables.changeImgView(attachedPhoto, pastImgPath, requireContext())
+//            attachPhotoSection.visibility = View.VISIBLE
+            attachedPhotoSection.visibility = View.VISIBLE
+        }
 
         alertConstraintChip(waterChip, diaryWater ?: false, "물 주기")
         alertConstraintChip(potChip, diaryPruning ?: false, "분갈이")
@@ -220,6 +232,7 @@ class PotDiaryBottomSheet(
         postDiaryBtnClickBtn.setOnClickListener {
             content = diaryContent.text.toString()
             editDiary()
+
         }
     }
 
@@ -236,8 +249,7 @@ class PotDiaryBottomSheet(
 
         potService.requestEditDiary(
             EditDiaryRequest(
-                diaryId = diaryId,
-                userPK = userPK,
+                id = diaryId,
                 potId = potId,
                 content = content,
                 water = water,
@@ -245,7 +257,7 @@ class PotDiaryBottomSheet(
                 bug = bug,
                 sun = sun,
                 nutrients = nutrients,
-                id = diaryId
+                userPK = userPK
             ), filePart
         )
             .enqueue(object : retrofit2.Callback<BasicResponse> {
@@ -261,6 +273,7 @@ class PotDiaryBottomSheet(
                                 .show()
 //                            다이어리 페이지로 이동
                             mActivity.changeFragment("pot_diary")
+                            dismiss()
                         }
                     } else {
                         Log.d("PotDiaryCreateFragment", "onResponse() 다이어리 작성 실패ㅜㅜㅜ $response")
@@ -292,5 +305,6 @@ class PotDiaryBottomSheet(
         }
         return tempFile
     }
+
 
 }

@@ -130,8 +130,7 @@ class EditDiaryRequest internal constructor(
     val bug: Boolean?,
     val sun: Boolean?,
     val nutrients: Boolean?,
-    val userPK: Int,
-    val diaryId: Int
+    val userPK : Int,
 )
 
 data class DiaryCheckStatusResponse(

@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -50,7 +51,7 @@ class Pot2Activity : AppCompatActivity() {
     private var plantNameSplit: String = ""
     private var isSuccessed = false
 
-    private lateinit var scrollView: ScrollView
+    private lateinit var scrollView: LinearLayout
     private lateinit var characterSceneView: SceneView
     private lateinit var lottieView: LottieAnimationView
     private lateinit var potNameLayout: TextInputLayout

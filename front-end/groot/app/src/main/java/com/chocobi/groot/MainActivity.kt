@@ -40,6 +40,7 @@ import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.login.LoginService
 import com.chocobi.groot.view.login.SubscribeResponse
 import com.chocobi.groot.view.pot.PotDetailFragment
+import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
 import com.chocobi.groot.view.pot.PotDiaryFragment
 import com.chocobi.groot.view.pot.PotFragment
@@ -370,10 +371,19 @@ class MainActivity : AppCompatActivity() {
 
                 REQUEST_STORAGE -> {
                     data?.data?.let { uri ->
-                        val potDiaryCreateFragment =
-                            supportFragmentManager.findFragmentById(R.id.fl_container) as PotDiaryCreateFragment?
-                        if (potDiaryCreateFragment != null) {
-                            potDiaryCreateFragment.attachPhoto(uri)
+                        if (galleryStatus == "pot_diary_edit") {
+                            val potDiaryBottomSheet =
+                                supportFragmentManager.findFragmentByTag("PotDiaryBottomSheet") as PotDiaryBottomSheet?
+                            if (potDiaryBottomSheet != null) {
+                                potDiaryBottomSheet.attachPhoto(uri)
+                            }
+
+                        } else {
+                            val potDiaryCreateFragment =
+                                supportFragmentManager.findFragmentById(R.id.fl_container) as PotDiaryCreateFragment?
+                            if (potDiaryCreateFragment != null) {
+                                potDiaryCreateFragment.attachPhoto(uri)
+                            }
                         }
                     }
 //                    var i = 0
@@ -396,7 +406,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 //        알림 설정
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (!notificationManager.areNotificationsEnabled()) {
             var dialog = AlertDialog.Builder(this)
             dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")

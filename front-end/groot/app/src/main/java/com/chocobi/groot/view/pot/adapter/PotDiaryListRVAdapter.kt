@@ -93,10 +93,12 @@ class PotDiaryListRVAdapter(private val context: Context, private val mActivity:
                             diary.sun,
                             diary.nutrients
                         )
+
                         potBottomSheet.show(
                             mActivity.supportFragmentManager,
-                            potBottomSheet.tag
+                            "PotDiaryBottomSheet"
                         )
+
                         spinnerBtnClickListner.onSpinnerBtnClick(it, position)
                     }
 
