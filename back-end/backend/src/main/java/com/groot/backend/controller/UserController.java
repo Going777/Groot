@@ -1,9 +1,6 @@
 package com.groot.backend.controller;
 
-import com.groot.backend.dto.request.LoginDTO;
-import com.groot.backend.dto.request.RegisterDTO;
-import com.groot.backend.dto.request.UserPasswordDTO;
-import com.groot.backend.dto.request.UserProfileDTO;
+import com.groot.backend.dto.request.*;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
@@ -133,9 +130,23 @@ public class UserController {
 
     // 프로필 변경 (닉네임, 프로필 사진 변경)
     @PutMapping()
-    public ResponseEntity updateProfile(@RequestPart(value = "image", required = false) MultipartFile image,
+    public ResponseEntity updateProfile(HttpServletRequest request,
+                                        @RequestPart(value = "image", required = false) MultipartFile image,
                                         @Valid @RequestPart(value = "userProfileDTO") UserProfileDTO userProfileDTO) throws IOException {
         Map<String, Object> resultMap = new HashMap<>();
+
+        if(request.getHeader("Authorization") == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "토큰이 존재하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
+
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        if(id != userProfileDTO.getUserPK()){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "수정 권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
+        }
 
         if(!userService.isExistedId(userProfileDTO.getUserPK())){
             resultMap.put("result", FAIL);
@@ -371,5 +382,41 @@ public class UserController {
     }
 
 
-    // 유저 식물 조회
+    // 카카오 로그인
+    @PostMapping("/kakao")
+    public ResponseEntity kakaoLogin(@Valid @RequestBody KaKaoUserDTO kaKaoUserDTO) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        // 닉네임 중복 체크
+        if (userService.isExistedNickName(kaKaoUserDTO.getNickName())) {
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "이미 존재하는 닉네임입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        try {
+            TokenDTO result = userService.kakaoLogin(kaKaoUserDTO);
+            if(result == null){
+                resultMap.put("result", FAIL);
+                resultMap.put("msg", "존재하지 않는 사용자");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
+            resultMap.put("accessToken", result.getAccessToken());
+            resultMap.put("refreshToken", result.getRefreshToken());
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg", "카카오 로그인 성공");
+            return ResponseEntity.ok().body(resultMap);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            resultMap.put("error", e.getMessage());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("error",e.getMessage());
+        }
+        resultMap.put("result", FAIL);
+        resultMap.put("msg", "카카오 로그인 실패");
+        return ResponseEntity.internalServerError().body(resultMap);
+    }
 }
