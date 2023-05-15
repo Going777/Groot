@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.login.LoginActivity
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -20,6 +22,7 @@ class IntroActivity : AppCompatActivity() {
     private val TAG = "IntroActivity"
     private var accessToken: String? = null
     private var refreshToken: String? = null
+
 
     //    뒤로가기 조작
     private var backPressedTime: Long = 0
@@ -39,6 +42,13 @@ class IntroActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_intro)
+
+        //        firebase 토큰 확인
+        FirebaseMessaging.getInstance().token
+            .addOnSuccessListener { token ->
+                token ?: ""
+                UserData.setUserFirebase(token)
+            }
 
 
 //        token 갱신
