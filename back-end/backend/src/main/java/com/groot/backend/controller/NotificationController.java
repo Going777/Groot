@@ -1,5 +1,6 @@
 package com.groot.backend.controller;
 
+import com.groot.backend.dto.response.NotificationResponseDTO;
 import com.groot.backend.dto.response.UserDTO;
 import com.groot.backend.entity.NotificationEntity;
 import com.groot.backend.service.NotificationService;
@@ -56,7 +57,8 @@ public class NotificationController {
     public ResponseEntity readList(@RequestParam Integer page, @RequestParam Integer size, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        Page<NotificationEntity> result = notificationService.notificationList(userId, page, size);
+        Page<NotificationEntity> resultEntity = notificationService.notificationList(userId, page, size);
+        Page<NotificationResponseDTO> result = NotificationResponseDTO.toPageDTO(resultEntity);
         if(result.isEmpty()){
             resultMap.put("msg", "알림을 조회할 수 없습니다.");
             resultMap.put("result", FAIL);
