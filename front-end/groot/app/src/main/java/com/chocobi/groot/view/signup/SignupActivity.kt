@@ -280,25 +280,11 @@ class SignupActivity : AppCompatActivity() {
                         GlobalVariables.prefs.setString("access_token", signupBody.accessToken)
                         GlobalVariables.prefs.setString("refresh_token", signupBody.refreshToken)
                         GlobalVariables.getUser()
-                        var dialog = AlertDialog.Builder(
+                        GlobalVariables.defaultAlertDialog(
                             this@SignupActivity,
-                            android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
+                            "회원가입 성공",
+                            "Groot에 오신 것을 환영합니다!", ::moveToMain, false
                         )
-
-                        dialog.setTitle("환영합니다!")
-                        dialog.setMessage(signupMsg)
-                        dialog.setPositiveButton(
-                            "확인",
-                            DialogInterface.OnClickListener { dialog, which ->
-
-                                var intent =
-                                    Intent(
-                                        this@SignupActivity,
-                                        MainActivity::class.java
-                                    )
-                                startActivity(intent)
-                            })
-                        dialog.show()
                     } else {
                         signupMsg =
                             JSONObject(
@@ -313,5 +299,14 @@ class SignupActivity : AppCompatActivity() {
                 }
             })
 
+    }
+
+    private fun moveToMain() {
+        var intent =
+            Intent(
+                this@SignupActivity,
+                MainActivity::class.java
+            )
+        startActivity(intent)
     }
 }

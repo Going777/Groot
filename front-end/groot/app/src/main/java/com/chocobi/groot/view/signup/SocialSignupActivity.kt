@@ -1,12 +1,26 @@
 package com.chocobi.groot.view.signup
 
+import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.login.LoginResponse
+import com.chocobi.groot.view.login.LoginService
+import com.chocobi.groot.view.login.SocialLoginRequest
 import com.kakao.sdk.common.util.Utility
 import org.json.JSONException
 import org.json.JSONObject
@@ -17,10 +31,12 @@ import retrofit2.Response
 class SocialSignupActivity : AppCompatActivity() {
     private lateinit var basicSignupBtn: Button
     private lateinit var dupNameBtn: Button
+    private lateinit var signupNameInputImg: ImageView
+    private lateinit var signupNameInput: EditText
 
     private var nickname: String? = null
     private var profileImg: String? = null
-    private var social_access_token: String? = null
+    private var socialAccessToken: String? = null
     private var type: String? = null
 
     private var isCheckedDupName = false
@@ -35,34 +51,148 @@ class SocialSignupActivity : AppCompatActivity() {
 //        중복 확인 버튼 눌렀을 때
         dupNameBtn.setOnClickListener {
             GlobalVariables.hideKeyboard(this)
-            if (!nickname.isNullOrEmpty()) {
+            if (!signupNameInput.text.isNullOrEmpty()) {
                 checkDupName(nickname!!)
+            } else {
+                GlobalVariables.defaultAlertDialog(
+                    this,
+                    title = "닉네임 중복 체크",
+                    message = "닉네임을 입력해주세요."
+                )
             }
         }
 
 //        가입 완료 버튼 눌렀을 때
         basicSignupBtn.setOnClickListener {
-            signup()
+            when {
+                !isCheckedDupName -> {
+                    GlobalVariables.defaultAlertDialog(
+                        context = this,
+                        title = "닉네임 중복 체크",
+                        message = "닉네임 중복 여부를 확인해주세요."
+                    )
+                }
+
+                else -> {
+                    signup()
+                }
+            }
         }
     }
 
     private fun getData() {
         nickname = intent.getStringExtra("nickname")
-        profileImg = intent.getStringExtra("profileImg")
-        social_access_token = intent.getStringExtra("social_access_token")
+        profileImg = intent.getStringExtra("profile_img")
+        socialAccessToken = intent.getStringExtra("social_access_token")
         type = intent.getStringExtra("type")
+
+        Log.d("SocialSignupActivity", "getData() ${nickname}")
+        Log.d("SocialSignupActivity", "getData() ${profileImg}")
+        Log.d("SocialSignupActivity", "getData() ${socialAccessToken}")
+        Log.d("SocialSignupActivity", "getData() ${type}")
     }
 
     private fun findView() {
         basicSignupBtn = findViewById(R.id.basicSignupBtn)
         dupNameBtn = findViewById(R.id.dupNameBtn)
+        signupNameInput = findViewById(R.id.signupNameInput)
+        signupNameInputImg = findViewById(R.id.signupNameInputImg)
+        signupNameInput.setText(nickname ?: "닉네임")
+
+        if (nickname?.isNotEmpty()!! || nickname != "") {
+            signupNameInputImg.setColorFilter(
+                ContextCompat.getColor(
+                    applicationContext,
+                    R.color.point
+                )
+            )
+        }
+
+        checkEditText(signupNameInput, signupNameInputImg)
     }
 
     private fun signup() {
-        GlobalVariables.defaultAlertDialog(this@SocialSignupActivity, title = "로그인 성공", "반갑습니다!!")
+        Log.d("LoginActivity", "socialLogin() 소셜 로그인 요청")
+        val retrofit = RetrofitClient.basicClient()!!
+        val loginService = retrofit.create(LoginService::class.java)
+        val firebaseToken = UserData.getUserFirebase()
+        val nickname = signupNameInput.text.toString()
+        loginService.requestSocialLogin(
+            SocialLoginRequest(
+                accessToken = socialAccessToken!!,
+                nickName = nickname,
+                firebaseToken = firebaseToken
+            )
+        )
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+                    if (response.code() == 200) {
+
+//                    통신 성공시 실행되는 코드
+                        var loginBody = response.body()
+
+//                    토큰 저장
+                        if (loginBody != null) {
+                            GlobalVariables.prefs.setString("access_token", loginBody.accessToken)
+                            GlobalVariables.prefs.setString("refresh_token", loginBody.accessToken)
+                            GlobalVariables.getUser()
+
+                            GlobalVariables.defaultAlertDialog(
+                                this@SocialSignupActivity,
+                                "회원가입 성공",
+                                "Groot에 오신 것을 환영합니다!", ::moveToMain, false
+                            )
+//                            var dialog = AlertDialog.Builder(
+//                                this@SocialSignupActivity,
+//                                android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
+//                            )
+//
+//                            dialog.setTitle("환영합니다!")
+//                            dialog.setMessage("회원가입 되었습니다.")
+//                            dialog.setPositiveButton(
+//                                "확인",
+//                                DialogInterface.OnClickListener { dialog, which ->
+//
+//                                    var intent =
+//                                        Intent(
+//                                            this@SocialSignupActivity,
+//                                            MainActivity::class.java
+//                                        )
+//                                    startActivity(intent)
+//                                })
+//                            dialog.show()
+                        }
+                    } else {
+                        Log.d("SocialSignupActivity", "onResponse() 실패 $resources")
+                    }
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+//                    통신 실패시 실행되는 코드
+                    GlobalVariables.defaultAlertDialog(
+                        this@SocialSignupActivity,
+                        "회원가입 실패",
+                        t.message
+                    )
+
+                }
+            })
+    }
+
+    private fun moveToMain() {
+        var intent =
+            Intent(
+                this@SocialSignupActivity,
+                MainActivity::class.java
+            )
+        startActivity(intent)
     }
 
     private fun checkDupName(nickname: String) {
+        Log.d("SocialSignupActivity", "checkDupName() 중복 체크하는 닉네임 $nickname")
         if (nickname == "") {
             return
         }
@@ -104,5 +234,48 @@ class SocialSignupActivity : AppCompatActivity() {
                     )
                 }
             })
+    }
+
+    private fun checkEditText(editText: EditText, imageView: ImageView) {
+        var message = ""
+        editText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                message = editText.text.toString()
+                isCheckedDupName = false
+                nickname = message
+//            텍스트가 있으면 새싹 색깔 point로 변경
+                if (message.isNotEmpty()) {
+                    imageView.setColorFilter(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.point
+                        )
+                    )
+//            텍스트가 비면 새싹 색깔 grey로 변경
+                } else {
+                    imageView.setColorFilter(
+                        ContextCompat.getColor(
+                            applicationContext,
+                            R.color.grey
+                        )
+                    )
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        editText.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                // Enter(또는 Done) 키가 눌렸을 때 수행할 동작
+                GlobalVariables.hideKeyboard(this)
+                true
+            } else {
+                false
+            }
+        }
     }
 }
