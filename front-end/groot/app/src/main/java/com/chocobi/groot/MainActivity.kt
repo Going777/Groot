@@ -27,6 +27,8 @@ import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.chat.ChatFragment
+import com.chocobi.groot.view.chat.ChatUserListFragment
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -165,6 +167,10 @@ class MainActivity : AppCompatActivity() {
 
             "setting" -> {
                 fragment = SettingFragment()
+            }
+
+            "chat_user_list" -> {
+                fragment = ChatUserListFragment()
             }
         }
         if (fragment != null) {

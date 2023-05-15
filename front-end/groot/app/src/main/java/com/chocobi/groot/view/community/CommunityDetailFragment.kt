@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Adapter
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -20,7 +19,6 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
@@ -44,10 +42,6 @@ import com.chocobi.groot.view.community.model.BookmarkResponse
 import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
-import com.chocobi.groot.view.community.model.CreateTime
-import com.chocobi.groot.view.community.model.Date
-import com.chocobi.groot.view.community.model.Time
-import com.chocobi.groot.view.community.model.UpdateTime
 import com.chocobi.groot.view.community.model.CommunityService
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -71,6 +65,7 @@ class CommunityDetailFragment : Fragment() {
     private lateinit var getCommentData: CommunityCommentResponse
     private var articleId: Int = 0
     private lateinit var frameLayoutComment: FrameLayout
+    private var shareStatus = false
 
 
 //    private var commentList = arrayListOf<CommunityCommentResponse>()
@@ -133,7 +128,6 @@ class CommunityDetailFragment : Fragment() {
         var postCommentBtn = view.findViewById<Button>(R.id.postCommentBtn)
         var postCommentInput = view.findViewById<EditText>(R.id.postCommentInput)
         var sharePosition = view.findViewById<TextView>(R.id.sharePosition)
-        var shareStatus = false
 
         var userProfile = view.findViewById<CircleImageView>(R.id.userProfile)
 
@@ -307,6 +301,8 @@ class CommunityDetailFragment : Fragment() {
 
                     // 카테고리별 섹션 구별
                     if (detailCategory.text == "나눔") {
+                        shareStatus = articleDetailData.article.shareStatus!!
+
                         if (articleDetailData.article.shareStatus == true) {
                             shareStateSection.visibility = View.VISIBLE
                         } else if (articleDetailData.article.shareStatus == false) {
@@ -354,11 +350,11 @@ class CommunityDetailFragment : Fragment() {
                         val spinner: Spinner = view.findViewById(R.id.spinner)
                         val spinnerButton: ImageButton = view.findViewById(R.id.spinnerButton)
 
-                        val options: Array<String>
+                        var options: Array<String>
                         if (detailCategory.text == "나눔") {
-                            options = arrayOf("  수정  ", "  삭제  ", " 나눔 완료 ")
+                            options = arrayOf("  삭제  ", "  수정  ", " 나눔 완료 ")
                         } else {
-                            options = arrayOf("  수정  ", "  삭제  ")
+                            options = arrayOf("  삭제  ", "  수정  ")
                         }
                         // spinner 설정 이전에 아래 코드 추가
 
@@ -370,18 +366,6 @@ class CommunityDetailFragment : Fragment() {
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         spinner.adapter = adapter
 
-                        var isFirstSelection = true
-                        try {
-                            val method =
-                                Spinner::class.java.getDeclaredMethod(
-                                    "setSpinnerButton",
-                                    ImageButton::class.java
-                                )
-                            method.invoke(spinner, spinnerButton)
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-
                         spinner.onItemSelectedListener =
                             object : AdapterView.OnItemSelectedListener {
                                 override fun onItemSelected(
@@ -390,34 +374,45 @@ class CommunityDetailFragment : Fragment() {
                                     position: Int,
                                     id: Long
                                 ) {
-                                    if (isFirstSelection) {
-                                        isFirstSelection = false
+                                    Log.d("shareStatus", shareStatus.toString())
+                                    if (shareStatus == true) {
+                                        options[2] = " 나눔 취소 "
                                     } else {
-
-                                        var selectedOption = options[position]
-                                        if (selectedOption == "  삭제  ") {
-                                            val dialog = AlertDialog.Builder(requireContext())
-                                            dialog.setTitle("글을 삭제하시겠습니까?")
-                                            dialog.setPositiveButton("네") { dialog, which ->
-                                                deleteArticle(articleId)
-                                                requireActivity().supportFragmentManager.popBackStack()
-                                            }
-                                            dialog.setNegativeButton("아니요") { dialog, which ->
-                                                dialog.dismiss()
-                                            }
-                                            dialog.show()
-                                        } else if (selectedOption == " 수정 ") {
-
-                                        } else if (selectedOption == " 나눔 완료 ") {
-                                            options[position] = " 나눔 취소 " // "나눔 완료"를 "나눔 취소"로 변경
-                                            adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
-                                            spinner.setSelection(position) // 선택한 위치를 유지하도록 설정
-                                        } else if (selectedOption == " 나눔 취소 ") {
-                                            options[position] = " 나눔 완료 " // "나눔 취소"를 "나눔 완료"로 변경
-                                            spinner.setSelection(position) // 선택한 위치를 유지하도록 설정
-                                            adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
-                                        }
+                                        options[2] = " 나눔 완료 "
                                     }
+
+
+                                    var selectedOption = options[position]
+                                    if (selectedOption == "  삭제  ") {
+                                        val dialog = AlertDialog.Builder(requireContext())
+                                        dialog.setTitle("글을 삭제하시겠습니까?")
+                                        dialog.setPositiveButton("네") { dialog, which ->
+                                            deleteArticle(articleId)
+                                            requireActivity().supportFragmentManager.popBackStack()
+                                        }
+                                        dialog.setNegativeButton("아니요") { dialog, which ->
+                                            dialog.dismiss()
+                                        }
+                                        dialog.show()
+                                    } else if (selectedOption == " 수정 ") {
+
+                                    }
+                                    if (selectedOption == " 나눔 완료 ") {
+                                        changeShareStatus(articleId, UserData.getUserPK())
+                                        shareStateSection.visibility = View.VISIBLE
+                                        options[2] = " 나눔 취소 "
+                                        shareStatus = true
+                                        adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
+
+                                    } else if (selectedOption == " 나눔 취소 ") {
+                                        changeShareStatus(articleId, UserData.getUserPK())
+                                        shareStateSection.visibility = View.GONE
+                                        options[2] = " 나눔 완료 "
+                                        shareStatus = false
+                                        adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
+
+                                    }
+
 
                                 }
 
@@ -425,9 +420,15 @@ class CommunityDetailFragment : Fragment() {
                                     // 아무것도 선택하지 않은 경우 처리
                                 }
                             }
+                        var spinnerClicked = false
 
                         spinnerButton.setOnClickListener {
-                            spinner.performClick()
+                            spinnerClicked = !spinnerClicked
+                            if (spinnerClicked) {
+                                spinner.performClick()
+                            } else {
+                                spinner.clearFocus()
+                            }
                         }
                     } else {
                         dropdownSection.visibility = View.GONE
@@ -764,5 +765,32 @@ class CommunityDetailFragment : Fragment() {
                     Log.d("CommunityDetailFragment", "onResponse() 삭제 실패2")
                 }
             })
+    }
+
+    private fun changeShareStatus(articleId: Int, userPK: Int) {
+        val retrofit = RetrofitClient.getClient()
+        val communityShareStatusService = retrofit?.create(CommunityShareStatusService::class.java)
+        communityShareStatusService?.requestCommunityShareStatus(
+            ShareStatusRequest(
+                articleId,
+                userPK
+            )
+        )
+            ?.enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    if (response.code() == 200) {
+                        shareStatus = !shareStatus
+
+                    }
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                    Log.d(TAG, "나눔상태 변경 실패")
+                }
+            })
+
     }
 }

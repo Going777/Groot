@@ -25,16 +25,7 @@ import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CommunityFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CommunityFragment : Fragment() {
     private val TAG = "CommunityFragment"
     private var nowTab: Int = 0
@@ -69,6 +60,11 @@ class CommunityFragment : Fragment() {
             } else {
                 mActivity.changeFragment("community_post")
             }
+        }
+
+        val communityChatFab = rootView.findViewById<FloatingActionButton>(R.id.communityChatFab)
+        communityChatFab.setOnClickListener {
+            mActivity.changeFragment("chat_user_list")
         }
 
         // Inflate the layout for this fragment
@@ -124,26 +120,5 @@ class CommunityFragment : Fragment() {
         super.onResume()
         regionList = arguments?.getStringArrayList("region_list")
         regionFullList = arguments?.getStringArrayList("region_full_list")
-    }
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CommunityFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommunityFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
