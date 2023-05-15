@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import javax.persistence.*;
 import java.util.List;
@@ -69,6 +71,7 @@ public class DiaryEntity extends BaseEntity{
     private PotEntity potEntity;
 
     @ManyToOne(targetEntity = DiaryCheckEntity.class, fetch = FetchType.LAZY)
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "diary_check_id")
     @JsonBackReference
     private DiaryCheckEntity diaryCheckEntity;
