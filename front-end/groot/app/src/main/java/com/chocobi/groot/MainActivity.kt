@@ -18,7 +18,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.chocobi.groot.data.GlobalVariables
@@ -29,9 +28,7 @@ import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
-import com.chocobi.groot.view.community.CommunityQnaFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
-import com.chocobi.groot.view.community.CommunityTipFragment
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.community.model.PopularTagResponse
 import com.chocobi.groot.view.intro.IntroActivity
@@ -39,8 +36,6 @@ import com.chocobi.groot.view.intro.IntroDataService
 import com.chocobi.groot.view.intro.PlantNamesResponse
 import com.chocobi.groot.view.intro.RegionNameResponse
 import com.chocobi.groot.view.login.LoginActivity
-import com.chocobi.groot.view.login.LoginService
-import com.chocobi.groot.view.login.SubscribeResponse
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
