@@ -26,5 +26,6 @@ interface LoginService {
 
 class LoginRequest internal constructor(
     val userId: String,
-    val password: String
+    val password: String,
+    val firebaseToken: String
 )

@@ -19,6 +19,7 @@ import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.signup.SignupActivity
 import retrofit2.Call
 import retrofit2.Callback
@@ -149,9 +150,10 @@ class LoginActivity : AppCompatActivity() {
 
         textId = loginIdInput.text.toString()
         textPw = loginPwInput.text.toString()
+        val firebaseToken = UserData.getUserFirebase()
 
         //            로그인 요청 보내기
-        loginService.requestLogin(LoginRequest(textId, textPw))
+        loginService.requestLogin(LoginRequest(textId, textPw, firebaseToken))
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
                     call: Call<LoginResponse>,

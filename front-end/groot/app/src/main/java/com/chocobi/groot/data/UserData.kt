@@ -9,6 +9,15 @@ class UserData : Application() {
         private var nickName = "User Nickname"
         private var profile : String? = null
         private var registerDate = 0
+        private var firebaseToken = ""
+
+        fun getUserFirebase() : String {
+            return firebaseToken
+        }
+
+        fun setUserFirebase(token: String) {
+            firebaseToken = token
+        }
 
         fun getUserPK(): Int {
             return userPK
