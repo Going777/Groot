@@ -2,6 +2,7 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.request.BookmarkDTO;
+import com.groot.backend.dto.request.ShareStatusDTO;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.ArticleResponseDTO;
 import com.groot.backend.dto.response.TagRankDTO;
@@ -29,4 +30,5 @@ public interface ArticleService {
     List<TagRankDTO> readTagRanking();
     // 스케줄러
     void updateTagCountTable();
+    void updateShareStatus(Long userPK, ShareStatusDTO shareStatusDTO);
 }
