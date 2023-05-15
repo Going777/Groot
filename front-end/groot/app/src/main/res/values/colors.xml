@@ -30,4 +30,6 @@
     <color name="detail_water">#5A73EF</color>
     <color name="detail_temp">#EDCB50</color>
     <color name="detail_bug">#FF5252</color>
+
+    <color name="social_btn">#CDB5CDA3</color>
 </resources>

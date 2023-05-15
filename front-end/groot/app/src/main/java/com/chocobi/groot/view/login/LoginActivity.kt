@@ -11,15 +11,28 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.airbnb.lottie.BuildConfig
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.signup.SignupActivity
+import com.chocobi.groot.view.signup.SocialSignupActivity
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.common.util.Utility
+import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
+import com.navercorp.nid.profile.NidProfileCallback
+import com.navercorp.nid.profile.data.NidProfileResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,13 +43,123 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginPwInput: EditText
     private lateinit var loginIdInputImg: ImageView
     private lateinit var loginPwInputImg: ImageView
+    private lateinit var naverLoginBtn: LinearLayout
+    private lateinit var kakaoLoginBtn: LinearLayout
 //    private lateinit var overlayView: View
+
+    private var email: String = ""
+    private var gender: String = ""
+    private var name: String = ""
+
     private var textId: String = ""
     private var textPw: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        kakaoLoginBtn = findViewById(R.id.kakaoLoginBtn)
+        kakaoLoginBtn.setOnClickListener {
+            // 카카오계정으로 로그인 공통 callback 구성
+            // 카카오톡으로 로그인 할 수 없어 카카오계정으로 로그인할 경우 사용됨
+            val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+                if (error != null) {
+                    Log.e(TAG, "카카오계정으로 로그인 실패", error)
+                } else if (token != null) {
+                    Log.i(TAG, "카카오계정으로 로그인 성공 ${token.accessToken}")
+                    // 사용자 정보 요청 (기본)
+                    UserApiClient.instance.me { user, error ->
+                        if (error != null) {
+                            Log.e(TAG, "사용자 정보 요청 실패", error)
+                        }
+                        else if (user != null) {
+                            Log.i(TAG, "사용자 정보 요청 성공" +
+                                    "\n회원번호: ${user.id}" +
+                                    "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                                    "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+                        }
+                    }
+                }
+            }
+
+            // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
+            if (UserApiClient.instance.isKakaoTalkLoginAvailable(this)) {
+                UserApiClient.instance.loginWithKakaoTalk(this) { token, error ->
+                    if (error != null) {
+                        Log.e(TAG, "카카오톡으로 로그인 실패", error)
+
+                        // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
+                        // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예: 뒤로 가기)
+                        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                            return@loginWithKakaoTalk
+                        }
+
+                        // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인 시도
+                        UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+                    } else if (token != null) {
+                        Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
+
+
+                    }
+                }
+            } else {
+                UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
+            }
+        }
+
+
+
+        naverLoginBtn = findViewById(R.id.naverLoginBtn)
+        naverLoginBtn.setOnClickListener {
+            val oAuthLoginCallback = object : OAuthLoginCallback {
+                override fun onSuccess() {
+                    // 네이버 로그인 API 호출 성공 시 유저 정보를 가져온다
+                    NidOAuthLogin().callProfileApi(object : NidProfileCallback<NidProfileResponse> {
+                        override fun onSuccess(result: NidProfileResponse) {
+                            name = result.profile?.name.toString()
+                            email = result.profile?.email.toString()
+                            gender = result.profile?.gender.toString()
+                            val naverAccessToken = NaverIdLoginSDK.getAccessToken()
+
+                            val intent =
+                                Intent(this@LoginActivity, SocialSignupActivity::class.java)
+                            startActivity(intent)
+//                            GlobalVariables.defaultAlertDialog(this@LoginActivity, title = "로그인 성공", "반갑습니다!!")
+                            Log.d("LoginActivity", "onSuccess() 로그인 성공 ${result}")
+//                            Log.e(TAG, "네이버 로그인한 유저 정보 - 이름 : $name")
+//                            Log.e(TAG, "네이버 로그인한 유저 정보 - 이메일 : $email")
+//                            Log.e(TAG, "네이버 로그인한 유저 정보 - 성별 : $gender")
+                        }
+
+                        override fun onError(errorCode: Int, message: String) {
+                            //
+                        }
+
+                        override fun onFailure(httpStatus: Int, message: String) {
+                            //
+                        }
+                    })
+                }
+
+                override fun onError(errorCode: Int, message: String) {
+                    val naverAccessToken = NaverIdLoginSDK.getAccessToken()
+                    Log.e(TAG, "naverAccessToken : $naverAccessToken")
+                }
+
+                override fun onFailure(httpStatus: Int, message: String) {
+                    //
+                }
+            }
+
+            NaverIdLoginSDK.initialize(
+                this@LoginActivity,
+                com.chocobi.groot.BuildConfig.NAVER_CLIENT_ID,
+                com.chocobi.groot.BuildConfig.NAVER_CLIENT_SECRET,
+                "Groot"
+            )
+            NaverIdLoginSDK.authenticate(this@LoginActivity, oAuthLoginCallback)
+        }
+
 
         val basicLoginBtn = findViewById<Button>(R.id.basicLoginBtn)
         val toSignupText = findViewById<TextView>(R.id.toSignupText)
@@ -173,7 +296,10 @@ class LoginActivity : AppCompatActivity() {
                         var intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
                     } else {
-                        GlobalVariables.defaultAlertDialog(context = context, message = "등록되지 않은 아이디이거나\n아이디 또는 비밀번호를 잘못 입력했습니다.")
+                        GlobalVariables.defaultAlertDialog(
+                            context = context,
+                            message = "등록되지 않은 아이디이거나\n아이디 또는 비밀번호를 잘못 입력했습니다."
+                        )
                     }
                 }
 

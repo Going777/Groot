@@ -5,6 +5,9 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
 android {
     namespace 'com.chocobi.groot'
     compileSdk 33
@@ -16,6 +19,7 @@ android {
     buildFeatures {
         dataBinding true
         viewBinding true
+        buildConfig true
     }
 
     defaultConfig {
@@ -26,6 +30,12 @@ android {
         versionName "1.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "NAVER_CLIENT_ID", properties['naver_client_id']
+        buildConfigField "String", "NAVER_CLIENT_SECRET", properties['naver_client_secret']
+
+        buildConfigField "String", "KAKAO_NATIVE_APP_KEY", properties['kakao_native_app_key']
+        resValue "string", "kakao_oauth_host", properties['kakao_oauth_host']
     }
 
     buildTypes {
@@ -152,6 +162,16 @@ dependencies {
 
 //    youtube
     implementation 'com.pierfrancescosoffritti.androidyoutubeplayer:core:12.0.0'
+
+//    Naver
+    implementation 'com.navercorp.nid:oauth:5.1.0'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0"
+
+//    Kakao
+    implementation "com.kakao.sdk:v2-user:2.13.0" // 카카오 로그인
+
+//    coroutine
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
 }
 
 
