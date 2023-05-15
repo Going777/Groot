@@ -31,22 +31,23 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
     // 제목 + 내용 + 태그 검색
     @Override
     public Page<ArticleEntity> search(String category, String[] region, String keyword, PageRequest pageRequest, Boolean shareStatus) {
-        QArticleEntity articleEntity = QArticleEntity.articleEntity;
+        QArticleEntity qArticle = QArticleEntity.articleEntity;
         QTagEntity tag = QTagEntity.tagEntity;
         QArticleTagEntity articleTag = QArticleTagEntity.articleTagEntity;
 
         List<ArticleEntity> articles = queryFactory
-                .selectFrom(articleEntity)
-                .where(articleEntity.category.eq(category),
-                        eqRegions(articleEntity, region),
-                        eqShareStatus(articleEntity, shareStatus))
-                .leftJoin(articleTag).on(articleEntity.id.eq(articleTag.articleId))
+                .selectFrom(qArticle)
+                .where(qArticle.category.eq(category)
+                        ,eqRegions(qArticle, region)
+                        ,eqShareStatus(qArticle,shareStatus))
+                .leftJoin(articleTag).on(qArticle.id.eq(articleTag.articleId))
                 .leftJoin(tag).on(articleTag.tagId.eq(tag.id))
                 .where(tag.name.eq(keyword)
-                                .or(articleEntity.title.contains(keyword))
-                                .or(articleEntity.content.contains(keyword))
+                                .or(qArticle.title.contains(keyword))
+                                .or(qArticle.content.contains(keyword))
                 )
-                .orderBy(articleEntity.createdDate.desc())
+                .orderBy(qArticle.createdDate.desc())
+                .distinct()
                 .fetch();
 
         return convertListToPage(articles, pageRequest);
@@ -111,15 +112,9 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
         return new PageImpl<>(articles.subList(start, end), pageRequest, articles.size());
     }
 
-
     // 나눔 여부로 필터링
     private BooleanExpression eqShareStatus (QArticleEntity articleEntity, Boolean shareStatus){
         return shareStatus == null ? null : articleEntity.shareStatus.eq(shareStatus);
-    }
-
-    // 키워드로 게시글 제목 검색
-    private BooleanExpression eqTitle(QArticleEntity articleEntity, String keyword){
-        return keyword == null ? null : articleEntity.title.contains(keyword);
     }
 
     // 키워드로 게시글 내용 검색
@@ -127,16 +122,19 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
         return keyword == null ? null : articleEntity.content.contains(keyword);
     }
 
+    // 키워드로 게시글 제목 검색
+    private BooleanExpression eqTitle(QArticleEntity articleEntity, String keyword){
+        return keyword == null ? null : articleEntity.title.contains(keyword);
+    }
+
     // 필터링 복수 검색
     private BooleanBuilder eqRegions(QArticleEntity articleEntity, String[] regions){
-        if(regions ==null){
-            return null;
-        }
 
         BooleanBuilder booleanBuilder = new BooleanBuilder();
-
-        for(String region : regions){
-            booleanBuilder.or(articleEntity.shareRegion.eq(region));
+        if(regions != null){
+            for(String region : regions){
+                booleanBuilder.or(articleEntity.shareRegion.eq(region));
+            }
         }
         return booleanBuilder;
     }
