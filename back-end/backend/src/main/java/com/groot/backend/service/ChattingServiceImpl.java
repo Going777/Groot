@@ -10,6 +10,7 @@ import com.groot.backend.dto.response.ChatDetailDTO;
 import com.groot.backend.dto.response.ChatResponseDTO;
 import com.groot.backend.entity.ChattingEntity;
 import com.groot.backend.entity.ChattingEntityPK;
+import com.groot.backend.entity.NotificationEntity;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.ChattingRepository;
 import com.groot.backend.repository.UserRepository;
@@ -51,6 +52,15 @@ public class ChattingServiceImpl implements ChattingService{
         String body = user1.getNickName()+"님이 나눔 채팅을 시작하였습니다.";
 
         Optional<UserEntity> user = userRepository.findById(user2.getId());
+        NotificationEntity noti = NotificationEntity.builder()
+                .contentId(chatRequestDTO.getRoomId())
+                .page("chatting")
+                .isRead(false)
+                .content(body)
+                .title(title)
+                .receiver(user.get())
+                .build();
+
         if(user.isPresent()) {
             if (user.get().getFirebaseToken() != null) {
                 Notification notification = Notification.builder()

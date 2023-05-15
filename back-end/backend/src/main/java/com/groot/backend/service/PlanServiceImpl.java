@@ -24,6 +24,7 @@ import java.util.Optional;
 @Slf4j
 @Transactional
 public class PlanServiceImpl implements PlanService{
+    private final NotificationRepository notificationRepository;
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
     private final PotRepository potRepository;
@@ -129,6 +130,16 @@ public class PlanServiceImpl implements PlanService{
                 body = pot.getName() + "에게 영양제를 줄 시간입니다!";
             }
             Optional<UserEntity> user = userRepository.findById(plan.getUserPK());
+
+            NotificationEntity noti = NotificationEntity.builder()
+                    .contentId(pot.getId())
+                    .page("main")
+                    .isRead(false)
+                    .content(body)
+                    .title(title)
+                    .receiver(user.get())
+                    .build();
+
             if(user.isPresent()) {
                 if (user.get().getFirebaseToken() != null) {
                     Notification notification = Notification.builder()
@@ -143,6 +154,7 @@ public class PlanServiceImpl implements PlanService{
 
                     try {
                         firebaseMessaging.send(message);
+                        notificationRepository.save(noti);
 //                    return "알림을 성공적으로 전송했습니다. targetUserId="+recieiver.getId();
                     } catch (FirebaseMessagingException e) {
                         e.printStackTrace();
