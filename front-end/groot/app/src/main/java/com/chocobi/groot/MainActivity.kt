@@ -29,7 +29,9 @@ import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
+import com.chocobi.groot.view.community.CommunityQnaFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
+import com.chocobi.groot.view.community.CommunityTipFragment
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.community.model.PopularTagResponse
 import com.chocobi.groot.view.intro.IntroActivity
@@ -162,6 +164,14 @@ class MainActivity : AppCompatActivity() {
 
             "community_post" -> {
                 fragment = CommunityPostFragment()
+            }
+
+            "community_qna" -> {
+                fragment = CommunityQnaFragment()
+            }
+
+            "community_tip" -> {
+                fragment = CommunityTipFragment()
             }
 
             "setting" -> {
