@@ -49,6 +49,7 @@ import com.chocobi.groot.view.community.model.Date
 import com.chocobi.groot.view.community.model.Time
 import com.chocobi.groot.view.community.model.UpdateTime
 import com.chocobi.groot.view.community.model.CommunityService
+import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
@@ -63,6 +64,7 @@ class CommunityDetailFragment : Fragment() {
     private lateinit var postCommentInput: EditText
     private lateinit var recyclerView: RecyclerView
     private var tagList: List<String> = emptyList()
+    var isFirstSelection = true
 
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var commentRecyclerView: RecyclerView
@@ -373,7 +375,9 @@ class CommunityDetailFragment : Fragment() {
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                         spinner.adapter = adapter
 
-                        var isFirstSelection = true
+
+
+
                         try {
                             val method =
                                 Spinner::class.java.getDeclaredMethod(
@@ -385,6 +389,8 @@ class CommunityDetailFragment : Fragment() {
                             e.printStackTrace()
                         }
 
+
+
                         spinner.onItemSelectedListener =
                             object : AdapterView.OnItemSelectedListener {
                                 override fun onItemSelected(
@@ -393,11 +399,12 @@ class CommunityDetailFragment : Fragment() {
                                     position: Int,
                                     id: Long
                                 ) {
+                                    Log.d(TAG, "$isFirstSelection isFirstSelection")
                                     if (isFirstSelection) {
                                         isFirstSelection = false
                                     } else {
-
                                         var selectedOption = options[position]
+                                        Log.d(TAG, "$selectedOption selectedOption")
                                         if (selectedOption == "  삭제  ") {
                                             val dialog = AlertDialog.Builder(requireContext())
                                             dialog.setTitle("글을 삭제하시겠습니까?")
@@ -409,7 +416,15 @@ class CommunityDetailFragment : Fragment() {
                                                 dialog.dismiss()
                                             }
                                             dialog.show()
-                                        } else if (selectedOption == " 수정 ") {
+                                        } else if (selectedOption == "  수정  ") {
+                                            Log.d(TAG, "수정")
+
+                                            val articleEditBottomSheet =
+                                                ArticleEditBottomSheet("자유")
+                                            articleEditBottomSheet.show(
+                                                requireActivity().supportFragmentManager,
+                                                articleEditBottomSheet.tag
+                                            )
 
                                         } else if (selectedOption == " 나눔 완료 ") {
                                             options[position] = " 나눔 취소 " // "나눔 완료"를 "나눔 취소"로 변경
@@ -426,6 +441,8 @@ class CommunityDetailFragment : Fragment() {
 
                                 override fun onNothingSelected(parent: AdapterView<*>) {
                                     // 아무것도 선택하지 않은 경우 처리
+                                    Log.d(TAG, " 아무것도")
+
                                 }
                             }
 
