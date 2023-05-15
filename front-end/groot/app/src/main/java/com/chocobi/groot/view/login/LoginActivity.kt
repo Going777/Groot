@@ -120,7 +120,9 @@ class LoginActivity : AppCompatActivity() {
                             socialAccessToken = token.accessToken
                             nickname = user.kakaoAccount?.profile?.nickname
                             profileImg = user.kakaoAccount?.profile?.thumbnailImageUrl
-                            socialLogin("카카오")
+                            Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
+
+//                            socialLogin("카카오")
                         }
                     }
                 }
@@ -149,7 +151,9 @@ class LoginActivity : AppCompatActivity() {
                                 socialAccessToken = token.accessToken
                                 nickname = user.kakaoAccount?.profile?.nickname
                                 profileImg = user.kakaoAccount?.profile?.thumbnailImageUrl
-                                socialLogin("카카오")
+                                Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
+
+//                                socialLogin("카카오")
                             }
                         }
                     }
