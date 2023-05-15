@@ -35,14 +35,14 @@
                 android:layout_marginTop="10dp"
                 android:background="@drawable/circle_button_background"
                 android:backgroundTint="@color/white"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"
                 android:src="@drawable/ic_back"
                 android:translationZ="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/main"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/actionBarItemBackground"/>
+                app:tint="@color/main" />
 
             <ImageButton
                 android:id="@+id/settingBtn"
@@ -52,13 +52,13 @@
                 android:layout_marginRight="10dp"
                 android:background="@drawable/circle_button_background"
                 android:backgroundTint="@color/main"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"
                 android:src="@drawable/ic_list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:tint="@color/white"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/actionBarItemBackground"/>
+                app:tint="@color/white" />
 
             <LinearLayout
                 android:id="@+id/linearLayout3"
@@ -67,70 +67,24 @@
                 android:layout_marginTop="-50dp"
                 android:background="@drawable/round_rectangle"
                 android:backgroundTint="@color/white"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
                 app:layout_constraintTop_toBottomOf="@+id/potPlantImg">
 
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/potNameContainer"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/potPlant"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="40dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:text="산세베리아"
+                    android:layout_margin="20dp"
+                    android:textColor="@color/main"
+                    android:textAlignment="center"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-
-                    <TextView
-                        android:id="@+id/potPlant"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_marginRight="-60dp"
-                        android:breakStrategy="balanced"
-                        android:rotation="270"
-                        android:text="산세베리아"
-                        android:textAlignment="center"
-                        android:textSize="15sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/line"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <View
-                        android:id="@+id/line"
-                        android:layout_width="2dp"
-                        android:layout_height="120dp"
-                        android:layout_marginRight="20dp"
-                        android:background="@android:color/black"
-                        app:layout_constraintEnd_toStartOf="@+id/potName" />
-
-                    <TextView
-                        android:id="@+id/potName"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="100dp"
-                        android:breakStrategy="balanced"
-                        android:lineSpacingExtra="-10dp"
-                        android:text="산세산세"
-                        android:textSize="32sp"
-                        android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <Button
-                        android:id="@+id/toArBtn"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:text="만나러 가기"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?android:attr/actionBarItemBackground"/>
-                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -140,8 +94,8 @@
                         android:id="@+id/lottieView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        app:lottie_loop="true"
                         app:lottie_autoPlay="true"
+                        app:lottie_loop="true"
                         app:lottie_rawRes="@raw/light_effect" />
 
                     <io.github.sceneview.SceneView
@@ -151,15 +105,56 @@
                         android:nestedScrollingEnabled="false" />
                 </RelativeLayout>
 
+                <TextView
+                    android:id="@+id/potName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="-10dp"
+                    android:text="산세산세"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
+
                 <ProgressBar
+                    android:layout_marginVertical="10dp"
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="100dp"
                     android:progress="60"
                     android:progressBackgroundTint="@color/grey"
                     android:progressTint="@color/point" />
+                <LinearLayout
+                    android:id="@+id/levelSection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lv "
+                        android:textStyle="bold"
+                        android:textColor="@color/grey"/>
+                    <TextView
+                        android:id="@+id/levelText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="@color/grey"
+                        android:text="7"
+                        android:layout_marginRight="10dp"/>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/toArBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:backgroundTint="@color/point"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/actionBarItemBackground"
+                    android:text="만나러 가기"
+                    android:textStyle="bold" />
 
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/potDetailChipGroup"
@@ -239,7 +234,6 @@
                     android:padding="20dp" />
 
 
-
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/toDiaryBtn"
                     style="@style/GO_TO_DIARY_BTN"
@@ -247,7 +241,7 @@
                     android:layout_marginTop="15dp"
                     android:clickable="true"
                     android:focusable="true"
-                    android:foreground="?android:attr/actionBarItemBackground"/>
+                    android:foreground="?android:attr/actionBarItemBackground" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

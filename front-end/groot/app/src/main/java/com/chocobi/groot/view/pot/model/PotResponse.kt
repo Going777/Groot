@@ -70,6 +70,7 @@ data class Pot(
     val pruningDate: DateTime?,
     val survival: Boolean,
     val level: Int,
+    val experience: Int,
     val characterGLBPath: String,
     val characterPNGPath: String,
 )
