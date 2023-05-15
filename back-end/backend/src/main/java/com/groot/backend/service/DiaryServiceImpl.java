@@ -282,6 +282,8 @@ public class DiaryServiceImpl implements DiaryService{
                 .imgPath(storedFileName)
                 .water(diaryDTO.getWater()!=null?diaryDTO.getWater():diaryEntity.getWater())
                 .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():diaryEntity.getNutrients())
+                .isUserLast(diaryEntity.getIsUserLast())
+                .isPotLast(diaryEntity.getIsPotLast())
                 .build();
 
         DiaryCheckEntity newCheckDiary = DiaryCheckEntity.builder()
