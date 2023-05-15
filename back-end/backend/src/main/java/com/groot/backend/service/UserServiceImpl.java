@@ -71,6 +71,7 @@ public class UserServiceImpl implements UserService{
                 .nickName(userEntity.getNickName())
                 .password(userEntity.getPassword())
                 .profile(userEntity.getProfile())
+                .firebaseToken(registerDTO.getFirebaseToken())
                 .token(refreshToken)
                 .build();
 

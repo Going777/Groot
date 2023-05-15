@@ -18,4 +18,5 @@ public class RegisterDTO {
     private String password;
     @NotNull
     private String nickName;
+    private String firebaseToken;
 }
