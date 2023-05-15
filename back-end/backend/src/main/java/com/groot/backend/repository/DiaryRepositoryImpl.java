@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @RequiredArgsConstructor
 @Repository
@@ -18,10 +20,10 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom{
     @Override
     public Long updateIsLastByPotId(Long potId, LocalDateTime now) {
         QDiaryEntity qDiary = QDiaryEntity.diaryEntity;
-        LocalDateTime today = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 0, 0, 0);
+        LocalDateTime today = LocalDateTime.of(LocalDate.from(now), LocalTime.of(0, 0, 0));
         Long updateCnt = queryFactory.update(qDiary)
                 .set(qDiary.isPotLast, false)
-                .where(qDiary.potId.eq(potId), qDiary.isPotLast.eq(true), qDiary.createdDate.goe(today))
+                .where(qDiary.potId.eq(potId), qDiary.isPotLast.eq(true), qDiary.createdDate.between(today, now))
                 .execute();
 
         return updateCnt;
@@ -30,10 +32,10 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom{
     @Override
     public Long updateIsLastByUserId(Long userId, LocalDateTime now) {
         QDiaryEntity qDiary = QDiaryEntity.diaryEntity;
-        LocalDateTime today = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 0, 0, 0);
+        LocalDateTime today = LocalDateTime.of(LocalDate.from(now), LocalTime.of(0, 0, 0));
         Long updateCnt = queryFactory.update(qDiary)
                 .set(qDiary.isUserLast, false)
-                .where(qDiary.userPK.eq(userId), qDiary.isUserLast.eq(true), qDiary.createdDate.goe(today))
+                .where(qDiary.userPK.eq(userId), qDiary.isUserLast.eq(true), qDiary.createdDate.between(today, now))
                 .execute();
 
         return updateCnt;

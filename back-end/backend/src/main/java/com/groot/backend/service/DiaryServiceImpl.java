@@ -65,29 +65,31 @@ public class DiaryServiceImpl implements DiaryService{
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 사용자를 찾을 수 없습니다."));
         // check 테이블에 저장
         DiaryCheckEntity checkdiary = DiaryCheckEntity.builder()
-                .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():false)
+                .bug(diaryDTO.getBug()!=null&&diaryDTO.getBug()?diaryDTO.getBug():false)
                 .potEntity(pot)
                 .userEntity(user)
-                .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():false)
+                .sun(diaryDTO.getSun()!=null&&diaryDTO.getSun()?diaryDTO.getSun():false)
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():null)
                 .imgPath(storedFileName)
-                .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():false)
-                .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
-                .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
+                .nutrients(diaryDTO.getNutrients()!=null&&diaryDTO.getNutrients()?diaryDTO.getNutrients():false)
+                .pruning(diaryDTO.getPruning()!=null&&diaryDTO.getPruning()?diaryDTO.getPruning():false)
+                .water(diaryDTO.getWater()!=null&&diaryDTO.getWater()?diaryDTO.getWater():false)
                 .build();
+        DiaryCheckEntity diaryCheckResult = diaryCheckRepository.save(checkdiary);
+
 
         // check 테이블에 저장 후 해당 id를 가져와 diary 테이블에 함께 저장
         DiaryEntity diary = DiaryEntity.builder()
-                .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():false)
+                .bug(diaryDTO.getBug()!=null&&diaryDTO.getBug()?diaryDTO.getBug():false)
                 .potEntity(pot)
                 .userEntity(user)
-                .diaryCheckEntity(checkdiary)
-                .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():false)
+                .diaryCheckEntity(diaryCheckResult)
+                .sun(diaryDTO.getSun()!=null&&diaryDTO.getSun()?diaryDTO.getSun():false)
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():null)
                 .imgPath(storedFileName)
-                .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():false)
-                .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
-                .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
+                .nutrients(diaryDTO.getNutrients()!=null&&diaryDTO.getNutrients()?diaryDTO.getNutrients():false)
+                .pruning(diaryDTO.getPruning()!=null&&diaryDTO.getPruning()?diaryDTO.getPruning():false)
+                .water(diaryDTO.getWater()!=null&&diaryDTO.getWater()?diaryDTO.getWater():false)
                 .isPotLast(true)
                 .isUserLast(true)
                 .build();
@@ -103,13 +105,15 @@ public class DiaryServiceImpl implements DiaryService{
 //        diaryRepository.updateIsLastByUserId(user.getId(), LocalDateTime.now());
 //        log.info("result: "+result.getId());
 
+        DiaryEntity diaryResult = diaryRepository.save(diary);
+
         // 물주기 일정 추가
         if(diary.getWater()) {
-            addDonePlan(user, pot, 0, diary);
+            addDonePlan(user, pot, 0, diaryResult);
         }
         //영양제 일정 추가
         if(diary.getNutrients()) {
-            addDonePlan(user, pot, 1, diary);
+            addDonePlan(user, pot, 1, diaryResult);
             // 해당 미션 완료 표시 및 실행 날짜 업데이트
 //            planRepository.updateDoneAndDateTimeByCodeAndPotId(0, pot.getId());
 //            log.info("plan에 미션 완료 표시");
@@ -155,8 +159,7 @@ public class DiaryServiceImpl implements DiaryService{
                                 .build();
 //        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
         potRepository.save(newPot);
-        diaryCheckRepository.save(checkdiary);
-        return diaryRepository.save(diary);
+        return diaryResult;
     }
 
     public DiaryEntity saveAndUpdateDiary(Long userId, MultipartFile image, DiaryDTO diaryDTO, DiaryDTO diaryCheck) throws IOException {
@@ -182,19 +185,20 @@ public class DiaryServiceImpl implements DiaryService{
                 .water(diaryDTO.getWater()!=null && diaryDTO.getWater()?diaryDTO.getWater():diaryCheck.getWater())
                 .nutrients(diaryDTO.getNutrients()!=null && diaryDTO.getNutrients()?diaryDTO.getNutrients():diaryCheck.getNutrients())
                 .build();
+        DiaryCheckEntity diaryCheckResult = diaryCheckRepository.save(newCheckDiary);
 
         // 다이어리 저장
         DiaryEntity diary = DiaryEntity.builder()
-                .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():false)
+                .bug(diaryDTO.getBug()!=null && diaryDTO.getBug()?diaryDTO.getBug():false)
                 .potEntity(pot)
                 .userEntity(user)
-                .diaryCheckEntity(newCheckDiary)
-                .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():false)
+                .diaryCheckEntity(diaryCheckResult)
+                .sun(diaryDTO.getSun()!=null && diaryDTO.getSun()?diaryDTO.getSun():false)
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():null)
                 .imgPath(storedFileName)
-                .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():false)
-                .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():false)
-                .water(diaryDTO.getWater()!=null?diaryDTO.getWater():false)
+                .nutrients(diaryDTO.getNutrients()!=null&&diaryDTO.getNutrients()?diaryDTO.getNutrients():false)
+                .pruning(diaryDTO.getPruning()!=null&&diaryDTO.getPruning()?diaryDTO.getPruning():false)
+                .water(diaryDTO.getWater()!=null&&diaryDTO.getWater()?diaryDTO.getWater():false)
                 .isPotLast(true)
                 .isUserLast(true)
                 .build();
@@ -202,14 +206,15 @@ public class DiaryServiceImpl implements DiaryService{
         diaryRepository.updateIsLastByUserId(user.getId(), LocalDateTime.now());
         log.info("result: "+newCheckDiary.getId());
 
+        DiaryEntity diaryResult = diaryRepository.save(diary);
 
         // 물주기 일정 추가
         if(diary.getWater()) {
-            addDonePlan(user, pot, 0, diary);
+            addDonePlan(user, pot, 0, diaryResult);
         }
         //영양제 일정 추가
         if(diary.getNutrients()) {
-            addDonePlan(user, pot, 1, diary);
+            addDonePlan(user, pot, 1, diaryResult);
         }
 
         // 점수 계산
@@ -252,8 +257,8 @@ public class DiaryServiceImpl implements DiaryService{
                 .build();
 //        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
         potRepository.save(newPot);
-        diaryCheckRepository.save(newCheckDiary);
-        return diaryRepository.save(diary);
+
+        return diaryResult;
     }
 
     @Override
@@ -276,13 +281,13 @@ public class DiaryServiceImpl implements DiaryService{
                 .diaryCheckEntity(diaryEntity.getDiaryCheckEntity())
                 .potEntity(pot)
                 .diaryCheckEntity(diaryCheck)
-                .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():diaryEntity.getBug())
-                .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():diaryEntity.getSun())
-                .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():diaryEntity.getPruning())
+                .bug(diaryDTO.getBug()!=null&&diaryDTO.getBug()?diaryDTO.getBug():diaryEntity.getBug())
+                .sun(diaryDTO.getSun()!=null&&diaryDTO.getSun()?diaryDTO.getSun():diaryEntity.getSun())
+                .pruning(diaryDTO.getPruning()!=null&&diaryDTO.getPruning()?diaryDTO.getPruning():diaryEntity.getPruning())
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():diaryEntity.getContent())
                 .imgPath(storedFileName)
-                .water(diaryDTO.getWater()!=null?diaryDTO.getWater():diaryEntity.getWater())
-                .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():diaryEntity.getNutrients())
+                .water(diaryDTO.getWater()!=null&&diaryDTO.getWater()?diaryDTO.getWater():diaryEntity.getWater())
+                .nutrients(diaryDTO.getNutrients()!=null&&diaryDTO.getNutrients()?diaryDTO.getNutrients():diaryEntity.getNutrients())
                 .isUserLast(diaryEntity.getIsUserLast())
                 .isPotLast(diaryEntity.getIsPotLast())
                 .build();
@@ -291,13 +296,13 @@ public class DiaryServiceImpl implements DiaryService{
                 .id(diaryCheck.getId())
                 .userEntity(diaryCheck.getUserEntity())
                 .potEntity(pot)
-                .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():diaryCheck.getBug())
-                .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():diaryCheck.getSun())
-                .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():diaryCheck.getPruning())
+                .bug(diaryDTO.getBug()!=null&&diaryDTO.getBug()?diaryDTO.getBug():diaryCheck.getBug())
+                .sun(diaryDTO.getSun()!=null&&diaryDTO.getSun()?diaryDTO.getSun():diaryCheck.getSun())
+                .pruning(diaryDTO.getPruning()!=null&&diaryDTO.getPruning()?diaryDTO.getPruning():diaryCheck.getPruning())
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():diaryCheck.getContent())
                 .imgPath(storedFileName)
-                .water(diaryDTO.getWater()!=null?diaryDTO.getWater():diaryCheck.getWater())
-                .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():diaryCheck.getNutrients())
+                .water(diaryDTO.getWater()!=null&&diaryDTO.getWater()?diaryDTO.getWater():diaryCheck.getWater())
+                .nutrients(diaryDTO.getNutrients()!=null&&diaryDTO.getNutrients()?diaryDTO.getNutrients():diaryCheck.getNutrients())
                 .build();
 
         //plan 수정
@@ -309,7 +314,7 @@ public class DiaryServiceImpl implements DiaryService{
             LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
             log.info("plan에 미션 완료 표시");
             addPlan(diaryEntity.getUserEntity(), pot, 0, date);
-        }
+        }////////////////////////////////////////////여기까지 확인
         //영양제 일정 추가
         if(diaryEntity.getNutrients() && !newDiary.getNutrients()) {
             // 작성된 plan 삭제
@@ -519,7 +524,7 @@ public class DiaryServiceImpl implements DiaryService{
         int year = start.getYear();
         int waterCyclenum = plantRepository.findById(pot.getPlantId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 식물을 찾을 수 없습니다.")).getWaterCycle();
         int waterCycle = PlantCodeUtil.waterCycle[waterCyclenum%53000];
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {   // 여기는 나중에 개선
             if(code==0){
                 day += waterCycle;
             }else{

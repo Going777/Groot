@@ -7,7 +7,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -37,9 +39,10 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
     @Override
     public void deleteByCodeAndPotId(Long potId, Integer code, LocalDateTime time) {
         QPlanEntity qPlan = QPlanEntity.planEntity;
-
+        LocalDateTime start = LocalDateTime.of(LocalDate.from(time), LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.of(LocalDate.from(time), LocalTime.of(23, 59, 59));
         queryFactory.delete(qPlan)
-                .where(qPlan.code.eq(code), qPlan.done.eq(true), qPlan.dateTime.eq(time), qPlan.potId.eq(potId))
+                .where(qPlan.code.eq(code), qPlan.done.eq(true),  qPlan.potId.eq(potId), qPlan.dateTime.between(start, end))
                 .execute();
     }
 
