@@ -195,10 +195,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="14dp"
-        android:layout_marginRight="20dp">
+        android:layout_marginHorizontal="10dp"/>
 
-    </androidx.viewpager2.widget.ViewPager2>
 
 
 </LinearLayout>

@@ -21,44 +21,28 @@
             android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/plantNameContainer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:src="@drawable/header_leaf"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
                 <TextView
-                    android:id="@+id/plantNameShort"
+                    android:id="@+id/plantNameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="-10dp"
-                    android:rotation="270"
-                    android:text="산세베리아"
-                    android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/line"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <View
-                    android:id="@+id/line"
-                    android:layout_width="2dp"
-                    android:layout_height="120dp"
-                    android:layout_marginRight="20dp"
-                    android:background="@android:color/black"
-                    app:layout_constraintEnd_toStartOf="@+id/potName" />
-
-                <TextView
-                    android:id="@+id/potName"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="100dp"
-                    android:breakStrategy="balanced"
-                    android:lineSpacingExtra="-10dp"
-                    android:text="김정원의 산세베리아"
-                    android:textSize="32sp"
+                    android:layout_marginVertical="20dp"
+                    android:text="식물 이름"
+                    android:textAlignment="center"
+                    android:textColor="@color/main"
+                    android:textSize="20sp"
                     android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -69,23 +53,13 @@
                 android:id="@+id/potPhoto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="30dp"
+                android:layout_marginHorizontal="60dp"
+                android:layout_marginVertical="20dp"
                 android:adjustViewBounds="true"
-                android:background="@drawable/round_rectangle"
+                android:background="@drawable/radius150"
                 android:clipToOutline="true"
                 android:src="@drawable/sample_plant_image" />
 
-            <TextView
-                android:id="@+id/plantNameLong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="10dp"
-                android:text="산세베리아"
-                android:textSize="32sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/potPhoto" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/potInfochipGroup"
