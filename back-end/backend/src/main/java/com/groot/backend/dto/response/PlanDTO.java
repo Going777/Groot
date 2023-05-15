@@ -18,4 +18,5 @@ public class PlanDTO {
     private String potName;
     private String imgPath;
     private boolean done;
+    private Long diaryId;
 }

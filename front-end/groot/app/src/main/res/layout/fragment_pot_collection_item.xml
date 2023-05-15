@@ -66,7 +66,7 @@
                 android:id="@+id/plant_species"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 app:layout_constraintTop_toBottomOf="@+id/pot_name"
                 tools:ignore="MissingConstraints" />
         </LinearLayout>
@@ -115,7 +115,10 @@
                 android:background="@drawable/radius10"
                 android:backgroundTint="@color/button_sub"
                 android:src="@drawable/ic_post"
-                app:tint="@color/button_main" />
+                app:tint="@color/button_main"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"/>
 
             <ImageButton
                 android:id="@+id/potScanBtn"
@@ -125,7 +128,10 @@
                 android:background="@drawable/radius10"
                 android:backgroundTint="@color/button_sub"
                 android:src="@drawable/ic_scan"
-                app:tint="@color/button_main" />
+                app:tint="@color/button_main"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"/>
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/potDetailBtn"
@@ -137,7 +143,10 @@
                 android:gravity="center"
                 android:text="DETAIL"
                 android:textColor="#fff"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"/>
 
         </LinearLayout>
 

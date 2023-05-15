@@ -16,101 +16,264 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/main_background" />
 
+    <ImageButton
+        android:id="@+id/backBtn"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/circle_button_background"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_back"
+        android:translationZ="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/main" />
+
     <ImageView
         android:id="@+id/logoImageView"
-        android:layout_width="200dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="90dp"
         android:src="@drawable/logo_full"
-        app:layout_constraintBottom_toTopOf="@+id/signupIdInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <EditText
-        android:id="@+id/signupIdInput"
-        android:layout_width="200dp"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/signupIdCardView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-
-        android:hint="아이디"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/signupNameInput"
-        app:layout_constraintStart_toStartOf="@+id/signupNameInput" />
-
-    <EditText
-        android:id="@+id/signupNameInput"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="닉네임"
-
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/signupPwInput"
-        app:layout_constraintStart_toStartOf="@+id/signupPwInput" />
-
-    <EditText
-        android:id="@+id/signupPwInput"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-
-        android:hint="비밀번호"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/signupConfPwInput"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="20dp"
+        app:alignItems="center"
+        app:flexDirection="row"
+        app:justifyContent="space_between"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logoImageView">
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
+            app:strokeColor="@color/white">
 
-    <EditText
-        android:id="@+id/signupConfPwInput"
-        android:layout_width="300dp"
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:justifyContent="space_between">
+
+                <EditText
+                    android:id="@+id/signupIdInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:ems="8"
+                    android:hint="아이디"
+                    android:inputType="text" />
+
+                <ImageView
+                    android:id="@+id/signupIdInputImg"
+                    android:layout_width="18dp"
+                    android:layout_height="25dp"
+                    android:src="@drawable/ic_plant"
+                    app:tint="@color/grey" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dupIdBtn"
+            android:layout_width="170dp"
+            android:layout_height="45dp"
+            android:background="@drawable/radius10"
+            android:backgroundTint="@color/point"
+            android:letterSpacing="0.15"
+            android:text="중복확인"
+            android:textColor="@color/white"
+            android:textSize="13dp"
+            android:textStyle="bold" />
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/signupNameCardView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:layout_marginBottom="48dp"
-        android:ems="10"
-        android:hint="비밀번호 확인"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/basicSignupBtn"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="20dp"
+        app:alignItems="center"
+        app:flexDirection="row"
+        app:justifyContent="space_between"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.504"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signupIdCardView">
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
 
-    <Button
-        android:id="@+id/dupIdBtn"
-        android:layout_width="wrap_content"
+            app:strokeColor="@color/white">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:justifyContent="space_between">
+
+                <EditText
+                    android:id="@+id/signupNameInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:ems="8"
+                    android:hint="닉네임"
+                    android:inputType="text" />
+
+                <ImageView
+                    android:id="@+id/signupNameInputImg"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_plant"
+                    app:tint="@color/grey" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/dupNameBtn"
+            android:layout_width="170dp"
+            android:layout_height="45dp"
+            android:background="@drawable/radius10"
+            android:backgroundTint="@color/point"
+            android:letterSpacing="0.15"
+            android:text="중복확인"
+            android:textColor="@color/white"
+            android:textSize="13dp"
+            android:textStyle="bold" />
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/signupPwCardView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/sub"
-        android:text="중복 확인"
-        android:textSize="10dp"
-        app:layout_constraintEnd_toEndOf="@+id/dupNameBtn"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/signupIdInput"
-        app:layout_constraintTop_toTopOf="@+id/signupIdInput" />
-
-    <Button
-        android:id="@+id/dupNameBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/sub"
-        android:text="중복 확인"
-        android:textSize="10dp"
-        app:layout_constraintEnd_toEndOf="@+id/signupPwInput"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/signupNameInput"
-        app:layout_constraintTop_toBottomOf="@+id/dupIdBtn" />
-
-    <Button
-        android:id="@+id/basicSignupBtn"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="146dp"
-        android:backgroundTint="@color/main"
-        android:text="회원가입"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="20dp"
+        app:alignItems="center"
+        app:flexDirection="row"
+        app:justifyContent="space_between"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signupNameCardView">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
+
+            app:strokeColor="@color/white">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:justifyContent="space_between">
+
+                <EditText
+                    android:id="@+id/signupPwInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:ems="12"
+                    android:hint="비밀번호"
+                    android:inputType="textPassword" />
+
+                <ImageView
+                    android:id="@+id/signupPwInputImg"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_plant"
+                    app:tint="@color/grey" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/signupConfPwCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="20dp"
+        app:alignItems="center"
+        app:flexDirection="row"
+        app:justifyContent="space_between"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/signupPwCardView">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:backgroundTint="@color/white"
+            app:cardCornerRadius="15dp"
+            app:strokeColor="@color/white">
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                app:alignItems="center"
+                app:flexDirection="row"
+                app:justifyContent="space_between">
+
+                <EditText
+                    android:id="@+id/signupConfPwInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:ems="12"
+                    android:hint="비밀번호 확인"
+                    android:inputType="textPassword" />
+
+                <ImageView
+                    android:id="@+id/signupConfPwInputImg"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_plant"
+                    app:tint="@color/grey" />
+            </com.google.android.flexbox.FlexboxLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </com.google.android.flexbox.FlexboxLayout>
+
+        <Button
+            android:id="@+id/basicSignupBtn"
+            style="@style/MAIN_BTN"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginTop="60dp"
+            android:letterSpacing="0.15"
+
+            android:text="회원가입"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/actionBarItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/signupConfPwCardView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

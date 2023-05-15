@@ -35,6 +35,15 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
     }
 
     @Override
+    public void deleteByCodeAndPotId(Long potId, Integer code, LocalDateTime time) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        queryFactory.delete(qPlan)
+                .where(qPlan.code.eq(code), qPlan.done.eq(true), qPlan.dateTime.eq(time), qPlan.potId.eq(potId))
+                .execute();
+    }
+
+    @Override
     public long updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId) {
         QPlanEntity qPlan = QPlanEntity.planEntity;
 
@@ -55,5 +64,36 @@ public class PlanRepositoryImpl implements PlanRepositoryCustom{
                 .where(qPlan.done.eq(done), qPlan.potId.eq(potId), qPlan.code.eq(code))
                 .fetchOne();
         return date;
+    }
+
+    @Override
+    public long updateDoneById(Long planId) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        long updateCnt = queryFactory.update(qPlan)
+                .set(qPlan.done, false)
+                .where(qPlan.id.eq(planId))
+                .execute();
+        return updateCnt;
+    }
+
+    @Override
+    public boolean existsByCodeAndDateTimeBetween(Integer code, LocalDateTime start, LocalDateTime end) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        List<PlanEntity> plans = queryFactory.selectFrom(qPlan)
+                .where(qPlan.dateTime.between(start, end), qPlan.code.eq(code))
+                .fetch();
+        return !plans.isEmpty();
+    }
+
+    @Override
+    public List<PlanEntity> findAllByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end) {
+        QPlanEntity qPlan = QPlanEntity.planEntity;
+
+        List<PlanEntity> plans = queryFactory.selectFrom(qPlan)
+                .where(qPlan.dateTime.between(start, end), qPlan.done.eq(done))
+                .fetch();
+        return plans;
     }
 }

@@ -11,7 +11,7 @@ interface CommunityService {
     @GET("/api/articles/search")
     fun requestSearchArticle(
         @Query("category") category: String,
-        @Query("region") region1: String? = null,
+        @Query("region") region1: String? = "",
         @Query("region") region2: String? = null,
         @Query("region") region3: String? = null,
         @Query("keyword") keyword: String? = null,

@@ -18,7 +18,7 @@
         android:layout_marginBottom="25dp"
         android:text="화분 설정"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -29,22 +29,24 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/editPotName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:clickable="true"
-                android:text="이름 변경"
-                android:textSize="20sp"
+                android:text="화분 이름 변경"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/editPotName"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
@@ -57,22 +59,24 @@
         <View style="@style/BASIC_LINE" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/editPotImg"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:clickable="true"
-                android:text="이미지 변경"
-                android:textSize="20sp"
+                android:text="화분 이미지 변경"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/editPotImg"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
@@ -85,22 +89,24 @@
         <View style="@style/BASIC_LINE" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/potPosition"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:clickable="true"
                 android:text="화분 위치 추천 받기"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/potPosition"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
@@ -113,22 +119,24 @@
         <View style="@style/BASIC_LINE" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/deletePot"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:clickable="true"
                 android:text="화분 삭제"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/deletePot"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
@@ -141,22 +149,24 @@
         <View style="@style/BASIC_LINE" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gonePot"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
-                android:clickable="true"
                 android:text="화분 떠나보내기"
-                android:textSize="20sp"
+                android:textSize="17sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
-                android:id="@+id/gonePot"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
@@ -260,6 +270,7 @@
             android:backgroundTint="@color/point"
             android:ems="20"
             android:inputType="text" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/editNameBottomBtn"
             android:layout_width="match_parent"

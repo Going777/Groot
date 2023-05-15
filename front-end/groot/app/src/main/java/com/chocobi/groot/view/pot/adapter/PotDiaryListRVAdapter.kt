@@ -10,20 +10,22 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.pot.PlantBottomSheet
+import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.model.DiaryListResponse
 import com.chocobi.groot.view.pot.model.PotService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class PotDiaryListRVAdapter(private val context: Context) :
+class PotDiaryListRVAdapter(private val context: Context, private val mActivity: MainActivity) :
     RecyclerView.Adapter<DiaryItemViewHolder>() {
+
+    private var isZero = true
 
     private val TAG = "PotDiaryListRVAdapter"
 
@@ -62,11 +64,14 @@ class PotDiaryListRVAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: DiaryItemViewHolder, position: Int) {
+        Log.d(TAG, "onBindViewHolder ${isZero}")
+        holder.setIsZero(isZero)
         holder.diaryListResponse = mutableList[position]
+        val diary = holder.diaryListResponse.diary.content[0]
         val spinnerBtn = holder.itemView.findViewById<ImageButton>(R.id.spinnerButton)
         spinnerBtn.setOnClickListener {
-            val diaryId = holder.diaryListResponse.diary.content[0].id
-            Log.d(TAG, "${diaryId}")
+            val diaryId = diary.id
+
             var dialog = AlertDialog.Builder(context)
             dialog.setTitle("다이어리 설정")
             val dialogArray = arrayOf("수정", "삭제")
@@ -75,6 +80,23 @@ class PotDiaryListRVAdapter(private val context: Context) :
                 when (which) {
                     0 -> {
 //                        수정
+                        val potBottomSheet = PotDiaryBottomSheet(
+                            context,
+                            diary.id,
+                            diary.potId,
+                            diary.potName,
+                            diary.content,
+                            diary.imgPath,
+                            diary.water,
+                            diary.pruning,
+                            diary.bug,
+                            diary.sun,
+                            diary.nutrients
+                        )
+                        potBottomSheet.show(
+                            mActivity.supportFragmentManager,
+                            potBottomSheet.tag
+                        )
                         spinnerBtnClickListner.onSpinnerBtnClick(it, position)
                     }
 
@@ -96,23 +118,7 @@ class PotDiaryListRVAdapter(private val context: Context) :
         holder.delegate = object : DiaryItemViewHolder.ItemViewHolderDelegate {
             override fun onItemViewClick(diaryListResponse: DiaryListResponse) {
                 val context = holder.itemView.context
-//                if (context is FragmentActivity) {
-//                    val fragmentManager = context.supportFragmentManager
-//                    val communityDetailFragment = CommunityDetailFragment()
-//
-//                    // articleId 값을 CommunityDetailFragment에 전달하기 위해 인수(bundle)를 설정합니다.
-//                    val args = Bundle()
-//                    args.putInt("articleId", diaryListResponse.articles.content[0].articleId)
-//                    communityDetailFragment.arguments = args
-//                    Log.d("CommunityDetailFragmentArticleId", communityDetailFragment.arguments.toString())
-//
-//                    fragmentManager.beginTransaction()
-//                        .replace(R.id.fl_container, communityDetailFragment)
-//                        .addToBackStack(null)
-//                        .commit()
-//                }
             }
-
         }
 
 
@@ -122,6 +128,9 @@ class PotDiaryListRVAdapter(private val context: Context) :
             delegate?.onLoadMore()
         }
 
+    }
+    fun setIsZero(flag:Boolean) {
+        isZero = flag
     }
 
     fun reload(mutableList: MutableList<DiaryListResponse>) {
@@ -139,7 +148,7 @@ class PotDiaryListRVAdapter(private val context: Context) :
         val retrofit = RetrofitClient.getClient()!!
         val potService = retrofit.create(PotService::class.java)
         val userPK = UserData.getUserPK()
-        potService.requestDeleteDiary(id, userPK, null).enqueue(object :Callback<BasicResponse>{
+        potService.requestDeleteDiary(id, userPK, null).enqueue(object : Callback<BasicResponse> {
             override fun onResponse(call: Call<BasicResponse>, response: Response<BasicResponse>) {
                 if (response.code() == 200) {
                     Log.d(TAG, "다이어리 삭제 성공")
@@ -154,5 +163,6 @@ class PotDiaryListRVAdapter(private val context: Context) :
         })
 
     }
+
 
 }

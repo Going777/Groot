@@ -32,8 +32,8 @@ class PotDetailTab1Fragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_pot_detail_tab1, container, false)
         arguments?.let {
             waterCycle = it.getString("waterCycle")
-            minHumidity = it.getInt("minHumidity")
-            maxHumidity = it.getInt("maxHumidity")
+            minHumidity = it.getInt("minHumidity") ?: 0
+            maxHumidity = it.getInt("maxHumidity")?: 0
             lastDate = it.getString("lastDate")
             comingDate = it.getString("comingDate")
         }

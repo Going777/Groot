@@ -5,10 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="10dp"
-    android:layout_marginTop="10dp"
     android:orientation="vertical"
     tools:context=".view.community.CommunityPostFragment">
+
+    <include
+        layout="@layout/top_category_navbar"/>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -57,6 +59,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         android:layout_weight="1">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -76,8 +79,7 @@
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/carousel_pager"
                     android:layout_width="match_parent"
-                    android:layout_height="230dp"
-                    android:layout_marginTop="20dp" />
+                    android:layout_height="230dp" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/carousel_layout"

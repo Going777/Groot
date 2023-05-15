@@ -60,6 +60,7 @@ pipeline {
         sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
         sh 'cp /var/jenkins_home/workspace/Groot_config/application-keys.properties ./back-end/backend/src/main/resources'
         sh 'cp /var/jenkins_home/workspace/Groot_config/config.py ./domain'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/groot-e4de7-firebase-adminsdk-lew5e-83aab40438.json ./back-end/backend/src/main/resources/firebase'
       }
     }
     stage('build-spring') {

@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -31,7 +30,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
 
     // 제목 + 내용 + 태그 검색
     @Override
-    public Page<ArticleEntity> search(String category, String[] region, String keyword, PageRequest pageRequest) {
+    public Page<ArticleEntity> search(String category, String[] region, String keyword, PageRequest pageRequest, Boolean shareStatus) {
         QArticleEntity articleEntity = QArticleEntity.articleEntity;
         QTagEntity tag = QTagEntity.tagEntity;
         QArticleTagEntity articleTag = QArticleTagEntity.articleTagEntity;
@@ -39,7 +38,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
         List<ArticleEntity> articles = queryFactory
                 .selectFrom(articleEntity)
                 .where(articleEntity.category.eq(category),
-                        eqRegions(articleEntity, region))
+                        eqRegions(articleEntity, region),
+                        eqShareStatus(articleEntity, shareStatus))
                 .leftJoin(articleTag).on(articleEntity.id.eq(articleTag.articleId))
                 .leftJoin(tag).on(articleTag.tagId.eq(tag.id))
                 .where(tag.name.eq(keyword)
@@ -111,6 +111,11 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
         return new PageImpl<>(articles.subList(start, end), pageRequest, articles.size());
     }
 
+
+    // 나눔 여부로 필터링
+    private BooleanExpression eqShareStatus (QArticleEntity articleEntity, Boolean shareStatus){
+        return shareStatus == null ? null : articleEntity.shareStatus.eq(shareStatus);
+    }
 
     // 키워드로 게시글 제목 검색
     private BooleanExpression eqTitle(QArticleEntity articleEntity, String keyword){

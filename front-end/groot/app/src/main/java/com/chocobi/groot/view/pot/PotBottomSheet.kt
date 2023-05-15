@@ -20,6 +20,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
@@ -32,6 +33,7 @@ import com.chocobi.groot.view.pot.model.PotNameRequest
 import com.chocobi.groot.view.pot.model.PotService
 import com.chocobi.groot.view.pot.model.PotStatusRequest
 import com.chocobi.groot.view.sensor.SensorActivity
+import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -97,8 +99,9 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
 //        화분 이름 변경 레이아웃 조작
         val nameText = view.findViewById<EditText>(R.id.nameText)
         nameText.setText(potName)
-        val editPotNameBtn = view.findViewById<ImageButton>(R.id.editPotName)
+        val editPotNameBtn = view.findViewById<ConstraintLayout>(R.id.editPotName)
         editPotNameBtn.setOnClickListener {
+            Log.d("PotBottomSheet", "onCreateView() 화분 이름 변경 눌림")
             showNameSection()
         }
         val editNameCancelBtn = view.findViewById<Button>(R.id.editNameCancelBtn)
@@ -113,7 +116,7 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
 
 
 //        화분 이미지 변경 레이아웃 조작
-        val editPotImgBtn = view.findViewById<ImageButton>(R.id.editPotImg)
+        val editPotImgBtn = view.findViewById<ConstraintLayout>(R.id.editPotImg)
         editPotImgBtn.setOnClickListener {
             showImgSection()
         }
@@ -134,7 +137,7 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
         }
 
 //        화분 위치 추천
-        val potPositionBtn = view.findViewById<ImageButton>(R.id.potPosition)
+        val potPositionBtn = view.findViewById<ConstraintLayout>(R.id.potPosition)
         potPositionBtn.setOnClickListener {
             var intent = Intent(requireContext(), SensorActivity::class.java)
             intent.putExtra("plantId", plantId)
@@ -144,11 +147,11 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
 
 
 //        화분 삭제
-        val deletePotBtn = view.findViewById<ImageButton>(R.id.deletePot)
+        val deletePotBtn = view.findViewById<ConstraintLayout>(R.id.deletePot)
         deletePotBtn.setOnClickListener {
             dialog = AlertDialog.Builder(requireContext())
             dialog.setTitle("화분 삭제")
-            dialog.setMessage("화분을 삭제하시겠습니까?")
+            dialog.setMessage("화분을 삭제하면 화분 다이어리 및 기록이 모두 삭제됩니다.\n화분을 삭제하시겠습니까?")
             dialog.setPositiveButton(
                 "삭제",
                 DialogInterface.OnClickListener { dialog, which ->
@@ -164,7 +167,7 @@ class PotBottomSheet(context: Context, private val listener: PotBottomSheetListe
         }
 
         //        화분 떠나보내기
-        val gonePotBtn = view.findViewById<ImageButton>(R.id.gonePot)
+        val gonePotBtn = view.findViewById<ConstraintLayout>(R.id.gonePot)
         gonePotBtn.setOnClickListener {
             dialog = AlertDialog.Builder(requireContext())
             dialog.setTitle("화분 떠나보내기")

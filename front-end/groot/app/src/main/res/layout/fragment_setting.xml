@@ -5,7 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.user.SettingFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:backgroundTint="@color/white"
+    android:background="@color/white">
+
+    <include
+        layout="@layout/top_category_navbar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -44,7 +49,10 @@
         android:layout_height="wrap_content"
         android:text="프로필 변경"
         android:layout_marginLeft="44dp"
-        android:layout_marginVertical="10dp"/>
+        android:layout_marginVertical="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"/>
     <View
         style="@style/BASIC_LINE"
         android:layout_marginLeft="44dp"/>
@@ -55,6 +63,9 @@
         android:text="비밀번호 변경"
         android:layout_marginLeft="44dp"
         android:layout_marginVertical="10dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
         />
     <View
         style="@style/BASIC_LINE"
@@ -256,11 +267,15 @@
             android:id="@+id/logoutText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:layout_margin="10dp"
             android:text="로그아웃"
+            android:textAlignment="viewStart"
             app:layout_constraintBottom_toTopOf="@+id/view"
-            tools:layout_editor_absoluteX="10dp" />
+            tools:layout_editor_absoluteX="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            />
 
         <View
             android:id="@+id/view"
@@ -274,11 +289,15 @@
             android:id="@+id/deleteUserText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:layout_margin="10dp"
             android:text="회원탈퇴"
+            android:textAlignment="viewStart"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteX="10dp" />
+            tools:layout_editor_absoluteX="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

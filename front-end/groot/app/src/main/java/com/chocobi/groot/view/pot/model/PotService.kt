@@ -66,6 +66,13 @@ interface PotService {
         @Part filePart: MultipartBody.Part?
     ): Call<BasicResponse>
 
+    @Multipart
+    @PUT("/api/diaries")
+    fun requestEditDiary(
+        @Part("postData") metaData: EditDiaryRequest,
+        @Part filePart: MultipartBody.Part?
+    ): Call<BasicResponse>
+
 
     @DELETE("/api/diaries/{diaryId}/{userPK}")
     fun requestDeleteDiary(

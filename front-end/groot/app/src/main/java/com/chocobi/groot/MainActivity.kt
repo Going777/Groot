@@ -1,6 +1,8 @@
 package com.chocobi.groot
 
+import android.app.NotificationManager
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -8,11 +10,13 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -68,11 +72,12 @@ class MainActivity : AppCompatActivity() {
     private var potName: String = "화분 이름"
     private var potPlant: String = "화분 식물"
     private var potCharImg: String = "화분 이미지 URL"
-    private var potPosition: Int = -1
+
     private lateinit var bnv_main: BottomNavigationView
 
     fun setPotId(id: Int) {
         potId = id
+        Log.d("potDiary", "$potId")
     }
 
     fun setPotName(name: String) {
@@ -87,14 +92,21 @@ class MainActivity : AppCompatActivity() {
         potCharImg = plant
     }
 
-    fun setPotPosition(id: Int) {
-        potPosition = id
-    }
+    //    알림 요청
+    val notificationPermissionRequestCode = 1001
 
+    // 알림 권한을 요청하는 메서드
+    private fun openAppNotificationSettings() {
+        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+        intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+        startActivity(intent)
+    }
 
     //        fragment 조작
     fun changeFragment(index: String) {
         var fragment: Fragment? = null
+
+
 
         when (index) {
             "pot" -> {
@@ -103,8 +115,8 @@ class MainActivity : AppCompatActivity() {
 
             "pot_diary" -> {
                 val bundle = Bundle()
-                Log.d("PotDiaryFragment", "main$potPosition")
-                bundle.putInt("potPosition", potPosition)
+                bundle.putInt("detailPotId", potId)
+                Log.d("potDiary change page", "$potId")
                 fragment = PotDiaryFragment()
                 fragment.arguments = bundle
             }
@@ -163,6 +175,24 @@ class MainActivity : AppCompatActivity() {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commitAllowingStateLoss()
         }
+    }
+
+
+    private fun checkPotDetailFragmentInBackStack(): Boolean {
+        val fragmentManager = supportFragmentManager
+        val fragmentCount = fragmentManager.backStackEntryCount
+
+        if (fragmentCount > 0) {
+            val topFragment = fragmentManager.getBackStackEntryAt(fragmentCount - 1)
+            if (topFragment.name == PotDetailFragment::class.java.name) {
+                Log.d("MainActivity", "PotDetailFragment is at the top of the backstack")
+                return true
+            } else {
+                return false
+            }
+        }
+        return false
+
     }
 
     //    camera 조작
@@ -251,7 +281,7 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSION_CAMERA -> Toast.makeText(
                 this,
-                "카메라 권한을 승인해야 카메라를 사용할 수 있습니다.",
+                "카메라 권한을 승인해야 해당 기능을 사용할 수 있습니다.",
                 Toast.LENGTH_LONG
             ).show()
 
@@ -309,6 +339,20 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Unit {
         super.onActivityResult(requestCode, resultCode, data)
 
+        if (requestCode == notificationPermissionRequestCode) {
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (notificationManager.isNotificationPolicyAccessGranted) {
+                // 권한이 부여된 경우 처리할 작업 수행
+                // 예: 알림 사용 코드 작성
+                Toast.makeText(this, "알림이 허용 되었습니다.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "알림이 거부 되었습니다.", Toast.LENGTH_SHORT).show()
+                // 권한이 거부된 경우 처리할 작업 수행
+            }
+        }
+
+
         if (resultCode == RESULT_OK) {
             when (requestCode) {
                 REQUEST_CAMERA -> {
@@ -350,6 +394,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+//        알림 설정
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (!notificationManager.areNotificationsEnabled()) {
+            var dialog = AlertDialog.Builder(this)
+            dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")
+            dialog.setPositiveButton("확인") { dialog, which ->
+                openAppNotificationSettings()
+            }
+            dialog.setNegativeButton("취소") { dialog, which ->
+                dialog.dismiss()
+            }
+            dialog.show()
+
+        }
+
 
 //        requestSubscribe()
 
@@ -499,8 +559,20 @@ class MainActivity : AppCompatActivity() {
         else if (tag4 != null && tag4.isVisible()) navigation.getMenu().findItem(R.id.userFragment)
             .setChecked(true)
         else {
-            var intent = Intent(this, IntroActivity::class.java)
-            startActivity(intent)
+
+//            스택 아무것도 없을 때 인트로로
+            val tag5: Fragment? = supportFragmentManager.findFragmentByTag("pot_diary")
+            val tag6: Fragment? = supportFragmentManager.findFragmentByTag("pot_diary_create")
+            val tag7: Fragment? = supportFragmentManager.findFragmentByTag("pot_detail")
+            val tag8: Fragment? = supportFragmentManager.findFragmentByTag("search_detail")
+            val tag9: Fragment? = supportFragmentManager.findFragmentByTag("community_share")
+            val tag10: Fragment? = supportFragmentManager.findFragmentByTag("community_post")
+            val tag11: Fragment? = supportFragmentManager.findFragmentByTag("setting")
+
+            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null) {
+                var intent = Intent(this, IntroActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 

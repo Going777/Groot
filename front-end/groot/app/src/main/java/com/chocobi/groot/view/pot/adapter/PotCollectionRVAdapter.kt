@@ -88,10 +88,12 @@ class PotCollectionRVAdapter(val items: List<Pot>) :
 
         fun bindItems(item: Pot) {
             val potNameText = itemView.findViewById<TextView>(R.id.potName)
+            val plantSpecies = itemView.findViewById<TextView>(R.id.plant_species)
             val characterImg = itemView.findViewById<ImageView>(R.id.characterImage)
             val potImg = itemView.findViewById<ImageView>(R.id.potImage)
             val potMeetDayText = itemView.findViewById<TextView>(R.id.potMeetDay)
             potNameText.text = item.potName
+            plantSpecies.text = item.plantKrName
             potMeetDayText.text = item.dates.toString()
 
             characterImg.post {

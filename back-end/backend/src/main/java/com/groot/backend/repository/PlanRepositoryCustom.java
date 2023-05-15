@@ -15,9 +15,19 @@ public interface PlanRepositoryCustom {
 
     List<PlanEntity> findAllByDateTimeAndUserPK(LocalDateTime start, LocalDateTime end, Long userPK);
 
+    void deleteByCodeAndPotId(Long potId, Integer code, LocalDateTime time);
+
     @Transactional
     @Modifying
     long updateDoneAndDateTimeByCodeAndPotId(Integer code, Long potId);
 
     LocalDateTime findLastDateTimeByDoneAndPotIdAndCode(boolean Done, Long PotId, Integer code);
+
+    @Transactional
+    @Modifying
+    long updateDoneById(Long planId);
+
+    boolean existsByCodeAndDateTimeBetween(Integer code, LocalDateTime start, LocalDateTime end);
+
+    List<PlanEntity> findAllByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
 }

@@ -279,12 +279,11 @@ public class PotServiceImpl implements PotService{
     /**
      * calculate days
      * @param from
+     * @param to
      * @return count
      */
-    private int calcPeriod(LocalDateTime from) {
-        LocalDateTime now = LocalDateTime.now();
-
-        Period period = Period.between(from.toLocalDate(), now.toLocalDate());
+    private int calcPeriod(LocalDateTime from, LocalDateTime to) {
+        Period period = Period.between(from.toLocalDate(), to.toLocalDate());
         return period.getDays() + 1;
     }
 
@@ -336,7 +335,9 @@ public class PotServiceImpl implements PotService{
                 .potName(potEntity.getName())
                 .imgPath(potEntity.getImgPath())
                 .plantKrName(potEntity.getPlantKrName())
-                .dates(calcPeriod(potEntity.getCreatedDate()))
+                .dates(calcPeriod(potEntity.getCreatedDate(),
+                                (potEntity.getSurvival()) ? LocalDateTime.now() : potEntity.getLastModifiedDate())
+                )
                 .createdTime(potEntity.getCreatedDate())
                 .waterDate(potEntity.getWaterDate())
                 .nutrientsDate(potEntity.getNutrientsDate())
