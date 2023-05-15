@@ -53,7 +53,7 @@ public class ChattingServiceImpl implements ChattingService{
 
         Optional<UserEntity> user = userRepository.findById(user2.getId());
         NotificationEntity noti = NotificationEntity.builder()
-                .contentId(chatRequestDTO.getRoomId())
+                .chattingRoomId(chatRequestDTO.getRoomId())
                 .page("chatting")
                 .isRead(false)
                 .content(body)
