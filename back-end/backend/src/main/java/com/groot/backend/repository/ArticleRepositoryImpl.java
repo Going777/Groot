@@ -47,6 +47,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
                                 .or(articleEntity.content.contains(keyword))
                 )
                 .orderBy(articleEntity.createdDate.desc())
+                .distinct()
                 .fetch();
 
         return convertListToPage(articles, pageRequest);
