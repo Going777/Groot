@@ -22,9 +22,11 @@ interface LoginService {
     @GET("/api/notifications/subscribe")
     fun requestSubscribe():Call<SubscribeResponse>
 
-    @POST("/api/users")
-    fun requestSocialLogin(
-
+    @POST("/api/users/kakao")
+    fun requestKakaoLogin(
+        @Body accessToken: String,
+        @Body nickName: String? = null,
+        @Body firebaseToken: String
     ): Call<LoginResponse>
 
 }

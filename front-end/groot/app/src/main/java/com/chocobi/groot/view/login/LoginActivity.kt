@@ -207,6 +207,26 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun socialLogin() {
+        val retrofit = RetrofitClient.basicClient()!!
+        val loginService = retrofit.create(LoginService::class.java)
+
+//        loginService.requestKakaoLogin()
+//            .enqueue(object : Callback<LoginResponse> {
+//                override fun onResponse(
+//                    call: Call<LoginResponse>,
+//                    response: Response<LoginResponse>
+//                ) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+//                    TODO("Not yet implemented")
+//                }
+//
+//            })
+    }
+
     private fun checkEditText(editText: EditText, imageView: ImageView) {
         var message = ""
         editText.addTextChangedListener(object : TextWatcher {

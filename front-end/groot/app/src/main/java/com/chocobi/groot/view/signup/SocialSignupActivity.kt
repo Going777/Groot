@@ -31,7 +31,19 @@ class SocialSignupActivity : AppCompatActivity() {
 
         getData()
         findView()
-        signup()
+
+//        중복 확인 버튼 눌렀을 때
+        dupNameBtn.setOnClickListener {
+            GlobalVariables.hideKeyboard(this)
+            if (!nickname.isNullOrEmpty()) {
+                checkDupName(nickname!!)
+            }
+        }
+
+//        가입 완료 버튼 눌렀을 때
+        basicSignupBtn.setOnClickListener {
+            signup()
+        }
     }
 
     private fun getData() {
@@ -41,24 +53,13 @@ class SocialSignupActivity : AppCompatActivity() {
         type = intent.getStringExtra("type")
     }
 
-    private fun findView(){
+    private fun findView() {
         basicSignupBtn = findViewById(R.id.basicSignupBtn)
         dupNameBtn = findViewById(R.id.dupNameBtn)
     }
 
     private fun signup() {
-        basicSignupBtn.setOnClickListener {
-            GlobalVariables.defaultAlertDialog(this@SocialSignupActivity, title = "로그인 성공", "반갑습니다!!")
-        }
-    }
-
-    private fun checkDupNameBtn() {
-        dupNameBtn.setOnClickListener {
-            GlobalVariables.hideKeyboard(this)
-            if (!nickname.isNullOrEmpty()) {
-                checkDupName(nickname!!)
-            }
-        }
+        GlobalVariables.defaultAlertDialog(this@SocialSignupActivity, title = "로그인 성공", "반갑습니다!!")
     }
 
     private fun checkDupName(nickname: String) {
