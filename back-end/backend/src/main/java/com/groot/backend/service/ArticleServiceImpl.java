@@ -161,7 +161,7 @@ public class ArticleServiceImpl implements ArticleService{
         String[] tags = articleDTO.getTags();
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
 
-        String key = "ranking";
+        String key = keyMap.get(articleDTO.getCategory());
 
         if(tags != null){
             List<TagEntity> tagList = new ArrayList<>();
@@ -327,7 +327,7 @@ public class ArticleServiceImpl implements ArticleService{
         String[] tags = articleDTO.getTags();
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
 
-        String key = "ranking";
+        String key = keyMap.get(articleDTO.getCategory());
 
         // 태그 처리
         if(tags != null){
@@ -447,7 +447,7 @@ public class ArticleServiceImpl implements ArticleService{
 
         // redis에서 태그 삭제
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
-        String key = "ranking";
+        String key = keyMap.get(articleEntity.getCategory());
 
         List<ArticleTagEntity> entities = articleTagRepository.findByArticleId(articleId);
         if(entities.size() != 0){
