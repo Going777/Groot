@@ -54,6 +54,7 @@ class SearchDetailFragment : Fragment() {
     private var mgmtLevel: String? = null
     private var characterGlbPath: String? = null
     private var plantImgUrl: String? = null
+    private var plantImgUri: String? = null
 
     private var plant: PlantDetailData? = null
 
@@ -82,6 +83,7 @@ class SearchDetailFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         plantId = arguments?.getString("plant_id")
+        plantImgUri = arguments?.getString("imageUri")
 
         plantId?.let { getDetail(it.toInt()) }
         targetPlantId = plantId?.let { it.toInt() }
@@ -110,7 +112,13 @@ class SearchDetailFragment : Fragment() {
 
         addPotBtn.setOnClickListener {
             var intent = Intent(requireContext(), Pot1Activity::class.java)
-            intent.putExtra("imageUrl", plantImgUrl)
+            Log.d("SearchDetailFragment","onCreateView() uri ${plantImgUri}")
+            Log.d("SearchDetailFragment","onCreateView() url ${plantImgUrl}")
+            if (!plantImgUri.isNullOrEmpty() || !plantImgUri.isNullOrBlank()) {
+                intent.putExtra("imageUri", plantImgUri)
+            } else {
+                intent.putExtra("imageUrl", plantImgUrl)
+            }
             intent.putExtra("plantName", plantName)
             intent.putExtra("plantId", targetPlantId)
             intent.putExtra("growType", growType)
