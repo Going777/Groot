@@ -114,6 +114,10 @@ class MainActivity : AppCompatActivity() {
                 bnv_main.run { selectedItemId = R.id.potFragment }
             }
 
+            "user" -> {
+                fragment = UserFragment()
+            }
+
             "pot_diary" -> {
                 val bundle = Bundle()
                 bundle.putInt("detailPotId", potId)
