@@ -16,7 +16,6 @@ public class NotificationRepositoryImpl implements NotificationRepositoryCustom{
     @Override
     public Long updateIsRead(Long notificationId) {
         QNotificationEntity qNotification = QNotificationEntity.notificationEntity;
-//        JPAUpdateClause update = new JPAUpdateClause(entityManager, qNotification);
 
         long updateCnt = queryFactory.update(qNotification)
                 .set(qNotification.isRead, true)

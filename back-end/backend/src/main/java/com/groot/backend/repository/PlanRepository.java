@@ -9,15 +9,8 @@ import java.util.List;
 
 public interface PlanRepository extends JpaRepository<PlanEntity, Long>, PlanRepositoryCustom {
 
-    Boolean existsByDateTimeAndCode(LocalDateTime dateTime, Integer code);
-
     List<PlanEntity> findAllByPotId(Long potId);
-
     Integer deleteAllByPotId(Long potId);
 
-    Long findDiaryIdById(Long id);
-
-    Integer findCodeById(Long id);
-
-    PlanEntity findTop1ByCodeAndDateTimeBetweenOrderByDateTimeDesc(Integer code, LocalDateTime startDateTime, LocalDateTime endDateTime);
+//    PlanEntity findTop1ByCodeAndDateTimeBetweenOrderByDateTimeDesc(Integer code, LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

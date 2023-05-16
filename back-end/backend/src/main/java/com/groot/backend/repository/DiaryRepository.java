@@ -13,8 +13,6 @@ public interface DiaryRepository extends JpaRepository<DiaryEntity, Long>, Diary
     Page<DiaryEntity> findAllByPotId(Long potId, PageRequest pageRequest);
 
     Page<DiaryEntity> findAllByUserPK(Long userPK, PageRequest pageRequest);
-    @Query(value = "select * from diary where :now<=created_date", nativeQuery = true)
-    List<DiaryEntity> findAllByDate(String now);
 
     DiaryEntity findTop1ByUserPKAndCreatedDateBetweenOrderByCreatedDateDesc(Long userPK, LocalDateTime startDateTime, LocalDateTime endDateTime);
 

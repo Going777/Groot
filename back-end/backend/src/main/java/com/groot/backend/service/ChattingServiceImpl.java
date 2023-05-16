@@ -28,9 +28,9 @@ import java.util.Optional;
 public class ChattingServiceImpl implements ChattingService{
 
     private final ChattingRepository chattingRepository;
-
     private final UserRepository userRepository;
     private final FirebaseMessaging firebaseMessaging;
+
     @Override
     public boolean insertChatting(ChatRequestDTO chatRequestDTO, Long userId) {
         UserEntity user1 = userRepository.findById(userId).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
