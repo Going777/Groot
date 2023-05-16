@@ -14,4 +14,5 @@ public class TokenDTO {
     private String accessToken;
     @NotNull
     private String refreshToken;
+    private Long userPK;
 }
