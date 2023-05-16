@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -20,9 +19,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.BasicResponse
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.adapter.ChatMessageAdapter
-import com.chocobi.groot.view.chat.model.Chat
+import com.chocobi.groot.view.chat.model.AddChatRoomService
+import com.chocobi.groot.view.chat.model.ChatRoomRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -30,6 +32,9 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -42,6 +47,7 @@ class ChatFragment : Fragment() {
 
     private lateinit var messageList: ArrayList<ChatMessage>
     private lateinit var lastMessage: String
+    private var firstMessage: Boolean = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +56,11 @@ class ChatFragment : Fragment() {
     }
 
     @SuppressLint("MissingInflatedId")
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
 
 
@@ -66,7 +76,8 @@ class ChatFragment : Fragment() {
         Log.d("받아온 데이터", chatProfile.toString())
         Log.d("받아온 데이터", roomId.toString())
         messageList = ArrayList()
-        val chatMessageAdapter: ChatMessageAdapter = ChatMessageAdapter(requireContext(), messageList)
+        val chatMessageAdapter: ChatMessageAdapter =
+            ChatMessageAdapter(requireContext(), messageList)
         val chatRecyclerView = view.findViewById<RecyclerView>(R.id.chatRecyclerView)
         chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         chatRecyclerView.adapter = chatMessageAdapter
@@ -79,22 +90,22 @@ class ChatFragment : Fragment() {
         categoryNameTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
         categoryIcon.visibility = View.GONE
         categoryProfileImg.visibility = View.VISIBLE
-        if(!chatProfile.isNullOrBlank()) {
+        if (!chatProfile.isNullOrBlank()) {
 
-        categoryProfileImg.post {
-            ThreadUtil.startThread {
-                val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
-                    .asBitmap()
-                    .load(chatProfile)
-                    .submit(categoryProfileImg.width, categoryProfileImg.height)
+            categoryProfileImg.post {
+                ThreadUtil.startThread {
+                    val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
+                        .asBitmap()
+                        .load(chatProfile)
+                        .submit(categoryProfileImg.width, categoryProfileImg.height)
 
-                val bitmap = futureTarget.get()
+                    val bitmap = futureTarget.get()
 
-                ThreadUtil.startUIThread(0) {
-                    categoryProfileImg.setImageBitmap(bitmap)
+                    ThreadUtil.startUIThread(0) {
+                        categoryProfileImg.setImageBitmap(bitmap)
+                    }
                 }
             }
-        }
         }
 
 //        ================================================================
@@ -106,7 +117,6 @@ class ChatFragment : Fragment() {
         }
 //        ================================================================
 //        ================================================================
-
 
 
         val createdTime: LocalDateTime = LocalDateTime.now()
@@ -131,31 +141,82 @@ class ChatFragment : Fragment() {
             val message = messageEdit.text.toString()
             val messageObject = ChatMessage(message, senderUid, saveTime)
 
-            //데이터 저장
-            mDbRef.child("chats").child(senderRoom).child("messages").push()
-                .setValue(messageObject).addOnSuccessListener {
-                    //저장 성공하면
-                    mDbRef.child("chats").child(receiverRoom).child("messages").push()
-                        .setValue(messageObject)
 
-                }
+            // 첫번째 메세지일 때 채팅 목록에 추가
+            if (firstMessage == true) {
 
-            Log.d("scroll", messageList.size.toString())
-            chatRecyclerView.scrollToPosition(messageList.size-1)
+                // 채팅 목록에 추가하는 api
+                val retrofit = RetrofitClient.getClient()!!
+                val addChatRoomService = retrofit.create(AddChatRoomService::class.java)
 
-            lastMessage = messageEdit.toString()
-            Log.d("lastMessage", lastMessage)
+                addChatRoomService.requestAddChatRoom(
+                    ChatRoomRequest(
+                        userPK = chatUserPK,
+                        roomId = receiverRoom
 
-            messageEdit.text.clear()
+                    )
+                ).enqueue(object : Callback<BasicResponse> {
+                    override fun onResponse(
+                        call: Call<BasicResponse>,
+                        response: Response<BasicResponse>
+                    ) {
+                        if (response.code() == 200) {
+                            Log.d("ChatFragment", "채팅 목록에 추가 성공")
+                        } else {
+                            Log.d("ChatFragment", "채팅 목록에 추가 실패1")
+                        }
+                    }
+
+                    override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                        Log.d("ChatFragment", "채팅 목록에 추가 실패2")
+                    }
+                })
+
+                //데이터 저장
+                mDbRef.child("chats").child(senderRoom).child("messages").push()
+                    .setValue(messageObject).addOnSuccessListener {
+                        //저장 성공하면
+                        mDbRef.child("chats").child(receiverRoom).child("messages").push()
+                            .setValue(messageObject)
+
+                    }
+
+                Log.d("scroll", messageList.size.toString())
+                chatRecyclerView.scrollToPosition(messageList.size - 1)
+
+                lastMessage = messageEdit.toString()
+                Log.d("lastMessage", lastMessage)
+
+                messageEdit.text.clear()
+                firstMessage = false
+            } else {
+                //데이터 저장
+                mDbRef.child("chats").child(senderRoom).child("messages").push()
+                    .setValue(messageObject).addOnSuccessListener {
+                        //저장 성공하면
+                        mDbRef.child("chats").child(receiverRoom).child("messages").push()
+                            .setValue(messageObject)
+
+                    }
+
+                Log.d("scroll", messageList.size.toString())
+                chatRecyclerView.scrollToPosition(messageList.size - 1)
+
+                lastMessage = messageEdit.toString()
+                Log.d("lastMessage", lastMessage)
+
+                messageEdit.text.clear()
+            }
         }
+
         // 메시지 가져오기
         mDbRef.child("chats").child(senderRoom).child("messages")
-            .addValueEventListener(object: ValueEventListener {
+            .addValueEventListener(object : ValueEventListener {
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onDataChange(snapshot: DataSnapshot) {
                     messageList.clear()
 
-                    for(postSnapshot in snapshot.children){
+                    for (postSnapshot in snapshot.children) {
 
                         val message = postSnapshot.getValue(ChatMessage::class.java)
                         messageList.add(message!!)
@@ -164,13 +225,14 @@ class ChatFragment : Fragment() {
                     //적용
                     chatMessageAdapter.notifyDataSetChanged()
                     Log.d("scroll", messageList.size.toString())
-                    chatRecyclerView.scrollToPosition(messageList.size-1)
+                    chatRecyclerView.scrollToPosition(messageList.size - 1)
 
                     if (messageList.size != 0) {
                         Log.d("lastMessage", lastMessage)
                     }
 
                 }
+
                 override fun onCancelled(error: DatabaseError) {
 
                 }

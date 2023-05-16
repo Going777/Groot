@@ -9,13 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.view.chat.ChatFragment
+import com.chocobi.groot.view.community.CommunityDetailFragment
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.CommunityCommentPostService
@@ -92,8 +98,11 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
     private var view: WeakReference<View> = WeakReference(itemView)
 
+    private lateinit var commentProfileData: LinearLayout
     private lateinit var commentId: TextView
-    private lateinit var userPK: TextView
+    private var userPK: String = "0"
+    private var pickNickName: String = ""
+    private var pickProfile: String = ""
     private lateinit var content: TextView
     private lateinit var nickName: TextView
     private lateinit var createTime: TextView
@@ -112,6 +121,7 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
     private fun findView() {
         view.get()?.let {
+            commentProfileData = it.findViewById(R.id.commentProfileData)
             profile = it.findViewById(R.id.commentProfileImg)
             content = it.findViewById(R.id.commentContext)
             nickName = it.findViewById(R.id.commentNickname)
@@ -121,23 +131,48 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     }
 
     private fun setListener() {
-        view.get()?.setOnClickListener {
-            delegate?.onItemViewClick(communityCommentResponse)
+        commentProfileData.setOnClickListener {
+            val moveChatDialog = AlertDialog.Builder(it.context)
+            moveChatDialog.setMessage("$pickNickName 님과 채팅을 하시겠습니까?")
+            moveChatDialog.setPositiveButton("OK") { dialog, which ->
+                val fragmentActivity = it.context as? FragmentActivity
+                if (fragmentActivity != null) {
+                    val fragmentManager: FragmentManager = fragmentActivity.supportFragmentManager
+                    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+                    val roomId = changeRoomNumber(UserData.getUserPK().toString(), userPK.toString())
+                    val chatFragment = ChatFragment()
+                    val bundle = Bundle()
+                    bundle.putString("userPK", userPK)
+                    bundle.putString("nickName", pickNickName)
+                    bundle.putString("profile", pickProfile)
+                    bundle.putString("roomId", roomId)
+                    Log.d("받아온 데이터", bundle.toString())
+
+                    chatFragment.arguments = bundle
+                    fragmentTransaction.replace(R.id.fl_container, chatFragment).addToBackStack(null).commit()
+                }
+            }
+            moveChatDialog.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss()}
+            moveChatDialog.create().show()
         }
+
     }
 
     @SuppressLint("SetTextI18n")
     fun updateView() {
+        userPK = communityCommentResponse.comment[0].userPK.toString()
+        pickNickName = communityCommentResponse.comment[0].nickName
+        pickProfile = communityCommentResponse.comment[0].profile.toString()
+        nickName.text = communityCommentResponse.comment[0].nickName
+        createTime.text = communityCommentResponse.comment[0].createTime.date.year.toString() + '.'+ communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + communityCommentResponse.comment[0].createTime.time.hour + ':'+ communityCommentResponse.comment[0].createTime.time.minute.toString()
+
         if (communityCommentResponse.comment[0].userPK == UserData.getUserPK()) {
             deleteButton.visibility = View.VISIBLE
         }
         deleteButton.setOnClickListener {
             Log.d(TAG, "delete click")
         }
-        nickName.text = communityCommentResponse.comment[0].nickName
-        val koreahour = communityCommentResponse.comment[0].createTime.time.hour + 9
-        createTime.text =
-            communityCommentResponse.comment[0].createTime.date.year.toString() + '.' + communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + communityCommentResponse.comment[0].createTime.time.hour + ':' + communityCommentResponse.comment[0].createTime.time.minute.toString()
         content.text = communityCommentResponse.comment[0].content
         profile.post {
             view.get()?.let {
@@ -157,6 +192,13 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         }
 
     }
+    private fun changeRoomNumber(senderNumber: String?, receiverNumber: String?): String {
+        val senderRoomNumber = senderNumber?.padStart(6, '0')
+        val receiverRoomNumber = receiverNumber?.padStart(6, '0')
+        val formattedNumber = senderRoomNumber + receiverRoomNumber
+
+        return formattedNumber ?: ""
+    }
 
     private fun deleteComment(commentId: Int) {
         val userPK = UserData.getUserPK()
@@ -165,6 +207,6 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
 
     }
-
-
 }
+
+
