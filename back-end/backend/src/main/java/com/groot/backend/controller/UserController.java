@@ -65,8 +65,10 @@ public class UserController {
         }
 
         // 회원가입 성공 후 로그인
+        String firebaseUserPK = String.format("%06d", tokenDTO.getUserPK());    // 6자리 맞추기
         resultMap.put("accessToken", tokenDTO.getAccessToken());
         resultMap.put("refreshToken", tokenDTO.getRefreshToken());
+        resultMap.put("userPK", firebaseUserPK);
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "회원가입 되었습니다.");
         return ResponseEntity.ok().body(resultMap);
