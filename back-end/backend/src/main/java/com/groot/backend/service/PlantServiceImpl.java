@@ -242,9 +242,14 @@ public class PlantServiceImpl implements PlantService{
     private PlantWithCharacterDTO searchFromDB(String[][] result) {
         logger.info("search {} from database", result[0][0]);
         String regex = "";
+        String scores = "";
         for(int i=0; i< result.length; i++) {
             regex += result[i][0].split(" ")[0];
-            if(i != result.length - 1) regex += "|";
+            scores += result[i][1];
+            if(i != result.length - 1) {
+                regex += "|";
+                scores += "|";
+            }
         };
 
         logger.info("Load all matched plants from DB : {}", regex);
@@ -255,7 +260,7 @@ public class PlantServiceImpl implements PlantService{
         if(plantEntities.size() > 0) {
             logger.info("searching found : {}", plantEntities.size());
             // order might be changed - current : counts
-            String[][] plantOrder = countPlantFreq(regex);
+            String[][] plantOrder = countPlantFreqWithScore(regex, scores);
 
             for(int i=0; i<plantOrder.length; i++) {
                 logger.info("Find genus : {} th : {}", i, plantOrder[i][0]);
@@ -279,7 +284,8 @@ public class PlantServiceImpl implements PlantService{
                             logger.info("{} found, return", plantEntity.getSciName());
 
                             return PlantWithCharacterDTO.builder()
-                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[j][1]))
+//                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[j][1]))
+                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, plantOrder[i][2]))
                                     .characterAssetDTO(getAsset(plantEntity))
                                     .build();
                         }
@@ -287,7 +293,8 @@ public class PlantServiceImpl implements PlantService{
                 }
                 logger.info("No exact matches found : {}", plantOrder[i][0]);
                 return PlantWithCharacterDTO.builder()
-                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[0][1]))
+//                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[0][1]))
+                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, plantOrder[i][2]))
                         .characterAssetDTO(getAsset(plantEntity))
                         .build();
             }
@@ -309,31 +316,38 @@ public class PlantServiceImpl implements PlantService{
      * @param regex
      * @return array with name and cound
      */
-    public String[][] countPlantFreq(String regex) {
+    public String[][] countPlantFreqWithScore(String regex, String scores) {
         logger.info("Get frequency from : {}", regex);
         Map<String, Integer> map = new HashMap<>();
         List<Integer> counts = new ArrayList<>();
+        List<Float> genusScore = new ArrayList<>();
         String[] species = regex.split("\\|");
+        String[] speciesScores = scores.split("\\|");
         int index = 0;
 
         for(int i=0; i<species.length; i++) {
             if (map.get(species[i]) == null) {
                 map.put(species[i], index);
-                counts.add(index++, 1);
+                counts.add(index, 1);
+                genusScore.add(index++, Float.parseFloat(speciesScores[i]));
             } else {
                 int idx = map.get(species[i]);
                 int cnt = counts.get(idx);
+                float score = genusScore.get(idx);
                 counts.remove(idx);
                 counts.add(idx, cnt + 1);
+                genusScore.remove(idx);
+                genusScore.add(idx, score += Float.parseFloat(speciesScores[i]));
             }
         }
 
-        String[][] ret = new String[index][2];
+        String[][] ret = new String[index][3];
 
         map.forEach((key, value) -> {
             ret[value][0] = key;
             ret[value][1] = Integer.toString(counts.get(value));
-            logger.info("count results : {}, {}", ret[value][0], ret[value][1]);
+            ret[value][2] = Float.toString(genusScore.get(value));
+            logger.info("count results : {}, {}, {}", ret[value][0], ret[value][1], ret[value][2]);
         });
 
         Arrays.sort(ret, (o1, o2) -> {
