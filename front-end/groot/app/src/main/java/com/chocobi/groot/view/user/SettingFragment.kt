@@ -107,11 +107,6 @@ class SettingFragment : Fragment() {
 
 
     private fun logout() {
-//        var retrofit = Retrofit.Builder()
-//            .baseUrl(GlobalVariables.getBaseUrl())
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-
 //        retrofit 객체 만들기
         var retrofit = RetrofitClient.getClient()!!
 
@@ -127,7 +122,8 @@ class SettingFragment : Fragment() {
                     response: Response<BasicResponse>
                 ) {
                     val isSocialLogined = UserData.getIsSocialLogined()
-                    if (isSocialLogined == "카카오") {
+                    if (isSocialLogined == "kakao") {
+                        Log.d("SettingFragment","onResponse() 카카오 로그아웃")
                         // 로그아웃
                         UserApiClient.instance.logout { error ->
                             if (error != null) {
@@ -137,7 +133,8 @@ class SettingFragment : Fragment() {
                                 Log.i("Logout", "로그아웃 성공. SDK에서 토큰 삭제됨")
                             }
                         }
-                    } else if (isSocialLogined == "네이버") {
+                    } else if (isSocialLogined == "naver") {
+                        Log.d("SettingFragment","onResponse() 네이버 로그아웃")
                         NaverIdLoginSDK.logout()
                     }
                     Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
@@ -171,7 +168,8 @@ class SettingFragment : Fragment() {
 //                    회원 탈퇴 성공
                     if(response.code() == 200) {
                         val isSocialLogined = UserData.getIsSocialLogined()
-                        if(isSocialLogined == "카카오") {
+                        if(isSocialLogined == "kakao") {
+                            Log.d("SettingFragment","onResponse() 카카오 회원 탈퇴")
                             // 연결 끊기
                             UserApiClient.instance.unlink { error ->
                                 if (error != null) {
@@ -181,7 +179,8 @@ class SettingFragment : Fragment() {
                                     Log.i("Logout", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                                 }
                             }
-                        } else if (isSocialLogined == "네이버") {
+                        } else if (isSocialLogined == "naver") {
+                            Log.d("SettingFragment","onResponse() 네이버 회원 탈퇴")
                             context?.let {
                                 NidOAuthLogin().callDeleteTokenApi(it, object :
                                     OAuthLoginCallback {

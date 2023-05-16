@@ -39,7 +39,7 @@ class SocialSignupActivity : AppCompatActivity() {
     private var nickname: String? = null
     private var profileImg: String? = null
     private var socialAccessToken: String? = null
-    private var type: String? = null
+    private lateinit var type: String
 
     private var isCheckedDupName = false
 
@@ -91,7 +91,7 @@ class SocialSignupActivity : AppCompatActivity() {
         nickname = intent.getStringExtra("nickname")
         profileImg = intent.getStringExtra("profile_img")
         socialAccessToken = intent.getStringExtra("social_access_token")
-        type = intent.getStringExtra("type")
+        type = intent.getStringExtra("type")!!
 
         Log.d("SocialSignupActivity", "getData() ${nickname}")
         Log.d("SocialSignupActivity", "getData() ${profileImg}")
@@ -132,6 +132,7 @@ class SocialSignupActivity : AppCompatActivity() {
         Log.d("SocialSignupActivity","signup() 닉네임 $nickname")
         loginService.requestSocialLogin(
             SocialLoginRequest(
+                oauthProvider = type!!,
                 accessToken = socialAccessToken!!,
                 nickName = nickname,
                 firebaseToken = firebaseToken

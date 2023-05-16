@@ -122,7 +122,7 @@ class LoginActivity : AppCompatActivity() {
                             profileImg = user.kakaoAccount?.profile?.thumbnailImageUrl
                             Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
 
-//                            socialLogin("카카오")
+                            socialLogin("kakao")
                         }
                     }
                 }
@@ -153,7 +153,7 @@ class LoginActivity : AppCompatActivity() {
                                 profileImg = user.kakaoAccount?.profile?.thumbnailImageUrl
                                 Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
 
-//                                socialLogin("카카오")
+                                socialLogin("kakao")
                             }
                         }
                     }
@@ -175,7 +175,7 @@ class LoginActivity : AppCompatActivity() {
                             nickname = result.profile?.nickname.toString()
                             profileImg = result.profile?.profileImage.toString()
                             Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
-//                            socialLogin("네이버)
+                            socialLogin("naver")
                         }
 
                         override fun onError(errorCode: Int, message: String) {
@@ -213,7 +213,7 @@ class LoginActivity : AppCompatActivity() {
         val retrofit = RetrofitClient.basicClient()!!
         val loginService = retrofit.create(LoginService::class.java)
         val firebaseToken = UserData.getUserFirebase()
-        loginService.requestSocialLogin(SocialLoginRequest(accessToken =  socialAccessToken!!, firebaseToken = firebaseToken))
+        loginService.requestSocialLogin(SocialLoginRequest(oauthProvider = type, accessToken =  socialAccessToken!!, firebaseToken = firebaseToken))
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(
                     call: Call<LoginResponse>,
