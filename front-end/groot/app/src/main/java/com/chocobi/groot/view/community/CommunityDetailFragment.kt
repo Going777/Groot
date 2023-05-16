@@ -68,6 +68,9 @@ class CommunityDetailFragment : Fragment() {
     private var articleId: Int = 0
     private lateinit var frameLayoutComment: FrameLayout
     private var shareStatus = false
+    private var userPK: Int = 0
+    private var bookmarkStatus = false
+    private lateinit var shareStateText :TextView
 
 
 //    private var commentList = arrayListOf<CommunityCommentResponse>()
@@ -77,11 +80,6 @@ class CommunityDetailFragment : Fragment() {
 
     private lateinit var getData: CommunityArticleDetailResponse
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     @SuppressLint("NotifyDataSetChanged", "MissingInflatedId")
     override fun onCreateView(
@@ -93,7 +91,7 @@ class CommunityDetailFragment : Fragment() {
         val articleId = arguments?.getInt("articleId")
         val mActivity = activity as MainActivity
         Log.d("CommunityDetailFragmentArticleId", articleId.toString())
-        val userPK = UserData.getUserPK()
+        userPK = UserData.getUserPK()
         val nickname = UserData.getNickName()
         val profile = UserData.getProfile()
         val args = Bundle()
@@ -130,7 +128,7 @@ class CommunityDetailFragment : Fragment() {
         var detailContent = view.findViewById<TextView>(R.id.detailContent)
         var detailCommentCnt = view.findViewById<TextView>(R.id.detailCommentCnt)
         var detailProfileImg = view.findViewById<CircleImageView>(R.id.detailProfileImg)
-        var bookmarkStatus = false
+
         var postCommentBtn = view.findViewById<Button>(R.id.postCommentBtn)
         var postCommentInput = view.findViewById<EditText>(R.id.postCommentInput)
         var sharePosition = view.findViewById<TextView>(R.id.sharePosition)
@@ -143,6 +141,7 @@ class CommunityDetailFragment : Fragment() {
 
         var carouselSection = view.findViewById<LinearLayoutCompat>(R.id.carouselSection)
         var dropdownSection = view.findViewById<ConstraintLayout>(R.id.dropdownSection)
+        shareStateText = view.findViewById(R.id.shareStateText)
 
         userProfile.post {
             ThreadUtil.startThread {
@@ -186,6 +185,8 @@ class CommunityDetailFragment : Fragment() {
 
 
 //                retrofit 객체 만들기
+
+//        getArticleDetail()
         val retrofit = RetrofitClient.getClient()!!
 
         val communityArticleDetailService =
@@ -350,76 +351,7 @@ class CommunityDetailFragment : Fragment() {
                     // 드롭다운
                     if (UserData.getUserPK() == articleDetailData.article.userPK) {
 
-
-//                        val spinner: Spinner = view.findViewById(R.id.spinner)
                         val spinnerButton: ImageButton = view.findViewById(R.id.spinnerButton)
-
-                        var options: Array<String>
-                        if (detailCategory.text == "나눔") {
-                            options = arrayOf("  삭제  ", "  수정  ", " 나눔 완료 ")
-                        } else {
-                            options = arrayOf("  삭제  ", "  수정  ")
-                        }
-                        // spinner 설정 이전에 아래 코드 추가
-
-
-//                        spinner.adapter = adapter
-//
-//                        spinner.onItemSelectedListener =
-//                            object : AdapterView.OnItemSelectedListener {
-//                                override fun onItemSelected(
-//                                    parent: AdapterView<*>,
-//                                    view: View?,
-//                                    position: Int,
-//                                    id: Long
-//                                ) {
-//                                    Log.d("shareStatus", shareStatus.toString())
-//                                    if (shareStatus == true) {
-//                                        options[2] = " 나눔 취소 "
-//                                    } else {
-//                                        options[2] = " 나눔 완료 "
-//                                    }
-//
-//
-//                                    var selectedOption = options[position]
-//                                    if (selectedOption == "  삭제  ") {
-//                                        val dialog = AlertDialog.Builder(requireContext())
-//                                        dialog.setTitle("글을 삭제하시겠습니까?")
-//                                        dialog.setPositiveButton("네") { dialog, which ->
-//                                            deleteArticle(articleId)
-//                                            requireActivity().supportFragmentManager.popBackStack()
-//                                        }
-//                                        dialog.setNegativeButton("아니요") { dialog, which ->
-//                                            dialog.dismiss()
-//                                        }
-//                                        dialog.show()
-//                                    } else if (selectedOption == " 수정 ") {
-//
-//                                    }
-//                                    if (selectedOption == " 나눔 완료 ") {
-//                                        changeShareStatus(articleId, UserData.getUserPK())
-//                                        shareStateSection.visibility = View.VISIBLE
-//                                        options[2] = " 나눔 취소 "
-//                                        shareStatus = true
-//                                        adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
-//
-//                                    } else if (selectedOption == " 나눔 취소 ") {
-//                                        changeShareStatus(articleId, UserData.getUserPK())
-//                                        shareStateSection.visibility = View.GONE
-//                                        options[2] = " 나눔 완료 "
-//                                        shareStatus = false
-//                                        adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
-//
-//                                    }
-//
-//
-//                                }
-//
-//                                override fun onNothingSelected(parent: AdapterView<*>) {
-//                                    // 아무것도 선택하지 않은 경우 처리
-//                                }
-//                            }
-//                        var spinnerClicked = false
 
                         spinnerButton.setOnClickListener {
                             val articleBottomSheet = ArticleBottomSheet(requireContext(), articleId)
@@ -427,7 +359,6 @@ class CommunityDetailFragment : Fragment() {
                                 mActivity.supportFragmentManager,
                                 articleBottomSheet.tag
                             )
-
                         }
                     } else {
                         dropdownSection.visibility = View.GONE
@@ -449,37 +380,9 @@ class CommunityDetailFragment : Fragment() {
 //        북마크 수정 api
 
 
-        val communityBookmarkService = retrofit.create(CommunityBookmarkService::class.java)
         bookmarkButton = view.findViewById(R.id.bookmarkLine)
         bookmarkButton.setOnClickListener {
-            communityBookmarkService.requestCommunityBookmark(
-                BookmarkRequest(
-                    articleId,
-                    userPK,
-                    bookmarkStatus
-                )
-            ).enqueue(object :
-                Callback<BookmarkResponse> {
-                override fun onResponse(
-                    call: Call<BookmarkResponse>,
-                    response: Response<BookmarkResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.d(TAG, "북마크상태변경 성공")
-                        bookmarkStatus = !bookmarkStatus
-                        bookmarkButton.setImageResource(
-                            if (bookmarkStatus) R.drawable.ic_bookmark_fill
-                            else R.drawable.ic_bookmark
-                        )
-                    } else {
-                        Log.d(TAG, "북마크상태변경 실패")
-                    }
-                }
-
-                override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
-                    Log.d(TAG, "북마크상태변경 실패")
-                }
-            })
+            requestBookmark()
         }
 
 
@@ -491,7 +394,7 @@ class CommunityDetailFragment : Fragment() {
         showProgress()
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        commentRecyclerView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
+        commentRecyclerView = view.findViewById(R.id.commentRecycleView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
         commentRecyclerView.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -499,39 +402,7 @@ class CommunityDetailFragment : Fragment() {
         commentRecyclerView.layoutManager = layoutManager
 
 
-        // retrofit 객체 만들기
-        var commentRetrofit = RetrofitClient.getClient()!!
-        var communityCommentService = commentRetrofit.create(CommunityCommentService::class.java)
-
-        communityCommentService.requestCommunityComment(articleId).enqueue(object :
-            Callback<CommunityCommentResponse> {
-            override fun onResponse(
-                call: Call<CommunityCommentResponse>,
-                response: Response<CommunityCommentResponse>
-            ) {
-                if (response.code() == 200) {
-                    Log.d("CommunityCommentFragment", "성공")
-                    val checkResponse = response.body()?.comment
-                    getCommentData = response.body()!!
-                    Log.d("CommunityCommentFragment", "$checkResponse")
-
-                    val list = createDummyData()
-                    ThreadUtil.startUIThread(1000) {
-                        commentAdapter.reload(list)
-                        hideProgress()
-
-                    }
-
-
-                } else {
-                    Log.d("CommunityCommentFragment", "실패1")
-                }
-            }
-
-            override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
-                Log.d("CommunityCommentFragment실패", "실패2")
-            }
-        })
+        getArticleComment()
 
 
         return view
@@ -540,7 +411,6 @@ class CommunityDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
     }
 
@@ -761,5 +631,89 @@ class CommunityDetailFragment : Fragment() {
                 }
             })
 
+    }
+
+    private fun getArticleComment() {
+        // retrofit 객체 만들기
+        var commentRetrofit = RetrofitClient.getClient()!!
+        var communityCommentService = commentRetrofit.create(CommunityCommentService::class.java)
+
+        communityCommentService.requestCommunityComment(articleId).enqueue(object :
+            Callback<CommunityCommentResponse> {
+            override fun onResponse(
+                call: Call<CommunityCommentResponse>,
+                response: Response<CommunityCommentResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d("CommunityCommentFragment", "성공")
+                    val checkResponse = response.body()?.comment
+                    getCommentData = response.body()!!
+                    Log.d("CommunityCommentFragment", "$checkResponse")
+
+                    val list = createDummyData()
+                    ThreadUtil.startUIThread(1000) {
+                        commentAdapter.reload(list)
+                        hideProgress()
+
+                    }
+
+
+                } else {
+                    Log.d("CommunityCommentFragment", "실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
+                Log.d("CommunityCommentFragment실패", "실패2")
+            }
+        })
+    }
+
+    private fun requestBookmark() {
+        val retrofit = RetrofitClient.getClient()!!
+        val communityBookmarkService = retrofit.create(CommunityBookmarkService::class.java)
+        communityBookmarkService.requestCommunityBookmark(
+            BookmarkRequest(
+                articleId,
+                userPK,
+                bookmarkStatus
+            )
+        ).enqueue(object :
+            Callback<BookmarkResponse> {
+            override fun onResponse(
+                call: Call<BookmarkResponse>,
+                response: Response<BookmarkResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "북마크상태변경 성공")
+                    bookmarkStatus = !bookmarkStatus
+                    bookmarkButton.setImageResource(
+                        if (bookmarkStatus) R.drawable.ic_bookmark_fill
+                        else R.drawable.ic_bookmark
+                    )
+                } else {
+                    Log.d(TAG, "북마크상태변경 실패")
+                }
+            }
+
+            override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
+                Log.d(TAG, "북마크상태변경 실패")
+            }
+        })
+    }
+
+    private fun setShareText(selectedOption: String) {
+        if (selectedOption == " 나눔 완료 ") {
+            changeShareStatus(articleId, UserData.getUserPK())
+            shareStateText.visibility = View.VISIBLE
+            shareStateText.text = "나눔 완료"
+            shareStatus = true
+
+        } else if (selectedOption == " 나눔 취소 ") {
+            changeShareStatus(articleId, UserData.getUserPK())
+            shareStateText.visibility = View.VISIBLE
+            shareStateText.text = "나눔 취소"
+            shareStatus = false
+        }
     }
 }
