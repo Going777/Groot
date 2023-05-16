@@ -38,7 +38,7 @@ public class PlanServiceImpl implements PlanService{
         // plan 삭제
         PlanEntity plan = planRepository.findById(planId).orElseThrow();
 //        planRepository.deleteById(planId);
-        planRepository.updateDoneById(planId);
+        planRepository.updateDoneById(planId, false);
 
         // 관련 diary 수정
         DiaryEntity diary = diaryRepository.findById(plan.getDiaryId()).orElseThrow();

@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,10 +29,10 @@ public class DiaryCheckRepositoryImpl implements DiaryCheckRepositoryCustom {
     public DiaryCheckEntity existsByPotIdCreatedDate(Long potId) {
         QDiaryCheckEntity qDiaryCheck = QDiaryCheckEntity.diaryCheckEntity;
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime date = LocalDateTime.of(2023,now.getMonthValue(), now.getDayOfMonth(), 0, 0, 0);
+        LocalDateTime date = LocalDateTime.of(LocalDate.from(now), LocalTime.of(0, 0, 0));
         log.info("month"+now.getMonthValue()+" day"+now.getDayOfMonth());
         DiaryCheckEntity diary = queryFactory.selectFrom(qDiaryCheck)
-                .where(qDiaryCheck.potId.eq(potId), qDiaryCheck.createdDate.goe(date))
+                .where(qDiaryCheck.potId.eq(potId), qDiaryCheck.createdDate.between(date, now))
                 .fetchOne();
 
         return diary;
