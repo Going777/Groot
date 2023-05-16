@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.chat
 
 import android.annotation.SuppressLint
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -8,10 +9,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.adapter.ChatMessageAdapter
 import com.chocobi.groot.view.chat.model.Chat
@@ -22,6 +29,8 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class ChatFragment : Fragment() {
 
@@ -31,6 +40,7 @@ class ChatFragment : Fragment() {
     private lateinit var mDbRef: DatabaseReference
 
     private lateinit var messageList: ArrayList<ChatMessage>
+    private lateinit var lastMessage: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,17 +73,17 @@ class ChatFragment : Fragment() {
         val categoryIcon = view.findViewById<ImageView>(R.id.categoryIcon)
         val categoryProfileImg = view.findViewById<CircleImageView>(R.id.categoryProfileImg)
         categoryNameTextView
-        categoryNameTextView.text = nickName
+        categoryNameTextView.text = chatNickName
         categoryNameTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
         categoryIcon.visibility = View.GONE
         categoryProfileImg.visibility = View.VISIBLE
-        if(!profile.isNullOrBlank()) {
+        if(!chatProfile.isNullOrBlank()) {
 
         categoryProfileImg.post {
             ThreadUtil.startThread {
                 val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
                     .asBitmap()
-                    .load(profile)
+                    .load(chatProfile)
                     .submit(categoryProfileImg.width, categoryProfileImg.height)
 
                 val bitmap = futureTarget.get()
@@ -96,7 +106,9 @@ class ChatFragment : Fragment() {
 //        ================================================================
 
 
-
+        val createdTime: LocalDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("a h:mm")
+        val saveTime = createdTime.format(formatter)
 
         mDbRef = Firebase.database.reference
 
@@ -113,7 +125,7 @@ class ChatFragment : Fragment() {
         sendBtn.setOnClickListener {
             val messageEdit = view.findViewById<EditText>(R.id.messageEdit)
             val message = messageEdit.text.toString()
-            val messageObject = ChatMessage(message, senderUid)
+            val messageObject = ChatMessage(message, senderUid, saveTime)
 
             //데이터 저장
             mDbRef.child("chats").child(senderRoom).child("messages").push()
@@ -123,6 +135,9 @@ class ChatFragment : Fragment() {
                         .setValue(messageObject)
 
                 }
+            lastMessage = messageEdit.toString()
+            Log.d("lastMessage", lastMessage)
+
             messageEdit.text.clear()
         }
         // 메시지 가져오기
@@ -136,19 +151,20 @@ class ChatFragment : Fragment() {
 
                         val message = postSnapshot.getValue(ChatMessage::class.java)
                         messageList.add(message!!)
+                        lastMessage = message.toString()
                     }
                     //적용
                     chatMessageAdapter.notifyDataSetChanged()
-                }
 
+                    if (messageList.size != 0) {
+                        Log.d("lastMessage", lastMessage)
+                    }
+
+                }
                 override fun onCancelled(error: DatabaseError) {
 
                 }
             })
-
-
-
-
 
 
         return view
