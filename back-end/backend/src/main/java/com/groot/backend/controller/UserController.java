@@ -403,8 +403,19 @@ public class UserController {
         }
 
         try {
-            // 토큰 검사
-            userService.checkKakaoToken(oAuthUserDTO.getAccessToken());
+            // kakao 토큰 검사
+            if(oAuthUserDTO.getOAuthProvider().equals("kakao") ){
+                int tokenResult = userService.checkKakaoToken(oAuthUserDTO.getAccessToken());
+                if(tokenResult == 400){
+                    resultMap.put("result", FAIL);
+                    resultMap.put("msg", "호출 인자값의 데이터 타입이 적절하지 않거나 허용된 범위를 벗어남");
+                    return ResponseEntity.badRequest().body(resultMap);
+                }else if(tokenResult == 401){
+                    resultMap.put("result", FAIL);
+                    resultMap.put("msg", "유효하지 않은 앱키나 액세스 토큰으로 요청한 경우");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+                }
+            }
 
 
             TokenDTO result = userService.OAuthLogin(oAuthUserDTO);
