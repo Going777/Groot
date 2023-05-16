@@ -166,7 +166,7 @@ pipeline {
           steps {
             dir('./domain/') {
               echo 'run docker container'
-              sh 'docker run -d -p 8082:5000 --name flask flask'
+              sh 'docker run -d -v /tmp/flask:/tmp --name flask flask'
             }
           }
         }
