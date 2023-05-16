@@ -313,8 +313,9 @@ public class PlantServiceImpl implements PlantService{
 
     /**
      * Count numbers of species[0] in regex
-     * @param regex
-     * @return array with name and cound
+     * @param regex that used for DB searching
+     * @param scores scores distinguished by |
+     * @return array with name, count and accumulated score
      */
     public String[][] countPlantFreqWithScore(String regex, String scores) {
         logger.info("Get frequency from : {}", regex);
@@ -401,7 +402,8 @@ public class PlantServiceImpl implements PlantService{
 
     /**
      * find character assets resources
-     * @return
+     * @param plantEntity plantEntity
+     * @return asset glb and png url
      */
     private CharacterAssetDTO getAsset(PlantEntity plantEntity) {
         CharacterEntity characterEntity =
@@ -413,6 +415,11 @@ public class PlantServiceImpl implements PlantService{
                 .build();
     }
 
+    /**
+     * used for test level : returns 19449 with score
+     * @param score score as integer value
+     * @return
+     */
     private PlantIdentificationDTO defaultReturn(int score) {
         PlantEntity plantEntity = plantRepository.findById(19449L).get();
         return PlantIdentificationDTO.builder()
