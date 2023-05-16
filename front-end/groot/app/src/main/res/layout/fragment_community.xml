@@ -32,6 +32,16 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/communityChatFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="80dp"
+        android:contentDescription="+"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_chat" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/communityPostFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
