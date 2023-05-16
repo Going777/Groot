@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OAuthUserDTO {
+    @NotNull
     private String OAuthProvider;
     @NotNull
     private String accessToken;
