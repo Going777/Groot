@@ -29,6 +29,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.chat.ChatUserListFragment
+import com.chocobi.groot.view.community.CommunityEditPostFragment
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -114,6 +115,10 @@ class MainActivity : AppCompatActivity() {
                 bnv_main.run { selectedItemId = R.id.potFragment }
             }
 
+            "user" -> {
+                fragment = UserFragment()
+            }
+
             "pot_diary" -> {
                 val bundle = Bundle()
                 bundle.putInt("detailPotId", potId)
@@ -152,6 +157,7 @@ class MainActivity : AppCompatActivity() {
                 bundle.putString(
                     "plant_id", intent.getStringExtra("plant_id")
                 )
+                bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
                 fragment.arguments = bundle
             }
@@ -170,6 +176,9 @@ class MainActivity : AppCompatActivity() {
 
             "community_tip" -> {
                 fragment = CommunityPostFragment("Tip")
+            }
+            "community_edit_post" -> {
+                fragment = CommunityEditPostFragment("자유")
             }
 
             "setting" -> {

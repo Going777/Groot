@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,20 +20,24 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.community.CommunityDetailFragment
+import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.community.CommunityCommentPostService
 import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.chocobi.groot.view.community.model.CommunityShareItemResponse
 import java.lang.ref.WeakReference
 
 
-class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapter<CommentItemViewHolder>() {
+class CommentAdapter(private val recyclerView: RecyclerView) :
+    RecyclerView.Adapter<CommentItemViewHolder>() {
 
     interface RecyclerViewAdapterDelegate {
         fun onLoadMore()
     }
+
 
     private var mutableList: MutableList<CommunityCommentResponse> = mutableListOf()
 
@@ -40,7 +45,8 @@ class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapt
     var delegate: RecyclerViewAdapterDelegate? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_community_comment_item, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.fragment_community_comment_item, parent, false)
         return CommentItemViewHolder(view)
     }
 
@@ -72,6 +78,7 @@ class CommentAdapter(private val recyclerView: RecyclerView): RecyclerView.Adapt
         this.mutableList.addAll(mutableList)
         notifyItemRangeChanged(this.mutableList.size - mutableList.size, mutableList.size)
     }
+
     fun addComment(comment: CommunityCommentResponse) {
         mutableList.add(comment)
         notifyItemInserted(mutableList.size - 1)
@@ -87,6 +94,8 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         }
     }
 
+    private val TAG = "CommentItemViewHolder"
+
     private var view: WeakReference<View> = WeakReference(itemView)
 
     private lateinit var commentProfileData: LinearLayout
@@ -99,6 +108,7 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     private lateinit var createTime: TextView
     private lateinit var updateTime: TextView
     private lateinit var profile: ImageView
+    private lateinit var deleteButton: ImageButton
 
 
     var delegate: CommentItemViewHolderDelegate? = null
@@ -115,8 +125,8 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             profile = it.findViewById(R.id.commentProfileImg)
             content = it.findViewById(R.id.commentContext)
             nickName = it.findViewById(R.id.commentNickname)
-            createTime= it.findViewById(R.id.commentDate)
-
+            createTime = it.findViewById(R.id.commentDate)
+            deleteButton = it.findViewById(R.id.deleteButton)
         }
     }
 
@@ -156,6 +166,13 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         pickProfile = communityCommentResponse.comment[0].profile.toString()
         nickName.text = communityCommentResponse.comment[0].nickName
         createTime.text = communityCommentResponse.comment[0].createTime.date.year.toString() + '.'+ communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + communityCommentResponse.comment[0].createTime.time.hour + ':'+ communityCommentResponse.comment[0].createTime.time.minute.toString()
+
+        if (communityCommentResponse.comment[0].userPK == UserData.getUserPK()) {
+            deleteButton.visibility = View.VISIBLE
+        }
+        deleteButton.setOnClickListener {
+            Log.d(TAG, "delete click")
+        }
         content.text = communityCommentResponse.comment[0].content
         profile.post {
             view.get()?.let {
@@ -183,5 +200,13 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         return formattedNumber ?: ""
     }
 
+    private fun deleteComment(commentId: Int) {
+        val userPK = UserData.getUserPK()
+        var retrofit = RetrofitClient.getClient()!!
+        val communityCommentPostService = retrofit.create(CommunityCommentPostService::class.java)
+
+
+    }
 }
+
 

@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
@@ -27,9 +28,11 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class ArticleBottomSheet (context: Context, private val articleId: Int) : BottomSheetDialogFragment() {
+class ArticleBottomSheet(context: Context, private val articleId: Int) :
+    BottomSheetDialogFragment() {
 
     private val TAG = "ArticleBottomSheet"
+    private lateinit var mActivity: MainActivity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +41,7 @@ class ArticleBottomSheet (context: Context, private val articleId: Int) : Bottom
     ): View? {
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.bottom_sheet_article, container, false)
+        mActivity = activity as MainActivity
 
 
         return view
@@ -46,7 +50,8 @@ class ArticleBottomSheet (context: Context, private val articleId: Int) : Bottom
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         view?.findViewById<TextView>(R.id.editArticle)?.setOnClickListener {
-
+            mActivity.changeFragment("community_edit_post")
+            dismiss()
         }
         view?.findViewById<TextView>(R.id.deleteArticle)?.setOnClickListener {
             val dialog = AlertDialog.Builder(requireContext())

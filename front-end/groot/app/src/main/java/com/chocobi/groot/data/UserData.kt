@@ -1,21 +1,25 @@
 package com.chocobi.groot.data
 
 import android.app.Application
+import com.chocobi.groot.view.community.model.Article
+import com.chocobi.groot.view.community.model.CreateTime
+import com.chocobi.groot.view.community.model.UpdateTime
 
 class UserData : Application() {
     companion object {
         private var userPK = 0
         private var userId = "User Id"
         private var nickName = "User Nickname"
-        private var profile : String? = null
+        private var profile: String? = null
         private var registerDate = 0
         private var firebaseToken = ""
         private var socialLoginCategory: String = ""
         private var isNoti1: Boolean = true
         private var isNoti2: Boolean = true
         private var isNoti3: Boolean = true
+        private var editArticle: Article? = null
 
-        fun getUserFirebase() : String {
+        fun getUserFirebase(): String {
             return firebaseToken
         }
 
@@ -86,5 +90,16 @@ class UserData : Application() {
                 3 -> isNoti3 = option
             }
         }
+
+        fun getEditArticle(): Article? {
+            return editArticle
+        }
+
+        fun setEditArticle(article: Article) {
+            editArticle = article
+        }
     }
+
+
 }
+

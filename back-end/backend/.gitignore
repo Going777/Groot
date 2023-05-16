@@ -38,3 +38,4 @@ out/
 
 ### Secret key ###
 application-keys.properties
+**/resources/firebase/

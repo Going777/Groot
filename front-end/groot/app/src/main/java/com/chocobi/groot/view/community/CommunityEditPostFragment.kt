@@ -17,8 +17,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -35,6 +33,8 @@ import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
+import com.chocobi.groot.view.community.model.Article
+import com.chocobi.groot.view.user.model.User
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import kotlinx.coroutines.NonDisposableHandle.parent
@@ -49,10 +49,10 @@ import java.io.FileOutputStream
 
 
 @Suppress("DEPRECATION")
-class CommunityPostFragment(private val postCategory: String) :
+class CommunityEditPostFragment(private val postCategory: String) :
     Fragment() {
 
-    private val TAG = "CommunityPostFragment"
+    private val TAG = "CommunityEditPostFragment"
 
     private lateinit var postImageAdapter: PostImageAdapter
     private val imageList: ArrayList<File?> = ArrayList()
@@ -64,6 +64,7 @@ class CommunityPostFragment(private val postCategory: String) :
     private var thelist: MutableList<MultipartBody.Part?> = mutableListOf(null, null, null)
     private lateinit var tagRecyclerView: RecyclerView
     private lateinit var tagInput: EditText
+    private lateinit var pastArticle: Article
 
 
     private val tagList = mutableListOf<String>()
@@ -75,6 +76,14 @@ class CommunityPostFragment(private val postCategory: String) :
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community_post, container, false)
+        pastArticle = UserData.getEditArticle()!!
+
+//        기존 이미지 설정
+        if (pastArticle.imgs != null) {
+            for (i in pastArticle.imgs!!) {
+//            imageList.add(uriToFile(i))
+            }
+        }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager =
@@ -117,6 +126,12 @@ class CommunityPostFragment(private val postCategory: String) :
         tagRecyclerView.adapter = tagAdapter
         val tagList = mutableListOf<String>()
 
+//        초기 태그를 추가합니다.
+        for (i in pastArticle.tags) {
+            tagAdapter.addTag(i)
+            tagList.add(i)
+        }
+
         // EditText의 키보드 액션을 설정합니다.
         tagInput.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
@@ -155,37 +170,15 @@ class CommunityPostFragment(private val postCategory: String) :
         val postCameraBtn = view.findViewById<ImageButton>(R.id.postCameraBtn)
 
         postCameraBtn.setOnClickListener {
-//            val intent = Intent(Intent.ACTION_PICK)
-//            intent.type = "image/*"
-//            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-//
-//            activityResult.launch(intent)
             requestPermissions()
-
         }
 
 
-//        var retrofit = RetrofitClient.getClient()!!
-//        var communityPostService = retrofit.create(CommunityPostService::class.java)
-//        val userPK = UserData.getUserPK()
-
-//        var filePart: MultipartBody.Part? = null
-//
-//        if (file != null) {
-//            val mediaType = "image/*".toMediaTypeOrNull()
-//            val requestFile = RequestBody.create(mediaType, file!!)
-//            filePart = MultipartBody.Part.createFormData("image", file!!.name, requestFile)
-//        }
-//
-//        val imageParts = arrayOfNulls<MultipartBody.Part>(imageFiles.size)
-//        for ((i, imageFile) in imageFiles.withIndex()) {
-//            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), imageFile)
-//            imageParts[i] = MultipartBody.Part.createFormData("image[]", imageFile.name, requestFile)
-//        }
-
         val toPostListBtn = view.findViewById<Button>(R.id.toPostListBtn)
         var titleInput = view.findViewById<EditText>(R.id.titleInput)
+        titleInput.setText(pastArticle.title)
         var contentInput = view.findViewById<EditText>(R.id.contentInput)
+        contentInput.setText(pastArticle.content)
 
         // 등록 버튼 클릭 시 제목과 내용 입력값
         toPostListBtn.setOnClickListener(View.OnClickListener {
@@ -195,7 +188,7 @@ class CommunityPostFragment(private val postCategory: String) :
             var content = contentInput?.text.toString()
             var shareRegion = ""
             var shareStatus = false
-            postArticle(category, title, content, tagList, shareRegion, shareStatus, imageList)
+            updateArticle(category, title, content, tagList, shareRegion, shareStatus, imageList)
         })
 
         // 제목과 내용 글자 수 체크 및 제한
@@ -218,11 +211,7 @@ class CommunityPostFragment(private val postCategory: String) :
                         Toast.makeText(requireContext(), "제목은 30자까지 입력 가능합니다.", Toast.LENGTH_LONG)
                             .show()
                     }
-//                    Alert 코드
-//                    if (titleInput.text.length >= 30) {
-//                        val builder = AlertDialog.Builder(requireContext())
-//                        builder.setMessage("30자 이내로 입력해주세요.").setPositiveButton("확인", null).show()
-//                    }
+
                 }
 
                 override fun beforeTextChanged(
@@ -248,11 +237,7 @@ class CommunityPostFragment(private val postCategory: String) :
                         Toast.makeText(requireContext(), "내용은 1500자까지 입력 가능합니다.", Toast.LENGTH_LONG)
                             .show()
                     }
-//                    Alert 코드
-//                    if (titleInput.text.length >= 30) {
-//                        val builder = AlertDialog.Builder(requireContext())
-//                        builder.setMessage("30자 이내로 입력해주세요.").setPositiveButton("확인", null).show()
-//                    }
+
                 }
 
                 override fun beforeTextChanged(
@@ -285,15 +270,9 @@ class CommunityPostFragment(private val postCategory: String) :
                     android.Manifest.permission.READ_EXTERNAL_STORAGE,
                     android.Manifest.permission.READ_MEDIA_IMAGES
                 ),
-//                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                 PERMISSION_GALLERY
             )
-//            requestPermissions(
-////                권한 설정 수정
-////                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-//                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
-//                PERMISSION_GALLERY
-//            )
+
         }
     }
 
@@ -341,18 +320,6 @@ class CommunityPostFragment(private val postCategory: String) :
             val dataCheck = data.clipData
             Log.d("CommunityPostFragmentData", "$dataCheck")
             data.let { data ->
-
-//                val imageUri = data.data
-//                if (imageUri != null) {
-//                    articleImg.setImageURI(imageUri)
-//                    imgFile = uriToFile(imageUri)
-//                    Log.d("CommunityPostFragmentImgFile", "$imgFile")
-//
-//                }
-//                imgFile?.let { imageFiles.add(it) }
-//
-//                Log.d("CommunityPostFragmentImageFiles", "$imageFiles")
-
 
                 val clipData = data.clipData
 
@@ -436,7 +403,7 @@ class CommunityPostFragment(private val postCategory: String) :
     }
 
 
-    private fun postArticle(
+    private fun updateArticle(
         category: String,
         title: String,
         content: String,
@@ -452,38 +419,6 @@ class CommunityPostFragment(private val postCategory: String) :
         var filePart: MultipartBody.Part? = null
         var file: File?
         val mediaType = "image/*".toMediaTypeOrNull()
-
-//        val imageParts = mutableListOf<MultipartBody.Part>()
-//
-//        Log.d("CommunityPostFragmentFiles", "$imageList")
-//        if (imageList.size >= 1) {
-//            if (imageList?.get(0) != null) {
-//                val requestFile = imageList[0]?.let { RequestBody.create(mediaType, it) }
-//                filePart =
-//                    MultipartBody.Part.createFormData("image", imageList[0]!!.name, requestFile!!)
-//                Log.d("CommunityPostFragmentFilePart", "$filePart")
-//
-//                imageParts.add(filePart)
-//            }
-//        }
-//        if (imageList.size >= 2) {
-//            if (imageList?.get(1) != null) {
-//                val requestFile = imageList[1]?.let { RequestBody.create(mediaType, it) }
-//                filePart =
-//                    MultipartBody.Part.createFormData("image", imageList[1]!!.name, requestFile!!)
-//                imageParts.add(filePart)
-//            }
-//        }
-//        if (imageList.size == 3) {
-//            if (imageList?.get(2) != null) {
-//                val requestFile = imageList[2]?.let { RequestBody.create(mediaType, it) }
-//                filePart =
-//                    MultipartBody.Part.createFormData("image", imageList[2]!!.name, requestFile!!)
-//                imageParts.add(filePart)
-//            }
-//        }
-//
-//        Log.d("CommunityPostFragmentImageParts", "$imageParts")
 
 
 //        파일 첨부
@@ -504,11 +439,7 @@ class CommunityPostFragment(private val postCategory: String) :
                 }
             }
         }
-
-
-
-
-
+        
         communityPostService.requestCommunityPost(
             ArticlePostRequest(
                 userPK,
@@ -530,16 +461,13 @@ class CommunityPostFragment(private val postCategory: String) :
                         Log.d("CommunityPostFragmentBody", "$body")
                         requireActivity().supportFragmentManager.popBackStack()
                     } else {
-                        Log.d("CommunityPostFragment", "게시글 작성 실패")
+                        Log.d("CommunityEditPostFragment", "게시글 작성 실패")
                     }
-
                 }
 
                 override fun onFailure(call: Call<CommunityPostResponse>, t: Throwable) {
-                    Log.d("CommunityPostFragment", "게시글 작성 실패")
+                    Log.d("CommunityEditPostFragment", "게시글 작성 실패")
                 }
             })
     }
-
-
 }

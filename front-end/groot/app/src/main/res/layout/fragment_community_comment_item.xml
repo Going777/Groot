@@ -5,7 +5,7 @@
     android:id="@+id/commentItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="2dp"
+    android:layout_marginVertical="3dp"
     app:cardCornerRadius="10dp">
 
     <LinearLayout
@@ -42,6 +42,14 @@
                     android:paddingHorizontal="7dp" />
             </LinearLayout>
 
+            <ImageButton
+                android:id="@+id/deleteButton"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/circle_button_white"
+                android:cropToPadding="true"
+                android:src="@drawable/ic_cancle"
+                android:visibility="gone"/>
             <TextView
                 android:id="@+id/commentDate"
                 android:layout_width="fill_parent"
@@ -49,6 +57,7 @@
                 android:layout_gravity="right"
                 android:gravity="right"
                 android:layout_weight="0" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -61,9 +70,17 @@
             <TextView
                 android:id="@+id/commentContext"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="식물 댓글 남기는 중중중" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/commentDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_margin="6dp"
+            android:layout_weight="0"
+            android:textColor="@color/main" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

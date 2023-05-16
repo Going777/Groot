@@ -599,6 +599,7 @@ class CommunityDetailFragment : Fragment() {
             var content = postCommentInput?.text.toString()
             if (articleId != null) {
                 postComment(articleId, content)
+                getArticleComment()
             }
 
             // 입력창 리셋 및 키보드 닫기
@@ -686,6 +687,7 @@ class CommunityDetailFragment : Fragment() {
 
 //        드롭다운
         if (UserData.getUserPK() == articleDetailData?.userPK) {
+            UserData.setEditArticle(articleDetailData!!)
             spinnerButton.setOnClickListener {
                 val articleBottomSheet = ArticleBottomSheet(requireContext(), articleId)
                 articleBottomSheet.show(
