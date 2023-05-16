@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -236,7 +237,6 @@ class LoginActivity : AppCompatActivity() {
                     }
 //                    우리 서버에 존재 안하는 경우
                     else {
-
                         // 토큰 정보 보기
                         UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
                             if (error != null) {
