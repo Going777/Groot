@@ -115,6 +115,10 @@ class MainActivity : AppCompatActivity() {
                 bnv_main.run { selectedItemId = R.id.potFragment }
             }
 
+            "user" -> {
+                fragment = UserFragment()
+            }
+
             "pot_diary" -> {
                 val bundle = Bundle()
                 bundle.putInt("detailPotId", potId)
@@ -153,6 +157,7 @@ class MainActivity : AppCompatActivity() {
                 bundle.putString(
                     "plant_id", intent.getStringExtra("plant_id")
                 )
+                bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
                 fragment.arguments = bundle
             }
