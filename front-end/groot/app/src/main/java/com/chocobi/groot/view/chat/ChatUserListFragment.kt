@@ -8,12 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.model.Chat
 import com.chocobi.groot.view.chat.model.ChatUserListResponse
 import com.chocobi.groot.view.chat.model.ChatUserListService
@@ -35,7 +39,6 @@ class ChatUserListFragment : Fragment() {
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: ChatUserListResponse
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,6 +50,22 @@ class ChatUserListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_chat_user_list, container, false)
+
+        val categoryNameTextView = view.findViewById<TextView>(R.id.categoryName)
+        val categoryIcon = view.findViewById<ImageView>(R.id.categoryIcon)
+        categoryNameTextView.text = "채팅방"
+        categoryIcon.setImageResource(R.drawable.ic_chat)
+
+//        ================================================================
+//        ================================================================
+//        뒤로 가기 버튼 처리해야 하는 곳
+        val backBtn = view.findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+//        ================================================================
+//        ================================================================
+
         findViews(view)
         setListeners()
         initList()
