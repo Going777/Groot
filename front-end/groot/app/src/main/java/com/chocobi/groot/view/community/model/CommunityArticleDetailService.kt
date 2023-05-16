@@ -1,14 +1,11 @@
 package com.chocobi.groot.view.community
 
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.view.community.model.BookmarkResponse
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
-import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.CommunityShareItemResponse
-import com.chocobi.groot.view.login.LoginResponse
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -46,3 +43,14 @@ interface CommunityShareItemService {
         @Path("articleId") articleIdInput:Int,
     ) : Call<CommunityShareItemResponse> // output 정의
 }
+
+interface CommunityShareStatusService {
+    @PUT("/api/articles/shareStatus")
+    fun requestCommunityShareStatus(
+        @Body params: ShareStatusRequest,
+    ): Call<BasicResponse>
+}
+class ShareStatusRequest internal constructor(
+    val articleId: Int,
+    val userPK: Int,
+)

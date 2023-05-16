@@ -166,7 +166,7 @@ public class ArticleServiceImpl implements ArticleService{
             }
 
             // 태그테이블에 태그 insert
-            for(String tag : newTags){
+            for(String tag : tags){
                 if(tagRepository.findByName(tag) == null){
                     TagEntity tagEntity = TagEntity.builder()
                             .name(tag)

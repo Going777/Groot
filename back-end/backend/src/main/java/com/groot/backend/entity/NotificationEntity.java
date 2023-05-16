@@ -11,6 +11,8 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "notifications")
 @Getter
+@Builder
+@AllArgsConstructor
 public class NotificationEntity extends BaseEntity{
 
     @Id
@@ -19,10 +21,13 @@ public class NotificationEntity extends BaseEntity{
     private Long id;
 
     @Column
-    private String content;
+    private String title;
 
     @Column
-    private String url;
+    private String chattingRoomId;
+
+    @Column
+    private String content;
 
     @Column(nullable = false)
     private Boolean isRead;
@@ -42,13 +47,4 @@ public class NotificationEntity extends BaseEntity{
     @JsonIgnore
     private UserEntity receiver;
 
-    @Builder
-    public NotificationEntity(UserEntity receiver, String content, String url, String page, Long contentId, Boolean isRead) {
-        this.receiver = receiver;
-        this.content = content;
-        this.contentId = contentId;
-        this.page = page;
-        this.url = url;
-        this.isRead = isRead;
-    }
 }

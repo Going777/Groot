@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.chat.ChatFragment">
+
+    <include
+        android:id="@+id/topNavbar"
+        layout="@layout/top_category_navbar" />
+
+    <!-- 대화 내용 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chat_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/input_layout"
+        android:layout_below="@+id/topNavbar" />
+
+    <!-- 입력 레이아웃 -->
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/input_layout"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_alignParentBottom="true"-->
+    <!--        android:layout_marginBottom="10dp"-->
+    <!--        android:orientation="horizontal"-->
+    <!--        android:weightSum="100">-->
+
+    <!--        <EditText-->
+    <!--            android:id="@+id/message_edit"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="50dp"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_weight="85"-->
+    <!--            android:backgroundTint="@color/point"-->
+    <!--            android:background="@drawable/radius10"-->
+    <!--            android:hint="메시지를 입력하세요"-->
+    <!--            android:paddingStart="10dp" />-->
+
+    <!--        <androidx.appcompat.widget.AppCompatButton-->
+    <!--            android:id="@+id/send_btn"-->
+    <!--            android:layout_width="30dp"-->
+    <!--            android:layout_height="50dp"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginEnd="10dp"-->
+    <!--            android:layout_weight="15"-->
+    <!--            android:backgroundTint="@color/point"-->
+    <!--            android:background="@drawable/radius10"-->
+    <!--            android:text="전송"-->
+    <!--            android:textColor="@android:color/white" />-->
+    <!--    </LinearLayout>-->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginBottom="10dp"
+        android:backgroundTint="@color/background"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        app:cardCornerRadius="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="5dp"
+            android:layout_weight="0"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/message_edit"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginHorizontal="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/radius10"
+                android:backgroundTint="@color/white"
+                android:hint="채팅을 남겨보세요"
+                android:textSize="13sp"
+                android:paddingHorizontal="5dp"
+                android:paddingVertical="0dp" />
+
+            <Button
+                android:id="@+id/send_btn"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="5dp"
+                android:layout_weight="0"
+                android:background="@drawable/ic_plant" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

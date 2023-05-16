@@ -40,9 +40,6 @@ public class DiaryController {
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
-//        Date now = new Date();
-//        SimpleDateFormat sDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//        String nowFormat = sDate.format(now);
         // 오늘 다이어리를 작성한 이력이 있을 경우
         DiaryCheckEntity result = diaryService.isExistByCreatedDate(diaryDTO.getPotId());
 

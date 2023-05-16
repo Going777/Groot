@@ -18,13 +18,13 @@ import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SignupActivity : AppCompatActivity() {
     private val TAG = "SignupActivity"
@@ -285,6 +285,40 @@ class SignupActivity : AppCompatActivity() {
                             "회원가입 성공",
                             "Groot에 오신 것을 환영합니다!", ::moveToMain, false
                         )
+
+                        // 파이어베이스에 등록
+                        // Firebase Realtime Database에 접속합니다.
+                        val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+                        val usersRef: DatabaseReference = database.getReference("users")
+
+                        // 이미 등록된 사용자의 정보를 가져와서 Firebase에 저장합니다.
+                        fun registerUserInFirebase(userId: String, userLoginId: String) {
+                            // 사용자 정보를 usersRef에 추가합니다.
+                            val userRef: DatabaseReference = usersRef.child(userId)
+                            userRef.child("username").setValue(userLoginId)
+                        }
+
+// 사용자 등록 예시
+//                        val userId = userPk // 이미 존재하는 사용자의 고유한 ID
+                        val userId = "000000"
+                        val userLoginId = textId
+
+                        registerUserInFirebase(userId, userLoginId)
+
+                        dialog.setTitle("환영합니다!")
+                        dialog.setMessage(signupMsg)
+                        dialog.setPositiveButton(
+                            "확인",
+                            DialogInterface.OnClickListener { dialog, which ->
+
+                                var intent =
+                                    Intent(
+                                        this@SignupActivity,
+                                        MainActivity::class.java
+                                    )
+                                startActivity(intent)
+                            })
+                        dialog.show()
                     } else {
                         signupMsg =
                             JSONObject(

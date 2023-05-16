@@ -26,6 +26,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Autowired
     private final NotificationRepository notificationRepository;
     private static Long DEFAULT_TIMEOUT   = 60L * 1000L * 60L;
+
     @Override
     public SseEmitter subscribe(Long userId, String lastEventId) {
         String emitterId = makeTimeIncludeId(userId);
@@ -82,7 +83,7 @@ public class NotificationServiceImpl implements NotificationService{
         emitters.forEach(
                 (key, emitter) -> {
                     emitterRepository.saveEventCache(key, notification);
-                    sendNotification(emitter, eventId, key, NotificationResponseDTO.create(notification, notification.getId()));
+                    sendNotification(emitter, eventId, key, NotificationResponseDTO.toDTO(notification, notification.getId()));
                 }
         );
     }
@@ -103,7 +104,6 @@ public class NotificationServiceImpl implements NotificationService{
         return NotificationEntity.builder()
                 .receiver(receiver)
                 .content(content)
-                .url(url)
                 .page(page)
                 .contentId(contentId)
                 .isRead(false)

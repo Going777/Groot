@@ -73,7 +73,7 @@ public class ChattingController {
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "채팅방 리스트 불러오기를 성공했습니다.");
         resultMap.put("chatting", result);
-        return ResponseEntity.badRequest().body(resultMap);
+        return ResponseEntity.ok().body(resultMap);
     }
 
     @DeleteMapping("/{roomId}")
@@ -87,6 +87,6 @@ public class ChattingController {
         }
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "채팅방 나가기를 성공했습니다.");
-        return ResponseEntity.badRequest().body(resultMap);
+        return ResponseEntity.ok().body(resultMap);
     }
 }

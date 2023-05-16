@@ -18,7 +18,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.chocobi.groot.data.GlobalVariables
@@ -27,6 +26,8 @@ import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.chat.ChatFragment
+import com.chocobi.groot.view.chat.ChatUserListFragment
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -37,8 +38,6 @@ import com.chocobi.groot.view.intro.IntroDataService
 import com.chocobi.groot.view.intro.PlantNamesResponse
 import com.chocobi.groot.view.intro.RegionNameResponse
 import com.chocobi.groot.view.login.LoginActivity
-import com.chocobi.groot.view.login.LoginService
-import com.chocobi.groot.view.login.SubscribeResponse
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
@@ -161,11 +160,23 @@ class MainActivity : AppCompatActivity() {
             }
 
             "community_post" -> {
-                fragment = CommunityPostFragment()
+                fragment = CommunityPostFragment("자유")
+            }
+
+            "community_qna" -> {
+                fragment = CommunityPostFragment("QnA")
+            }
+
+            "community_tip" -> {
+                fragment = CommunityPostFragment("Tip")
             }
 
             "setting" -> {
                 fragment = SettingFragment()
+            }
+
+            "chat_user_list" -> {
+                fragment = ChatUserListFragment()
             }
         }
         if (fragment != null) {

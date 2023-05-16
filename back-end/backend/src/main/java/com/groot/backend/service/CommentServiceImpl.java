@@ -9,9 +9,11 @@ import com.groot.backend.dto.response.CommentResponseDTO;
 import com.groot.backend.dto.response.NotificationResponseDTO;
 import com.groot.backend.entity.ArticleEntity;
 import com.groot.backend.entity.CommentEntity;
+import com.groot.backend.entity.NotificationEntity;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.ArticleRepository;
 import com.groot.backend.repository.CommentRepository;
+import com.groot.backend.repository.NotificationRepository;
 import com.groot.backend.repository.UserRepository;
 import com.groot.backend.controller.exception.CustomException;
 import lombok.RequiredArgsConstructor;
@@ -32,11 +34,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class CommentServiceImpl implements CommentService{
+    private final NotificationRepository notificationRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
-    private final ApplicationEventPublisher eventPublisher;
-    private final NotificationService notificationService;
     private final FirebaseMessaging firebaseMessaging;
 
     @Override
@@ -54,13 +55,22 @@ public class CommentServiceImpl implements CommentService{
         UserEntity recieiver = articleRepository.findById(commentDTO.getArticleId()).orElseThrow().getUserEntity();
 //        notificationService.send(recieiver, writer.getNickName()+"님이 '"+article.getTitle()+"'글에 댓글을 작성하였습니다.", "", "article", commentDTO.getArticleId());
 
-
         String title = "댓글 알림";
         String body = writer.getNickName()+"님이 '"+article.getTitle()+"'글에 댓글을 작성하였습니다.";
 
         Optional<UserEntity> user = userRepository.findById(recieiver.getId());
-        if(user.isPresent()){
-            if(user.get().getFirebaseToken() != null){
+
+        NotificationEntity noti = NotificationEntity.builder()
+                .contentId(article.getId())
+                .page("article")
+                .isRead(false)
+                .content(body)
+                .title(title)
+                .receiver(user.get())
+                .build();
+
+        if(user.isPresent()) {
+            if (user.get().getFirebaseToken() != null) {
                 Notification notification = Notification.builder()
                         .setTitle(title)
                         .setBody(body)
@@ -71,22 +81,14 @@ public class CommentServiceImpl implements CommentService{
                         .setNotification(notification)
                         .build();
 
-                try{
+                try {
                     firebaseMessaging.send(message);
-//                    return "알림을 성공적으로 전송했습니다. targetUserId="+recieiver.getId();
-                } catch (FirebaseMessagingException e){
+                    notificationRepository.save(noti);
+                } catch (FirebaseMessagingException e) {
                     e.printStackTrace();
-//                    return "알림 보내기를 실패하였습니다. targetUserId="+'${recieiver.getId()}';
                 }
-            } else{
-//                return "서버에 저장된 해당 유저의 FirebaseToken이 존재하지 않습니다. targetUserId="+requestDTO.getTargetUserId();
             }
-        } else{
-//            return "해당 유저가 존재하지 않습니다. targetUserId="+requestDTO.getTargetUserId();
         }
-
-//        NotificationResponseDTO noti = NotificationResponseDTO.builder().receiver(user).content("write comment").isRead(false).url("/comments").build();
-//        eventPublisher.publishEvent(noti);
         return result;
     }
 
@@ -102,9 +104,6 @@ public class CommentServiceImpl implements CommentService{
         return result;
     }
 
-//    private void notifyCommentInfo(UserEntity user){
-//        user.publish(eventPublisher, )
-//    }
 
     @Override
     public boolean deleteComment(Long commentId) {

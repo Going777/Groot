@@ -25,20 +25,10 @@ import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CommunityFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CommunityFragment : Fragment() {
     private val TAG = "CommunityFragment"
     private var nowTab: Int = 0
-    private var param2: String? = null
 
     private var regionList: ArrayList<String>? = null
     private var regionFullList: ArrayList<String>? = null
@@ -54,7 +44,7 @@ class CommunityFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("CommunityFragment","onCreateView()")
+        Log.d("CommunityFragment", "onCreateView()")
 
         val rootView = inflater.inflate(R.layout.fragment_community, container, false)
 
@@ -66,9 +56,18 @@ class CommunityFragment : Fragment() {
         communityPostFab.setOnClickListener {
             if (nowTab == 0) {
                 mActivity.changeFragment("community_share")
-            } else {
+            } else if (nowTab == 1) {
                 mActivity.changeFragment("community_post")
+            } else if (nowTab == 2) {
+                mActivity.changeFragment("community_qna")
+            } else {
+                mActivity.changeFragment("community_tip")
             }
+        }
+
+        val communityChatFab = rootView.findViewById<FloatingActionButton>(R.id.communityChatFab)
+        communityChatFab.setOnClickListener {
+            mActivity.changeFragment("chat_user_list")
         }
 
         // Inflate the layout for this fragment
@@ -88,8 +87,21 @@ class CommunityFragment : Fragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.layout_tab)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabList[position]
-
         }.attach()
+
+        tabLayout.addOnTabSelectedListener(
+            object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    nowTab = tab.position
+                    Log.d(TAG, tab.position.toString())
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
 
 
     }
@@ -100,8 +112,6 @@ class CommunityFragment : Fragment() {
         }
 
         override fun createFragment(position: Int): Fragment {
-            nowTab = position
-            Log.d(TAG, nowTab.toString())
 
             return when (position) {
                 0 -> {
@@ -111,6 +121,7 @@ class CommunityFragment : Fragment() {
                     }
                     CommunityTab1Fragment().apply { arguments = bundle }
                 }
+
                 1 -> CommunityTab2Fragment()
                 2 -> CommunityTab3Fragment()
                 3 -> CommunityTab4Fragment()
@@ -124,26 +135,5 @@ class CommunityFragment : Fragment() {
         super.onResume()
         regionList = arguments?.getStringArrayList("region_list")
         regionFullList = arguments?.getStringArrayList("region_full_list")
-    }
-
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CommunityFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CommunityFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

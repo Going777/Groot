@@ -49,7 +49,7 @@ for row in reader:
     data = row
 
     # grw_type
-    data[3] = data[3].split(",")[0]
+    # data[3] = data[3].split(",")[0]
 
     if (data[11].strip() == ""):
         print("Water cycle not found ! ")

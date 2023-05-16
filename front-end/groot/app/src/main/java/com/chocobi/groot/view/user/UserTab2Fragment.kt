@@ -45,7 +45,7 @@ class UserTab2Fragment : Fragment() {
         findViews(view)
         setListeners()
         initList()
-        reload()
+//        reload()
 
         showProgress()
 
