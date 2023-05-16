@@ -156,6 +156,7 @@ class MainActivity : AppCompatActivity() {
                 bundle.putString(
                     "plant_id", intent.getStringExtra("plant_id")
                 )
+                bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
                 fragment.arguments = bundle
             }

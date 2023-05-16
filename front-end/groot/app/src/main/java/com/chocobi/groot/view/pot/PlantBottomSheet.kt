@@ -35,10 +35,11 @@ import retrofit2.Response
 import retrofit2.create
 
 
-class PlantBottomSheet(context: Context, requestPage: String? = null) :
+class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: String? = null) :
     BottomSheetDialogFragment() {
 
     private val REQUEST_PAGE = requestPage
+    private val imageUri = imageUri
     private lateinit var plants: Array<PlantMetaData>
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
     private var plantName: String? = null
@@ -178,6 +179,7 @@ class PlantBottomSheet(context: Context, requestPage: String? = null) :
                     var intent = Intent(requireContext(), MainActivity::class.java)
                     intent.putExtra("toPage", "search_detail")
                     intent.putExtra("plant_id", plants[position].plantId.toString())
+                    intent.putExtra("imageUri", imageUri)
                     startActivity(intent)
                 }
 //                홈화면에서 검색 진행하는 경우
