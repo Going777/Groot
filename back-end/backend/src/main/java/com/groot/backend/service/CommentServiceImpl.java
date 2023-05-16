@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService{
                 .receiver(user.get())
                 .build();
 
-        if(user.isPresent()) {
+        if(user.isPresent() && user.get().getUserAlarmEntity().getCommentAlarm()) {
             if (user.get().getFirebaseToken() != null) {
                 Notification notification = Notification.builder()
                         .setTitle(title)

@@ -61,7 +61,7 @@ public class ChattingServiceImpl implements ChattingService{
                 .receiver(user.get())
                 .build();
 
-        if(user.isPresent()) {
+        if(user.isPresent() && user.get().getUserAlarmEntity().getChattingAlarm()) {
             if (user.get().getFirebaseToken() != null) {
                 Notification notification = Notification.builder()
                         .setTitle(title)
