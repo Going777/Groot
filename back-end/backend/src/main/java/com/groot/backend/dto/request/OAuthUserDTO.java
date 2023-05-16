@@ -11,7 +11,8 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KaKaoUserDTO {
+public class OAuthUserDTO {
+    private String OAuthProvider;
     @NotNull
     private String accessToken;
     private String nickName;
