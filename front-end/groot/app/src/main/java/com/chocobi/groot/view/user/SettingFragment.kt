@@ -20,7 +20,12 @@ import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.user.model.PasswordRequest
+import com.chocobi.groot.view.user.model.User
 import com.chocobi.groot.view.user.model.UserService
+import com.kakao.sdk.user.UserApiClient
+import com.navercorp.nid.NaverIdLoginSDK
+import com.navercorp.nid.oauth.NidOAuthLogin
+import com.navercorp.nid.oauth.OAuthLoginCallback
 
 import retrofit2.Call
 import retrofit2.Callback
@@ -102,11 +107,6 @@ class SettingFragment : Fragment() {
 
 
     private fun logout() {
-//        var retrofit = Retrofit.Builder()
-//            .baseUrl(GlobalVariables.getBaseUrl())
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-
 //        retrofit 객체 만들기
         var retrofit = RetrofitClient.getClient()!!
 
@@ -121,11 +121,22 @@ class SettingFragment : Fragment() {
                     call: Call<BasicResponse>,
                     response: Response<BasicResponse>
                 ) {
-//                    var m = response.code()
-//                    var b = response.errorBody()?.string()
-//
-//                    Log.d("SettingFragment", m.toString())
-//                    Log.d("SettingFragment", "$b")
+                    val isSocialLogined = UserData.getIsSocialLogined()
+                    if (isSocialLogined == "kakao") {
+                        Log.d("SettingFragment","onResponse() 카카오 로그아웃")
+                        // 로그아웃
+                        UserApiClient.instance.logout { error ->
+                            if (error != null) {
+                                Log.e("Logout", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                            }
+                            else {
+                                Log.i("Logout", "로그아웃 성공. SDK에서 토큰 삭제됨")
+                            }
+                        }
+                    } else if (isSocialLogined == "naver") {
+                        Log.d("SettingFragment","onResponse() 네이버 로그아웃")
+                        NaverIdLoginSDK.logout()
+                    }
                     Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
                     afterUserRequestSuccess()
                 }
@@ -156,6 +167,40 @@ class SettingFragment : Fragment() {
                 ) {
 //                    회원 탈퇴 성공
                     if(response.code() == 200) {
+                        val isSocialLogined = UserData.getIsSocialLogined()
+                        if(isSocialLogined == "kakao") {
+                            Log.d("SettingFragment","onResponse() 카카오 회원 탈퇴")
+                            // 연결 끊기
+                            UserApiClient.instance.unlink { error ->
+                                if (error != null) {
+                                    Log.e("Logout", "연결 끊기 실패", error)
+                                }
+                                else {
+                                    Log.i("Logout", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+                                }
+                            }
+                        } else if (isSocialLogined == "naver") {
+                            Log.d("SettingFragment","onResponse() 네이버 회원 탈퇴")
+                            context?.let {
+                                NidOAuthLogin().callDeleteTokenApi(it, object :
+                                    OAuthLoginCallback {
+                                    override fun onSuccess() {
+                                        //서버에서 토큰 삭제에 성공한 상태입니다.
+                                    }
+
+                                    override fun onFailure(httpStatus: Int, message: String) {
+                                        // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+                                        // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+                                    }
+
+                                    override fun onError(errorCode: Int, message: String) {
+                                        // 서버에서 토큰 삭제에 실패했어도 클라이언트에 있는 토큰은 삭제되어 로그아웃된 상태입니다.
+                                        // 클라이언트에 토큰 정보가 없기 때문에 추가로 처리할 수 있는 작업은 없습니다.
+                                        onFailure(errorCode, message)
+                                    }
+                                })
+                            }
+                        }
                         GlobalVariables.defaultAlertDialog(context=requireContext(), title = "회원탈퇴 알림", message = "성공적으로 회원탈퇴처리 되었습니다. \n\n그동안 Groot를 이용해주셔서 감사합니다.\n더 좋은 서비스를 제공하기 위해서 열심히 노력하겠습니다.",
                         positiveFtn = ::afterUserRequestSuccess)
                     }
@@ -177,6 +222,7 @@ class SettingFragment : Fragment() {
     }
 
     private fun afterUserRequestSuccess() {
+
         initializeAccessToken()
         goToIntro()
     }

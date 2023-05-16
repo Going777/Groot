@@ -46,12 +46,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginPwInputImg: ImageView
     private lateinit var naverLoginBtn: LinearLayout
     private lateinit var kakaoLoginBtn: LinearLayout
-//    private lateinit var overlayView: View
 
-    private var email: String = ""
-    private var gender: String = ""
     private var nickname: String? = null
     private var profileImg: String? = null
+    private var socialAccessToken: String? = null
 
     private var textId: String = ""
     private var textPw: String = ""
@@ -72,7 +70,6 @@ class LoginActivity : AppCompatActivity() {
         loginPwInput = findViewById(R.id.loginPwInput)
         loginIdInputImg = findViewById(R.id.loginIdInputImg)
         loginPwInputImg = findViewById(R.id.loginPwInputImg)
-//        overlayView = findViewById(R.id.overlayView)
 
         checkEditText(loginIdInput, loginIdInputImg)
         checkEditText(loginPwInput, loginPwInputImg)
@@ -119,12 +116,13 @@ class LoginActivity : AppCompatActivity() {
                     UserApiClient.instance.me { user, error ->
                         if (error != null) {
                             Log.e(TAG, "사용자 정보 요청 실패", error)
-                        }
-                        else if (user != null) {
-                            Log.i(TAG, "사용자 정보 요청 성공" +
-                                    "\n회원번호: ${user.id}" +
-                                    "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                                    "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}")
+                        } else if (user != null) {
+                            socialAccessToken = token.accessToken
+                            nickname = user.kakaoAccount?.profile?.nickname
+                            profileImg = user.kakaoAccount?.profile?.thumbnailImageUrl
+                            Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
+
+                            socialLogin("kakao")
                         }
                     }
                 }
@@ -146,8 +144,18 @@ class LoginActivity : AppCompatActivity() {
                         UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
                     } else if (token != null) {
                         Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}")
+                        UserApiClient.instance.me { user, error ->
+                            if (error != null) {
+                                Log.e(TAG, "사용자 정보 요청 실패", error)
+                            } else if (user != null) {
+                                socialAccessToken = token.accessToken
+                                nickname = user.kakaoAccount?.profile?.nickname
+                                profileImg = user.kakaoAccount?.profile?.thumbnailImageUrl
+                                Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
 
-
+                                socialLogin("kakao")
+                            }
+                        }
                     }
                 }
             } else {
@@ -163,19 +171,11 @@ class LoginActivity : AppCompatActivity() {
                     // 네이버 로그인 API 호출 성공 시 유저 정보를 가져온다
                     NidOAuthLogin().callProfileApi(object : NidProfileCallback<NidProfileResponse> {
                         override fun onSuccess(result: NidProfileResponse) {
-                            val naverAccessToken = NaverIdLoginSDK.getAccessToken()
+                            socialAccessToken = NaverIdLoginSDK.getAccessToken()
                             nickname = result.profile?.nickname.toString()
                             profileImg = result.profile?.profileImage.toString()
-
-                            val intent =
-                                Intent(this@LoginActivity, SocialSignupActivity::class.java)
-                            intent.putExtra("nickname", nickname)
-                            intent.putExtra("profileImg", profileImg)
-                            intent.putExtra("social_access_token", naverAccessToken)
-                            intent.putExtra("type", "naver")
-                            startActivity(intent)
-                            Log.d("LoginActivity", "onSuccess() 네이버 로그인 성공 ${result}")
-                            Log.d("LoginActivity", "onSuccess() 네이버 로그인 성공 ${naverAccessToken}")
+                            Log.d("LoginActivity","onSuccess() 네이버 토큰 $socialAccessToken")
+                            socialLogin("naver")
                         }
 
                         override fun onError(errorCode: Int, message: String) {
@@ -208,24 +208,65 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun socialLogin() {
+    private fun socialLogin(type: String) {
+        Log.d("LoginActivity","socialLogin() 소셜 로그인 요청")
         val retrofit = RetrofitClient.basicClient()!!
         val loginService = retrofit.create(LoginService::class.java)
+        val firebaseToken = UserData.getUserFirebase()
+        loginService.requestSocialLogin(SocialLoginRequest(oauthProvider = type, accessToken =  socialAccessToken!!, firebaseToken = firebaseToken))
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(
+                    call: Call<LoginResponse>,
+                    response: Response<LoginResponse>
+                ) {
+//                    우리 서버에 존재하는 경우
+                    if (response.code() == 200) {
+                        var loginBody = response.body()
 
-//        loginService.requestKakaoLogin()
-//            .enqueue(object : Callback<LoginResponse> {
-//                override fun onResponse(
-//                    call: Call<LoginResponse>,
-//                    response: Response<LoginResponse>
-//                ) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-//                    TODO("Not yet implemented")
-//                }
-//
-//            })
+//                    토큰 저장
+                        if (loginBody != null) {
+                            GlobalVariables.prefs.setString("access_token", loginBody.accessToken)
+                            GlobalVariables.prefs.setString("refresh_token", loginBody.accessToken)
+                            GlobalVariables.getUser()
+                            UserData.setIsSocialLogined(type)
+                        }
+
+                        var intent = Intent(this@LoginActivity, MainActivity::class.java)
+                        startActivity(intent)
+                    }
+//                    우리 서버에 존재 안하는 경우
+                    else {
+
+                        // 토큰 정보 보기
+                        UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+                            if (error != null) {
+                                Log.e(TAG, "토큰 정보 보기 실패", error)
+                            }
+                            else if (tokenInfo != null) {
+                                Log.i(TAG, "토큰 정보 보기 성공" +
+                                        "\n회원번호: ${tokenInfo.id}" +
+                                        "\n만료시간: ${tokenInfo.expiresIn} 초")
+                            }
+                        }
+                        Log.d("LoginActivity", "onResponse() $response")
+                        val intent =
+                            Intent(this@LoginActivity, SocialSignupActivity::class.java)
+                        intent.putExtra("nickname", nickname)
+                        intent.putExtra("profile_img", profileImg)
+                        intent.putExtra("social_access_token", socialAccessToken)
+                        intent.putExtra("type", type)
+                        startActivity(intent)
+                    }
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+//                    통신 실패시 실행되는 코드
+                    var dialog = AlertDialog.Builder(this@LoginActivity)
+                    dialog.setTitle("실패!")
+                    dialog.setMessage(t.message)
+                    dialog.show()
+                }
+            })
     }
 
     private fun checkEditText(editText: EditText, imageView: ImageView) {
