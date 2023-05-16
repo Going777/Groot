@@ -584,6 +584,7 @@ class CommunityDetailFragment : Fragment() {
             var content = postCommentInput?.text.toString()
             if (articleId != null) {
                 postComment(articleId, content)
+                getArticleComment()
             }
 
             // 입력창 리셋 및 키보드 닫기
