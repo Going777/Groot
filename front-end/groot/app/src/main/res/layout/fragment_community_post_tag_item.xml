@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="3dp"
+    android:gravity="center"
+    android:backgroundTint="@color/sub"
+    android:background="@drawable/radius5"
+    android:paddingLeft="6dp"
+    android:paddingRight="3dp"
+    android:layout_marginVertical="3dp"
+    android:layout_gravity="center|left">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tagTextView"
+
+        android:textColor="@color/white"
+        android:paddingRight="4dp"
+        android:gravity="center"
+        android:text="tag"
+        tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/ic_cancle_white"/>
+</androidx.appcompat.widget.LinearLayoutCompat>

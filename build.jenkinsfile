@@ -1,0 +1,183 @@
+def springboot = false
+def flask = false
+def android = false
+
+pipeline {
+  agent any
+	post {
+    failure {
+      updateGitlabCommitStatus name: 'result', state: 'failed'
+    }
+    success {
+      updateGitlabCommitStatus name: 'result', state: 'success'
+    }
+    aborted {
+      updateGitlabCommitStatus name: 'result', state: 'canceled'
+    }
+  }
+  stages {
+    stage('init') {
+      steps {
+        echo 'init pipeline, check changes'
+        // git 'fetch'
+        script {
+          def buildCause = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')
+          echo "manually started by ${buildCause}"
+          if(!buildCause.isEmpty()) {
+            echo "triggerd by user"
+            springboot = true
+            flask = true
+            android = true
+          }
+          else {
+            def changedFiles = sh(returnStdout: true, script: 'git diff --name-only --diff-filter=ACMRT HEAD^ HEAD').trim().split('\n')
+            def changedDirs = new HashSet()
+            echo "files changed : ${changedFiles}"
+            for(def file : changedFiles) {
+              echo "new file : ${file}"
+              if(file.contains('/')) {
+                // def dir = file.substring(0, file.lastIndexOf('/'))
+                def dir = file.split('/')[0]
+                changedDirs.add(dir)
+                echo "modified : ${dir}"
+              }
+              else {
+                changedDirs.add(file)
+              }
+            }
+            springboot = changedDirs.contains('back-end')
+            flask = changedDirs.contains('domain')
+            android = changedDirs.contains('front-end')
+          }
+        }
+        echo "spring : ${springboot}, flask : ${flask}, android : ${android}"
+      }
+    }
+    stage('cofing') {
+      steps {
+        echo 'copy configuration files'
+        sh 'pwd'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application.properties ./back-end/backend/src/main/resources'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/application-keys.properties ./back-end/backend/src/main/resources'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/config.py ./domain'
+        sh 'cp /var/jenkins_home/workspace/Groot_config/groot-e4de7-firebase-adminsdk-lew5e-83aab40438.json ./back-end/backend/src/main/resources/firebase'
+      }
+    }
+    stage('build-spring') {
+      when {
+        expression { springboot }
+      }
+      steps {
+        updateGitlabCommitStatus name: 'build-spring', state: 'pending'
+        echo 'move directory'
+        dir('./back-end/backend/') {
+          sh 'pwd'
+          sh 'ls -l'
+          echo 'start build'
+          sh 'chmod +x ./gradlew'
+          sh './gradlew clean build'
+        }
+        updateGitlabCommitStatus name: 'build-spring', state: 'success'
+      }
+    }
+    stage('build-flask') {
+      when {
+        expression { flask }
+      }
+      steps {
+        updateGitlabCommitStatus name: 'build-flask', state: 'pending'
+        echo 'move directory'
+        dir('./domain/') {
+          sh 'pwd'
+          sh 'ls -l'
+          echo 'start build'
+          sh 'docker build -t flask .'
+        }
+        updateGitlabCommitStatus name: 'build-flask', state: 'success'
+      }
+    }
+    stage('unload') {
+      parallel {
+        stage('down-spring') {
+          environment {
+          // CONTAINER_ID = sh 'docker ps -a | grep spring | awk \'{print $1\'}'
+            SPRING_CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep spring | awk \'{print $1\'}').trim()
+          }
+          when {
+            expression{ springboot }
+          }
+          steps {
+            script {
+              if(env.SPRING_CONTAINER_ID != null) {
+                updateGitlabCommitStatus name: 'unload', state: 'pending'
+                echo 'unload docker container'
+                echo "${env.SPRING_CONTAINER_ID}"
+                sh "docker stop ${env.SPRING_CONTAINER_ID}"
+                echo 'remove docker container'
+                sh "docker rm ${env.SPRING_CONTAINER_ID}"
+                updateGitlabCommitStatus name: 'unload', state: 'success'
+              }
+            }
+          }
+        }
+        stage('down-flask') {
+          environment {
+            FLASK_CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep flask | awk \'{print $1\'}').trim()
+          }
+          when {
+            expression { flask }
+          }
+          steps {
+            script {
+              if(env.FLASK_CONTAINER_ID != null) {
+                echo 'unload flask container'
+                echo "${env.FLASK_CONTAINER_ID}"
+                sh "docker stop ${env.FLASK_CONTAINER_ID}"
+                echo 'remove docker container'
+                sh "docker rm ${env.FLASK_CONTAINER_ID}"
+              }
+            }
+          }
+        }
+      }
+    }
+    stage('deploy') {
+      parallel {
+        stage('deploy-spring') {
+          when {
+            expression { springboot }
+          }
+          steps {
+            updateGitlabCommitStatus name: 'deploy', state: 'pending'
+            sh 'pwd'
+            dir('./back-end/backend/') {
+              echo 'build docker image'
+              sh 'docker build --no-cache -t springboot .'
+              echo 'run docker image'
+              sh 'docker run --name spring -d -p 8080:8080 springboot'
+            }
+            updateGitlabCommitStatus name: 'deploy', state: 'success'
+          }
+        }
+        stage('deploy-flask') {
+          when {
+            expression { flask }
+          }
+          steps {
+            dir('./domain/') {
+              echo 'run docker container'
+              sh 'docker run -d -p 8082:5000 --name flask flask'
+            }
+          }
+        }
+      }
+    }
+    // will be integrated with python server clean
+    stage('clean') {
+      steps {
+        echo 'clean unused image'
+        sh 'docker image prune --force'
+      }
+    }
+  }
+}

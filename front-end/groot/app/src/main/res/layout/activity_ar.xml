@@ -22,6 +22,15 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="화분에서 루티를 찾아보세요"
+        android:layout_marginTop="40dp"
+        android:layout_gravity="top|center"
+        android:textColor="@color/white"/>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,19 +38,21 @@
         android:layout_gravity="bottom|center_horizontal"
         app:layout_dodgeInsetEdges="bottom">
 
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/scanButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="60dp"
-            android:text="@string/scan_available" />
+            android:text="똑똑!" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/clearButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="60dp"
-            android:text="@string/clear" />
+            android:text="@string/clear"
+            android:visibility="gone"/>
 
     </LinearLayout>
 
@@ -52,6 +63,7 @@
         android:layout_gravity="top|end"
         android:padding="16dp"
         android:background="#55FFFFFF"
-        android:text="@string/use_cloud_ml" />
+        android:text="@string/use_cloud_ml"
+        android:visibility="gone"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

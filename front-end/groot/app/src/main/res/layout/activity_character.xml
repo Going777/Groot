@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CharacterActivity">
+
     <io.github.sceneview.ar.ArSceneView
         android:id="@+id/sceneView"
         android:layout_width="0dp"
@@ -15,36 +16,82 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/newModelButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
-        android:backgroundTint="#000"
-        android:gravity="center_vertical|left"
-        android:text="new Object"
-        android:textColor="@android:color/white"
-        app:icon="@drawable/ic_add"
-        app:iconGravity="textStart"
-        app:iconTint="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+    <!--    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
+    <!--        android:id="@+id/newModelButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginBottom="32dp"-->
+    <!--        android:backgroundTint="#000"-->
+    <!--        android:gravity="center_vertical|left"-->
+    <!--        android:text="new Object"-->
+    <!--        android:textColor="@android:color/white"-->
+    <!--        app:icon="@drawable/ic_add"-->
+    <!--        app:iconGravity="textStart"-->
+    <!--        app:iconTint="@android:color/white"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent" />-->
+
+    <!--    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
+    <!--        android:id="@+id/placeModelButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        android:backgroundTint="#000"-->
+    <!--        android:gravity="center_vertical|left"-->
+    <!--        android:text="place_object"-->
+    <!--        android:textColor="@android:color/white"-->
+    <!--        app:iconGravity="textStart"-->
+    <!--        app:iconTint="@android:color/white"-->
+    <!--        app:layout_constraintBottom_toTopOf="@id/newModelButton"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent" />-->
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/placeModelButton"
+        android:id="@+id/changeAnimation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#000"
-        android:gravity="center_vertical|left"
-        android:text="place_object"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="@color/main"
+        android:gravity="center"
+        android:text="모션 변경"
         android:textColor="@android:color/white"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        app:icon="@drawable/ic_animation"
         app:iconGravity="textStart"
-        app:iconTint="@android:color/white"
-        app:layout_constraintBottom_toTopOf="@id/newModelButton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!--    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
+    <!--        android:id="@+id/stopAnimation"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        android:backgroundTint="#000"-->
+    <!--        android:gravity="center"-->
+    <!--        android:text="멈춤"-->
+    <!--        android:textColor="@android:color/white"-->
+    <!--        app:iconGravity="textStart"-->
+    <!--        app:iconTint="@android:color/white"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent" />-->
+
+    <!--    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
+    <!--        android:id="@+id/resumeAnimation"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginBottom="16dp"-->
+    <!--        android:backgroundTint="#000"-->
+    <!--        android:gravity="center"-->
+    <!--        android:text="재시작"-->
+    <!--        android:textColor="@android:color/white"-->
+    <!--        app:iconGravity="textStart"-->
+    <!--        app:iconTint="@android:color/white"-->
+    <!--        app:layout_constraintBottom_toTopOf="@id/stopAnimation"-->
+    <!--        app:layout_constraintRight_toRightOf="parent" />-->
 
     <FrameLayout
         android:id="@+id/loadingView"
@@ -66,20 +113,20 @@
             app:trackColor="#3FFFFFFF" />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/white"
-        android:backgroundTint="#000"
-        android:gravity="center"
-        android:padding="16dp"
-        android:textColor="@android:color/white"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+    <!--    <TextView-->
+    <!--        android:id="@+id/statusText"-->
+    <!--        android:layout_width="0dp"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="16dp"-->
+    <!--        android:background="@android:color/white"-->
+    <!--        android:backgroundTint="#000"-->
+    <!--        android:gravity="center"-->
+    <!--        android:padding="16dp"-->
+    <!--        android:textColor="@android:color/white"-->
+    <!--        android:text="루티루티"-->
+    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
+    <!--        app:layout_constraintRight_toRightOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/toolbar" />-->
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"

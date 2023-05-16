@@ -23,7 +23,7 @@ public class FileServiceSample {
         // dirName 은 카테고리에 맞게 설정
         // 파일 URL string 반환
         // 실패시 IOException
-        return s3Service.upload(multipartFile, "test");
+        return s3Service.upload(multipartFile, "assets");
     }
 
     public String[] upload(MultipartFile[] multipartFiles) throws IOException {
@@ -31,7 +31,7 @@ public class FileServiceSample {
         // dirName 은 카테고리에 맞게 설정
         // 파일 URL string 배열 반환
         // 하나라도 실패시 IOException
-        return s3Service.upload(multipartFiles, "test");
+        return s3Service.upload(multipartFiles, "assets");
     }
 
     public int delete(String fileURL) {

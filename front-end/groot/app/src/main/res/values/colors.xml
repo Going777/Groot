@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
+    <color name="light_grey">#ECECEC</color>
     <color name="grey">#B4B4B4</color>
+    <color name="dark_grey">#797A79</color>
     <color name="white">#FFFFFFFF</color>
     <color name="main">#5F9363</color>
     <color name="sub">#B5CDA3</color>
@@ -14,8 +16,21 @@
     <color name="button_main">#416D50</color>
     <color name="button_sub">#C4E1CD</color>
     <color name="background">#E9F3ED</color>
+    <color name="background_yellow">#FFFDD6</color>
     <color name="chip">#80976E</color>
+    <color name="hint">#C9C9C9</color>
+    <color name="region_chip">#B2BEA9</color>
 
+    <color name="example_7_white">#B4B4B4</color>
+    <color name="example_7_yellow">#5F9363</color>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
 
+    <color name="detail_leaf">#408145</color>
+    <color name="detail_water">#5A73EF</color>
+    <color name="detail_temp">#EDCB50</color>
+    <color name="detail_bug">#FF5252</color>
 
+    <color name="social_btn">#CDB5CDA3</color>
+    <color name="receive_message">#F1FFE4</color>
 </resources>

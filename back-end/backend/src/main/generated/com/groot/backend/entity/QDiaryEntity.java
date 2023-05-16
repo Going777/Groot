@@ -31,14 +31,24 @@ public class QDiaryEntity extends EntityPathBase<DiaryEntity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
 
+    public final QDiaryCheckEntity diaryCheckEntity;
+
+    public final NumberPath<Long> diaryId = createNumber("diaryId", Long.class);
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final StringPath imgPath = createString("imgPath");
+
+    public final BooleanPath isPotLast = createBoolean("isPotLast");
+
+    public final BooleanPath isUserLast = createBoolean("isUserLast");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
     public final BooleanPath nutrients = createBoolean("nutrients");
+
+    public final ListPath<PlanEntity, QPlanEntity> planEntities = this.<PlanEntity, QPlanEntity>createList("planEntities", PlanEntity.class, QPlanEntity.class, PathInits.DIRECT2);
 
     public final QPotEntity potEntity;
 
@@ -50,7 +60,7 @@ public class QDiaryEntity extends EntityPathBase<DiaryEntity> {
 
     public final QUserEntity userEntity;
 
-    public final NumberPath<Long> userId = createNumber("userId", Long.class);
+    public final NumberPath<Long> userPK = createNumber("userPK", Long.class);
 
     public final BooleanPath water = createBoolean("water");
 
@@ -72,6 +82,7 @@ public class QDiaryEntity extends EntityPathBase<DiaryEntity> {
 
     public QDiaryEntity(Class<? extends DiaryEntity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.diaryCheckEntity = inits.isInitialized("diaryCheckEntity") ? new QDiaryCheckEntity(forProperty("diaryCheckEntity"), inits.get("diaryCheckEntity")) : null;
         this.potEntity = inits.isInitialized("potEntity") ? new QPotEntity(forProperty("potEntity"), inits.get("potEntity")) : null;
         this.userEntity = inits.isInitialized("userEntity") ? new QUserEntity(forProperty("userEntity")) : null;
     }

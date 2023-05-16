@@ -76,7 +76,7 @@ public class JwtTokenProvider {
         Long id = Long.valueOf(i);
         // 정보 담아서 Authentication 리턴
         UserDTO userDTO = UserDTO.builder()
-                .id(id)
+                .userPK(id)
                 .nickName((String)claims.get("nickName"))
                 .build();
         return new UsernamePasswordAuthenticationToken(userDTO,"",new ArrayList<>());
@@ -89,13 +89,13 @@ public class JwtTokenProvider {
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("유효하지 않은 토큰입니다.", e);
-            throw new JwtException("유효하지 않은 토큰입니다.", HttpStatus.FORBIDDEN);
+            throw new JwtException("유효하지 않은 토큰입니다.", HttpStatus.UNAUTHORIZED);
         } catch (ExpiredJwtException e) {
             log.info("만료된 토큰입니다.", e);
             throw new JwtException("만료된 토큰입니다.", HttpStatus.FORBIDDEN);
         } catch (UnsupportedJwtException e) {
             log.info("지원하지 않는 토큰입니다.", e);
-            throw new JwtException("지원하지 않는 토큰입니다.", HttpStatus.FORBIDDEN);
+            throw new JwtException("지원하지 않는 토큰입니다.", HttpStatus.UNAUTHORIZED);
         } catch (IllegalArgumentException e) {
             log.info("토큰의 클레임이 비어있습니다", e);
             throw new JwtException("토큰의 클레임이 비어있습니다", HttpStatus.PRECONDITION_FAILED);

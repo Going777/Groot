@@ -3,11 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".view.community.CommunityDetailImg2Fragment">
 
-    <ImageView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/sample_plant_image"/>
+        android:layout_margin="3dp"
+        app:cardCornerRadius="10dp">
+        <ImageView
+            android:id="@+id/detailImage2"
+            android:src="@drawable/plant_default"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            />
+    </androidx.cardview.widget.CardView>
 
 </FrameLayout>

@@ -138,12 +138,12 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
         view.useCloudMlSwitch.isChecked = gcpConfigured
         view.useCloudMlSwitch.isEnabled = gcpConfigured
         currentAnalyzer = if (gcpConfigured) configuredAnalyzer else mlKitAnalyzer
-
-        if (!gcpConfigured) {
-            showSnackbar(
-                "Google Cloud Vision isn't configured (see README). The Cloud ML switch will be disabled."
-            )
-        }
+//
+//        if (!gcpConfigured) {
+//            showSnackbar(
+//                "Google Cloud Vision isn't configured (see README). The Cloud ML switch will be disabled."
+//            )
+//        }
 
         view.resetButton.setOnClickListener {
             synchronized(arLabeledAnchors) { arLabeledAnchors.clear() }
@@ -340,9 +340,13 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
                             currentAnalyzer == mlKitAnalyzer &&
                             !mlKitAnalyzer.hasCustomModel() ->
                         showSnackbar(
-                            "Default ML Kit classification model returned no results. " +
-                                    "For better classification performance, see the README to configure a custom model."
+                            "화분이 보이지 않습니다." +
+                                    " 해당 화분에서 루티를 찾아주세요."
                         )
+//                    showSnackbar(
+//                        "Default ML Kit classification model returned no results. " +
+//                                "For better classification performance, see the README to configure a custom model."
+//                    )
 
                     objects.isEmpty() -> showSnackbar("Classification model returned no results.")
                     anchors.size != objects.size ->
@@ -369,13 +373,13 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
 //                )
 
                 if (arDetectedObject.label == "Plant") {
-                    labelRenderer.draw(
-                        render,
-                        viewProjectionMatrix,
-                        anchor.pose,
-                        camera.pose,
-                        arDetectedObject.label
-                    )
+//                    labelRenderer.draw(
+//                        render,
+//                        viewProjectionMatrix,
+//                        anchor.pose,
+//                        camera.pose,
+//                        arDetectedObject.label
+//                    )
 
 
 

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Builder
 @NoArgsConstructor
@@ -38,6 +38,9 @@ public class UserEntity extends BaseEntity{
     @Column
     private String token;
 
+    @Column
+    private String firebaseToken;
+
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private List<PotEntity> potEntities;
@@ -50,10 +53,14 @@ public class UserEntity extends BaseEntity{
     @JsonManagedReference
     private List<ArticleEntity> articleEntities;
 
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<PlanEntity> planEntities;
+
     public UserDTO toUserDTO(){
         Long date = Duration.between(this.getCreatedDate(), LocalDateTime.now()).toDays() +1;
         UserDTO userDTO = UserDTO.builder()
-                .id(this.id)
+                .userPK(this.id)
                 .userId(this.userId)
                 .nickName(this.nickName)
                 .profile(this.profile)

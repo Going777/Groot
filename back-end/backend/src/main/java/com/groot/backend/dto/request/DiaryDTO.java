@@ -1,9 +1,11 @@
 package com.groot.backend.dto.request;
 
+import com.groot.backend.entity.DiaryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 @Getter
 @Builder
@@ -15,7 +17,7 @@ public class DiaryDTO {
 
     private Long potId;
 
-    private Long userId;
+    private Long userPK;
 
     private String content;
 
@@ -28,4 +30,6 @@ public class DiaryDTO {
     private Boolean bug;
 
     private Boolean sun;
+
+    private String imgPath;
 }

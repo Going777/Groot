@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@+id/plantFragment">
+    app:startDestination="@+id/potFragment">
 
     <fragment
-        android:id="@+id/plantFragment"
-        android:name="com.chocobi.groot.view.plant.PlantFragment"
-        android:label="PlantFragment"
-        tools:layout="@layout/fragment_plant" />
+        android:id="@+id/potFragment"
+        android:name="com.chocobi.groot.view.pot.PotFragment"
+        android:label="PotFragment"
+        tools:layout="@layout/fragment_pot" />
 
     <fragment
         android:id="@+id/searchFragment"
