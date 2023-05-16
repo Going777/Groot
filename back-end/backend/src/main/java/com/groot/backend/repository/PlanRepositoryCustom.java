@@ -15,7 +15,9 @@ public interface PlanRepositoryCustom {
 
     List<PlanEntity> findAllByDateTimeAndUserPK(LocalDateTime start, LocalDateTime end, Long userPK);
 
-    void deleteByCodeAndPotId(Long potId, Integer code, LocalDateTime time);
+    long updateByCodeAndPotId(Long potId, Integer code, LocalDateTime time);
+
+    long updateByCodeAndDiaryId(Integer code, Long diaryId);
 
     @Transactional
     @Modifying
@@ -25,13 +27,13 @@ public interface PlanRepositoryCustom {
 
     @Transactional
     @Modifying
-    long updateDoneById(Long planId);
+    long updateDoneById(Long planId, boolean done);
 
-    boolean existsByCodeAndDateTimeBetween(Integer code, LocalDateTime start, LocalDateTime end);
+    PlanEntity existsByCodeAndPotIdAndDateTimeBetween(Integer code, Long potId, LocalDateTime start, LocalDateTime end);
 
     List<PlanEntity> findAllByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
 
     @Transactional
-    @Modifying
+    @Modifying  // 해야할 날짜가 지났지만 done이 0인 애들 날짜 업데이트 // 수정해야함
     long updateDateTimeByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
 }
