@@ -106,7 +106,7 @@ class SocialSignupActivity : AppCompatActivity() {
         signupNameInput = findViewById(R.id.signupNameInput)
         signupNameInputImg = findViewById(R.id.signupNameInputImg)
 
-        if (nickname != null) {
+        if (nickname != null && nickname != "null") {
             signupNameInput.setText(nickname)
             if(nickname != "") {
                 signupNameInputImg.setColorFilter(
