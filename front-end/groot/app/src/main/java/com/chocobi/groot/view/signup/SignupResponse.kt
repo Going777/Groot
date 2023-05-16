@@ -6,7 +6,8 @@ data class SignupResponse(
     var result : String,
     var msg : String,
     var accessToken : String,
-    var refreshToken : String
+    var refreshToken : String,
+    var userPK: String,
 )
 
 data class DupIdResponse(

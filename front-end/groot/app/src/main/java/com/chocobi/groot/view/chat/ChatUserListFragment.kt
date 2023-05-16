@@ -85,7 +85,7 @@ class ChatUserListFragment : Fragment() {
                 override fun onResponse(call: Call<ChatUserListResponse>, response: Response<ChatUserListResponse>) {
                     if (response.code() == 200) {
                         getData = response.body()!!
-
+                        Log.d("chatUserList", getData.chatting.toString())
                         val list = createDummyData()
                         ThreadUtil.startUIThread(1000) {
                             adapter.reload(list)

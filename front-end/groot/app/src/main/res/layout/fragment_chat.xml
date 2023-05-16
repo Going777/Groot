@@ -12,7 +12,7 @@
 
     <!-- 대화 내용 -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chat_recyclerView"
+        android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/input_layout"
@@ -74,7 +74,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/message_edit"
+                android:id="@+id/messageEdit"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginHorizontal="10dp"
@@ -87,7 +87,7 @@
                 android:paddingVertical="0dp" />
 
             <Button
-                android:id="@+id/send_btn"
+                android:id="@+id/sendBtn"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_margin="5dp"
