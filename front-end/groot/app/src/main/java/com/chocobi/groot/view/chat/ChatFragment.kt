@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
@@ -51,6 +52,7 @@ class ChatFragment : Fragment() {
     @SuppressLint("MissingInflatedId")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_chat, container, false)
+
 
         Log.d("받아온", arguments.toString())
 
@@ -106,6 +108,7 @@ class ChatFragment : Fragment() {
 //        ================================================================
 
 
+
         val createdTime: LocalDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("a h:mm")
         val saveTime = createdTime.format(formatter)
@@ -135,6 +138,10 @@ class ChatFragment : Fragment() {
                         .setValue(messageObject)
 
                 }
+
+            Log.d("scroll", messageList.size.toString())
+            chatRecyclerView.scrollToPosition(messageList.size-1)
+
             lastMessage = messageEdit.toString()
             Log.d("lastMessage", lastMessage)
 
@@ -155,6 +162,8 @@ class ChatFragment : Fragment() {
                     }
                     //적용
                     chatMessageAdapter.notifyDataSetChanged()
+                    Log.d("scroll", messageList.size.toString())
+                    chatRecyclerView.scrollToPosition(messageList.size-1)
 
                     if (messageList.size != 0) {
                         Log.d("lastMessage", lastMessage)

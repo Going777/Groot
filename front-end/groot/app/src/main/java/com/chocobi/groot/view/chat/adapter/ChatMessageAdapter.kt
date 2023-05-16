@@ -52,7 +52,6 @@ class ChatMessageAdapter(private val context: Context, private val messageList: 
 
     override fun getItemViewType(position: Int): Int {
         Log.d("messageList", messageList.toString())
-        Log.d("messageList", "aaa")
 
 
         //메시지값

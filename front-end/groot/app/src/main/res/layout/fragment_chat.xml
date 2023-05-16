@@ -10,13 +10,16 @@
         android:id="@+id/topNavbar"
         layout="@layout/top_category_navbar" />
 
+
+
     <!-- 대화 내용 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/input_layout"
-        android:layout_below="@+id/topNavbar" />
+        android:layout_below="@+id/topNavbar"/>
+
 
     <!-- 입력 레이아웃 -->
     <!--    <LinearLayout-->
