@@ -1,16 +1,22 @@
 package com.groot.backend.service;
 
+import com.groot.backend.controller.exception.CustomException;
+import com.groot.backend.dto.request.AlarmDTO;
 import com.groot.backend.entity.NotificationEntity;
+import com.groot.backend.entity.UserAlarmEntity;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.EmitterRepository;
 import com.groot.backend.repository.NotificationRepository;
 import com.groot.backend.dto.response.NotificationResponseDTO;
+import com.groot.backend.repository.UserAlarmRepository;
+import com.groot.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -22,9 +28,12 @@ import java.util.Map;
 @Slf4j
 public class NotificationServiceImpl implements NotificationService{
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private final EmitterRepository emitterRepository;
     @Autowired
     private final NotificationRepository notificationRepository;
+    private final UserAlarmRepository userAlarmRepository;
     private static Long DEFAULT_TIMEOUT   = 60L * 1000L * 60L;
 
     @Override
@@ -98,6 +107,19 @@ public class NotificationServiceImpl implements NotificationService{
     public Page<NotificationEntity> notificationList(Long userPK, Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdDate"));
         return notificationRepository.findAllByUserPK(userPK, pageRequest);
+    }
+
+    @Override
+    public UserAlarmEntity settingNotification(AlarmDTO alarmDTO, Long userPK) {
+        UserAlarmEntity alarmEntity = userAlarmRepository.findById(userPK).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자의 알림 설정을 찾을 수 없습니다."));
+        UserAlarmEntity newAlarm = UserAlarmEntity.builder()
+                .id(userPK)
+                .chattingAlarm(alarmDTO.getChattingAlarm()!=null?alarmDTO.getChattingAlarm():alarmEntity.getChattingAlarm())
+                .commentAlarm(alarmDTO.getCommentAlarm()!=null?alarmDTO.getCommentAlarm():alarmEntity.getCommentAlarm())
+                .waterAlarm(alarmDTO.getWaterAlarm()!=null?alarmDTO.getWaterAlarm():alarmEntity.getWaterAlarm())
+                .build();
+        UserAlarmEntity result = userAlarmRepository.save(newAlarm);
+        return result;
     }
 
     private NotificationEntity createNotification(UserEntity receiver, String content, String url, String page, Long contentId) {

@@ -4,7 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.groot.backend.dto.request.*;
 import com.groot.backend.dto.response.TokenDTO;
+import com.groot.backend.entity.UserAlarmEntity;
 import com.groot.backend.entity.UserEntity;
+import com.groot.backend.repository.UserAlarmRepository;
 import com.groot.backend.repository.UserRepository;
 import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserAlarmRepository userAlarmRepository;
     private final String KAKAO = "kakao";
     private final String NAVER = "naver";
     private final String KAKAO_REQ_URL = "https://kapi.kakao.com/v2/user/me";
@@ -80,6 +83,15 @@ public class UserServiceImpl implements UserService{
                 .build();
 
         userRepository.save(newUserEntity);
+
+        UserAlarmEntity alarm = UserAlarmEntity.builder()
+                .userEntity(userEntity)
+                .waterAlarm(true)
+                .commentAlarm(true)
+                .chattingAlarm(true)
+                .build();
+        userAlarmRepository.save(alarm);
+
         return TokenDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)

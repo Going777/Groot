@@ -45,6 +45,7 @@ import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.chocobi.groot.view.community.model.CommunityService
+import com.chocobi.groot.view.weather.Main
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
@@ -68,20 +69,41 @@ class CommunityDetailFragment : Fragment() {
     private var articleId: Int = 0
     private lateinit var frameLayoutComment: FrameLayout
     private var shareStatus = false
+    private var userPK: Int = 0
+    private var bookmarkStatus = false
+    private lateinit var shareStateText: TextView
+    private var articleDetailData: Article? = null
+    private lateinit var detailCategory: TextView
+    private lateinit var categoryIcon: ImageView
+    private lateinit var backBtn: ImageView
+    private lateinit var userProfile: CircleImageView
 
+    private lateinit var detailTitle: TextView
+    private lateinit var detailNickName: TextView
+    private lateinit var detailViews: TextView
+    private lateinit var detailCreateTime: TextView
+    private lateinit var detailContent: TextView
+    private lateinit var detailCommentCnt: TextView
+    private lateinit var detailProfileImg: CircleImageView
+    private lateinit var sharePosition: TextView
 
-//    private var commentList = arrayListOf<CommunityCommentResponse>()
+    private lateinit var shareSection: LinearLayoutCompat
+    private lateinit var commentSection: LinearLayoutCompat
+    private lateinit var commentInputSection: CardView
+    private lateinit var spinnerButton: ImageButton
+    private lateinit var carouselSection: LinearLayoutCompat
+    private lateinit var viewPager: ViewPager2
+    private lateinit var tabLayout: TabLayout
+    private lateinit var imageAdapter: CommunityTabAdapter
+
+    private lateinit var mActivity: MainActivity
+    private lateinit var progressSection: ConstraintLayout
 
 
     private val imagesList: MutableList<String?> = arrayListOf()
 
     private lateinit var getData: CommunityArticleDetailResponse
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     @SuppressLint("NotifyDataSetChanged", "MissingInflatedId")
     override fun onCreateView(
@@ -90,102 +112,31 @@ class CommunityDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community_detail, container, false)
-        val articleId = arguments?.getInt("articleId")
-        val mActivity = activity as MainActivity
-        Log.d("CommunityDetailFragmentArticleId", articleId.toString())
-        val userPK = UserData.getUserPK()
-        val nickname = UserData.getNickName()
-        val profile = UserData.getProfile()
+        articleId = arguments?.getInt("articleId") ?: 0
+        mActivity = activity as MainActivity
+        userPK = UserData.getUserPK()
         val args = Bundle()
-        if (articleId != null) {
+        if (articleId != 0) {
             args.putInt("articleId", articleId)
-
         }
-        val communityUserShareFragment = CommunityUserShareFragment()
 
+        val communityUserShareFragment = CommunityUserShareFragment()
         communityUserShareFragment.arguments = args
         childFragmentManager.beginTransaction()
             .add(R.id.communityUserShareFragment, communityUserShareFragment)
             .commit()
 
-        var detailCategory = view.findViewById<TextView>(R.id.categoryName)
-        val categoryIcon = view.findViewById<ImageView>(R.id.categoryIcon)
-        categoryIcon.setImageResource(R.drawable.ic_article)
-
-//        ================================================================
-//        ================================================================
-//        뒤로 가기 버튼 처리해야 하는 곳
-        val backBtn = view.findViewById<ImageView>(R.id.backBtn)
-        backBtn.setOnClickListener {
-            requireActivity().onBackPressed()
-        }
 //        ================================================================
 //        ================================================================
 
-        var detailTitle = view.findViewById<TextView>(R.id.detailTitle)
-        var detailNickName = view.findViewById<TextView>(R.id.detailNickName)
-        var detailViews = view.findViewById<TextView>(R.id.detailViews)
-        var detailCreateTime = view.findViewById<TextView>(R.id.detailCreateTime)
-        var bookmarkLine = view.findViewById<ImageButton>(R.id.bookmarkLine)
-        var detailContent = view.findViewById<TextView>(R.id.detailContent)
-        var detailCommentCnt = view.findViewById<TextView>(R.id.detailCommentCnt)
-        var detailProfileImg = view.findViewById<CircleImageView>(R.id.detailProfileImg)
-        var bookmarkStatus = false
-        var postCommentBtn = view.findViewById<Button>(R.id.postCommentBtn)
-        var postCommentInput = view.findViewById<EditText>(R.id.postCommentInput)
-        var sharePosition = view.findViewById<TextView>(R.id.sharePosition)
+        findViews(view)
+        setFirstView()
+        imageAdapter = CommunityTabAdapter(this)
 
-        var userProfile = view.findViewById<CircleImageView>(R.id.userProfile)
+        return view
+    }
 
-        var shareSection = view.findViewById<LinearLayoutCompat>(R.id.shareSection)
-        var commentSection = view.findViewById<LinearLayoutCompat>(R.id.commentSection)
-        var commentInputSection = view.findViewById<CardView>(R.id.commentInputSection)
-
-        var carouselSection = view.findViewById<LinearLayoutCompat>(R.id.carouselSection)
-        var dropdownSection = view.findViewById<ConstraintLayout>(R.id.dropdownSection)
-
-        userProfile.post {
-            ThreadUtil.startThread {
-                val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
-                    .asBitmap()
-                    .load(UserData.getProfile())
-                    .submit(userProfile.width, userProfile.height)
-
-                val bitmap = futureTarget.get()
-
-                ThreadUtil.startUIThread(0) {
-                    userProfile.setImageBitmap(bitmap)
-                }
-            }
-        }
-
-
-        postCommentBtn.setOnClickListener {
-
-            var content = postCommentInput?.text.toString()
-            if (articleId != null) {
-                postComment(articleId, content)
-
-
-            }
-
-            Log.d("CommunityDetailFragmentArticleId", articleId.toString())
-            Log.d("CommunityDetailFragmentArticleId", content.toString())
-
-            // 입력창 리셋 및 키보드 닫기
-            postCommentInput?.setText("")
-            val inputMethodManager =
-                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(
-                view?.windowToken,
-                InputMethodManager.HIDE_NOT_ALWAYS
-            )
-
-        }
-        val imageAdapter = CommunityTabAdapter(this)
-
-
-//                retrofit 객체 만들기
+    private fun getArticleDetail() {
         val retrofit = RetrofitClient.getClient()!!
 
         val communityArticleDetailService =
@@ -205,342 +156,66 @@ class CommunityDetailFragment : Fragment() {
                     Log.d(TAG, "$responseData")
 
                     val article = getData.article
-                    val articleDetailData = CommunityArticleDetailResponse(
-                        article = Article(
-                            category = article.category,
-                            profile = article.profile,
-                            imgs = article.imgs,
-                            userPK = article.userPK,
-                            nickName = article.nickName,
-                            title = article.title,
-                            tags = article.tags,
-                            views = article.views,
-                            commentCnt = article.commentCnt,
-                            bookmark = article.bookmark,
-                            shareRegion = article.shareRegion,
-                            content = article.content,
-                            shareStatus = article.shareStatus,
-                            createTime = article.createTime,
-                            updateTime = article.updateTime
-                        )
+                    articleDetailData = Article(
+                        category = article.category,
+                        profile = article.profile,
+                        imgs = article.imgs,
+                        userPK = article.userPK,
+                        nickName = article.nickName,
+                        title = article.title,
+                        tags = article.tags,
+                        views = article.views,
+                        commentCnt = article.commentCnt,
+                        bookmark = article.bookmark,
+                        shareRegion = article.shareRegion,
+                        content = article.content,
+                        shareStatus = article.shareStatus,
+                        createTime = article.createTime,
+                        updateTime = article.updateTime
                     )
-                    detailCategory.text = articleDetailData.article.category
-                    detailTitle.text = articleDetailData.article.title
-                    detailNickName.text = articleDetailData.article.nickName
-                    detailViews.text = articleDetailData.article.views.toString()
-                    val koreahour = articleDetailData.article.createTime.time.hour + 9
-                    detailCreateTime.text =
-                        articleDetailData.article.createTime.date.year.toString() + '.' + articleDetailData.article.createTime.date.month.toString() + '.' + articleDetailData.article.createTime.date.day.toString() + ' ' + koreahour + ':' + articleDetailData.article.createTime.time.minute.toString()
-                    detailContent.text = articleDetailData.article.content
-                    tagList = articleDetailData.article.tags
-                    sharePosition.text = articleDetailData.article.shareRegion
-                    detailCommentCnt.text =
-                        "댓글 (" + articleDetailData.article.commentCnt.toString() + ")"
 
-                    Log.d("CommunityDetailFragment", articleDetailData.article.toString())
-                    Log.d("CommunityDetailFragmentImgs", articleDetailData.article.profile)
+                    bookmarkStatus = articleDetailData?.bookmark ?: false
+                    setDetailContent()
+                    setImageCarousel()
 
-                    detailProfileImg.post {
-                        ThreadUtil.startThread {
-                            val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
-                                .asBitmap()
-                                .load(articleDetailData.article.profile)
-                                .submit(detailProfileImg.width, detailProfileImg.height)
-
-                            val bitmap = futureTarget.get()
-
-                            ThreadUtil.startUIThread(0) {
-                                detailProfileImg.setImageBitmap(bitmap)
-                            }
-                        }
-                    }
-
-
-
-                    if (articleDetailData.article.imgs!!.isNotEmpty()) {
-                        for (i in 1..articleDetailData.article.imgs.size) {
-                            imagesList.add(articleDetailData.article.imgs[i - 1])
-                            Log.d("carouselImagesList", imagesList.toString())
-                        }
-                    } else if (articleDetailData.article.imgs.isEmpty()) {
-                        carouselSection.visibility = View.GONE
-                        val layoutParams = detailTitle.layoutParams as ViewGroup.MarginLayoutParams
-                        layoutParams.setMargins(0, 80, 0, 0)
-                        detailTitle.layoutParams = layoutParams
-                    }
-
-
-                    val viewPager: ViewPager2 = view.findViewById(R.id.carousel_pager)
-                    Log.d("CommunityDetailFragmentCount중", imagesList.size.toString())
-
-
-                    viewPager.adapter = imageAdapter
-                    val tabLayout: TabLayout = view.findViewById(R.id.carousel_layout)
-
-                    var tabList = listOf<String>()
-
-                    when (imagesList.size) {
-                        0 -> {
-                            tabList = listOf<String>()
-                        }
-
-                        1 -> {
-                            tabList = listOf<String>("")
-                        }
-
-                        2 -> {
-                            tabList = listOf<String>("", "")
-                        }
-
-                        3 -> {
-                            tabList = listOf<String>("", "", "")
-                        }
-                    }
-
-                    TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-                        tab.text = tabList[position]
-
-                    }.attach()
-
-
-                    // 카테고리별 섹션 구별
-                    if (detailCategory.text == "나눔") {
-                        shareStatus = articleDetailData.article.shareStatus!!
-
-                        if (articleDetailData.article.shareStatus == true) {
-//                            shareStateSection.visibility = View.VISIBLE
-                        } else if (articleDetailData.article.shareStatus == false) {
-//                            shareStateSection.visibility = View.GONE
-                        }
-                        sharePosition.visibility = View.VISIBLE
-                        shareSection.visibility = View.VISIBLE
-                        commentSection.visibility = View.GONE
-                        commentInputSection.visibility = View.GONE
-                    } else {
-//                        shareStateSection.visibility = View.GONE
-                        sharePosition.visibility = View.GONE
-                        shareSection.visibility = View.GONE
-                        commentSection.visibility = View.VISIBLE
-                        commentInputSection.visibility = View.VISIBLE
-                    }
-
-
-                    bookmarkStatus = articleDetailData.article.bookmark
-                    // 북마크
-                    bookmarkButton = view.findViewById(R.id.bookmarkLine)
-                    if (bookmarkStatus == true) {
-                        bookmarkButton.setImageResource(R.drawable.ic_bookmark_fill)
-                    } else {
-                        bookmarkButton.setImageResource(R.drawable.ic_bookmark)
-                    }
-
-
-                    Log.d("CommunityDetailFragment", articleDetailData.toString())
 
                     // 태그
-                    recyclerView = view.findViewById(R.id.tagList)
                     recyclerView.layoutManager =
                         LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
-                    // Adapter 설정
+                    // 태그 Adapter 설정
                     val tagAdapter = ArticleTagAdapter(tagList)
                     recyclerView.adapter = tagAdapter
 
-
-                    // 드롭다운
-                    if (UserData.getUserPK() == articleDetailData.article.userPK) {
-
-
-//                        val spinner: Spinner = view.findViewById(R.id.spinner)
-                        val spinnerButton: ImageButton = view.findViewById(R.id.spinnerButton)
-
-                        var options: Array<String>
-                        if (detailCategory.text == "나눔") {
-                            options = arrayOf("  삭제  ", "  수정  ", " 나눔 완료 ")
-                        } else {
-                            options = arrayOf("  삭제  ", "  수정  ")
-                        }
-                        // spinner 설정 이전에 아래 코드 추가
-
-
-//                        spinner.adapter = adapter
-//
-//                        spinner.onItemSelectedListener =
-//                            object : AdapterView.OnItemSelectedListener {
-//                                override fun onItemSelected(
-//                                    parent: AdapterView<*>,
-//                                    view: View?,
-//                                    position: Int,
-//                                    id: Long
-//                                ) {
-//                                    Log.d("shareStatus", shareStatus.toString())
-//                                    if (shareStatus == true) {
-//                                        options[2] = " 나눔 취소 "
-//                                    } else {
-//                                        options[2] = " 나눔 완료 "
-//                                    }
-//
-//
-//                                    var selectedOption = options[position]
-//                                    if (selectedOption == "  삭제  ") {
-//                                        val dialog = AlertDialog.Builder(requireContext())
-//                                        dialog.setTitle("글을 삭제하시겠습니까?")
-//                                        dialog.setPositiveButton("네") { dialog, which ->
-//                                            deleteArticle(articleId)
-//                                            requireActivity().supportFragmentManager.popBackStack()
-//                                        }
-//                                        dialog.setNegativeButton("아니요") { dialog, which ->
-//                                            dialog.dismiss()
-//                                        }
-//                                        dialog.show()
-//                                    } else if (selectedOption == " 수정 ") {
-//
-//                                    }
-//                                    if (selectedOption == " 나눔 완료 ") {
-//                                        changeShareStatus(articleId, UserData.getUserPK())
-//                                        shareStateSection.visibility = View.VISIBLE
-//                                        options[2] = " 나눔 취소 "
-//                                        shareStatus = true
-//                                        adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
-//
-//                                    } else if (selectedOption == " 나눔 취소 ") {
-//                                        changeShareStatus(articleId, UserData.getUserPK())
-//                                        shareStateSection.visibility = View.GONE
-//                                        options[2] = " 나눔 완료 "
-//                                        shareStatus = false
-//                                        adapter.notifyDataSetChanged() // 어댑터에 변경 사항을 알림
-//
-//                                    }
-//
-//
-//                                }
-//
-//                                override fun onNothingSelected(parent: AdapterView<*>) {
-//                                    // 아무것도 선택하지 않은 경우 처리
-//                                }
-//                            }
-//                        var spinnerClicked = false
-
-                        spinnerButton.setOnClickListener {
-                            val articleBottomSheet = ArticleBottomSheet(requireContext(), articleId)
-                            articleBottomSheet.show(
-                                mActivity.supportFragmentManager,
-                                articleBottomSheet.tag
-                            )
-
-                        }
-                    } else {
-                        dropdownSection.visibility = View.GONE
-                    }
                 } else {
-                    Log.d(TAG, "실패1")
+                    Log.d(TAG, "게시글 디테일 실패1")
                     Log.d(TAG, response.toString())
-
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleDetailResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
+                Log.d(TAG, "게시글 디테일 실패2")
             }
         }
         )
-
-
-//        북마크 수정 api
-
-
-        val communityBookmarkService = retrofit.create(CommunityBookmarkService::class.java)
-        bookmarkButton = view.findViewById(R.id.bookmarkLine)
-        bookmarkButton.setOnClickListener {
-            communityBookmarkService.requestCommunityBookmark(
-                BookmarkRequest(
-                    articleId,
-                    userPK,
-                    bookmarkStatus
-                )
-            ).enqueue(object :
-                Callback<BookmarkResponse> {
-                override fun onResponse(
-                    call: Call<BookmarkResponse>,
-                    response: Response<BookmarkResponse>
-                ) {
-                    if (response.code() == 200) {
-                        Log.d(TAG, "북마크상태변경 성공")
-                        bookmarkStatus = !bookmarkStatus
-                        bookmarkButton.setImageResource(
-                            if (bookmarkStatus) R.drawable.ic_bookmark_fill
-                            else R.drawable.ic_bookmark
-                        )
-                    } else {
-                        Log.d(TAG, "북마크상태변경 실패")
-                    }
-                }
-
-                override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
-                    Log.d(TAG, "북마크상태변경 실패")
-                }
-            })
-        }
-
-
-//        댓글
-        findViews(view)
-        setListeners()
-        initList()
-
-        showProgress()
-
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        commentRecyclerView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
-        frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
-        commentRecyclerView.layoutManager =
-            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        val layoutManager = LinearLayoutManager(context)
-        commentRecyclerView.layoutManager = layoutManager
-
-
-        // retrofit 객체 만들기
-        var commentRetrofit = RetrofitClient.getClient()!!
-        var communityCommentService = commentRetrofit.create(CommunityCommentService::class.java)
-
-        communityCommentService.requestCommunityComment(articleId).enqueue(object :
-            Callback<CommunityCommentResponse> {
-            override fun onResponse(
-                call: Call<CommunityCommentResponse>,
-                response: Response<CommunityCommentResponse>
-            ) {
-                if (response.code() == 200) {
-                    Log.d("CommunityCommentFragment", "성공")
-                    val checkResponse = response.body()?.comment
-                    getCommentData = response.body()!!
-                    Log.d("CommunityCommentFragment", "$checkResponse")
-
-                    val list = createDummyData()
-                    ThreadUtil.startUIThread(1000) {
-                        commentAdapter.reload(list)
-                        hideProgress()
-
-                    }
-
-
-                } else {
-                    Log.d("CommunityCommentFragment", "실패1")
-                }
-            }
-
-            override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
-                Log.d("CommunityCommentFragment실패", "실패2")
-            }
-        })
-
-
-        return view
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        getArticleDetail()
+
+
+//        댓글
+        setListeners()
+        initList()
+        showProgress()
+        commentRecyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        val layoutManager = LinearLayoutManager(context)
+        commentRecyclerView.layoutManager = layoutManager
+        getArticleComment()
 
     }
 
@@ -664,13 +339,62 @@ class CommunityDetailFragment : Fragment() {
     }
 
 
-    //    댓글 리사이클러뷰
     private fun findViews(view: View) {
+//        로딩스피너
+        progressSection = view.findViewById(R.id.progressSection)
+//        헤더
+        detailCategory = view.findViewById(R.id.categoryName)
+        categoryIcon = view.findViewById(R.id.categoryIcon)
+        backBtn = view.findViewById(R.id.backBtn)
+
+//        사용자 프로필
+        userProfile = view.findViewById<CircleImageView>(R.id.userProfile)
+
+//        이미지 섹션
+        carouselSection = view.findViewById(R.id.carouselSection)
+        viewPager = view.findViewById(R.id.carousel_pager)
+        tabLayout = view.findViewById(R.id.carousel_layout)
+
+//        디테일
+        detailTitle = view.findViewById(R.id.detailTitle)
+        detailNickName = view.findViewById(R.id.detailNickName)
+        detailViews = view.findViewById(R.id.detailViews)
+        detailCreateTime = view.findViewById(R.id.detailCreateTime)
+        detailContent = view.findViewById(R.id.detailContent)
+        detailCommentCnt = view.findViewById(R.id.detailCommentCnt)
+        detailProfileImg = view.findViewById(R.id.detailProfileImg)
+        sharePosition = view.findViewById<TextView>(R.id.sharePosition)
+
+
+//        카테고리 분기
+        shareSection = view.findViewById<LinearLayoutCompat>(R.id.shareSection)
+        commentSection = view.findViewById<LinearLayoutCompat>(R.id.commentSection)
+        commentInputSection = view.findViewById<CardView>(R.id.commentInputSection)
+
+//        나눔 상태
+        shareStateText = view.findViewById(R.id.shareStateText)
+
+//        북마크
+        bookmarkButton = view.findViewById(R.id.bookmarkLine)
+
+//        댓글
+        postCommentBtn = view.findViewById(R.id.postCommentBtn)
+        postCommentInput = view.findViewById(R.id.postCommentInput)
+
+        //    댓글 리사이클러뷰
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
-        commentRecyclerView = view.findViewById<RecyclerView>(R.id.commentRecycleView)
+        commentRecyclerView = view.findViewById(R.id.commentRecycleView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+
+
+//        글 설정 버튼
+        spinnerButton = view.findViewById(R.id.spinnerButton)
+
+//        태그
+        recyclerView = view.findViewById(R.id.tagList)
     }
 
+    //    댓글 리사이클러뷰
     private fun setListeners() {
         swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshLayout.isRefreshing = false
@@ -761,5 +485,255 @@ class CommunityDetailFragment : Fragment() {
                 }
             })
 
+    }
+
+    private fun getArticleComment() {
+        // retrofit 객체 만들기
+        var commentRetrofit = RetrofitClient.getClient()!!
+        var communityCommentService = commentRetrofit.create(CommunityCommentService::class.java)
+
+        communityCommentService.requestCommunityComment(articleId).enqueue(object :
+            Callback<CommunityCommentResponse> {
+            override fun onResponse(
+                call: Call<CommunityCommentResponse>,
+                response: Response<CommunityCommentResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d("CommunityCommentFragment", "성공")
+                    val checkResponse = response.body()?.comment
+                    getCommentData = response.body()!!
+                    Log.d("CommunityCommentFragment", "$checkResponse")
+
+                    val list = createDummyData()
+                    ThreadUtil.startUIThread(1000) {
+                        commentAdapter.reload(list)
+                        hideProgress()
+
+                    }
+
+
+                } else {
+                    Log.d("CommunityCommentFragment", "실패1")
+                }
+            }
+
+            override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
+                Log.d("CommunityCommentFragment실패", "실패2")
+            }
+        })
+    }
+
+    private fun requestBookmark() {
+        val retrofit = RetrofitClient.getClient()!!
+        val communityBookmarkService = retrofit.create(CommunityBookmarkService::class.java)
+        communityBookmarkService.requestCommunityBookmark(
+            BookmarkRequest(
+                articleId,
+                userPK,
+                bookmarkStatus
+            )
+        ).enqueue(object :
+            Callback<BookmarkResponse> {
+            override fun onResponse(
+                call: Call<BookmarkResponse>,
+                response: Response<BookmarkResponse>
+            ) {
+                if (response.code() == 200) {
+                    Log.d(TAG, "북마크상태변경 성공")
+                    bookmarkStatus = !bookmarkStatus
+                    bookmarkButton.setImageResource(
+                        if (bookmarkStatus) R.drawable.ic_bookmark_fill
+                        else R.drawable.ic_bookmark
+                    )
+                } else {
+                    Log.d(TAG, "북마크상태변경 실패")
+                }
+            }
+
+            override fun onFailure(call: Call<BookmarkResponse>, t: Throwable) {
+                Log.d(TAG, "북마크상태변경 실패")
+            }
+        })
+    }
+
+    private fun setFirstView() {
+//        헤더
+        categoryIcon.setImageResource(R.drawable.ic_article)
+        backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+//        사용자 프로필
+        userProfile.post {
+            ThreadUtil.startThread {
+                val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
+                    .asBitmap()
+                    .load(UserData.getProfile())
+                    .submit(userProfile.width, userProfile.height)
+
+                val bitmap = futureTarget.get()
+
+                ThreadUtil.startUIThread(0) {
+                    userProfile.setImageBitmap(bitmap)
+                }
+            }
+        }
+
+//        댓글
+        postCommentBtn.setOnClickListener {
+            var content = postCommentInput?.text.toString()
+            if (articleId != null) {
+                postComment(articleId, content)
+            }
+
+            // 입력창 리셋 및 키보드 닫기
+            postCommentInput?.setText("")
+            val inputMethodManager =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(
+                view?.windowToken,
+                InputMethodManager.HIDE_NOT_ALWAYS
+            )
+
+        }
+
+
+        //        북마크 수정 api
+
+        bookmarkButton.setOnClickListener {
+            requestBookmark()
+        }
+    }
+
+    private fun setDetailContent() {
+        detailCategory.text = articleDetailData?.category
+        detailTitle.text = articleDetailData?.title
+        detailNickName.text = articleDetailData?.nickName
+        detailViews.text = articleDetailData?.views.toString()
+        val koreahour = (articleDetailData?.createTime?.time?.hour ?: 0) + 9
+        detailCreateTime.text =
+            articleDetailData?.createTime?.date?.year.toString() + '.' + articleDetailData?.createTime?.date?.month.toString() + '.' + articleDetailData?.createTime?.date?.day.toString() + ' ' + koreahour + ':' + articleDetailData?.createTime?.time?.minute.toString()
+        detailContent.text = articleDetailData?.content
+        tagList = articleDetailData?.tags ?: emptyList()
+        sharePosition.text = articleDetailData?.shareRegion
+        detailCommentCnt.text =
+            "댓글 (" + articleDetailData?.commentCnt.toString() + ")"
+
+
+
+        detailProfileImg.post {
+            ThreadUtil.startThread {
+                val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
+                    .asBitmap()
+                    .load(articleDetailData?.profile)
+                    .submit(detailProfileImg.width, detailProfileImg.height)
+
+                val bitmap = futureTarget.get()
+
+                ThreadUtil.startUIThread(0) {
+                    detailProfileImg.setImageBitmap(bitmap)
+                }
+            }
+        }
+
+        // 카테고리별 섹션 구별
+        if (detailCategory.text == "나눔") {
+            shareStatus = articleDetailData?.shareStatus!!
+
+            if (articleDetailData?.shareStatus == true) {
+                shareStateText.visibility = View.VISIBLE
+            } else if (articleDetailData?.shareStatus == false) {
+                shareStateText.visibility = View.GONE
+            }
+            sharePosition.visibility = View.VISIBLE
+            shareSection.visibility = View.VISIBLE
+            commentSection.visibility = View.GONE
+            commentInputSection.visibility = View.GONE
+        } else {
+            shareStateText.visibility = View.GONE
+            sharePosition.visibility = View.GONE
+            shareSection.visibility = View.GONE
+            commentSection.visibility = View.VISIBLE
+            commentInputSection.visibility = View.VISIBLE
+        }
+
+        // 북마크
+        if (bookmarkStatus == true) {
+            bookmarkButton.setImageResource(R.drawable.ic_bookmark_fill)
+        } else {
+            bookmarkButton.setImageResource(R.drawable.ic_bookmark)
+        }
+
+//        드롭다운
+        if (UserData.getUserPK() == articleDetailData?.userPK) {
+            spinnerButton.setOnClickListener {
+                val articleBottomSheet = ArticleBottomSheet(requireContext(), articleId)
+                articleBottomSheet.show(
+                    mActivity.supportFragmentManager,
+                    articleBottomSheet.tag
+                )
+            }
+        } else {
+            spinnerButton.visibility = View.GONE
+        }
+
+
+    }
+
+    private fun setImageCarousel() {
+        if (articleDetailData?.imgs != null && articleDetailData?.imgs!!.isNotEmpty()) {
+            carouselSection.visibility = View.VISIBLE
+            for (i in 1..articleDetailData?.imgs!!.size) {
+                imagesList.add(articleDetailData?.imgs!![i - 1])
+                Log.d("carouselImagesList", imagesList.toString())
+            }
+        } else if (articleDetailData?.imgs != null && articleDetailData?.imgs!!.isEmpty()) {
+            carouselSection.visibility = View.GONE
+            val layoutParams = detailTitle.layoutParams as ViewGroup.MarginLayoutParams
+            detailTitle.layoutParams = layoutParams
+        }
+        viewPager.adapter = imageAdapter
+
+        var tabList = listOf<String>()
+
+        when (imagesList.size) {
+            0 -> {
+                tabList = listOf<String>()
+            }
+
+            1 -> {
+                tabList = listOf<String>("")
+            }
+
+            2 -> {
+                tabList = listOf<String>("", "")
+            }
+
+            3 -> {
+                tabList = listOf<String>("", "", "")
+            }
+        }
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = tabList[position]
+
+        }.attach()
+
+        progressSection.visibility = View.GONE
+    }
+
+    private fun setShareText(selectedOption: String) {
+        if (selectedOption == " 나눔 완료 ") {
+            changeShareStatus(articleId, UserData.getUserPK())
+            shareStateText.visibility = View.VISIBLE
+            shareStateText.text = "나눔 완료"
+            shareStatus = true
+
+        } else if (selectedOption == " 나눔 취소 ") {
+            changeShareStatus(articleId, UserData.getUserPK())
+            shareStateText.visibility = View.VISIBLE
+            shareStateText.text = "나눔 취소"
+            shareStatus = false
+        }
     }
 }

@@ -26,7 +26,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_weight="1">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -38,7 +38,8 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/carousel_pager"
@@ -56,18 +57,20 @@
                     style="@style/BASIC_LINE"
                     android:layout_marginBottom="15dp" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:gravity="center_vertical">
+                    android:layout_marginBottom="3dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/detailProfileImg"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/basic_profile"
-                        app:civ_circle_background_color="@color/background" />
+                        app:civ_circle_background_color="@color/background"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/detailNickName"
@@ -76,31 +79,26 @@
                         android:layout_marginLeft="5dp"
                         android:text="닉네임임ㅇ밍임"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/dropdownSection"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/detailProfileImg"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
-                        <ImageButton
+                    <ImageButton
+                        android:id="@+id/spinnerButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/white"
+                        android:src="@drawable/ic_vertical_dots"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingConstraints" />
 
-                            android:id="@+id/spinnerButton"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="@color/white"
-                            android:src="@drawable/ic_vertical_dots"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            tools:ignore="MissingConstraints" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     style="@style/BASIC_LINE"
@@ -147,7 +145,6 @@
                             android:gravity="center">
 
 
-
                             <TextView
                                 android:id="@+id/detailCreateTime"
                                 android:layout_width="wrap_content"
@@ -155,6 +152,7 @@
                                 android:text="2023.04.28 09:23"
                                 android:textColor="@color/grey"
                                 android:textSize="14sp" />
+
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
@@ -266,7 +264,7 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
@@ -328,6 +326,22 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/progressSection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/point"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -359,6 +373,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/shareStateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
