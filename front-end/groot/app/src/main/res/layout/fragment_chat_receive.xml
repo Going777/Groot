@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="5dp"
+    android:layout_marginBottom="7dp"
     android:gravity="left">
 
     <LinearLayout
@@ -17,17 +18,21 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@drawable/chat_bubble_fill"
-            android:padding="10dp"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
             android:text="받는 메시지"
+
             android:layout_gravity="left"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/receiveTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="오전 10:15"
+            android:textSize="11sp"
+            android:layout_marginRight="10dp"
             android:layout_marginLeft="5dp"
             android:textColor="@color/grey" />
     </LinearLayout>
