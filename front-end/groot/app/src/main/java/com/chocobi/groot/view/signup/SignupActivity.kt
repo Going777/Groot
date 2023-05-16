@@ -305,20 +305,11 @@ class SignupActivity : AppCompatActivity() {
 
                         registerUserInFirebase(userId, userLoginId)
 
-                        dialog.setTitle("환영합니다!")
-                        dialog.setMessage(signupMsg)
-                        dialog.setPositiveButton(
-                            "확인",
-                            DialogInterface.OnClickListener { dialog, which ->
-
-                                var intent =
-                                    Intent(
-                                        this@SignupActivity,
-                                        MainActivity::class.java
-                                    )
-                                startActivity(intent)
-                            })
-                        dialog.show()
+                        GlobalVariables.defaultAlertDialog(
+                            this@SignupActivity,
+                            "회원가입 성공",
+                            "Groot에 오신 것을 환영합니다!", ::moveToMain, false
+                        )
                     } else {
                         signupMsg =
                             JSONObject(
