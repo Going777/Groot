@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService{
     private final String NAVER = "naver";
     private final String KAKAO_REQ_URL = "https://kapi.kakao.com/v2/user/me";
     private final String NAVER_REQ_URL = "https://openapi.naver.com/v1/nid/me";
+    private final String KAKAO_TOKEN_INFO_URL = "https://kapi.kakao.com/v1/user/access_token_info";
 
 
     @Override
@@ -304,6 +305,40 @@ public class UserServiceImpl implements UserService{
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .build();
+    }
+
+    @Override
+    public boolean checkKakaoToken(String accessToken) throws Exception{
+        String reqURL = KAKAO_TOKEN_INFO_URL;
+        URL url = new URL(reqURL);
+        HttpURLConnection conn = (HttpURLConnection)  url.openConnection();
+
+        conn.setRequestMethod("GET");
+//        conn.setDoOutput(true);
+        conn.setRequestProperty("Authorization", "Bearer "+ accessToken);
+
+        // 결과 코드 200이면 성공
+        int responseCode = conn.getResponseCode();
+        log.info("responseCode: "+responseCode);
+//
+//        if(responseCode == 200){
+//            return true;
+//        }else()
+
+        // response 메세지 읽어오기
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line = "";
+        String result = "";
+
+        while((line = br.readLine()) != null){
+            result += line;
+        }
+
+        // Gson 라이브러리로 JSON 파싱
+        JsonParser parser = new JsonParser();
+        JsonElement element = parser.parse(result);
+        System.out.println(element);
+        return false;
     }
 
     private String[] naverParsing(JsonElement element) {

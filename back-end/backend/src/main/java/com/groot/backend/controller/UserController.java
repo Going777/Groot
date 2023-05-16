@@ -396,7 +396,17 @@ public class UserController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
+        if(!(oAuthUserDTO.getOAuthProvider().equals("kakao") ||  oAuthUserDTO.getOAuthProvider().equals("naver"))){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "OAuthProvider는 'kakao' 또는 'naver'를 입력해주세요");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
         try {
+            // 토큰 검사
+            userService.checkKakaoToken(oAuthUserDTO.getAccessToken());
+
+
             TokenDTO result = userService.OAuthLogin(oAuthUserDTO);
             if(result == null){
                 resultMap.put("result", FAIL);

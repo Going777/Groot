@@ -20,4 +20,5 @@ public interface UserService {
     TokenDTO refreshAccessToken(String refreshToken, Long id);
     boolean updateProfile(UserProfileDTO userProfileDTO, String imgPath);
     TokenDTO OAuthLogin(OAuthUserDTO oAuthUserDTO) throws IOException;
+    boolean checkKakaoToken(String accessToken) throws Exception;
 }
