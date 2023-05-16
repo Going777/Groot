@@ -15,8 +15,12 @@ public interface PlanRepositoryCustom {
 
     List<PlanEntity> findAllByDateTimeAndUserPK(LocalDateTime start, LocalDateTime end, Long userPK);
 
+    @Transactional
+    @Modifying
     long updateByCodeAndPotId(Long potId, Integer code, LocalDateTime time);
 
+    @Transactional
+    @Modifying
     long updateByCodeAndDiaryId(Integer code, Long diaryId);
 
     @Transactional

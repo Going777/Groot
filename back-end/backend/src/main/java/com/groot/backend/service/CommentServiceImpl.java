@@ -38,8 +38,6 @@ public class CommentServiceImpl implements CommentService{
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final ArticleRepository articleRepository;
-    private final ApplicationEventPublisher eventPublisher;
-    private final NotificationService notificationService;
     private final FirebaseMessaging firebaseMessaging;
 
     @Override
@@ -56,7 +54,6 @@ public class CommentServiceImpl implements CommentService{
 
         UserEntity recieiver = articleRepository.findById(commentDTO.getArticleId()).orElseThrow().getUserEntity();
 //        notificationService.send(recieiver, writer.getNickName()+"님이 '"+article.getTitle()+"'글에 댓글을 작성하였습니다.", "", "article", commentDTO.getArticleId());
-
 
         String title = "댓글 알림";
         String body = writer.getNickName()+"님이 '"+article.getTitle()+"'글에 댓글을 작성하였습니다.";
@@ -87,10 +84,8 @@ public class CommentServiceImpl implements CommentService{
                 try {
                     firebaseMessaging.send(message);
                     notificationRepository.save(noti);
-//                    return "알림을 성공적으로 전송했습니다. targetUserId="+recieiver.getId();
                 } catch (FirebaseMessagingException e) {
                     e.printStackTrace();
-//                    return "알림 보내기를 실패하였습니다. targetUserId="+'${recieiver.getId()}';
                 }
             }
         }
@@ -109,9 +104,6 @@ public class CommentServiceImpl implements CommentService{
         return result;
     }
 
-//    private void notifyCommentInfo(UserEntity user){
-//        user.publish(eventPublisher, )
-//    }
 
     @Override
     public boolean deleteComment(Long commentId) {

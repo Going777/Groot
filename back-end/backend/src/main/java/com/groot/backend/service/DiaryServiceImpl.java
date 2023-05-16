@@ -36,13 +36,9 @@ public class DiaryServiceImpl implements DiaryService{
     private final PlanRepository planRepository;
     private final PlantRepository plantRepository;
     private final DiaryRepository diaryRepository;
-
     private final UserRepository userRepository;
-
     private final PotRepository potRepository;
-
     private final DiaryCheckRepository diaryCheckRepository;
-
     private final S3Service s3Service;
 
     private static int[] monthDate = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};

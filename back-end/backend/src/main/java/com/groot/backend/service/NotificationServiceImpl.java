@@ -26,6 +26,7 @@ public class NotificationServiceImpl implements NotificationService{
     @Autowired
     private final NotificationRepository notificationRepository;
     private static Long DEFAULT_TIMEOUT   = 60L * 1000L * 60L;
+
     @Override
     public SseEmitter subscribe(Long userId, String lastEventId) {
         String emitterId = makeTimeIncludeId(userId);

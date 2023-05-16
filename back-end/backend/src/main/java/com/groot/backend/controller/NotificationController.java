@@ -71,6 +71,7 @@ public class NotificationController {
     }
 
 
+    /*
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
     @ResponseStatus(HttpStatus.OK)
     public SseEmitter subscribe(HttpServletRequest request,
@@ -84,5 +85,6 @@ public class NotificationController {
         log.info("연결 결과 sseEmitter 전송: "+result.toString());
         return result;
     }
+     */
 
 }
