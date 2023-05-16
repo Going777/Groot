@@ -18,7 +18,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.chocobi.groot.data.GlobalVariables
@@ -27,6 +26,9 @@ import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.chat.ChatFragment
+import com.chocobi.groot.view.chat.ChatUserListFragment
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -37,8 +39,6 @@ import com.chocobi.groot.view.intro.IntroDataService
 import com.chocobi.groot.view.intro.PlantNamesResponse
 import com.chocobi.groot.view.intro.RegionNameResponse
 import com.chocobi.groot.view.login.LoginActivity
-import com.chocobi.groot.view.login.LoginService
-import com.chocobi.groot.view.login.SubscribeResponse
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
@@ -161,16 +161,29 @@ class MainActivity : AppCompatActivity() {
             }
 
             "community_post" -> {
-                fragment = CommunityPostFragment()
+                fragment = CommunityPostFragment("자유")
+            }
+
+            "community_qna" -> {
+                fragment = CommunityPostFragment("QnA")
+            }
+
+            "community_tip" -> {
+                fragment = CommunityPostFragment("Tip")
             }
 
             "setting" -> {
                 fragment = SettingFragment()
             }
+
+            "chat_user_list" -> {
+                fragment = ChatUserListFragment()
+            }
         }
         if (fragment != null) {
             supportFragmentManager
                 .beginTransaction()
+//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.fl_container, fragment, index)
                 .addToBackStack(index)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -350,6 +363,9 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "알림이 거부 되었습니다.", Toast.LENGTH_SHORT).show()
                 // 권한이 거부된 경우 처리할 작업 수행
+                UserData.setIsNotificationAllowed(1, false)
+                UserData.setIsNotificationAllowed(2, false)
+                UserData.setIsNotificationAllowed(3, false)
             }
         }
 
@@ -474,9 +490,10 @@ class MainActivity : AppCompatActivity() {
                         // 다른 프래그먼트 화면으로 이동하는 기능
                         val homeFragment = PotFragment()
                         supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.fl_container, homeFragment, "pot")
                             .addToBackStack("pot")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commitAllowingStateLoss()
 //                            .commit()
 //                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
@@ -490,6 +507,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.searchFragment -> {
                         val boardFragment = SearchFragment()
                         supportFragmentManager.beginTransaction()
+//                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "search")
                             .addToBackStack("search")
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -504,6 +522,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.communityFragment -> {
                         val boardFragment = CommunityFragment()
                         supportFragmentManager.beginTransaction()
+//                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "community")
                             .addToBackStack("community")
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -518,9 +537,10 @@ class MainActivity : AppCompatActivity() {
                     R.id.userFragment -> {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "user")
                             .addToBackStack("user")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commitAllowingStateLoss()
 //                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams

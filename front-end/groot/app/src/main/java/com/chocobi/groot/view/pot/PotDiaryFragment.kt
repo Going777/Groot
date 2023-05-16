@@ -61,6 +61,7 @@ class PotDiaryFragment : Fragment() {
         null,
         false,
         0,
+        0,
         "",
         "",
     )

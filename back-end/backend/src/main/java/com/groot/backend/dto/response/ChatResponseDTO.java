@@ -9,5 +9,5 @@ public class ChatResponseDTO {
     private Long userPK;
     private String nickName;
     private String profile;
-    private Long roomId;
+    private String roomId;
 }

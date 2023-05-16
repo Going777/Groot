@@ -24,6 +24,9 @@ public class NotificationEntity extends BaseEntity{
     private String title;
 
     @Column
+    private String chattingRoomId;
+
+    @Column
     private String content;
 
     @Column(nullable = false)
