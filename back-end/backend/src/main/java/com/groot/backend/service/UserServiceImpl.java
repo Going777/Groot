@@ -63,8 +63,6 @@ public class UserServiceImpl implements UserService{
                 .password(passwordEncoder.encode(registerDTO.getPassword()))
                 .build();
 
-        userRepository.save(userEntity);
-
         // token 생성
         String accessToken = jwtTokenProvider.createAccessToken(userEntity);
         String refreshToken = jwtTokenProvider.createRefreshToken(userEntity.getId());
@@ -79,11 +77,12 @@ public class UserServiceImpl implements UserService{
                 .token(refreshToken)
                 .build();
 
-        userRepository.save(newUserEntity);
+        UserEntity result = userRepository.save(newUserEntity);
         return TokenDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .userPK(result.getId())
                 .build();
     }
 
