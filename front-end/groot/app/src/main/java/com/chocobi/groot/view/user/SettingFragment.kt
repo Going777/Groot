@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.chocobi.groot.view.intro.IntroActivity
@@ -46,6 +47,9 @@ class SettingFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var isSocialLogined: String
+    private var isNoti1: Boolean = false
+    private var isNoti2: Boolean = false
+    private var isNoti3: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +59,10 @@ class SettingFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        val notificationList = UserData.getIsNotificationAllowed()
+        isNoti1 = notificationList[0]
+        isNoti2 = notificationList[1]
+        isNoti3 = notificationList[2]
     }
 
     @SuppressLint("MissingInflatedId")
@@ -88,8 +96,8 @@ class SettingFragment : Fragment() {
         }
 
         val editPasswordText = rootView.findViewById<TextView>(R.id.editPasswordText)
-        Log.d("SettingFragment","onCreateView() 확인 ${isSocialLogined}")
-        if(isSocialLogined != "") {
+        Log.d("SettingFragment", "onCreateView() 확인 ${isSocialLogined}")
+        if (isSocialLogined != "") {
             editPasswordText.visibility = View.GONE
         } else {
             val bottomSheet = PasswordBottomSheet(requireContext())
@@ -101,18 +109,78 @@ class SettingFragment : Fragment() {
 //        로그아웃
         val logoutText = rootView.findViewById<TextView>(R.id.logoutText)
         logoutText.setOnClickListener {
-            GlobalVariables.defaultAlertDialog(context = requireContext(), title="로그아웃 알림", message = "접속중인 기기에서 로그아웃 하시겠습니까?", positiveFtn = ::logout, existNegativeBtn = true)
+            GlobalVariables.defaultAlertDialog(
+                context = requireContext(),
+                title = "로그아웃 알림",
+                message = "접속중인 기기에서 로그아웃 하시겠습니까?",
+                positiveFtn = ::logout,
+                existNegativeBtn = true
+            )
         }
 
 //        회원탈퇴
         val deleteUserText = rootView.findViewById<TextView>(R.id.deleteUserText)
         deleteUserText.setOnClickListener {
-            GlobalVariables.defaultAlertDialog(context = requireContext(), title="회원탈퇴 알림", message = "계정을 삭제하면 모든 데이터가 디바이스에서 삭제됩니다.\n\n정말로 회원탈퇴를 진행하시겠습니까?", positiveFtn = ::deleteUser, existNegativeBtn = true)
+            GlobalVariables.defaultAlertDialog(
+                context = requireContext(),
+                title = "회원탈퇴 알림",
+                message = "계정을 삭제하면 모든 데이터가 디바이스에서 삭제됩니다.\n\n정말로 회원탈퇴를 진행하시겠습니까?",
+                positiveFtn = ::deleteUser,
+                existNegativeBtn = true
+            )
         }
 
+        controlNotification(rootView)
         return rootView
     }
 
+    private fun controlNotification(view: View) {
+        val onOff1Btn = view.findViewById<LinearLayout>(R.id.onOff1Btn)
+        val onOff2Btn = view.findViewById<LinearLayout>(R.id.onOff2Btn)
+        val onOff3Btn = view.findViewById<LinearLayout>(R.id.onOff3Btn)
+        val onOff1Image = view.findViewById<ImageView>(R.id.onOff1Image)
+        val onOff2Image = view.findViewById<ImageView>(R.id.onOff2Image)
+        val onOff3Image = view.findViewById<ImageView>(R.id.onOff3Image)
+        val onOff1Text = view.findViewById<TextView>(R.id.onOff1Text)
+        val onOff2Text = view.findViewById<TextView>(R.id.onOff2Text)
+        val onOff3Text = view.findViewById<TextView>(R.id.onOff3Text)
+
+//        알림 설정 거부되어 있으면 모두 OFF
+        if (!isNoti1) {
+            switchOnOff(1, onOff1Image, onOff1Text, false)
+        } else if (!isNoti2) {
+            switchOnOff(2, onOff2Image, onOff2Text, false)
+        } else if (!isNoti3) {
+            switchOnOff(3, onOff3Image, onOff3Text, false)
+        }
+
+        onOff1Btn.setOnClickListener {
+            switchOnOff(1, onOff1Image, onOff1Text, !isNoti1)
+        }
+        onOff2Btn.setOnClickListener {
+            switchOnOff(2, onOff2Image, onOff2Text, !isNoti2)
+        }
+        onOff3Btn.setOnClickListener {
+            switchOnOff(3, onOff3Image, onOff3Text, !isNoti3)
+        }
+    }
+
+    private fun switchOnOff(type: Int, icon: ImageView, text: TextView, option: Boolean) {
+        if (option) {
+            icon.setImageResource(R.drawable.ic_noti_on)
+            text.setText("ON")
+            UserData.setIsNotificationAllowed(type, true)
+        } else {
+            icon.setImageResource(R.drawable.ic_noti_off)
+            text.setText("OFF")
+            UserData.setIsNotificationAllowed(type, false)
+        }
+        when (type) {
+            1 -> isNoti1 = option
+            2 -> isNoti2 = option
+            3 -> isNoti3 = option
+        }
+    }
 
     private fun logout() {
 //        retrofit 객체 만들기
@@ -131,18 +199,17 @@ class SettingFragment : Fragment() {
                 ) {
                     val isSocialLogined = UserData.getIsSocialLogined()
                     if (isSocialLogined == "kakao") {
-                        Log.d("SettingFragment","onResponse() 카카오 로그아웃")
+                        Log.d("SettingFragment", "onResponse() 카카오 로그아웃")
                         // 로그아웃
                         UserApiClient.instance.logout { error ->
                             if (error != null) {
                                 Log.e("Logout", "로그아웃 실패. SDK에서 토큰 삭제됨", error)
-                            }
-                            else {
+                            } else {
                                 Log.i("Logout", "로그아웃 성공. SDK에서 토큰 삭제됨")
                             }
                         }
                     } else if (isSocialLogined == "naver") {
-                        Log.d("SettingFragment","onResponse() 네이버 로그아웃")
+                        Log.d("SettingFragment", "onResponse() 네이버 로그아웃")
                         NaverIdLoginSDK.logout()
                     }
                     Toast.makeText(requireContext(), "로그아웃 성공", Toast.LENGTH_SHORT).show()
@@ -174,21 +241,20 @@ class SettingFragment : Fragment() {
                     response: Response<BasicResponse>
                 ) {
 //                    회원 탈퇴 성공
-                    if(response.code() == 200) {
+                    if (response.code() == 200) {
                         val isSocialLogined = UserData.getIsSocialLogined()
-                        if(isSocialLogined == "kakao") {
-                            Log.d("SettingFragment","onResponse() 카카오 회원 탈퇴")
+                        if (isSocialLogined == "kakao") {
+                            Log.d("SettingFragment", "onResponse() 카카오 회원 탈퇴")
                             // 연결 끊기
                             UserApiClient.instance.unlink { error ->
                                 if (error != null) {
                                     Log.e("Logout", "연결 끊기 실패", error)
-                                }
-                                else {
+                                } else {
                                     Log.i("Logout", "연결 끊기 성공. SDK에서 토큰 삭제 됨")
                                 }
                             }
                         } else if (isSocialLogined == "naver") {
-                            Log.d("SettingFragment","onResponse() 네이버 회원 탈퇴")
+                            Log.d("SettingFragment", "onResponse() 네이버 회원 탈퇴")
                             context?.let {
                                 NidOAuthLogin().callDeleteTokenApi(it, object :
                                     OAuthLoginCallback {
@@ -209,19 +275,29 @@ class SettingFragment : Fragment() {
                                 })
                             }
                         }
-                        GlobalVariables.defaultAlertDialog(context=requireContext(), title = "회원탈퇴 알림", message = "성공적으로 회원탈퇴처리 되었습니다. \n\n그동안 Groot를 이용해주셔서 감사합니다.\n더 좋은 서비스를 제공하기 위해서 열심히 노력하겠습니다.",
-                        positiveFtn = ::afterUserRequestSuccess)
+                        GlobalVariables.defaultAlertDialog(
+                            context = requireContext(),
+                            title = "회원탈퇴 알림",
+                            message = "성공적으로 회원탈퇴처리 되었습니다. \n\n그동안 Groot를 이용해주셔서 감사합니다.\n더 좋은 서비스를 제공하기 위해서 열심히 노력하겠습니다.",
+                            positiveFtn = ::afterUserRequestSuccess
+                        )
                     }
 //                    회원 탈퇴 실패 (없는 아이디 or 없는 토큰)
                     else {
-                        GlobalVariables.defaultAlertDialog(context=requireContext(), title = "회원탈퇴 알림", message = "회원탈퇴 처리에 실패했습니다.",
-                            positiveFtn = ::afterUserRequestSuccess)
+                        GlobalVariables.defaultAlertDialog(
+                            context = requireContext(),
+                            title = "회원탈퇴 알림",
+                            message = "회원탈퇴 처리에 실패했습니다.",
+                            positiveFtn = ::afterUserRequestSuccess
+                        )
                     }
                 }
 
                 override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
-                    GlobalVariables.defaultAlertDialog(context=requireContext(), title = "회원탈퇴 알림", message = "회원탈퇴 처리에 실패했습니다.",
-                        positiveFtn = ::afterUserRequestSuccess)
+                    GlobalVariables.defaultAlertDialog(
+                        context = requireContext(), title = "회원탈퇴 알림", message = "회원탈퇴 처리에 실패했습니다.",
+                        positiveFtn = ::afterUserRequestSuccess
+                    )
                 }
             })
         } else {

@@ -11,6 +11,9 @@ class UserData : Application() {
         private var registerDate = 0
         private var firebaseToken = ""
         private var socialLoginCategory: String = ""
+        private var isNoti1: Boolean = true
+        private var isNoti2: Boolean = true
+        private var isNoti3: Boolean = true
 
         fun getUserFirebase() : String {
             return firebaseToken
@@ -66,6 +69,22 @@ class UserData : Application() {
 
         fun setIsSocialLogined(category: String) {
             socialLoginCategory = category
+        }
+
+        fun getIsNotificationAllowed(): ArrayList<Boolean> {
+            val notificationList = ArrayList<Boolean>()
+            notificationList.add(isNoti1)
+            notificationList.add(isNoti2)
+            notificationList.add(isNoti3)
+            return notificationList
+        }
+
+        fun setIsNotificationAllowed(type: Int, option: Boolean) {
+            when (type) {
+                1 -> isNoti1 = option
+                2 -> isNoti2 = option
+                3 -> isNoti3 = option
+            }
         }
     }
 }
