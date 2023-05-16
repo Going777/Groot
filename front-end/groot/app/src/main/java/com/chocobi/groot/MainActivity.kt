@@ -29,6 +29,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.chat.ChatUserListFragment
+import com.chocobi.groot.view.community.CommunityEditPostFragment
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -170,6 +171,9 @@ class MainActivity : AppCompatActivity() {
 
             "community_tip" -> {
                 fragment = CommunityPostFragment("Tip")
+            }
+            "community_edit_post" -> {
+                fragment = CommunityEditPostFragment("자유")
             }
 
             "setting" -> {
