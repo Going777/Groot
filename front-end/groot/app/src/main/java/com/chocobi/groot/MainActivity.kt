@@ -26,6 +26,7 @@ import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.chat.ChatUserListFragment
 import com.chocobi.groot.view.community.CommunityFragment
@@ -361,6 +362,9 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "알림이 거부 되었습니다.", Toast.LENGTH_SHORT).show()
                 // 권한이 거부된 경우 처리할 작업 수행
+                UserData.setIsNotificationAllowed(1, false)
+                UserData.setIsNotificationAllowed(2, false)
+                UserData.setIsNotificationAllowed(3, false)
             }
         }
 
