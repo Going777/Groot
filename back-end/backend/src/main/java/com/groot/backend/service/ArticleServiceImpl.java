@@ -98,8 +98,7 @@ public class ArticleServiceImpl implements ArticleService{
         return result;
     }
 
-    // @Scheduled(fixedDelay = 60000)
-    @Scheduled(cron = "0 0 18 * * *", zone = "UTC") // 시간 설정 : KST - 9 (새벽 3시에 리셋)
+    @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul") // 오전 1시에 리셋
     @Override
     public void updateTagCountTable() {
         // tag count 집계
