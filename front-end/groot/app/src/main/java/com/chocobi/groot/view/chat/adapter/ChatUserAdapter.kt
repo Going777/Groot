@@ -42,7 +42,8 @@ class ChatUserAdapter(private val recyclerView: RecyclerView) :
     }
 
     override fun onBindViewHolder(holder: ChatUserViewHolder, position: Int) {
-        holder.chatUserListResponse = mutableList[position]
+        val item = mutableList[holder.adapterPosition]
+        holder.chatUserListResponse = item
 
         holder.delegate = object : ChatUserViewHolder.ChatUserViewHolderDelegate {
             override fun onItemViewClick(chatUserListResponse: ChatUserListResponse) {
@@ -61,20 +62,19 @@ class ChatUserAdapter(private val recyclerView: RecyclerView) :
 
                 chatFragment.arguments = bundle
                 fragmentTransaction.replace(R.id.fl_container, chatFragment).addToBackStack(null).commit()
-
             }
         }
 
         holder.itemView.setOnClickListener {
-            holder.delegate?.onItemViewClick(holder.chatUserListResponse)
+            holder.delegate?.onItemViewClick(item)
         }
         holder.updateView()
 
-        if (position == mutableList.size - 1) {
+        if (position == mutableList.size - 1 && mutableList.size > 1) {
             delegate?.onLoadMore()
-
         }
     }
+
 
     override fun getItemCount(): Int {
         return mutableList.size

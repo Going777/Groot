@@ -296,7 +296,7 @@ class SignupActivity : AppCompatActivity() {
 
 // 사용자 등록 예시
 //                        val userId = userPk // 이미 존재하는 사용자의 고유한 ID
-                        val userId = "000000"
+                        val userId = response.body()!!.userPK
                         val userLoginId = textId
 
                         registerUserInFirebase(userId, userLoginId)

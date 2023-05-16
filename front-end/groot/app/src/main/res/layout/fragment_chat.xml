@@ -8,7 +8,7 @@
 
     <!-- 대화 내용 -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/chat_recyclerView"
+        android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/input_layout"
@@ -25,7 +25,7 @@
         android:weightSum="100">
 
         <EditText
-            android:id="@+id/message_edit"
+            android:id="@+id/messageEdit"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
@@ -36,7 +36,7 @@
             android:paddingStart="10dp" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/send_btn"
+            android:id="@+id/sendBtn"
             android:layout_width="30dp"
             android:layout_height="50dp"
             android:layout_marginStart="10dp"
