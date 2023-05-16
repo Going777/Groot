@@ -18,9 +18,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +37,18 @@ public class ArticleServiceImpl implements ArticleService{
     private final S3Service s3Service;
     private final RedisTemplate<String, String> redisTemplate;
     private final TagCountRepository tagCountRepository;
+
+    private final String SHARE_KEY = "share";
+    private final String FREE_KEY = "free";
+    private final String QNA_KEY = "qna";
+    private final String TIP_KEY = "tip";
+    private final Map<String, String> keyMap = new HashMap<>(){{
+        put("나눔", SHARE_KEY);
+        put("자유", FREE_KEY);
+        put("QnA", QNA_KEY);
+        put("Tip", TIP_KEY);
+    }};
+
 
     // 지역명 리스트 조회
     @Override
@@ -59,10 +69,12 @@ public class ArticleServiceImpl implements ArticleService{
 
     // 인기 태그 조회
     @Override
-    public List<TagRankDTO> readTagRanking() {
+    public List<TagRankDTO> readTagRanking(String category) {
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
         Set<ZSetOperations.TypedTuple<String>> typedTuples;
-        String key = "ranking";
+
+//        String key = "ranking";
+        String key = keyMap.get(category);
 
         if(ZSetOperations.size(key) >= 5){
             typedTuples = ZSetOperations.reverseRangeWithScores(key, 0, 4);  //score순으로 5개 보여줌
@@ -85,7 +97,7 @@ public class ArticleServiceImpl implements ArticleService{
 
             // redis에 추가
             for(TagCountEntity tagCountEntity : tagcounts){
-                ZSetOperations.add(key, tagCountEntity.getTag(), tagCountEntity.getCount());
+                ZSetOperations.add(keyMap.get(tagCountEntity.getCategory()), tagCountEntity.getTag(), tagCountEntity.getCount());
             }
             ZSetOperations = redisTemplate.opsForZSet();
 
@@ -107,16 +119,19 @@ public class ArticleServiceImpl implements ArticleService{
         // tag count 집계
         resetTagCount();
 
-        String key = "ranking";
         ZSetOperations<String, String> ZSetOperations = redisTemplate.opsForZSet();
 
         // redis 리셋
-        ZSetOperations.getOperations().delete(key);
+        ZSetOperations.getOperations().delete(SHARE_KEY);
+        ZSetOperations.getOperations().delete(FREE_KEY);
+        ZSetOperations.getOperations().delete(QNA_KEY);
+        ZSetOperations.getOperations().delete(TIP_KEY);
+
 
         // tag_count 태그 이름 redis에 올리기
         List<TagCountEntity> list = tagCountRepository.findAll();
-        for(TagCountEntity tagCount : list){
-            ZSetOperations.add(key, tagCount.getTag(), tagCount.getCount());
+        for(TagCountEntity tagCountEntity : list){
+            ZSetOperations.add(keyMap.get(tagCountEntity.getCategory()), tagCountEntity.getTag(), tagCountEntity.getCount());
         }
 
         log.info("Updated TagCount Table, reset Redis");
@@ -588,6 +603,7 @@ public class ArticleServiceImpl implements ArticleService{
            TagCountEntity tagCountEntity = TagCountEntity.builder()
                    .tag(String.valueOf(object[0]))
                    .count(Double.parseDouble(String.valueOf(object[1])))
+                   .category(String.valueOf(object[2]))
                    .build();
 
            counts.add(tagCountEntity);
