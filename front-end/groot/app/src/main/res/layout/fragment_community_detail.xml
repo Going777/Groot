@@ -386,6 +386,7 @@
 
 
         <Button
+            android:id="@+id/moveChatBtn"
             android:layout_width="50dp"
             android:layout_height="28dp"
             android:layout_gravity="center"
