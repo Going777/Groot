@@ -37,9 +37,12 @@ class ChatMessageAdapter(private val context: Context, private val messageList: 
         if(holder.javaClass == SendViewHolder::class.java){
             val viewHolder = holder as SendViewHolder
             viewHolder.sendMessage.text = currentMessage.message
+            viewHolder.sendTime.text = currentMessage.saveTime
+
         }else{//받는 데이터
             val viewHolder = holder as ReceiveViewHolder
             viewHolder.receiveMessage.text = currentMessage.message
+            viewHolder.receiveTime.text = currentMessage.saveTime
         }
     }
 
@@ -64,12 +67,14 @@ class ChatMessageAdapter(private val context: Context, private val messageList: 
 
     //보낸 쪽
     class SendViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val sendMessage: TextView = itemView.findViewById(R.id.send_message_text)
+        val sendMessage: TextView = itemView.findViewById(R.id.sendMessageText)
+        val sendTime: TextView = itemView.findViewById(R.id.sendTime)
     }
 
     //받는 쪽
     class ReceiveViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
-        val receiveMessage: TextView = itemView.findViewById(R.id.receive_message_text)
+        val receiveMessage: TextView = itemView.findViewById(R.id.receiveMessageText)
+        val receiveTime: TextView = itemView.findViewById(R.id.receiveTime)
     }
 
     private fun changeRoomNumber(number: String?): String {
