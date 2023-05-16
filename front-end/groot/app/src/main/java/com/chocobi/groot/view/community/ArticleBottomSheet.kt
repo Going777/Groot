@@ -60,7 +60,6 @@ class ArticleBottomSheet (context: Context, private val articleId: Int) : Bottom
                 dialog.dismiss()
             }
             dialog.show()
-
         }
     }
 

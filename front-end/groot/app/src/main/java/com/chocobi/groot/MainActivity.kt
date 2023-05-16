@@ -183,6 +183,7 @@ class MainActivity : AppCompatActivity() {
         if (fragment != null) {
             supportFragmentManager
                 .beginTransaction()
+//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.fl_container, fragment, index)
                 .addToBackStack(index)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -489,9 +490,10 @@ class MainActivity : AppCompatActivity() {
                         // 다른 프래그먼트 화면으로 이동하는 기능
                         val homeFragment = PotFragment()
                         supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.fl_container, homeFragment, "pot")
                             .addToBackStack("pot")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commitAllowingStateLoss()
 //                            .commit()
 //                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
@@ -505,6 +507,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.searchFragment -> {
                         val boardFragment = SearchFragment()
                         supportFragmentManager.beginTransaction()
+//                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "search")
                             .addToBackStack("search")
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -519,6 +522,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.communityFragment -> {
                         val boardFragment = CommunityFragment()
                         supportFragmentManager.beginTransaction()
+//                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "community")
                             .addToBackStack("community")
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -533,9 +537,10 @@ class MainActivity : AppCompatActivity() {
                     R.id.userFragment -> {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "user")
                             .addToBackStack("user")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commitAllowingStateLoss()
 //                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
