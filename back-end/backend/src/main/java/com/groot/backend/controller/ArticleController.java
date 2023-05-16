@@ -69,7 +69,7 @@ public class ArticleController {
 
         // 나눔일 경우 shareState와 shareRegion 존재 여부 확인
         if(category.equals("나눔")){
-            if((articleDTO.getShareStatus() == null || articleDTO.getShareRegion() == null || articleDTO.getShareRegion().equals(""))){
+            if((articleDTO.getShareStatus() == null || articleDTO.getShareRegion() == null || articleDTO.getShareRegion().equals("") || articleDTO.getShareRegion().equals("null"))){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg","shareStatus 또는 shareRegion 값이 존재하지 않습니다.");
                 return ResponseEntity.badRequest().body(resultMap);
