@@ -384,41 +384,64 @@ public class UserController {
     }
 
 
-    // 카카오 로그인
-    @PostMapping("/kakao")
-    public ResponseEntity kakaoLogin(@Valid @RequestBody KaKaoUserDTO kaKaoUserDTO) {
+    // 소셜 로그인 (카카오, 네이버)
+    @PostMapping("/oauth")
+    public ResponseEntity socialLogin(@Valid @RequestBody OAuthUserDTO oAuthUserDTO) {
         Map<String, Object> resultMap = new HashMap<>();
 
         // 닉네임 중복 체크
-        if (userService.isExistedNickName(kaKaoUserDTO.getNickName())) {
+        if (userService.isExistedNickName(oAuthUserDTO.getNickName())) {
             resultMap.put("result", FAIL);
             resultMap.put("msg", "이미 존재하는 닉네임입니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
 
+        if(!(oAuthUserDTO.getOAuthProvider().equals("kakao") ||  oAuthUserDTO.getOAuthProvider().equals("naver"))){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "OAuthProvider는 'kakao' 또는 'naver'를 입력해주세요");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
         try {
-            TokenDTO result = userService.kakaoLogin(kaKaoUserDTO);
+            // kakao 토큰 검사
+            if(oAuthUserDTO.getOAuthProvider().equals("kakao") ){
+                int tokenResult = userService.checkKakaoToken(oAuthUserDTO.getAccessToken());
+                if(tokenResult == 400){
+                    resultMap.put("result", FAIL);
+                    resultMap.put("msg", "호출 인자값의 데이터 타입이 적절하지 않거나 허용된 범위를 벗어남");
+                    return ResponseEntity.badRequest().body(resultMap);
+                }else if(tokenResult == 401){
+                    resultMap.put("result", FAIL);
+                    resultMap.put("msg", "유효하지 않은 앱키나 액세스 토큰으로 요청한 경우");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+                }
+            }
+
+
+            TokenDTO result = userService.OAuthLogin(oAuthUserDTO);
             if(result == null){
                 resultMap.put("result", FAIL);
-                resultMap.put("msg", "존재하지 않는 사용자");
+                resultMap.put("msg", "존재하지 않는 사용자, 회원가입을 진행해주세요.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
             resultMap.put("accessToken", result.getAccessToken());
             resultMap.put("refreshToken", result.getRefreshToken());
             resultMap.put("result", SUCCESS);
-            resultMap.put("msg", "카카오 로그인 성공");
+            resultMap.put("msg", oAuthUserDTO.getOAuthProvider()+" 로그인 성공");
             return ResponseEntity.ok().body(resultMap);
-
-        } catch (IOException e) {
+        }catch (IOException e) {
             e.printStackTrace();
             resultMap.put("error", e.getMessage());
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", oAuthUserDTO.getOAuthProvider()+" 로그인 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
 
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("error",e.getMessage());
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", oAuthUserDTO.getOAuthProvider()+" 로그인 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
         }
-        resultMap.put("result", FAIL);
-        resultMap.put("msg", "카카오 로그인 실패");
-        return ResponseEntity.internalServerError().body(resultMap);
     }
 }
