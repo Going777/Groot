@@ -115,8 +115,9 @@ class ChatFragment : Fragment() {
 
         mDbRef = Firebase.database.reference
 
-        var senderUid = changeRoomNumber(UserData.getUserPK().toString()).toString()
-        var receiverUid = changeRoomNumber(chatUserPK).toString()
+        var senderUid = changeRoomNumber(UserData.getUserPK().toString())
+        var receiverUid = changeRoomNumber(chatUserPK)
+
 //        보낸이방
         senderRoom = receiverUid + senderUid
 //        받는이방
