@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class OAuthUserDTO {
     @NotNull
-    private String OAuthProvider;
+    private String oauthProvider;
     @NotNull
     private String accessToken;
     private String nickName;

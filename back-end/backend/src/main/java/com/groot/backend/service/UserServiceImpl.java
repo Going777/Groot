@@ -217,9 +217,9 @@ public class UserServiceImpl implements UserService{
     @Override
     public TokenDTO OAuthLogin(OAuthUserDTO oAuthUserDTO) throws IOException {
         String reqURL;
-        if(oAuthUserDTO.getOAuthProvider().equals(KAKAO)){
+        if(oAuthUserDTO.getOauthProvider().equals(KAKAO)){
             reqURL = KAKAO_REQ_URL;
-        }else if(oAuthUserDTO.getOAuthProvider().equals(NAVER)){
+        }else if(oAuthUserDTO.getOauthProvider().equals(NAVER)){
             reqURL = NAVER_REQ_URL;
         }else reqURL = null;
 
@@ -251,10 +251,10 @@ public class UserServiceImpl implements UserService{
 
             String[] parsingResult;
 
-            if(oAuthUserDTO.getOAuthProvider().equals(KAKAO)){
+            if(oAuthUserDTO.getOauthProvider().equals(KAKAO)){
                 // kakao 파싱
                 parsingResult = kakaoParsing(element);
-            }else if(oAuthUserDTO.getOAuthProvider().equals(NAVER)){
+            }else if(oAuthUserDTO.getOauthProvider().equals(NAVER)){
                 // naver 파싱
                 parsingResult = naverParsing(element);
 

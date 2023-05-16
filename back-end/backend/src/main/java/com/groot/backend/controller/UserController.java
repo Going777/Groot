@@ -396,7 +396,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(resultMap);
         }
 
-        if(!(oAuthUserDTO.getOAuthProvider().equals("kakao") ||  oAuthUserDTO.getOAuthProvider().equals("naver"))){
+        if(!(oAuthUserDTO.getOauthProvider().equals("kakao") ||  oAuthUserDTO.getOauthProvider().equals("naver"))){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "OAuthProvider는 'kakao' 또는 'naver'를 입력해주세요");
             return ResponseEntity.badRequest().body(resultMap);
@@ -404,7 +404,7 @@ public class UserController {
 
         try {
             // kakao 토큰 검사
-            if(oAuthUserDTO.getOAuthProvider().equals("kakao") ){
+            if(oAuthUserDTO.getOauthProvider().equals("kakao") ){
                 int tokenResult = userService.checkKakaoToken(oAuthUserDTO.getAccessToken());
                 if(tokenResult == 400){
                     resultMap.put("result", FAIL);
@@ -427,20 +427,20 @@ public class UserController {
             resultMap.put("accessToken", result.getAccessToken());
             resultMap.put("refreshToken", result.getRefreshToken());
             resultMap.put("result", SUCCESS);
-            resultMap.put("msg", oAuthUserDTO.getOAuthProvider()+" 로그인 성공");
+            resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 성공");
             return ResponseEntity.ok().body(resultMap);
         }catch (IOException e) {
             e.printStackTrace();
             resultMap.put("error", e.getMessage());
             resultMap.put("result", FAIL);
-            resultMap.put("msg", oAuthUserDTO.getOAuthProvider()+" 로그인 실패");
+            resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 실패");
             return ResponseEntity.internalServerError().body(resultMap);
 
         } catch (Exception e) {
             e.printStackTrace();
             resultMap.put("error",e.getMessage());
             resultMap.put("result", FAIL);
-            resultMap.put("msg", oAuthUserDTO.getOAuthProvider()+" 로그인 실패");
+            resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 실패");
             return ResponseEntity.internalServerError().body(resultMap);
         }
     }
