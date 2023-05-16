@@ -112,7 +112,9 @@ class SearchDetailFragment : Fragment() {
 
         addPotBtn.setOnClickListener {
             var intent = Intent(requireContext(), Pot1Activity::class.java)
-            if (plantImgUrl != null) {
+            Log.d("SearchDetailFragment","onCreateView() uri ${plantImgUri}")
+            Log.d("SearchDetailFragment","onCreateView() url ${plantImgUrl}")
+            if (!plantImgUri.isNullOrEmpty() || !plantImgUri.isNullOrBlank()) {
                 intent.putExtra("imageUri", plantImgUri)
             } else {
                 intent.putExtra("imageUrl", plantImgUrl)

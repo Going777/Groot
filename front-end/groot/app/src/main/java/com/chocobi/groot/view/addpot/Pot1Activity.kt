@@ -122,7 +122,7 @@ class Pot1Activity : AppCompatActivity() {
 
         //        image 띄우기
         var potPhoto = findViewById<ImageView>(R.id.potPhoto)
-        if(imageUri == null) {
+        if(imageUri.isNullOrEmpty() || imageUri.isNullOrBlank()) {
             GlobalVariables.changeImgView(potPhoto, imageUrl!!, this)
         } else {
             potPhoto.setImageURI(imageUri?.toUri())
