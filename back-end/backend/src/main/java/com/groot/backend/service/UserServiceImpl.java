@@ -16,6 +16,8 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -215,7 +217,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public TokenDTO OAuthLogin(OAuthUserDTO oAuthUserDTO) throws IOException {
+    public Map<String, Object> OAuthLogin(OAuthUserDTO oAuthUserDTO) throws IOException {
         String reqURL;
         if(oAuthUserDTO.getOauthProvider().equals(KAKAO)){
             reqURL = KAKAO_REQ_URL;
@@ -231,9 +233,15 @@ public class UserServiceImpl implements UserService{
             conn.setDoOutput(true);
             conn.setRequestProperty("Authorization", "Bearer "+ oAuthUserDTO.getAccessToken());
 
-            // 결과 코드 200이면 성공
+            Map<String, Object> response = new HashMap<>();
+
+        // 결과 코드 200이면 성공
             int responseCode = conn.getResponseCode();
             log.info("responseCode: "+responseCode);
+            if(responseCode != 200){
+                response.put("status", responseCode);
+                return response;
+            }
 
             // response 메세지 읽어오기
             BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -301,11 +309,17 @@ public class UserServiceImpl implements UserService{
 
             userRepository.save(newUserEntity);
 
-            return TokenDTO.builder()
-                    .grantType("Bearer")
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
-                    .build();
+             TokenDTO token = TokenDTO.builder()
+                        .grantType("Bearer")
+                        .accessToken(accessToken)
+                        .refreshToken(refreshToken)
+                        .build();
+
+        response.put("token", token);
+        response.put("status", responseCode);
+
+
+        return response;
     }
 
     @Override

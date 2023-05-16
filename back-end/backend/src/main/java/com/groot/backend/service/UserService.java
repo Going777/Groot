@@ -5,6 +5,7 @@ import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
 
 import java.io.IOException;
+import java.util.Map;
 
 public interface UserService {
     boolean isExistedId(Long id);
@@ -19,6 +20,6 @@ public interface UserService {
     boolean updatePassword(UserPasswordDTO userPasswordDTO);
     TokenDTO refreshAccessToken(String refreshToken, Long id);
     boolean updateProfile(UserProfileDTO userProfileDTO, String imgPath);
-    TokenDTO OAuthLogin(OAuthUserDTO oAuthUserDTO) throws IOException;
+    Map<String, Object> OAuthLogin(OAuthUserDTO oAuthUserDTO) throws IOException;
     int checkKakaoToken(String accessToken) throws Exception;
 }

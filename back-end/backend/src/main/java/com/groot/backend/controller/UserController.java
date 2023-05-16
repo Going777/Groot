@@ -417,15 +417,24 @@ public class UserController {
                 }
             }
 
-
-            TokenDTO result = userService.OAuthLogin(oAuthUserDTO);
+            Map<String, Object> result = userService.OAuthLogin(oAuthUserDTO);
             if(result == null){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg", "존재하지 않는 사용자, 회원가입을 진행해주세요.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
-            resultMap.put("accessToken", result.getAccessToken());
-            resultMap.put("refreshToken", result.getRefreshToken());
+
+            if((int) result.get("status") != 200){
+                resultMap.put("result", FAIL);
+                resultMap.put("status", result.get("status"));
+                resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 실패");
+                return ResponseEntity.status((int) result.get("status")).body(resultMap);
+            }
+
+            TokenDTO tokenDTO = (TokenDTO) result.get("token");
+
+            resultMap.put("accessToken", tokenDTO.getAccessToken());
+            resultMap.put("refreshToken", tokenDTO.getRefreshToken());
             resultMap.put("result", SUCCESS);
             resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 성공");
             return ResponseEntity.ok().body(resultMap);
