@@ -12,4 +12,8 @@ public interface DiaryRepositoryCustom {
     Long updateIsUserLastById(Long id, Boolean setUserLast);
 
     Long updateIsPotLastById(Long id, Boolean setPotLast);
+
+    Long updateIsPotLastToTrueByPotIdAndDateTime(Long potId, LocalDateTime dateTime);
+
+    Long updateIsPotLastToTrueByUserIdAndDateTime(Long userId, LocalDateTime dateTime);
 }

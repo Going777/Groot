@@ -102,9 +102,6 @@ public class DiaryServiceImpl implements DiaryService{
             diaryRepository.updateIsUserLastById(find.getId(), false);
         }
 
-//        diaryRepository.updateIsLastByUserId(user.getId(), LocalDateTime.now());
-//        log.info("result: "+result.getId());
-
         DiaryEntity diaryResult = diaryRepository.save(diary);
 
         // 물주기 일정 추가
@@ -114,10 +111,6 @@ public class DiaryServiceImpl implements DiaryService{
         //영양제 일정 추가
         if(diary.getNutrients()) {
             addDonePlan(user, pot, 1, diaryResult);
-            // 해당 미션 완료 표시 및 실행 날짜 업데이트
-//            planRepository.updateDoneAndDateTimeByCodeAndPotId(0, pot.getId());
-//            log.info("plan에 미션 완료 표시");
-//            addPlan(user, pot, 1, LocalDateTime.now());
         }
 
 
@@ -157,7 +150,7 @@ public class DiaryServiceImpl implements DiaryService{
                 .plantEntity(pot.getPlantEntity())
                 .planEntities(pot.getPlanEntities())
                                 .build();
-//        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+
         potRepository.save(newPot);
         return diaryResult;
     }
@@ -255,7 +248,7 @@ public class DiaryServiceImpl implements DiaryService{
                 .plantEntity(pot.getPlantEntity())
                 .planEntities(pot.getPlanEntities())
                 .build();
-//        potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
+
         potRepository.save(newPot);
 
         return diaryResult;
@@ -281,13 +274,13 @@ public class DiaryServiceImpl implements DiaryService{
                 .diaryCheckEntity(diaryEntity.getDiaryCheckEntity())
                 .potEntity(pot)
                 .diaryCheckEntity(diaryCheck)
-                .bug(diaryDTO.getBug()!=null&&diaryDTO.getBug()?diaryDTO.getBug():diaryEntity.getBug())
-                .sun(diaryDTO.getSun()!=null&&diaryDTO.getSun()?diaryDTO.getSun():diaryEntity.getSun())
-                .pruning(diaryDTO.getPruning()!=null&&diaryDTO.getPruning()?diaryDTO.getPruning():diaryEntity.getPruning())
+                .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():diaryEntity.getBug())
+                .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():diaryEntity.getSun())
+                .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():diaryEntity.getPruning())
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():diaryEntity.getContent())
                 .imgPath(storedFileName)
-                .water(diaryDTO.getWater()!=null&&diaryDTO.getWater()?diaryDTO.getWater():diaryEntity.getWater())
-                .nutrients(diaryDTO.getNutrients()!=null&&diaryDTO.getNutrients()?diaryDTO.getNutrients():diaryEntity.getNutrients())
+                .water(diaryDTO.getWater()!=null?diaryDTO.getWater():diaryEntity.getWater())
+                .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():diaryEntity.getNutrients())
                 .isUserLast(diaryEntity.getIsUserLast())
                 .isPotLast(diaryEntity.getIsPotLast())
                 .build();
@@ -296,29 +289,29 @@ public class DiaryServiceImpl implements DiaryService{
                 .id(diaryCheck.getId())
                 .userEntity(diaryCheck.getUserEntity())
                 .potEntity(pot)
-                .bug(diaryDTO.getBug()!=null&&diaryDTO.getBug()?diaryDTO.getBug():diaryCheck.getBug())
-                .sun(diaryDTO.getSun()!=null&&diaryDTO.getSun()?diaryDTO.getSun():diaryCheck.getSun())
-                .pruning(diaryDTO.getPruning()!=null&&diaryDTO.getPruning()?diaryDTO.getPruning():diaryCheck.getPruning())
+                .bug(diaryDTO.getBug()!=null?diaryDTO.getBug():diaryCheck.getBug())
+                .sun(diaryDTO.getSun()!=null?diaryDTO.getSun():diaryCheck.getSun())
+                .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():diaryCheck.getPruning())
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():diaryCheck.getContent())
                 .imgPath(storedFileName)
-                .water(diaryDTO.getWater()!=null&&diaryDTO.getWater()?diaryDTO.getWater():diaryCheck.getWater())
-                .nutrients(diaryDTO.getNutrients()!=null&&diaryDTO.getNutrients()?diaryDTO.getNutrients():diaryCheck.getNutrients())
+                .water(diaryDTO.getWater()!=null?diaryDTO.getWater():diaryCheck.getWater())
+                .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():diaryCheck.getNutrients())
                 .build();
 
         //plan 수정
         // 수행 했던 미션을 취소할 때
         if(diaryEntity.getWater() && !newDiary.getWater()) {
             // 작성된 plan 삭제
-            planRepository.deleteByCodeAndPotId(pot.getId(), 0, diaryEntity.getCreatedDate());
+            planRepository.updateByCodeAndDiaryId(0, diaryEntity.getId());
             // 실행 날짜 업데이트
             LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
             log.info("plan에 미션 완료 표시");
             addPlan(diaryEntity.getUserEntity(), pot, 0, date);
-        }////////////////////////////////////////////여기까지 확인
+        }
         //영양제 일정 추가
         if(diaryEntity.getNutrients() && !newDiary.getNutrients()) {
             // 작성된 plan 삭제
-            planRepository.deleteByCodeAndPotId(pot.getId(), 1, diaryEntity.getCreatedDate());
+            planRepository.updateByCodeAndDiaryId(1, diaryEntity.getId());
             // 실행 날짜 업데이트
             LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 1);
             log.info("plan에 미션 완료 표시");
@@ -330,33 +323,12 @@ public class DiaryServiceImpl implements DiaryService{
         UserEntity user = diaryEntity.getUserEntity();
 
         if(!diaryEntity.getWater() && newDiary.getWater()) {
-            addDonePlan(user, pot, 0, newDiary);
+            addDonePlan(user, pot, 0, diaryEntity);
         }
         //영양제 일정 추가
         if(!diaryEntity.getNutrients() && newDiary.getNutrients()) {
-            addDonePlan(user, pot, 1, newDiary);
+            addDonePlan(user, pot, 1, diaryEntity);
         }
-//        LocalDateTime now = LocalDateTime.now();
-//        if(!diaryEntity.getWater() && newDiary.getWater()) {
-//            // 실행 날짜 업데이트
-//            if(planRepository.existsByDateTimeAndCode(LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 9, 0, 0), 0)){
-//                planRepository.updateDoneAndDateTimeByCodeAndPotId(0, pot.getId());
-//            }
-//            LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
-//            log.info("plan에 미션 완료 표시");
-//            addPlan(diaryEntity.getUserEntity(), pot, 0, now);
-//        }
-//        //영양제 일정 추가
-//        if(!diaryEntity.getNutrients() && newDiary.getNutrients()) {
-//            if(planRepository.existsByDateTimeAndCode(LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 9, 0, 0), 1)){
-//                planRepository.updateDoneAndDateTimeByCodeAndPotId(1, pot.getId());
-//            }
-//            log.info("plan에 미션 완료 표시");
-//            // 실행 날짜 업데이트
-//            LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 1);
-//
-//            addPlan(diaryEntity.getUserEntity(), pot, 1, now);
-//        }
 
 
         // 경험치 점수 계산
@@ -409,6 +381,12 @@ public class DiaryServiceImpl implements DiaryService{
             log.info(""+diaryEntity.getDiaryId());
             DiaryCheckEntity diaryCheck = diaryCheckRepository.findById(diaryEntity.getDiaryId()).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리Check를 찾을 수 없습니다."));
             diaryRepository.deleteById(diaryId);
+
+            // isLast 수정 - 마지막 false를 true로
+            diaryRepository.updateIsPotLastToTrueByPotIdAndDateTime(pot.getId(), diaryEntity.getCreatedDate());
+            diaryRepository.updateIsPotLastToTrueByUserIdAndDateTime(diaryEntity.getUserPK(), diaryEntity.getCreatedDate());
+
+
             // check 테이블 수정
             DiaryCheckEntity newCheckDiary = DiaryCheckEntity.builder()
                     .id(diaryEntity.getDiaryId())
@@ -449,10 +427,11 @@ public class DiaryServiceImpl implements DiaryService{
             }
             int tempExp = pot.getExperience()+score;
             int tempLevel = pot.getLevel();
-            if(tempExp>pot.getLevel()*10){
+            while(tempExp>pot.getLevel()*10){
                 tempExp -= pot.getLevel()*10;
                 tempLevel+=1;
-            }else if(tempExp < 0){
+            }
+            while(tempExp < 0){
                 tempLevel -= 1;
                 tempExp += tempLevel*10;
             }
@@ -500,11 +479,10 @@ public class DiaryServiceImpl implements DiaryService{
         int year = Integer.parseInt(dates[0]);
         int month = Integer.parseInt(dates[1]);
         int day = Integer.parseInt(dates[2]);
-        log.info("year: "+year);
-        log.info("month: "+month);
-        log.info("day: "+day);
+
         LocalDateTime start = LocalDateTime.of(year, month, day, 0, 0, 0);
         LocalDateTime end = LocalDateTime.of(year, month, day, 23, 59, 59);
+
         // 해당날짜에 해당하는 plan들 가져오기
         List<PlanEntity> plans = planRepository.findAllByDateTimeAndUserPK(start, end, userId);
         List<PlanDTO> result = new PlanEntity().toPlanDTOList(plans);
@@ -516,7 +494,7 @@ public class DiaryServiceImpl implements DiaryService{
         // 이후의 미션 중 false 인 미션 삭제
         planRepository.deleteAllByCodeAndPotId(code, pot.getId());
         log.info("미션 중 false인 미션 삭제");
-//        LocalDateTime now = LocalDateTime.now();
+
         // 새로운 미션 추가
         List<PlanEntity> planList = new ArrayList<>();
         int day = start.getDayOfMonth();
@@ -544,8 +522,6 @@ public class DiaryServiceImpl implements DiaryService{
                 log.info("day "+day);
             }
 
-
-//            LocalDateTime newDate = LocalDateTime.of(LocalDate.from(code==1?start.plusMonths(6):start.plusDays(waterCycle)), LocalTime.of(9, 0, 0));
             LocalDateTime newDate = LocalDateTime.of(year, month, day, 9, 0, 0);
             PlanEntity newOne = PlanEntity.builder()
                     .userEntity(user)
@@ -554,7 +530,7 @@ public class DiaryServiceImpl implements DiaryService{
                     .code(code)
                     .done(false)
                     .build();
-//            planList.add(newOne);
+
             PlanEntity result = planRepository.save(newOne);
             if(result != null) {
                 log.info("plan 저장 " + i + "번째 완료 " +result.getId());
@@ -564,28 +540,27 @@ public class DiaryServiceImpl implements DiaryService{
     }
 
     private void addDonePlan(UserEntity user, PotEntity pot, Integer code, DiaryEntity diary){
-//        LocalDateTime start = LocalDateTime.of(LocalDate.from(LocalDateTime.now()), LocalTime.of(0, 0, 0));
-//        LocalDateTime end = LocalDateTime.of(LocalDate.from(LocalDateTime.now()), LocalTime.of(23, 59, 59));
-//        PlanEntity plan = planRepository.findTop1ByCodeAndCreatedDateBetweenOrderByCreatedDateDesc(code, start, end);
+        LocalDateTime start = LocalDateTime.of(LocalDate.from(diary.getCreatedDate()), LocalTime.of(0, 0, 0));
+        LocalDateTime end = LocalDateTime.of(LocalDate.from(diary.getCreatedDate()), LocalTime.of(23, 59, 59));
+        PlanEntity planEntity = planRepository.existsByCodeAndPotIdAndDateTimeBetween(code, pot.getId(), start, end);
 
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime date = LocalDateTime.of(LocalDate.from(now), LocalTime.of(9, 0, 0));
-        if(planRepository.existsByDateTimeAndCode(date, code)){
-            planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
+        if(planEntity!=null){
+            planRepository.updateDoneById(planEntity.getId(), true);
         }else{
             PlanEntity plan = PlanEntity.builder()
                     .done(true)
                     .potEntity(pot)
                     .userEntity(user)
                     .code(code)
-                    .dateTime(date)
+                    .dateTime(diary.getCreatedDate())
                     .diaryEntity(diary)
                     .build();
             planRepository.save(plan);
         }
+
         // 해당 미션 완료 표시 및 실행 날짜 업데이트
 //        planRepository.updateDoneAndDateTimeByCodeAndPotId(code, pot.getId());
         log.info("plan에 미션 완료 표시");
-        addPlan(user, pot, code, LocalDateTime.now());
+        addPlan(user, pot, code, diary.getCreatedDate());
     }
 }
