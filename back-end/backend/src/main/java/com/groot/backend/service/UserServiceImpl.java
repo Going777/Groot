@@ -2,7 +2,6 @@ package com.groot.backend.service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.groot.backend.controller.exception.CustomException;
 import com.groot.backend.dto.request.*;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
@@ -58,10 +57,11 @@ public class UserServiceImpl implements UserService{
                 .nickName(registerDTO.getNickName())
                 .password(passwordEncoder.encode(registerDTO.getPassword()))
                 .build();
+        UserEntity newUser = userRepository.save(userEntity);
 
         // token 생성
-        String accessToken = jwtTokenProvider.createAccessToken(userEntity);
-        String refreshToken = jwtTokenProvider.createRefreshToken(userEntity.getId());
+        String accessToken = jwtTokenProvider.createAccessToken(newUser);
+        String refreshToken = jwtTokenProvider.createRefreshToken(newUser.getId());
 
         UserEntity newUserEntity = userEntity.builder()
                 .id(userEntity.getId())
@@ -73,12 +73,12 @@ public class UserServiceImpl implements UserService{
                 .token(refreshToken)
                 .build();
 
-        UserEntity result = userRepository.save(newUserEntity);
+        userRepository.save(newUserEntity);
         return TokenDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .userPK(result.getId())
+                .userPK(newUserEntity.getId())
                 .build();
     }
 
