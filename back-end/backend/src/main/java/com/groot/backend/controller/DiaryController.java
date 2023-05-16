@@ -36,8 +36,8 @@ public class DiaryController {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         if(diaryDTO.getBug()==null && diaryDTO.getNutrients()==null && diaryDTO.getPruning()==null && diaryDTO.getWater()==null && diaryDTO.getSun()==null && diaryDTO.getContent()==null){
-            resultMap.put("msg", "다이어리에 추가할 내용이 없습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "다이어리에 추가할 내용이 없습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
         // 오늘 다이어리를 작성한 이력이 있을 경우
@@ -47,22 +47,22 @@ public class DiaryController {
             DiaryDTO find = new DiaryCheckEntity().toDTO(result);
             DiaryEntity diaryUpdate = diaryService.saveAndUpdateDiary(userId, file, diaryDTO, find);
             if(diaryUpdate==null){
-                resultMap.put("msg", "다이어리 추가 및 수정 실패");
                 resultMap.put("result", FAIL);
+                resultMap.put("msg", "다이어리 추가 및 수정 실패");
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
             }
-            resultMap.put("msg","다이어리 추가 및 수정 완료");
             resultMap.put("result", SUCCESS);
+            resultMap.put("msg","다이어리 추가 및 수정 완료");
             return ResponseEntity.ok().body(resultMap);
         }
         DiaryEntity diarySave = diaryService.saveDiary(userId, file, diaryDTO);
         if(diarySave==null){
-            resultMap.put("msg", "다이어리 추가 및 작성 실패");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "다이어리 추가 및 작성 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
-        resultMap.put("msg","다이어리 추가 및 작성 완료");
         resultMap.put("result", SUCCESS);
+        resultMap.put("msg","다이어리 추가 및 작성 완료");
         return ResponseEntity.ok().body(resultMap);
 
     }
@@ -73,22 +73,22 @@ public class DiaryController {
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
 
         if(diaryDTO.getUserPK()!=userId){
-            resultMap.put("msg", "수정 권한이 없습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "수정 권한이 없습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
         if(diaryDTO.getBug()==null && diaryDTO.getNutrients()==null && diaryDTO.getPruning()==null && diaryDTO.getWater()==null && diaryDTO.getSun()==null && diaryDTO.getContent()==null){
-            resultMap.put("msg", "다이어리를 수정할 내용이 없습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "다이어리를 수정할 내용이 없습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
         if(diaryService.updateDiary(userId, file, diaryDTO)==null){
-            resultMap.put("msg", "다이어리 수정 실패");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "다이어리 수정 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
-        resultMap.put("msg","다이어리 수정 완료");
         resultMap.put("result", SUCCESS);
+        resultMap.put("msg","다이어리 수정 완료");
         return ResponseEntity.ok().body(resultMap);
     }
 
@@ -97,13 +97,13 @@ public class DiaryController {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         if(userId != userPK){
-            resultMap.put("msg", "삭제 권한이 없습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "삭제 권한이 없습니다.");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultMap);
         }
         if(!diaryService.deleteDiary(diaryId)){
-            resultMap.put("msg", "다이어리 삭제 실패");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "다이어리 삭제 실패");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("다이어리 삭제 실패");
         }
         resultMap.put("result", SUCCESS);
@@ -116,13 +116,13 @@ public class DiaryController {
         Map resultMap = new HashMap();
         DiaryResponseDTO result = diaryService.detailDiary(diaryId);
         if(result == null){
-            resultMap.put("msg", "다이어리 상세 조회에 실패했습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "다이어리 상세 조회에 실패했습니다.");
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap);
         }
+        resultMap.put("result", SUCCESS);
         resultMap.put("msg", "다이어리 상세 조회에 성공하였습니다.");
         resultMap.put("diary", result);
-        resultMap.put("result", SUCCESS);
         return ResponseEntity.ok().body(resultMap);
     }
 
@@ -132,9 +132,9 @@ public class DiaryController {
         DiaryCheckEntity result = diaryService.isExistByCreatedDate(potId);
         DiaryDTO diaryDTO = result==null?null:new DiaryCheckEntity().toDTO(result);
         // 없든 있든 결과 보내줌
-        resultMap.put("diary", diaryDTO==null?null:diaryDTO);
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "해당 사용자의 다이어리 조회에 성공하였습니다.");
+        resultMap.put("diary", diaryDTO==null?null:diaryDTO);
         return ResponseEntity.ok().body(resultMap);
     }
 
@@ -149,9 +149,9 @@ public class DiaryController {
             resultMap.put("result", FAIL);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
         }
-        resultMap.put("diary", result);
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "해당 사용자의 다이어리 조회에 성공하였습니다.");
+        resultMap.put("diary", result);
         return ResponseEntity.ok().body(resultMap);
     }
 
@@ -162,25 +162,25 @@ public class DiaryController {
             Long userId = JwtTokenProvider.getIdByAccessToken(request);
             Page<DiaryResponseDTO> result = diaryService.diaryList(userId, page, size);
             if(result.isEmpty()){
-                resultMap.put("msg", "해당 사용자의 다이어리를 찾을 수 없습니다.");
                 resultMap.put("result", FAIL);
+                resultMap.put("msg", "해당 사용자의 다이어리를 찾을 수 없습니다.");
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
             }
-            resultMap.put("diary", result);
             resultMap.put("result", SUCCESS);
             resultMap.put("msg", "해당 사용자의 다이어리 조회에 성공하였습니다.");
+            resultMap.put("diary", result);
             return ResponseEntity.ok().body(resultMap);
         }
         Page<DiaryResponseDTO> result = diaryService.diaryListByPotId(potId, page, size);
 
         if(result.isEmpty()){
-            resultMap.put("msg", "해당 화분의 다이어리를 찾을 수 없습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "해당 화분의 다이어리를 찾을 수 없습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
         }
-        resultMap.put("diary", result);
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "해당 화분의 다이어리 조회에 성공하였습니다.");
+        resultMap.put("diary", result);
         return ResponseEntity.ok().body(resultMap);
     }
 
@@ -190,20 +190,20 @@ public class DiaryController {
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         String[] dates = date.split("-");
         if(dates.length<3){
-            resultMap.put("msg", "날짜 표현이 유효하지 않습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "날짜 표현이 유효하지 않습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
         }
 
         List<PlanDTO> result = diaryService.weeklyDiaries(userId, dates);
         if(result.isEmpty()){
-            resultMap.put("msg", "주간 다이어리 리스트 조회 결과가 없습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "주간 다이어리 리스트 조회 결과가 없습니다.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resultMap);
         }
-        resultMap.put("diary", result);
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "주간 다이어리 리스트 조회에 성공하였습니다.");
+        resultMap.put("diary", result);
         return ResponseEntity.ok().body(resultMap);
     }
 }
