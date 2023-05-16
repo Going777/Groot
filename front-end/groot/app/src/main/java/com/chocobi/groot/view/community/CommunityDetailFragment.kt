@@ -666,6 +666,7 @@ class CommunityDetailFragment : Fragment() {
 
 //        드롭다운
         if (UserData.getUserPK() == articleDetailData?.userPK) {
+            UserData.setEditArticle(articleDetailData!!)
             spinnerButton.setOnClickListener {
                 val articleBottomSheet = ArticleBottomSheet(requireContext(), articleId)
                 articleBottomSheet.show(

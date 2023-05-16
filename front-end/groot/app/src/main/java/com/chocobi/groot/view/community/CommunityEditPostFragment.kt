@@ -17,8 +17,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -35,6 +33,8 @@ import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
+import com.chocobi.groot.view.community.model.Article
+import com.chocobi.groot.view.user.model.User
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import kotlinx.coroutines.NonDisposableHandle.parent
@@ -49,10 +49,10 @@ import java.io.FileOutputStream
 
 
 @Suppress("DEPRECATION")
-class CommunityPostFragment(private val postCategory: String) :
+class CommunityEditPostFragment(private val postCategory: String) :
     Fragment() {
 
-    private val TAG = "CommunityPostFragment"
+    private val TAG = "CommunityEditPostFragment"
 
     private lateinit var postImageAdapter: PostImageAdapter
     private val imageList: ArrayList<File?> = ArrayList()
@@ -64,6 +64,7 @@ class CommunityPostFragment(private val postCategory: String) :
     private var thelist: MutableList<MultipartBody.Part?> = mutableListOf(null, null, null)
     private lateinit var tagRecyclerView: RecyclerView
     private lateinit var tagInput: EditText
+    private lateinit var pastArticle: Article
 
 
     private val tagList = mutableListOf<String>()
@@ -75,6 +76,14 @@ class CommunityPostFragment(private val postCategory: String) :
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community_post, container, false)
+        pastArticle = UserData.getEditArticle()!!
+
+//        기존 이미지 설정
+        if (pastArticle.imgs != null) {
+            for (i in pastArticle.imgs!!) {
+//            imageList.add(uriToFile(i))
+            }
+        }
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager =
@@ -116,6 +125,12 @@ class CommunityPostFragment(private val postCategory: String) :
         tagRecyclerView.layoutManager = flexboxLayoutManager
         tagRecyclerView.adapter = tagAdapter
         val tagList = mutableListOf<String>()
+
+//        초기 태그를 추가합니다.
+        for (i in pastArticle.tags) {
+            tagAdapter.addTag(i)
+            tagList.add(i)
+        }
 
         // EditText의 키보드 액션을 설정합니다.
         tagInput.setOnEditorActionListener { v, actionId, event ->
@@ -185,7 +200,9 @@ class CommunityPostFragment(private val postCategory: String) :
 
         val toPostListBtn = view.findViewById<Button>(R.id.toPostListBtn)
         var titleInput = view.findViewById<EditText>(R.id.titleInput)
+        titleInput.setText(pastArticle.title)
         var contentInput = view.findViewById<EditText>(R.id.contentInput)
+        contentInput.setText(pastArticle.content)
 
         // 등록 버튼 클릭 시 제목과 내용 입력값
         toPostListBtn.setOnClickListener(View.OnClickListener {
@@ -530,13 +547,13 @@ class CommunityPostFragment(private val postCategory: String) :
                         Log.d("CommunityPostFragmentBody", "$body")
                         requireActivity().supportFragmentManager.popBackStack()
                     } else {
-                        Log.d("CommunityPostFragment", "게시글 작성 실패")
+                        Log.d("CommunityEditPostFragment", "게시글 작성 실패")
                     }
 
                 }
 
                 override fun onFailure(call: Call<CommunityPostResponse>, t: Throwable) {
-                    Log.d("CommunityPostFragment", "게시글 작성 실패")
+                    Log.d("CommunityEditPostFragment", "게시글 작성 실패")
                 }
             })
     }
