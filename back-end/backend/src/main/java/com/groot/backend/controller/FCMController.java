@@ -18,18 +18,9 @@ import java.io.IOException;
 public class FCMController {
     private final FCMService fcmService;
 
-//    private FirebaseCloudMessageService firebaseCloudMessageService;
-
     @PostMapping
     public String sendNotificationByToken(@RequestBody FCMRequestDTO requestDTO){
         return fcmService.sendNotificationByToken(requestDTO);
     }
 
-//    @PostMapping("/fcm")
-//    public ResponseEntity pushMessage(@RequestBody FCMRequestDTO requestDTO) throws IOException{
-//        System.out.println(requestDTO.getTargetToken()+" "+requestDTO.getTitle()+" "+requestDTO.getBody());
-//
-//        firebaseCloudMessageService.sendMessageTo(requestDTO.getTargetToken(), requestDTO.getTitle(), requestDTO.getBody());
-//        return ResponseEntity.ok().build();
-//    }
 }

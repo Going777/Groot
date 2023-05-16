@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
+import com.chocobi.groot.BuildConfig
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.login.LoginRequest
@@ -22,6 +23,7 @@ import com.chocobi.groot.view.user.model.GetUserResponse
 import com.chocobi.groot.view.user.model.RefreshRequest
 import com.chocobi.groot.view.user.model.RefreshResponse
 import com.chocobi.groot.view.user.model.UserService
+import com.kakao.sdk.common.KakaoSdk
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -210,6 +212,9 @@ class GlobalVariables : Application() {
     override fun onCreate() {
         super.onCreate()
         Log.d(TAG, "onCreate")
+
+        // Kakao SDK 초기화
+        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
 
         prefs = PreferenceUtil(applicationContext)
 

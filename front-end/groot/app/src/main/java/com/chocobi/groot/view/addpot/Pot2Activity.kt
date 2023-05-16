@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -47,14 +48,14 @@ import io.github.sceneview.math.Rotation
 class Pot2Activity : AppCompatActivity() {
     private val TAG = "Pot2Activity"
     private var plantId: Int = 0
-    private var plantNameSplit: String = ""
+    private var plantName: String = ""
     private var isSuccessed = false
 
-    private lateinit var scrollView: ScrollView
+    private lateinit var scrollView: LinearLayout
     private lateinit var characterSceneView: SceneView
     private lateinit var lottieView: LottieAnimationView
     private lateinit var potNameLayout: TextInputLayout
-    private lateinit var potNameTextView: TextView
+
     private lateinit var potNameEdit: TextInputEditText
 
     private var growType: String? = null
@@ -75,20 +76,22 @@ class Pot2Activity : AppCompatActivity() {
 //        ================================================================
 //        뒤로 가기 버튼 처리해야 하는 곳
         val backBtn = findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            this.onBackPressed()
+        }
 //        ================================================================
 //        ================================================================
 
-        plantNameSplit = intent.getStringExtra("plantNameSplit").toString()
+        plantName = intent.getStringExtra("plantName").toString()
         plantId = intent.getIntExtra("plantId", 0)
         val tempPotName = intent.getStringExtra("tempPotName")
 //        val tempPotName = "루티"
         var imageUri = intent.getStringExtra("imageUri")
+        val plantNameText = findViewById<TextView>(R.id.plantNameText)
+        plantNameText.text = plantName
 
-        var plantNameShort = findViewById<TextView>(R.id.plantNameShort)
-        potNameTextView = findViewById<TextView>(R.id.potNameText)
         potNameEdit = findViewById<TextInputEditText>(R.id.potNameEdit)
 
-        plantNameShort.text = plantNameSplit
 //        potNameText.text = tempPotName
 //        potNameEdit.setText(tempPotName)
 
@@ -228,7 +231,7 @@ class Pot2Activity : AppCompatActivity() {
                         intent.putExtra("toPage", "pot_detail")
                         intent.putExtra("potId", body.potId)
                         intent.putExtra("potName", potName)
-                        intent.putExtra("potPlant", plantNameSplit)
+                        intent.putExtra("potPlant", plantName)
                         startActivity(intent)
                     }
                 }

@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -44,14 +46,18 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     private val TAG = "PotDetailFragment"
     private var pot: Pot? = null
     private var plant: Plant? = null
-//    private var plan: List<Plan>? = null
+
+    //    private var plan: List<Plan>? = null
     private lateinit var characterSceneView: SceneView
     private lateinit var potNameText: TextView
     private lateinit var potPlantText: TextView
+    private lateinit var levelText: TextView
     private lateinit var potPlantImg: ImageView
+    private lateinit var levelSection: LinearLayout
+    private lateinit var progressBar: ProgressBar
     private var potId: Int = 0
     private var modelNode: ModelNode? = null
-    private var toArBtn :Button? = null
+    private var toArBtn: Button? = null
     private var waterComingDate: ComingDate? = null
     private var nutrientComingDate: ComingDate? = null
     private var pruningComingDate: ComingDate? = null
@@ -78,13 +84,21 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         getPotDetail(potId)
         potPlantImg = rootView.findViewById(R.id.potPlantImg)
         characterSceneView = rootView.findViewById(R.id.characterSceneView)
+        levelSection = rootView.findViewById(R.id.levelSection)
+        levelText = rootView.findViewById(R.id.levelText)
+        progressBar = rootView.findViewById(R.id.progressBar)
 //        characterSceneView.visibility = View.GONE
 
         characterSceneView.setOnTouchListener { v, event ->
             when (event.action) {
 //                부모뷰 스크롤 막기
-                MotionEvent.ACTION_UP -> characterSceneView.parent.requestDisallowInterceptTouchEvent(false)
-                MotionEvent.ACTION_DOWN -> characterSceneView.parent.requestDisallowInterceptTouchEvent(true)
+                MotionEvent.ACTION_UP -> characterSceneView.parent.requestDisallowInterceptTouchEvent(
+                    false
+                )
+
+                MotionEvent.ACTION_DOWN -> characterSceneView.parent.requestDisallowInterceptTouchEvent(
+                    true
+                )
             }
 //            본인 뷰 이벤트는 적용
             false
@@ -94,6 +108,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
 //        ================================================================
 //        뒤로 가기 버튼 처리해야 하는 곳
         val backBtn = rootView.findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
 //        ================================================================
 //        ================================================================
 
@@ -152,6 +169,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             mActivity.changeFragment("pot_diary")
         }
 
+
         // Inflate the layout for this fragment
         return rootView
     }
@@ -159,7 +177,6 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
 
 //        탭 조작
@@ -260,6 +277,8 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
                     Log.d(TAG, "plant: $plant")
                     setCharacterSceneView()
                     setPlantContent()
+
+
                 } else {
                     Log.d(TAG, "실패1")
                 }
@@ -295,11 +314,45 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
 
     fun setPlantContent() {
         potNameText.text = pot?.potName
-        potPlantText.text = pot?.plantKrName
+        potPlantText.text = pot?.plantKrName!!.replace(" (", "\n(").replace(" ‘", "\n‘")
+        val expCount = (pot?.experience?.div(pot?.level!!) ?: 0)
+        progressBar.progress = (expCount * 10)
+        levelText.text = pot?.level.toString()
         GlobalVariables.changeImgView(potPlantImg, pot?.imgPath.toString(), requireContext())
         if (pot?.survival == false) {
             toArBtn?.visibility = View.GONE
         }
+
+//        레벨 설정
+        val layoutParams = LinearLayout.LayoutParams(
+            dpToPx(20),
+            dpToPx(20)
+        )
+        val redCount =
+            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt()
+        repeat(redCount) {
+            var heart = ImageView(context)
+            heart.setImageResource(R.drawable.ic_heart)
+
+
+            heart.layoutParams = layoutParams
+
+            levelSection.addView(heart)
+        }
+
+
+        var greyHeart = ImageView(context)
+        if (redCount != 3 && pot?.level!! > (redCount) * 5 && pot?.level!! != 1) {
+            greyHeart.setImageResource(R.drawable.ic_heart_half)
+            greyHeart.layoutParams = layoutParams
+            levelSection.addView(greyHeart)
+        } else if (redCount != 3) {
+            greyHeart.setImageResource(R.drawable.ic_heart_grey)
+            greyHeart.layoutParams = layoutParams
+            levelSection.addView(greyHeart)
+        }
+
+
         val bundle = Bundle().apply {
             putString("waterCycle", plant?.waterCycle)
             putInt("minHumidity", plant?.minHumidity ?: 0)
@@ -323,10 +376,10 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         return date.date.year.toString() + "년 " + date.date.month.toString() + "월 " + date.date.day.toString() + "일"
     }
 
-
-
-
-
+    private fun dpToPx(dp: Int): Int {
+        val scale = resources.displayMetrics.density
+        return (dp * scale + 0.5f).toInt()
+    }
 
 
 }

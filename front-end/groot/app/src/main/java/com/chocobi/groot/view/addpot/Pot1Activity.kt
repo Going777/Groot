@@ -37,6 +37,9 @@ class Pot1Activity : AppCompatActivity() {
 //        ================================================================
 //        뒤로 가기 버튼 처리해야 하는 곳
         val backBtn = findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            this.onBackPressed()
+        }
 //        ================================================================
 //        ================================================================
 
@@ -48,19 +51,18 @@ class Pot1Activity : AppCompatActivity() {
         Log.d("Pot1Activity","onCreate() url값 ${imageUrl}//")
 
 
-        var plantNameLong = findViewById<TextView>(R.id.plantNameLong)
-        var plantNameShort = findViewById<TextView>(R.id.plantNameShort)
-        var potName = findViewById<TextView>(R.id.potName)
+        var plantNameText = findViewById<TextView>(R.id.plantNameText)
+
+
 
         val plantName = intent.getStringExtra("plantName")
         val plantId = intent.getIntExtra("plantId", 0)
         Log.d("Pot2Activity","onCreate() 플랜트 아이디 ${plantId}")
-        val plantNameSplit = plantName?.split(" ")?.get(0) ?: ""
         val userName = UserData.getNickName()
-        var tempPotName = userName + "의 " + plantNameSplit
-        plantNameLong.text = plantName
-        plantNameShort.text = plantNameSplit
-        potName.text = tempPotName
+        val tempPlantName = plantName!!.replace(" (", "\n(").replace(" ‘","\n‘")
+        plantNameText.text = tempPlantName
+
+
 
 
 
@@ -130,8 +132,7 @@ class Pot1Activity : AppCompatActivity() {
         add1Btn.setOnClickListener {
             var intent = Intent(this, Pot2Activity::class.java)
 //            intent.putExtra("toPage", "plant_add1")
-            intent.putExtra("tempPotName", tempPotName)
-            intent.putExtra("plantNameSplit", plantNameSplit)
+            intent.putExtra("plantName", tempPlantName)
             intent.putExtra("plantId", plantId)
             intent.putExtra("imageUri", imageUri)
             intent.putExtra("growType", growType)

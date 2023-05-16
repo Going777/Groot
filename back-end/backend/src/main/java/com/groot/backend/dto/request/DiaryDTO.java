@@ -31,5 +31,5 @@ public class DiaryDTO {
 
     private Boolean sun;
 
-    private Long diaryId;
+    private String imgPath;
 }

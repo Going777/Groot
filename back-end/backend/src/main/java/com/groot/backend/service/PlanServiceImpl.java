@@ -24,6 +24,7 @@ import java.util.Optional;
 @Slf4j
 @Transactional
 public class PlanServiceImpl implements PlanService{
+    private final NotificationRepository notificationRepository;
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
     private final PotRepository potRepository;
@@ -37,7 +38,7 @@ public class PlanServiceImpl implements PlanService{
         // plan 삭제
         PlanEntity plan = planRepository.findById(planId).orElseThrow();
 //        planRepository.deleteById(planId);
-        planRepository.updateDoneById(planId);
+        planRepository.updateDoneById(planId, false);
 
         // 관련 diary 수정
         DiaryEntity diary = diaryRepository.findById(plan.getDiaryId()).orElseThrow();
@@ -104,11 +105,17 @@ public class PlanServiceImpl implements PlanService{
         potRepository.updateExpLevelById(pot.getId(), tempExp, tempLevel);
     }
 
-    @Scheduled(cron = "0 0 2 * * *", zone = "UTC") // 오전 11시
+    @Scheduled(cron = "0 0 11 * * *", zone = "Asia/Seoul") // 오전 11시
+    @Override
     public void alarmPlan(){
         LocalDateTime now = LocalDateTime.now().plusHours(9);
         LocalDateTime start = LocalDateTime.of(LocalDate.from(now), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.of(LocalDate.from(now), LocalTime.of(23, 59, 59));
+
+        // 지났지만 done이 0인 친구들 하루씩 미뤄주기\
+        planRepository.updateDateTimeByDoneAndDateTimeBetween(false, start.minusDays(1), end.minusDays(1));
+
+
         List<PlanEntity> planEntities = planRepository.findAllByDoneAndDateTimeBetween(false, start, end);
 
         for(PlanEntity plan : planEntities){
@@ -123,6 +130,16 @@ public class PlanServiceImpl implements PlanService{
                 body = pot.getName() + "에게 영양제를 줄 시간입니다!";
             }
             Optional<UserEntity> user = userRepository.findById(plan.getUserPK());
+
+            NotificationEntity noti = NotificationEntity.builder()
+                    .contentId(pot.getId())
+                    .page("main")
+                    .isRead(false)
+                    .content(body)
+                    .title(title)
+                    .receiver(user.get())
+                    .build();
+
             if(user.isPresent()) {
                 if (user.get().getFirebaseToken() != null) {
                     Notification notification = Notification.builder()
@@ -137,6 +154,7 @@ public class PlanServiceImpl implements PlanService{
 
                     try {
                         firebaseMessaging.send(message);
+                        notificationRepository.save(noti);
 //                    return "알림을 성공적으로 전송했습니다. targetUserId="+recieiver.getId();
                     } catch (FirebaseMessagingException e) {
                         e.printStackTrace();

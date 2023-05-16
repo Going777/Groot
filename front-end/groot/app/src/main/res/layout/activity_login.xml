@@ -6,9 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".view.login.LoginActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.airbnb.lottie.LottieAnimationView
             android:layout_width="match_parent"
@@ -148,24 +148,112 @@
             android:id="@+id/basicLoginBtn"
             style="@style/MAIN_BTN"
             android:layout_marginHorizontal="40dp"
-            android:layout_marginTop="60dp"
-            android:letterSpacing="0.15"
-            android:text="로그인"
+            android:layout_marginTop="40dp"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?android:attr/actionBarItemBackground"
+            android:letterSpacing="0.15"
+            android:text="로그인"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toSignupText" />
 
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="80dp"
+            android:layout_marginTop="20dp"
+            app:flexDirection="row"
+            app:justifyContent="space_between"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/basicLoginBtn">
 
-<!--        <View-->
-<!--            android:id="@+id/overlayView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:background="@android:color/transparent"-->
-<!--            android:visibility="gone" />-->
+            <LinearLayout
+                android:id="@+id/kakaoLoginBtn"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:background="@drawable/round_rectangle"
+                android:backgroundTint="@color/social_btn"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="43dp"
+                    android:layout_height="43dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/ic_kakao" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="카카오 로그인"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/naverLoginBtn"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:background="@drawable/round_rectangle"
+                android:backgroundTint="@color/social_btn"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="10dp"
+
+                    android:src="@drawable/ic_naver" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="네이버 로그인"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <!--        <Button-->
+        <!--            android:id="@+id/naverLoginBtn"-->
+        <!--            style="@style/MAIN_BTN"-->
+        <!--            android:layout_marginHorizontal="40dp"-->
+        <!--            android:layout_marginTop="10dp"-->
+        <!--            android:text="네이버 로그인"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/basicLoginBtn" />-->
+
+        <!--        <Button-->
+        <!--            android:id="@+id/kakaoLoginBtn"-->
+        <!--            style="@style/MAIN_BTN"-->
+        <!--            android:layout_marginHorizontal="40dp"-->
+        <!--            android:layout_marginTop="10dp"-->
+        <!--            android:text="카카오 로그인"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/naverLoginBtn" />-->
+
+
+        <!--        <View-->
+        <!--            android:id="@+id/overlayView"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:background="@android:color/transparent"-->
+        <!--            android:visibility="gone" />-->
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

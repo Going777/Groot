@@ -37,7 +37,6 @@
         android:layout_marginVertical="100dp"
         android:background="@drawable/radius10"
         android:backgroundTint="@color/white"
-        android:visibility="gone"
         >
 
 

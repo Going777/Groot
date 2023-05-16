@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import de.hdodenhof.circleimageview.CircleImageView
 
 class ChatFragment : Fragment() {
 
@@ -57,6 +58,44 @@ class ChatFragment : Fragment() {
         val chatRecyclerView = view.findViewById<RecyclerView>(R.id.chatRecyclerView)
         chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         chatRecyclerView.adapter = chatMessageAdapter
+
+        val categoryNameTextView = view.findViewById<TextView>(R.id.categoryName)
+        val categoryIcon = view.findViewById<ImageView>(R.id.categoryIcon)
+        val categoryProfileImg = view.findViewById<CircleImageView>(R.id.categoryProfileImg)
+        categoryNameTextView
+        categoryNameTextView.text = nickName
+        categoryNameTextView.setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
+        categoryIcon.visibility = View.GONE
+        categoryProfileImg.visibility = View.VISIBLE
+        if(!profile.isNullOrBlank()) {
+
+        categoryProfileImg.post {
+            ThreadUtil.startThread {
+                val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
+                    .asBitmap()
+                    .load(profile)
+                    .submit(categoryProfileImg.width, categoryProfileImg.height)
+
+                val bitmap = futureTarget.get()
+
+                ThreadUtil.startUIThread(0) {
+                    categoryProfileImg.setImageBitmap(bitmap)
+                }
+            }
+        }
+        }
+
+//        ================================================================
+//        ================================================================
+//        뒤로 가기 버튼 처리해야 하는 곳
+        val backBtn = view.findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+//        ================================================================
+//        ================================================================
+
+
 
 
         mDbRef = Firebase.database.reference

@@ -29,7 +29,6 @@ import retrofit2.Response
 class CommunityFragment : Fragment() {
     private val TAG = "CommunityFragment"
     private var nowTab: Int = 0
-    private var param2: String? = null
 
     private var regionList: ArrayList<String>? = null
     private var regionFullList: ArrayList<String>? = null
@@ -45,7 +44,7 @@ class CommunityFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("CommunityFragment","onCreateView()")
+        Log.d("CommunityFragment", "onCreateView()")
 
         val rootView = inflater.inflate(R.layout.fragment_community, container, false)
 
@@ -57,8 +56,12 @@ class CommunityFragment : Fragment() {
         communityPostFab.setOnClickListener {
             if (nowTab == 0) {
                 mActivity.changeFragment("community_share")
-            } else {
+            } else if (nowTab == 1) {
                 mActivity.changeFragment("community_post")
+            } else if (nowTab == 2) {
+                mActivity.changeFragment("community_qna")
+            } else {
+                mActivity.changeFragment("community_tip")
             }
         }
 
@@ -84,8 +87,21 @@ class CommunityFragment : Fragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.layout_tab)
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.text = tabList[position]
-
         }.attach()
+
+        tabLayout.addOnTabSelectedListener(
+            object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    nowTab = tab.position
+                    Log.d(TAG, tab.position.toString())
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
 
 
     }
@@ -96,8 +112,6 @@ class CommunityFragment : Fragment() {
         }
 
         override fun createFragment(position: Int): Fragment {
-            nowTab = position
-            Log.d(TAG, nowTab.toString())
 
             return when (position) {
                 0 -> {
@@ -107,6 +121,7 @@ class CommunityFragment : Fragment() {
                     }
                     CommunityTab1Fragment().apply { arguments = bundle }
                 }
+
                 1 -> CommunityTab2Fragment()
                 2 -> CommunityTab3Fragment()
                 3 -> CommunityTab4Fragment()

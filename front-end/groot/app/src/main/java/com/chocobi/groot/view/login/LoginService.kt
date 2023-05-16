@@ -22,10 +22,22 @@ interface LoginService {
     @GET("/api/notifications/subscribe")
     fun requestSubscribe():Call<SubscribeResponse>
 
+    @POST("/api/users/oauth")
+    fun requestSocialLogin(
+        @Body params: SocialLoginRequest
+    ): Call<LoginResponse>
+
 }
 
 class LoginRequest internal constructor(
     val userId: String,
     val password: String,
+    val firebaseToken: String
+)
+
+class SocialLoginRequest internal constructor(
+    val oauthProvider: String,
+    val accessToken: String,
+    val nickName: String? = null,
     val firebaseToken: String
 )

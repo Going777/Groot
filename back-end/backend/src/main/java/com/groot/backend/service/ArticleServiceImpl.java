@@ -2,6 +2,7 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.ArticleDTO;
 import com.groot.backend.dto.request.BookmarkDTO;
+import com.groot.backend.dto.request.ShareStatusDTO;
 import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
@@ -119,6 +120,23 @@ public class ArticleServiceImpl implements ArticleService{
         log.info("Updated TagCount Table, reset Redis");
     }
 
+    @Override
+    public void updateShareStatus(Long userPK, ShareStatusDTO shareStatusDTO) {
+        ArticleEntity articleEntity = articleRepository.findById(shareStatusDTO.getArticleId()).orElseThrow();
+        ArticleEntity newEntity = ArticleEntity.builder()
+                .id(articleEntity.getId())
+                .title(articleEntity.getTitle())
+                .userEntity(userRepository.findById(userPK).orElseThrow())
+                .category(articleEntity.getCategory())
+                .content(articleEntity.getContent())
+                .shareRegion(articleEntity.getShareRegion())
+                .shareStatus(!articleEntity.getShareStatus())
+                .views(articleEntity.getViews())
+                .build();
+
+        articleRepository.save(newEntity);
+    }
+
     // 게시글 작성
     @Override
     public boolean createArticle(Long userPK, ArticleDTO articleDTO, String[] imgPaths) {
@@ -148,7 +166,7 @@ public class ArticleServiceImpl implements ArticleService{
             }
 
             // 태그테이블에 태그 insert
-            for(String tag : newTags){
+            for(String tag : tags){
                 if(tagRepository.findByName(tag) == null){
                     TagEntity tagEntity = TagEntity.builder()
                             .name(tag)

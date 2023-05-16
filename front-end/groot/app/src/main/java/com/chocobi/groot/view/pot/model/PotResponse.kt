@@ -70,6 +70,7 @@ data class Pot(
     val pruningDate: DateTime?,
     val survival: Boolean,
     val level: Int,
+    val experience: Int,
     val characterGLBPath: String,
     val characterPNGPath: String,
 )
@@ -130,8 +131,7 @@ class EditDiaryRequest internal constructor(
     val bug: Boolean?,
     val sun: Boolean?,
     val nutrients: Boolean?,
-    val userPK: Int,
-    val diaryId: Int
+    val userPK : Int,
 )
 
 data class DiaryCheckStatusResponse(

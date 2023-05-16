@@ -1,9 +1,6 @@
 package com.groot.backend.controller;
 
-import com.groot.backend.dto.request.LoginDTO;
-import com.groot.backend.dto.request.RegisterDTO;
-import com.groot.backend.dto.request.UserPasswordDTO;
-import com.groot.backend.dto.request.UserProfileDTO;
+import com.groot.backend.dto.request.*;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.TokenDTO;
 import com.groot.backend.entity.UserEntity;
@@ -68,8 +65,10 @@ public class UserController {
         }
 
         // 회원가입 성공 후 로그인
+        String firebaseUserPK = String.format("%06d", tokenDTO.getUserPK());    // 6자리 맞추기
         resultMap.put("accessToken", tokenDTO.getAccessToken());
         resultMap.put("refreshToken", tokenDTO.getRefreshToken());
+        resultMap.put("userPK", firebaseUserPK);
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "회원가입 되었습니다.");
         return ResponseEntity.ok().body(resultMap);
@@ -133,9 +132,23 @@ public class UserController {
 
     // 프로필 변경 (닉네임, 프로필 사진 변경)
     @PutMapping()
-    public ResponseEntity updateProfile(@RequestPart(value = "image", required = false) MultipartFile image,
+    public ResponseEntity updateProfile(HttpServletRequest request,
+                                        @RequestPart(value = "image", required = false) MultipartFile image,
                                         @Valid @RequestPart(value = "userProfileDTO") UserProfileDTO userProfileDTO) throws IOException {
         Map<String, Object> resultMap = new HashMap<>();
+
+        if(request.getHeader("Authorization") == null){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "토큰이 존재하지 않습니다.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+        }
+
+        Long id = jwtTokenProvider.getIdByAccessToken(request);
+        if(id != userProfileDTO.getUserPK()){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "수정 권한이 없습니다.");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
+        }
 
         if(!userService.isExistedId(userProfileDTO.getUserPK())){
             resultMap.put("result", FAIL);
@@ -371,5 +384,64 @@ public class UserController {
     }
 
 
-    // 유저 식물 조회
+    // 소셜 로그인 (카카오, 네이버)
+    @PostMapping("/oauth")
+    public ResponseEntity socialLogin(@Valid @RequestBody OAuthUserDTO oAuthUserDTO) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        // 닉네임 중복 체크
+        if (userService.isExistedNickName(oAuthUserDTO.getNickName())) {
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "이미 존재하는 닉네임입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        if(!(oAuthUserDTO.getOauthProvider().equals("kakao") ||  oAuthUserDTO.getOauthProvider().equals("naver"))){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", "OAuthProvider는 'kakao' 또는 'naver'를 입력해주세요");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
+        try {
+            // kakao 토큰 검사
+            if(oAuthUserDTO.getOauthProvider().equals("kakao") ){
+                int tokenResult = userService.checkKakaoToken(oAuthUserDTO.getAccessToken());
+                if(tokenResult == 400){
+                    resultMap.put("result", FAIL);
+                    resultMap.put("msg", "호출 인자값의 데이터 타입이 적절하지 않거나 허용된 범위를 벗어남");
+                    return ResponseEntity.badRequest().body(resultMap);
+                }else if(tokenResult == 401){
+                    resultMap.put("result", FAIL);
+                    resultMap.put("msg", "유효하지 않은 앱키나 액세스 토큰으로 요청한 경우");
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(resultMap);
+                }
+            }
+
+
+            TokenDTO result = userService.OAuthLogin(oAuthUserDTO);
+            if(result == null){
+                resultMap.put("result", FAIL);
+                resultMap.put("msg", "존재하지 않는 사용자, 회원가입을 진행해주세요.");
+                return ResponseEntity.badRequest().body(resultMap);
+            }
+            resultMap.put("accessToken", result.getAccessToken());
+            resultMap.put("refreshToken", result.getRefreshToken());
+            resultMap.put("result", SUCCESS);
+            resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 성공");
+            return ResponseEntity.ok().body(resultMap);
+        }catch (IOException e) {
+            e.printStackTrace();
+            resultMap.put("error", e.getMessage());
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            resultMap.put("error",e.getMessage());
+            resultMap.put("result", FAIL);
+            resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 실패");
+            return ResponseEntity.internalServerError().body(resultMap);
+        }
+    }
 }

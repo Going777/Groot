@@ -49,7 +49,7 @@ import java.io.FileOutputStream
 
 
 @Suppress("DEPRECATION")
-class CommunityPostFragment : Fragment() {
+class CommunityPostFragment(private val postCategory:String) : Fragment() {
 
     private val TAG = "CommunityPostFragment"
 
@@ -85,13 +85,16 @@ class CommunityPostFragment : Fragment() {
 
         val categoryNameTextView = view.findViewById<TextView>(R.id.categoryName)
         val categoryIcon = view.findViewById<ImageView>(R.id.categoryIcon)
-        categoryNameTextView.text = "자유"
+        categoryNameTextView.text = postCategory
         categoryIcon.setImageResource(R.drawable.ic_post)
 
 //        ================================================================
 //        ================================================================
 //        뒤로 가기 버튼 처리해야 하는 곳
         val backBtn = view.findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
 //        ================================================================
 //        ================================================================
 
@@ -190,7 +193,7 @@ class CommunityPostFragment : Fragment() {
         // 등록 버튼 클릭 시 제목과 내용 입력값
         toPostListBtn.setOnClickListener(View.OnClickListener {
 
-            val category = "자유"
+            val category = postCategory
             var title = titleInput?.text.toString()
             var content = contentInput?.text.toString()
             var shareRegion = ""

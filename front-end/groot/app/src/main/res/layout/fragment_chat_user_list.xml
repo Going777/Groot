@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.chat.ChatUserListFragment">
+    tools:context=".view.chat.ChatUserListFragment"
+    android:orientation="vertical">
 
+    <include
+        layout="@layout/top_category_navbar"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_marginTop="27dp"
         android:layout_height="wrap_content">
 
         <androidx.recyclerview.widget.RecyclerView
