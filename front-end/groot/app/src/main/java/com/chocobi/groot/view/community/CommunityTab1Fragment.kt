@@ -305,7 +305,7 @@ class CommunityTab1Fragment : Fragment() {
 
     private fun createPopularTagData(): List<String> {
         val popularTagList =
-            GlobalVariables.prefs.getString("popular_tags", "")?.split(", ") ?: emptyList()
+            GlobalVariables.prefs.getString("popular_tags_share", "")?.split(", ") ?: emptyList()
         return popularTagList
     }
 

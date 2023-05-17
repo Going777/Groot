@@ -20,6 +20,7 @@ import android.widget.AutoCompleteTextView
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -53,6 +54,7 @@ class SearchFragment : Fragment() {
     private var plants: Array<PlantMetaData>? = null
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 
+    private lateinit var recmmText: TextView
     private lateinit var firstView: ConstraintLayout
     private lateinit var blankView: ConstraintLayout
     private lateinit var autoCompleteTextView: AutoCompleteTextView
@@ -119,11 +121,14 @@ class SearchFragment : Fragment() {
 
         val rootView = inflater.inflate(R.layout.fragment_search, container, false)
 
+
 //        Fragment 이동 조작
         val mActivity = activity as MainActivity
 
         findView(rootView)
+        recmmText.text = "\uD83D\uDCA1 ${UserData.getNickName()}님을 위한 AI 추천 식물"
 //        추천 식물 받아오기
+
         requestRecommendations()
         filterChipGroup()
 
@@ -222,6 +227,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun findView(view: View) {
+        recmmText = view.findViewById(R.id.recmmText)
         firstView = view.findViewById(R.id.firstView)
         blankView = view.findViewById(R.id.blankView)
         difficultyChipGroup = view.findViewById(R.id.difficultyChipGroup)
@@ -464,7 +470,7 @@ class SearchFragment : Fragment() {
                             if (plants == null) {
                                 rv.visibility = View.GONE
                                 recmmView.visibility = View.GONE
-                                youtubeViews.visibility = View.GONE
+                                youtubeViews.visibility = View.VISIBLE
                                 firstView.visibility = View.VISIBLE
                                 blankView.visibility = View.GONE
                             } else {
@@ -480,7 +486,7 @@ class SearchFragment : Fragment() {
                         Log.d("SearchFragment", "requestRecommendations() api 실패1 $response")
                         rv.visibility = View.GONE
                         recmmView.visibility = View.GONE
-                        youtubeViews.visibility = View.GONE
+                        youtubeViews.visibility = View.VISIBLE
                         firstView.visibility = View.VISIBLE
                         blankView.visibility = View.GONE
                     }

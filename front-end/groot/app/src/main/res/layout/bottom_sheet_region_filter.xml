@@ -93,6 +93,7 @@
         style="@style/MAIN_BTN"
         android:text="선택 완료"
         android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="25dp"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/actionBarItemBackground"

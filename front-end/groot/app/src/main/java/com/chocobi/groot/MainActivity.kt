@@ -500,7 +500,18 @@ class MainActivity : AppCompatActivity() {
         }
 
 //        인기태그 가져오기
-        getPopularTag()
+        val isExistPopularTagData = GlobalVariables.prefs.getString("popular_tags_share","")
+        if (isExistPopularTagData == "") {
+            getPopularTag("나눔")
+            getPopularTag("자유")
+            getPopularTag("QnA")
+            getPopularTag("Tip")
+        } else {
+            getPopularTag("나눔")
+            getPopularTag("자유")
+            getPopularTag("QnA")
+            getPopularTag("Tip")
+        }
 
         potId = intent.getIntExtra("potId", 0)
         potName = intent.getStringExtra("potName").toString()
@@ -727,11 +738,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun getPopularTag() {
+    private fun getPopularTag(category: String) {
         val retrofit = RetrofitClient.basicClient()!!
         val communityService = retrofit.create(CommunityService::class.java)
-        communityService.requestPopularTags()
-            .enqueue(object : retrofit2.Callback<PopularTagResponse> {
+        communityService.requestPopularTags(category)
+            .enqueue(object : Callback<PopularTagResponse> {
                 override fun onResponse(
                     call: Call<PopularTagResponse>,
                     response: Response<PopularTagResponse>
@@ -744,10 +755,24 @@ class MainActivity : AppCompatActivity() {
                             for (tag in popularTags) {
                                 popularTagsList.add(tag.tag)
                             }
-                            GlobalVariables.prefs.setString(
-                                "popular_tags",
-                                popularTagsList.joinToString()
-                            )
+                            when (category) {
+                                "나눔" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_share",
+                                    popularTagsList.joinToString()
+                                )
+                                "자유" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_free",
+                                    popularTagsList.joinToString()
+                                )
+                                "QnA" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_qna",
+                                    popularTagsList.joinToString()
+                                )
+                                "Tip" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_tip",
+                                    popularTagsList.joinToString()
+                                )
+                            }
                             Log.d("CommunityFragment", "onResponse() 조회 성공 $popularTags")
                         }
                     } else {
@@ -764,7 +789,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestChangeNotiStatus(option: Boolean) {
-        Log.d("MainActivity","requestChangeNotiStatus() 요청 한번에 감 $option")
+        Log.d("MainActivity", "requestChangeNotiStatus() 요청 한번에 감 $option")
         val retrofit = RetrofitClient.getClient()!!
         val userService = retrofit.create(UserService::class.java)
 
