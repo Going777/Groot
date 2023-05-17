@@ -17,4 +17,7 @@ public class UserDTO {
     private String nickName;
     private String profile;
     private Long registerDate;
+    private Boolean waterAlarm;
+    private Boolean commentAlarm;
+    private Boolean chattingAlarm;
 }

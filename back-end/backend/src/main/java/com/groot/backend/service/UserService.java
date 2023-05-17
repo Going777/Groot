@@ -2,6 +2,7 @@ package com.groot.backend.service;
 
 import com.groot.backend.dto.request.*;
 import com.groot.backend.dto.response.TokenDTO;
+import com.groot.backend.dto.response.UserDTO;
 import com.groot.backend.entity.UserEntity;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ public interface UserService {
     boolean isExistedNickName(String nickName);
     boolean isExistedNickName(UserProfileDTO userProfileDTO);
     TokenDTO createUser(RegisterDTO registerDTO);
-    UserEntity readUser(Long id);
+    UserDTO readUser(Long id);
     TokenDTO login(LoginDTO loginDTO);
     boolean deleteUser(Long id);
     boolean logout(Long id);
