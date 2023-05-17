@@ -43,6 +43,8 @@ public class PlantServiceImpl implements PlantService{
 
     private final CharacterRepository characterRepository;
 
+    private final float thresholdScore = 0.02F;
+
     @Value("${plant.temp.dir}")
     private String plantTempDir;
     @Value("${plantnet.apiKey}")
@@ -265,6 +267,12 @@ public class PlantServiceImpl implements PlantService{
 
             for(int i=0; i<plantOrder.length; i++) {
                 logger.info("Find genus : {} th : {}", i, plantOrder[i][0]);
+
+                if(Float.parseFloat(plantOrder[i][2]) < thresholdScore) {
+                    logger.info("Insufficient score : {}, {}", plantOrder[i][0], plantOrder[i][2]);
+                    continue;
+                }
+
                 String[][] candidates = getCandidates(result, plantOrder[i][0]);
                 String genus = plantOrder[i][0];
                 if(candidates.length < 1 || plantEntities.stream().noneMatch(plantEntity -> {
