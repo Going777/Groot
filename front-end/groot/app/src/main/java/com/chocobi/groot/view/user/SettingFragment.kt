@@ -15,6 +15,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.chocobi.groot.view.intro.IntroActivity
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
@@ -36,20 +37,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SettingFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SettingFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
     private lateinit var isSocialLogined: String
     private var isNoti1: Boolean = false
     private var isNoti2: Boolean = false
@@ -60,8 +50,7 @@ class SettingFragment : Fragment() {
         isSocialLogined = UserData.getIsSocialLogined()
 
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
         val notificationList = UserData.getIsNotificationAllowed()
         isNoti1 = notificationList[0]
@@ -94,6 +83,15 @@ class SettingFragment : Fragment() {
 //        ================================================================
 //        ================================================================
 
+        val infoText = rootView.findViewById<ConstraintLayout>(R.id.infoText)
+        val infoSection = rootView.findViewById<LinearLayout>(R.id.infoSection)
+        infoText.setOnClickListener {
+            if (infoSection.visibility == View.GONE) {
+                infoSection.visibility = View.VISIBLE
+            } else {
+                infoSection.visibility = View.GONE
+            }
+        }
         val editProfileText = rootView.findViewById<TextView>(R.id.editProfileText)
         val profileBottomSheet = ProfileBottomSheet(requireContext())
         editProfileText.setOnClickListener {
@@ -407,6 +405,4 @@ class SettingFragment : Fragment() {
         val intent = Intent(requireContext(), IntroActivity::class.java)
         startActivity(intent)
     }
-
-
 }
