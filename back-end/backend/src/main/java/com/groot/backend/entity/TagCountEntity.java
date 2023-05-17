@@ -17,9 +17,10 @@ public class TagCountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(unique = true)
+    @Column
     private String tag;
     @Column
     private Double count;
+    @Column
+    private String category;
 }
