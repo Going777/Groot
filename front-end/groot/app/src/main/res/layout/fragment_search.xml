@@ -196,7 +196,7 @@
                     style="@style/BASIC_CHIP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="덩굴형" />
+                    android:text="덩굴성" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/growthFleshy"
