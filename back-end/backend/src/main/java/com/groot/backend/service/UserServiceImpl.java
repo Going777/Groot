@@ -90,9 +90,9 @@ public class UserServiceImpl implements UserService{
 
         UserAlarmEntity alarm = UserAlarmEntity.builder()
                 .userEntity(userEntity)
-                .waterAlarm(true)
-                .commentAlarm(true)
-                .chattingAlarm(true)
+                .waterAlarm(false)
+                .commentAlarm(false)
+                .chattingAlarm(false)
                 .build();
         userAlarmRepository.save(alarm);
 
@@ -113,9 +113,9 @@ public class UserServiceImpl implements UserService{
         }catch (NoSuchElementException e){
             alarmEntity = UserAlarmEntity.builder()
                     .userEntity(userEntity)
-                    .waterAlarm(true)
-                    .commentAlarm(true)
-                    .chattingAlarm(true)
+                    .waterAlarm(false)
+                    .commentAlarm(false)
+                    .chattingAlarm(false)
                     .build();
             userAlarmRepository.save(alarmEntity);
         }
