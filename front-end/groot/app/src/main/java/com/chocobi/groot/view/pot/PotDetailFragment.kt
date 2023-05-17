@@ -315,6 +315,13 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     fun setPlantContent() {
         potNameText.text = pot?.potName
         potPlantText.text = pot?.plantKrName!!.replace(" (", "\n(").replace(" ‘", "\n‘")
+        potPlantText.setOnClickListener {
+            var intent = Intent(requireContext(), MainActivity::class.java)
+            intent.putExtra("toPage", "search_detail")
+            intent.putExtra("plant_id", pot?.plantId.toString())
+            intent.putExtra("imageUri", plant?.img.toString())
+            startActivity(intent)
+        }
         val expCount = (pot?.experience?.div(pot?.level!!) ?: 0)
         progressBar.progress = (expCount * 10)
         levelText.text = pot?.level.toString()
@@ -329,7 +336,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             dpToPx(20)
         )
         val redCount =
-            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt()
+            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt()+1
         repeat(redCount) {
             var heart = ImageView(context)
             heart.setImageResource(R.drawable.ic_heart)

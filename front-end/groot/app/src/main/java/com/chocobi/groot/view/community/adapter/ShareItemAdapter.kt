@@ -45,20 +45,21 @@ class ShareItemAdapter(private val recyclerView: RecyclerView, private val fragm
         holder.communityShareItemResponse = item
 
         holder.delegate = object : ShareItemViewHolder.ShareItemViewHolderDelegate {
-//            override fun onItemViewClick(communityShareItemResponse: CommunityShareItemResponse) {
-//                val fragmentManager: FragmentManager =
-//                    (recyclerView.context as FragmentActivity).supportFragmentManager
-//                val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-//
-//                val communityDetailFragment = CommunityDetailFragment()
-//                val bundle = Bundle()
-//                bundle.putString("articleId", communityShareItemResponse.articles[0].articleId.toString())
-//                Log.d("받아온 데이터", bundle.toString())
-//
-//                communityDetailFragment.arguments = bundle
-//                fragmentTransaction.replace(R.id.fl_container, communityDetailFragment).addToBackStack(null).commit()
-//            }
+            override fun onItemViewClick(communityShareItemResponse: CommunityShareItemResponse) {
+                val fragmentManager: FragmentManager =
+                    (recyclerView.context as FragmentActivity).supportFragmentManager
+                val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+                val communityDetailFragment = CommunityDetailFragment()
+                val bundle = Bundle()
+                bundle.putInt("articleId", communityShareItemResponse.articles[0].articleId)
+                Log.d("받아온 데이터", bundle.toString())
+
+                communityDetailFragment.arguments = bundle
+                fragmentTransaction.replace(R.id.fl_container, communityDetailFragment).addToBackStack(null).commit()
+            }
         }
+
 
 
         holder.itemView.setOnClickListener {
@@ -91,10 +92,9 @@ class ShareItemAdapter(private val recyclerView: RecyclerView, private val fragm
 class ShareItemViewHolder(itemView: View, private val fragmentManager: FragmentManager) : RecyclerView.ViewHolder(itemView) {
 
     interface ShareItemViewHolderDelegate {
-        fun onItemViewClick(communityShareItemResponse: Int) {
-            Log.d("ShareItemViewHolder", "clicked")
-        }
+        fun onItemViewClick(communityShareItemResponse: CommunityShareItemResponse)
     }
+
 
     private var view: WeakReference<View> = WeakReference(itemView)
 
@@ -119,7 +119,7 @@ class ShareItemViewHolder(itemView: View, private val fragmentManager: FragmentM
 
     private fun setListener() {
         view.get()?.setOnClickListener {
-            delegate?.onItemViewClick(shareItemArticleId)
+            delegate?.onItemViewClick(communityShareItemResponse)
         }
     }
 
