@@ -63,7 +63,7 @@ class ShareItemAdapter(private val recyclerView: RecyclerView, private val fragm
 
 
         holder.itemView.setOnClickListener {
-//            holder.delegate?.onItemViewClick(item)
+            holder.delegate?.onItemViewClick(item)
         }
         holder.updateView()
 
