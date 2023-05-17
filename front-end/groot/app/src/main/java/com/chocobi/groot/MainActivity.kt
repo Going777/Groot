@@ -223,22 +223,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun checkPotDetailFragmentInBackStack(): Boolean {
-        val fragmentManager = supportFragmentManager
-        val fragmentCount = fragmentManager.backStackEntryCount
-
-        if (fragmentCount > 0) {
-            val topFragment = fragmentManager.getBackStackEntryAt(fragmentCount - 1)
-            if (topFragment.name == PotDetailFragment::class.java.name) {
-                Log.d("MainActivity", "PotDetailFragment is at the top of the backstack")
-                return true
-            } else {
-                return false
-            }
-        }
-        return false
-
-    }
 
     //    camera 조작
     /**자식 액티비티에서 권한 요청 시 직접 호출하는 메서드
