@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -236,6 +237,21 @@ class ChatFragment : Fragment() {
 
                     if (messageList.size != 0) {
                         Log.d("lastMessage", lastMessage)
+                    }
+
+
+//                    알람 처리
+                    if (snapshot.hasChildren()) {
+                        // 마지막 메시지
+                        val lastMessageSnapshot = snapshot.children.last()
+                        val lastMessage = lastMessageSnapshot.getValue(ChatMessage::class.java)
+                        if (lastMessage != null) {
+                            // 여기에 알람을 처리하는 로직을 추가
+                            val sender = lastMessage.sendId
+                            val message = lastMessage.message
+//                            val toastMessage = "새로운 메시지 도착\n보낸이: $sender\n메시지: $message"
+//                            Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
+                        }
                     }
 
                 }
