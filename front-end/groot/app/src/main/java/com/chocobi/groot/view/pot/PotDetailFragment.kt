@@ -335,8 +335,10 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             dpToPx(20),
             dpToPx(20)
         )
+
         val redCount =
-            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt()+1
+            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt() + 1
+        var heartCnt = redCount
         repeat(redCount) {
             var heart = ImageView(context)
             heart.setImageResource(R.drawable.ic_heart)
@@ -347,16 +349,21 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             levelSection.addView(heart)
         }
 
+        if (heartCnt < 3) {
+            if (pot?.level!! > (redCount - 1) * 5 + 1) {
+                var greyHeart = ImageView(context)
+                greyHeart.setImageResource(R.drawable.ic_heart_half)
+                greyHeart.layoutParams = layoutParams
+                levelSection.addView(greyHeart)
+                heartCnt += 1
+            }
 
-        var greyHeart = ImageView(context)
-        if (redCount != 3 && pot?.level!! > (redCount) * 5 && pot?.level!! != 1) {
-            greyHeart.setImageResource(R.drawable.ic_heart_half)
-            greyHeart.layoutParams = layoutParams
-            levelSection.addView(greyHeart)
-        } else if (redCount != 3) {
-            greyHeart.setImageResource(R.drawable.ic_heart_grey)
-            greyHeart.layoutParams = layoutParams
-            levelSection.addView(greyHeart)
+            repeat(3 - heartCnt) {
+                var greyHeart = ImageView(context)
+                greyHeart.setImageResource(R.drawable.ic_heart_grey)
+                greyHeart.layoutParams = layoutParams
+                levelSection.addView(greyHeart)
+            }
         }
 
 
