@@ -54,7 +54,6 @@
     <!--            android:text="전송"-->
     <!--            android:textColor="@android:color/white" />-->
     <!--    </LinearLayout>-->
-
     <androidx.cardview.widget.CardView
         android:id="@+id/input_layout"
         android:layout_width="match_parent"

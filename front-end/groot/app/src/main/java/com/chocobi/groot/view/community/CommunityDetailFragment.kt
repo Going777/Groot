@@ -606,9 +606,8 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         detailTitle.text = articleDetailData?.title
         detailNickName.text = articleDetailData?.nickName
         detailViews.text = articleDetailData?.views.toString()
-        val koreahour = (articleDetailData?.createTime?.time?.hour ?: 0) + 9
         detailCreateTime.text =
-            articleDetailData?.createTime?.date?.year.toString() + '.' + articleDetailData?.createTime?.date?.month.toString() + '.' + articleDetailData?.createTime?.date?.day.toString() + ' ' + koreahour + ':' + articleDetailData?.createTime?.time?.minute.toString()
+            articleDetailData?.createTime?.date?.year.toString() + '.' + articleDetailData?.createTime?.date?.month.toString() + '.' + articleDetailData?.createTime?.date?.day.toString() + ' ' + articleDetailData?.createTime?.time?.hour.toString() + ':' + articleDetailData?.createTime?.time?.minute.toString()
         detailContent.text = articleDetailData?.content
         tagList = articleDetailData?.tags ?: emptyList()
         sharePosition.text = articleDetailData?.shareRegion
