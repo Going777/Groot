@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -98,10 +99,10 @@ public class PlantController {
         Map<String, Object> result = new HashMap<>();
         HttpStatus status;
 
-        try{
+        try {
             PlantWithCharacterDTO plantWithCharacterDTO = plantService.identifyPlant(multipartFile);
 
-            if(plantWithCharacterDTO != null) {
+            if (plantWithCharacterDTO != null) {
                 status = HttpStatus.OK;
                 result.put("msg", "식물 식별에 성공했습니다.");
                 result.put("plant", plantWithCharacterDTO.getPlantIdentificationDTO());
@@ -111,7 +112,6 @@ public class PlantController {
                 status = HttpStatus.NOT_FOUND;
                 result.put("msg", "등록되지 않은 식물입니다.");
             }
-
         } catch (InvalidContentTypeException e) {
             result.put("msg", "올바르지 않은 파일 형식입니다.");
             status = HttpStatus.UNSUPPORTED_MEDIA_TYPE;

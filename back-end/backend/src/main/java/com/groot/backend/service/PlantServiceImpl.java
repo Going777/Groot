@@ -299,17 +299,14 @@ public class PlantServiceImpl implements PlantService{
                         .characterAssetDTO(getAsset(plantEntity))
                         .build();
             }
-            throw new NotYetImplementedException();
         }
         // return for not found
-        else {
-            logger.info("Failed to find plant from db");
-            return null;
-//            return PlantWithCharacterDTO.builder()
-//                    .plantIdentificationDTO(defaultReturn(11))
-//                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
-//                    .build();
-        }
+        logger.info("Failed to find plant from db");
+        return null;
+//        return PlantWithCharacterDTO.builder()
+//                .plantIdentificationDTO(defaultReturn(11))
+//                .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+//                .build();
     }
 
     /**
