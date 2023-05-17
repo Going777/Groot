@@ -297,7 +297,7 @@ class CommunityShareFragment : Fragment() {
     }
 
     private fun addChip(test: String?) {
-        if (test != null) {
+        if (test != null && chipRegionGroup.childCount == 0) {
             chipRegionGroup.addView(
                 Chip(
                     requireContext(),
