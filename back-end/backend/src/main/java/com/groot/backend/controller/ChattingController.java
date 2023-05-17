@@ -1,6 +1,7 @@
 package com.groot.backend.controller;
 
 import com.amazonaws.Response;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.groot.backend.dto.request.ChatRequestDTO;
 import com.groot.backend.dto.response.ChatDetailDTO;
 import com.groot.backend.dto.response.ChatResponseDTO;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("/chattings")
@@ -29,7 +31,7 @@ public class ChattingController {
 
     // 채팅 시작 시 채팅방 저장
     @PostMapping
-    public ResponseEntity insertChatting(@RequestBody ChatRequestDTO chatRequestDTO, HttpServletRequest request){
+    public ResponseEntity insertChatting(@RequestBody ChatRequestDTO chatRequestDTO, HttpServletRequest request) throws FirebaseAuthException {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         if(!chattingService.insertChatting(chatRequestDTO, userId)){
@@ -61,7 +63,7 @@ public class ChattingController {
 
     // 채팅방 리스트 주기
     @GetMapping("/list")
-    public ResponseEntity getChattingList(HttpServletRequest request){
+    public ResponseEntity getChattingList(HttpServletRequest request) throws ExecutionException, InterruptedException {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         List<ChatResponseDTO> result = chattingService.getList(userId);

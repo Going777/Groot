@@ -1,5 +1,14 @@
 package com.groot.backend.service;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
+import com.google.firebase.cloud.FirestoreClient;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
@@ -19,9 +28,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,9 +38,10 @@ public class ChattingServiceImpl implements ChattingService{
     private final ChattingRepository chattingRepository;
     private final UserRepository userRepository;
     private final FirebaseMessaging firebaseMessaging;
+    public static final String COLLECTION_NAME = "chats";
 
     @Override
-    public boolean insertChatting(ChatRequestDTO chatRequestDTO, Long userId) {
+    public boolean insertChatting(ChatRequestDTO chatRequestDTO, Long userId) throws FirebaseAuthException {
         UserEntity user1 = userRepository.findById(userId).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
         UserEntity user2 = userRepository.findById(chatRequestDTO.getUserPK()).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
         ChattingEntity chatting1 = ChattingEntity.builder()
@@ -63,13 +72,15 @@ public class ChattingServiceImpl implements ChattingService{
 
         if(user.isPresent() && user.get().getUserAlarmEntity().getChattingAlarm()) {
             if (user.get().getFirebaseToken() != null) {
+                FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(user.get().getFirebaseToken());
+                String uid = decodedToken.getUid();
                 Notification notification = Notification.builder()
                         .setTitle(title)
                         .setBody(body)
                         .build();
 
                 com.google.firebase.messaging.Message message = Message.builder()
-                        .setToken(user.get().getFirebaseToken())
+                        .setToken(uid)
                         .setNotification(notification)
                         .build();
 
@@ -99,16 +110,19 @@ public class ChattingServiceImpl implements ChattingService{
     }
 
     @Override
-    public List<ChatResponseDTO> getList(Long userId) {
+    public List<ChatResponseDTO> getList(Long userId) throws ExecutionException, InterruptedException {
         List<ChattingEntity> entityList = chattingRepository.findBySenderId(userId);
         List<ChatResponseDTO> dtoList = new ArrayList<>();
         for(ChattingEntity chattingEntity: entityList){
             UserEntity receiver = userRepository.findById(chattingEntity.getReceiverId()).orElseThrow();
+//            Map<String, String> last = findLastMessage(chattingEntity.getRoomId());
             ChatResponseDTO dto = ChatResponseDTO.builder()
                     .userPK(receiver.getId())
                     .nickName(receiver.getNickName())
                     .profile(receiver.getProfile())
                     .roomId(chattingEntity.getRoomId())
+//                    .LastMessage(last.get("lastMessage"))
+//                    .LastTime(last.get("lastTime"))
                     .build();
             dtoList.add(dto);
         }
@@ -125,5 +139,14 @@ public class ChattingServiceImpl implements ChattingService{
         return true;
     }
 
+    private Map<String, String> findLastMessage(String roomId) throws ExecutionException, InterruptedException {
+        Map<String, String> result = new HashMap();
+        Firestore db = FirestoreClient.getFirestore();
+        ApiFuture<DocumentSnapshot> apiFuture = db.collection(COLLECTION_NAME).document(roomId).get();
+        DocumentSnapshot documentSnapshot = apiFuture.get();
+        result.put("LastMessage", documentSnapshot.get("lastMessage").toString());
+        result.put("lastTime", documentSnapshot.get("lastTime").toString());
+        return result;
+    }
 
 }
