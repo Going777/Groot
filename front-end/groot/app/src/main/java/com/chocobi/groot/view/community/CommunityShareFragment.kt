@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -72,6 +73,7 @@ class CommunityShareFragment : Fragment() {
     private lateinit var regionFilterBtn: Button
     private lateinit var chipRegionGroup: ChipGroup
     private lateinit var articleSection: LinearLayout
+    private lateinit var swipeLayout: SwipeRefreshLayout
 
 
     override fun onCreateView(
@@ -190,6 +192,7 @@ class CommunityShareFragment : Fragment() {
         val toPostListBtn = view.findViewById<Button>(R.id.toPostListBtn)
         var titleInput = view.findViewById<EditText>(R.id.titleInput)
         var contentInput = view.findViewById<EditText>(R.id.contentInput)
+
 
         // 등록 버튼 클릭 시 제목과 내용 입력값
         toPostListBtn.setOnClickListener(View.OnClickListener {

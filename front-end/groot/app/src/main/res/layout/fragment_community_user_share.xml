@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    android:id="@+id/shareListSection"
+<FrameLayout android:id="@+id/shareListSection"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:padding="10dp"
-    tools:context=".view.community.CommunityUserShareFragment">
+    tools:context=".view.community.CommunityUserShareFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:id="@+id/shareListTitle"
@@ -17,6 +17,33 @@
         android:textSize="18dp"
         android:text="사용자가 나눔 중인 다른 식물"
         android:textStyle="bold" />
+    <LinearLayout
+        android:id="@+id/noShare"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            app:cardCornerRadius="10dp">
+            <ImageView
+                android:id="@+id/imageView"
+                android:scaleType="centerCrop"
+                android:src="@drawable/plant_default"
+                android:layout_width="100dp"
+                android:layout_height="100dp"/>
+        </androidx.cardview.widget.CardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:textStyle="bold"
+            android:textColor="@color/grey"
+            android:text="나눔 중인 다른 식물이 없어요"/>
+    </LinearLayout>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"

@@ -105,6 +105,7 @@ class CommunityDetailFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
     private lateinit var progressSection: ConstraintLayout
+    private lateinit var noComment: LinearLayout
 
 
     private val imagesList: MutableList<String?> = arrayListOf()
@@ -198,6 +199,13 @@ class CommunityDetailFragment : Fragment() {
                     // 태그 Adapter 설정
                     val tagAdapter = ArticleTagAdapter(tagList)
                     recyclerView.adapter = tagAdapter
+
+                    // 댓글 유무
+                    if (articleDetailData?.commentCnt == 0 && articleDetailData?.category != "나눔") {
+                        noComment.visibility = View.VISIBLE
+                    } else {
+                        noComment.visibility = View.GONE
+                    }
 
                 } else {
                     Log.d(TAG, "게시글 디테일 실패1")
@@ -395,6 +403,7 @@ class CommunityDetailFragment : Fragment() {
 //        댓글
         postCommentBtn = view.findViewById(R.id.postCommentBtn)
         postCommentInput = view.findViewById(R.id.postCommentInput)
+        noComment = view.findViewById(R.id.noComment)
 
         //    댓글 리사이클러뷰
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -785,4 +794,6 @@ class CommunityDetailFragment : Fragment() {
 
         return formattedNumber ?: ""
     }
+
+
 }
