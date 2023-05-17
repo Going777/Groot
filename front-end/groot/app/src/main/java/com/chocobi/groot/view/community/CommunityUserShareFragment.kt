@@ -88,7 +88,7 @@ class CommunityUserShareFragment()  : Fragment() {
 
 
                     val list = createDummyData()
-                    ThreadUtil.startUIThread(1000) {
+                    ThreadUtil.startUIThread(100) {
                         adapter.reload(list)
                         hideProgress()
                     }

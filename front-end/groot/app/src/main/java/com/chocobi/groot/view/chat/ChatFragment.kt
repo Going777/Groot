@@ -178,7 +178,11 @@ class ChatFragment : Fragment() {
                     }
                 })
 
+                lastMessage = message
 
+                fireStore?.collection("chats")?.document(senderRoom)?.set(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))?.addOnSuccessListener {
+                    fireStore?.collection("chats")?.document(receiverRoom)?.set(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))
+                }
                 firstMessage = false
             }
             //데이터 저장
@@ -203,8 +207,8 @@ class ChatFragment : Fragment() {
 //            fireStore?.collection("chats")?.document(senderRoom)?.delete()?.addOnSuccessListener {
 //                fireStore?.collection("chats")?.document(receiverRoom)?.delete()
 //            }
-            fireStore?.collection("chats")?.document(senderRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime))?.addOnSuccessListener {
-                fireStore?.collection("chats")?.document(receiverRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime))
+            fireStore?.collection("chats")?.document(senderRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))?.addOnSuccessListener {
+                fireStore?.collection("chats")?.document(receiverRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))
             }
 
 
