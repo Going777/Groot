@@ -230,12 +230,12 @@ class Pot2Activity : AppCompatActivity() {
                     var body = response.body()
                     Log.d(TAG, "$body")
                     if (body != null) {
-                        body.potId
-                        Toast.makeText(
-                            context,
-                            body.potId.toString() + "번 화분이 등록 되었습니다.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+//                        body.potId
+//                        Toast.makeText(
+//                            context,
+//                            body.potId.toString() + "번 화분이 등록 되었습니다.",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
                         var intent = Intent(context, MainActivity::class.java)
                         intent.putExtra("toPage", "pot_detail")
                         intent.putExtra("potId", body.potId)

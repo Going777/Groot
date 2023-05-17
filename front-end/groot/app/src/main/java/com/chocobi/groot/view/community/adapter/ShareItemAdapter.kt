@@ -45,24 +45,24 @@ class ShareItemAdapter(private val recyclerView: RecyclerView, private val fragm
         holder.communityShareItemResponse = item
 
         holder.delegate = object : ShareItemViewHolder.ShareItemViewHolderDelegate {
-            override fun onItemViewClick(communityShareItemResponse: CommunityShareItemResponse) {
-                val fragmentManager: FragmentManager =
-                    (recyclerView.context as FragmentActivity).supportFragmentManager
-                val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-
-                val communityDetailFragment = CommunityDetailFragment()
-                val bundle = Bundle()
-                bundle.putString("articleId", communityShareItemResponse.articles[0].articleId.toString())
-                Log.d("받아온 데이터", bundle.toString())
-
-                communityDetailFragment.arguments = bundle
-                fragmentTransaction.replace(R.id.fl_container, communityDetailFragment).addToBackStack(null).commit()
-            }
+//            override fun onItemViewClick(communityShareItemResponse: CommunityShareItemResponse) {
+//                val fragmentManager: FragmentManager =
+//                    (recyclerView.context as FragmentActivity).supportFragmentManager
+//                val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//
+//                val communityDetailFragment = CommunityDetailFragment()
+//                val bundle = Bundle()
+//                bundle.putString("articleId", communityShareItemResponse.articles[0].articleId.toString())
+//                Log.d("받아온 데이터", bundle.toString())
+//
+//                communityDetailFragment.arguments = bundle
+//                fragmentTransaction.replace(R.id.fl_container, communityDetailFragment).addToBackStack(null).commit()
+//            }
         }
 
 
         holder.itemView.setOnClickListener {
-            holder.delegate?.onItemViewClick(item)
+//            holder.delegate?.onItemViewClick(item)
         }
         holder.updateView()
 
