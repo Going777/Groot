@@ -30,6 +30,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import de.hdodenhof.circleimageview.CircleImageView
 import retrofit2.Call
@@ -44,9 +45,11 @@ class ChatFragment : Fragment() {
     private lateinit var senderRoom: String //보낸 대화방
 
     private lateinit var mDbRef: DatabaseReference
+    private var fireStore: FirebaseFirestore? = null
 
     private lateinit var messageList: ArrayList<ChatMessage>
     private lateinit var lastMessage: String
+    private lateinit var lastTime: String
     private var firstMessage: Boolean = true
 
 
@@ -119,11 +122,10 @@ class ChatFragment : Fragment() {
 //        ================================================================
 
 
-        val createdTime: LocalDateTime = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("a h:mm")
-        val saveTime = createdTime.format(formatter)
+
 
         mDbRef = Firebase.database.reference
+        fireStore = FirebaseFirestore.getInstance()
 
         var senderUid = changeRoomNumber(UserData.getUserPK().toString())
         var receiverUid = changeRoomNumber(chatUserPK)
@@ -137,6 +139,10 @@ class ChatFragment : Fragment() {
         // 메시지 전송
         val sendBtn = view.findViewById<AppCompatButton>(R.id.sendBtn)
         sendBtn.setOnClickListener {
+            val createdTime: LocalDateTime = LocalDateTime.now()
+            val formatter = DateTimeFormatter.ofPattern("a h:mm")
+            val saveTime = createdTime.format(formatter)
+
             val messageEdit = view.findViewById<EditText>(R.id.messageEdit)
             val message = messageEdit.text.toString()
             val messageObject = ChatMessage(message, senderUid, saveTime)
@@ -172,41 +178,38 @@ class ChatFragment : Fragment() {
                     }
                 })
 
-                //데이터 저장
-                mDbRef.child("chats").child(senderRoom).child("messages").push()
-                    .setValue(messageObject).addOnSuccessListener {
-                        //저장 성공하면
-                        mDbRef.child("chats").child(receiverRoom).child("messages").push()
-                            .setValue(messageObject)
 
-                    }
-
-                Log.d("scroll", messageList.size.toString())
-                chatRecyclerView.scrollToPosition(messageList.size - 1)
-
-                lastMessage = messageEdit.toString()
-                Log.d("lastMessage", lastMessage)
-
-                messageEdit.text.clear()
                 firstMessage = false
-            } else {
-                //데이터 저장
-                mDbRef.child("chats").child(senderRoom).child("messages").push()
-                    .setValue(messageObject).addOnSuccessListener {
-                        //저장 성공하면
-                        mDbRef.child("chats").child(receiverRoom).child("messages").push()
-                            .setValue(messageObject)
-
-                    }
-
-                Log.d("scroll", messageList.size.toString())
-                chatRecyclerView.scrollToPosition(messageList.size - 1)
-
-                lastMessage = messageEdit.toString()
-                Log.d("lastMessage", lastMessage)
-
-                messageEdit.text.clear()
             }
+            //데이터 저장
+            mDbRef.child("chats").child(senderRoom).child("messages").push()
+                .setValue(messageObject).addOnSuccessListener {
+                    //저장 성공하면
+                    mDbRef.child("chats").child(receiverRoom).child("messages").push()
+                        .setValue(messageObject)
+
+                }
+
+
+            Log.d("scroll", messageList.size.toString())
+            chatRecyclerView.scrollToPosition(messageList.size - 1)
+
+            lastMessage = message
+            lastTime = saveTime
+            Log.d("lastMessage", lastMessage)
+
+////                파이어베이스에 마지막 메세지 저장
+//            Log.d("fireStore", fireStore.toString())
+//            fireStore?.collection("chats")?.document(senderRoom)?.delete()?.addOnSuccessListener {
+//                fireStore?.collection("chats")?.document(receiverRoom)?.delete()
+//            }
+            fireStore?.collection("chats")?.document(senderRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime))?.addOnSuccessListener {
+                fireStore?.collection("chats")?.document(receiverRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime))
+            }
+
+
+
+            messageEdit.text.clear()
         }
 
         // 메시지 가져오기
