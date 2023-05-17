@@ -1,6 +1,5 @@
 package com.chocobi.groot
 
-import android.app.Activity
 import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Context
@@ -25,6 +24,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.chocobi.groot.data.BasicResponse
+import com.chocobi.groot.youtube.CallYoutube
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -32,7 +32,6 @@ import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.chat.ChatUserListFragment
 import com.chocobi.groot.view.community.CommunityEditPostFragment
 import com.chocobi.groot.view.community.CommunityFragment
@@ -58,6 +57,10 @@ import com.chocobi.groot.view.user.UserFragment
 import com.chocobi.groot.view.user.model.NotiStatusRequest
 import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

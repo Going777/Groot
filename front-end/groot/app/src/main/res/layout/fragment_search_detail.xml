@@ -341,6 +341,14 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+                    android:id="@+id/youtubePlayer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginHorizontal="10dp"
+                    app:autoPlay="false"
+                    android:visibility="gone"/>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
