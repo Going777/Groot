@@ -128,6 +128,8 @@ class CommunityDetailFragment : Fragment() {
             args.putInt("articleId", articleId)
         }
 
+        Log.d("articleIddddd", articleId.toString())
+
         val communityUserShareFragment = CommunityUserShareFragment()
         communityUserShareFragment.arguments = args
         childFragmentManager.beginTransaction()
