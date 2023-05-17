@@ -262,7 +262,25 @@
 
                     </FrameLayout>
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
+                <LinearLayout
+                    android:id="@+id/noComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/ic_comment"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/grey"
+                        android:text="아직 댓글이 없어요"/>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -387,6 +405,7 @@
 
 
         <Button
+            android:id="@+id/moveChatBtn"
             android:layout_width="50dp"
             android:layout_height="28dp"
             android:layout_gravity="center"

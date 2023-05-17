@@ -57,6 +57,9 @@ public class UserEntity extends BaseEntity{
     @JsonManagedReference
     private List<PlanEntity> planEntities;
 
+    @OneToOne(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    private UserAlarmEntity userAlarmEntity;
+
     public UserDTO toUserDTO(){
         Long date = Duration.between(this.getCreatedDate(), LocalDateTime.now()).toDays() +1;
         UserDTO userDTO = UserDTO.builder()

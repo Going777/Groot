@@ -25,6 +25,8 @@ import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -38,6 +40,8 @@ import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.chat.ChatFragment
+import com.chocobi.groot.view.chat.model.ChatUserListResponse
 import com.chocobi.groot.view.community.adapter.ArticleTagAdapter
 import com.chocobi.groot.view.community.adapter.CommentAdapter
 import com.chocobi.groot.view.community.model.Article
@@ -79,7 +83,10 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     private lateinit var categoryIcon: ImageView
     private lateinit var backBtn: ImageView
     private lateinit var userProfile: CircleImageView
+    private lateinit var moveChatBtn: Button
 
+    private var detailUserPK: Int = 0
+    private var detailProfileImgString: String = ""
     private lateinit var detailTitle: TextView
     private lateinit var detailNickName: TextView
     private lateinit var detailViews: TextView
@@ -100,6 +107,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
 
     private lateinit var mActivity: MainActivity
     private lateinit var progressSection: ConstraintLayout
+    private lateinit var noComment: LinearLayout
 
 
     private val imagesList: MutableList<String?> = arrayListOf()
@@ -120,6 +128,8 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         if (articleId != 0) {
             args.putInt("articleId", articleId)
         }
+
+        Log.d("articleIddddd", articleId.toString())
 
         val communityUserShareFragment = CommunityUserShareFragment()
         communityUserShareFragment.arguments = args
@@ -183,6 +193,11 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
                     setDetailContent()
                     setImageCarousel()
 
+                    detailUserPK = articleDetailData?.userPK!!
+                    if (articleDetailData?.profile != "") {
+                        detailProfileImgString = articleDetailData?.profile!!
+                    }
+
 
                     // 태그
                     recyclerView.layoutManager =
@@ -191,6 +206,13 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
                     // 태그 Adapter 설정
                     val tagAdapter = ArticleTagAdapter(tagList)
                     recyclerView.adapter = tagAdapter
+
+                    // 댓글 유무
+                    if (articleDetailData?.commentCnt == 0 && articleDetailData?.category != "나눔") {
+                        noComment.visibility = View.VISIBLE
+                    } else {
+                        noComment.visibility = View.GONE
+                    }
 
                 } else {
                     Log.d(TAG, "게시글 디테일 실패1")
@@ -336,9 +358,13 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
 //        북마크
         bookmarkButton = view.findViewById(R.id.bookmarkLine)
 
+//        채팅
+        moveChatBtn = view.findViewById(R.id.moveChatBtn)
+
 //        댓글
         postCommentBtn = view.findViewById(R.id.postCommentBtn)
         postCommentInput = view.findViewById(R.id.postCommentInput)
+        noComment = view.findViewById(R.id.noComment)
 
         //    댓글 리사이클러뷰
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -568,6 +594,11 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         bookmarkButton.setOnClickListener {
             requestBookmark()
         }
+
+        // 채팅 버튼
+        moveChatBtn.setOnClickListener {
+            requestMoveChat()
+        }
     }
 
     private fun setDetailContent() {
@@ -696,9 +727,37 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         progressSection.visibility = View.GONE
     }
 
+        //    채팅창으로 이동
+    private fun requestMoveChat() {
+        val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+
+        val roomId:String = changeRoomNumber(UserData.getUserPK().toString(), detailUserPK.toString())
+
+        val chatFragment = ChatFragment()
+        val bundle = Bundle()
+        bundle.putString("userPK", detailUserPK.toString())
+        bundle.putString("nickName", detailNickName.text.toString())
+        bundle.putString("profile", detailProfileImgString)
+        bundle.putString("roomId", roomId)
+        Log.d("받아온 데이터", bundle.toString())
+
+        chatFragment.arguments = bundle
+        fragmentTransaction.replace(R.id.fl_container, chatFragment).addToBackStack(null).commit()
+    }
+
+    private fun changeRoomNumber(senderNumber: String?, receiverNumber: String?): String {
+        val senderRoomNumber = senderNumber?.padStart(6, '0')
+        val receiverRoomNumber = receiverNumber?.padStart(6, '0')
+        val formattedNumber = senderRoomNumber + receiverRoomNumber
+
+        return formattedNumber ?: ""
+    }
+
 
 }
 
 interface ArticleBottomSheetListener {
     fun onGetDetailRequested()
 }
+

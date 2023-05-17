@@ -397,6 +397,21 @@ public class ArticleServiceImpl implements ArticleService{
             articleImageRepository.saveAll(list);
         }
 
+        // 기존 이미지 다시 insert
+        String[] saveImagesList = articleDTO.getSaveImages();
+        if(saveImagesList!= null){
+            List<ArticleImageEntity> list = new ArrayList<>();
+            for(String image : saveImagesList){
+                ArticleImageEntity articleImageEntity = ArticleImageEntity.builder()
+                        .articleEntity(savedArticleEntity)
+                        .img(image)
+                        .build();
+
+                list.add(articleImageEntity);
+            }
+            articleImageRepository.saveAll(list);
+        }
+
         return true;
     }
 

@@ -25,5 +25,8 @@ public class ArticleDTO {
     private Boolean shareStatus;
 
     private String shareRegion;
+
     private String[] tags;
+
+    private String[] saveImages;
 }

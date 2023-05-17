@@ -31,12 +31,12 @@ public class CommentController {
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         CommentEntity result = commentService.insertComment(commentDTO, userId);
         if(result==null){
-            resultMap.put("msg", "댓글 작성을 실패하였습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "댓글 작성을 실패하였습니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
-        resultMap.put("msg", "댓글 작성을 성공하였습니다.");
         resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "댓글 작성을 성공하였습니다.");
         resultMap.put("comment", new CommentResponseDTO().toDto(result));
         return ResponseEntity.ok().body(resultMap);
     }
@@ -46,18 +46,18 @@ public class CommentController {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         if(userId != commentDTO.getUserPK()){
-            resultMap.put("msg", "댓글 수정 권한이 없습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "댓글 수정 권한이 없습니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
         CommentEntity result = commentService.insertComment(commentDTO, userId);
         if(result==null){
-            resultMap.put("msg", "댓글 수정을 실패하였습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "댓글 수정을 실패하였습니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
-        resultMap.put("msg", "댓글 수정을 성공하였습니다.");
         resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "댓글 수정을 성공하였습니다.");
         resultMap.put("comment", new CommentResponseDTO().toDto(result));
         return ResponseEntity.ok().body(resultMap);
     }
@@ -67,17 +67,17 @@ public class CommentController {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         if(userId != userPK){
-            resultMap.put("msg", "댓글 삭제 권한이 없습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "댓글 삭제 권한이 없습니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
         if(!commentService.deleteComment(commentId)){
-            resultMap.put("msg", "댓글이 존재하지 않습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "댓글이 존재하지 않습니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
-         resultMap.put("msg", "댓글 삭제를 성공하였습니다.");
          resultMap.put("result", SUCCESS);
+         resultMap.put("msg", "댓글 삭제를 성공하였습니다.");
          return ResponseEntity.ok().body(resultMap);
      }
 
@@ -86,12 +86,12 @@ public class CommentController {
         Map<String, Object> resultMap = new HashMap();
         List<CommentResponseDTO> commentEntities = commentService.readComment(articleId);
         if(commentEntities==null){
-            resultMap.put("msg", "댓글이 존재하지 않습니다.");
             resultMap.put("result", FAIL);
+            resultMap.put("msg", "댓글이 존재하지 않습니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }
-        resultMap.put("msg", "댓글 조회를 성공하였습니다.");
         resultMap.put("result", SUCCESS);
+        resultMap.put("msg", "댓글 조회를 성공하였습니다.");
         resultMap.put("comment", commentEntities);
         return ResponseEntity.ok().body(resultMap);
     }
