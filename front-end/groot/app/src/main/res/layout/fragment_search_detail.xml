@@ -1,349 +1,366 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".view.search.SearchDetailFragment"
+    android:background="@color/white"
     android:backgroundTint="@color/white"
-    android:background="@color/white">
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageButton
-            android:id="@+id/backBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/circle_button_background"
-            android:backgroundTint="@color/white"
-            android:src="@drawable/ic_back"
-            android:translationZ="10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/main"
-            android:clickable="true"
-            android:focusable="true"
-            android:foreground="?android:attr/actionBarItemBackground"/>
-
-        <ImageView
-            android:id="@+id/plantImage"
-            android:layout_width="wrap_content"
-            android:layout_height="250dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/plant_default_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    tools:context=".view.search.SearchDetailFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="80dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/backBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/circle_button_background"
+                android:backgroundTint="@color/white"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/actionBarItemBackground"
+                android:src="@drawable/ic_back"
+                android:translationZ="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/main" />
+
+            <ImageView
+                android:id="@+id/plantImage"
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/plant_default_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/plantKrName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/plantEnName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:textColor="@color/grey"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/level"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center">
-
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/mgmtLevel"
-                    android:layout_width="70dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/radius10"
-                    android:backgroundTint="@color/sub"
-                    android:textColor="@color/white" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:layout_marginHorizontal="10dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toTopOf="@+id/appCompatButton"
-                app:layout_constraintTop_toBottomOf="@id/plantImage">
-
+                android:orientation="horizontal"
+                android:weightSum="1">
 
                 <LinearLayout
-                    android:id="@+id/doc"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:orientation="vertical">
-
-                    <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
-
-                        <ImageView
-                            android:id="@+id/ic_doc"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_doc"
-                            app:tint="#555151" />
-
-                        <TextView
-                            android:id="@+id/descriptionText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity=""
-                            android:lineSpacingExtra="8sp" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@drawable/round_rectangle"
-                        android:backgroundTint="@color/light_grey" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/type"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
-
-                        <ImageView
-                            android:id="@+id/ic_type"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_leaf"
-                            app:tint="@color/detail_leaf" />
-
-                        <TextView
-                            android:id="@+id/typeText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="8sp"
-                            android:bufferType="spannable"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@drawable/round_rectangle"
-                        android:backgroundTint="@color/light_grey" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/humidity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_water_drop"
-                            app:tint="@color/detail_water" />
-
-                        <TextView
-                            android:id="@+id/humidityText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="8sp"
-                            android:text="@string/humidityText" />
-
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@drawable/round_rectangle"
-                        android:backgroundTint="@color/light_grey" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/temp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
-
-                        <ImageView
-                            android:id="@+id/ic_temp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_temp"
-                            app:tint="@color/detail_temp" />
-
-                        <TextView
-                            android:id="@+id/tempText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="8sp"
-                            android:text="@string/tempText" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@drawable/round_rectangle"
-                        android:backgroundTint="@color/light_grey" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/tip"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
-
-                        <ImageView
-                            android:id="@+id/ic_care"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_care"
-                            app:tint="#6EB51E" />
-
-                        <TextView
-                            android:id="@+id/tipText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="8sp"
-                            android:text="@string/tipText" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@drawable/round_rectangle"
-                        android:backgroundTint="@color/light_grey" />
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/place"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
-
-                        <ImageView
-                            android:id="@+id/ic_sunny"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="10dp"
-                            android:src="@drawable/ic_sun"
-                            app:tint="@color/sun" />
-
-                        <TextView
-                            android:id="@+id/placeText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:lineSpacingExtra="8sp"
-                            android:text="@string/placeText" />
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        android:background="@drawable/round_rectangle"
-                        android:backgroundTint="@color/light_grey" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/insect"
-                    style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
-
-                    <ImageView
-                        android:id="@+id/ic_bug"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
-                        android:src="@drawable/ic_bugs"
-                        app:tint="@color/detail_bug" />
 
                     <TextView
-                        android:id="@+id/insectInfoText"
+                        android:id="@+id/plantKrName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:lineSpacingExtra="8sp"
-                        android:text="@string/insectInfoText" />
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/plantEnName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:textColor="@color/grey"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/mgmtLevel"
+                        android:layout_width="70dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/radius10"
+                        android:backgroundTint="@color/sub"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
             </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/addPotBtn"
-                style="@style/MAIN_BTN"
-                android:layout_gravity="bottom"
-                android:layout_marginVertical="20dp"
-                android:text="식물 등록하기"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/actionBarItemBackground"/>
         </LinearLayout>
-    </ScrollView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="10dp"
+                android:orientation="vertical">
 
 
-</LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@+id/appCompatButton"
+                    app:layout_constraintTop_toBottomOf="@id/plantImage">
+
+
+                    <LinearLayout
+                        android:id="@+id/doc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
+
+                            <ImageView
+                                android:id="@+id/ic_doc"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_doc"
+                                app:tint="#555151" />
+
+                            <TextView
+                                android:id="@+id/descriptionText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity=""
+                                android:lineSpacingExtra="8sp" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@drawable/round_rectangle"
+                            android:backgroundTint="@color/light_grey" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
+
+                            <ImageView
+                                android:id="@+id/ic_type"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_leaf"
+                                app:tint="@color/detail_leaf" />
+
+                            <TextView
+                                android:id="@+id/typeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:bufferType="spannable"
+                                android:lineSpacingExtra="8sp" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@drawable/round_rectangle"
+                            android:backgroundTint="@color/light_grey" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/humidity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_water_drop"
+                                app:tint="@color/detail_water" />
+
+                            <TextView
+                                android:id="@+id/humidityText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:lineSpacingExtra="8sp"
+                                android:text="@string/humidityText" />
+
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@drawable/round_rectangle"
+                            android:backgroundTint="@color/light_grey" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/temp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
+
+                            <ImageView
+                                android:id="@+id/ic_temp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_temp"
+                                app:tint="@color/detail_temp" />
+
+                            <TextView
+                                android:id="@+id/tempText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:lineSpacingExtra="8sp"
+                                android:text="@string/tempText" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@drawable/round_rectangle"
+                            android:backgroundTint="@color/light_grey" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/tip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
+
+                            <ImageView
+                                android:id="@+id/ic_care"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_care"
+                                app:tint="#6EB51E" />
+
+                            <TextView
+                                android:id="@+id/tipText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:lineSpacingExtra="8sp"
+                                android:text="@string/tipText" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@drawable/round_rectangle"
+                            android:backgroundTint="@color/light_grey" />
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:id="@+id/place"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
+
+                            <ImageView
+                                android:id="@+id/ic_sunny"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="10dp"
+                                android:src="@drawable/ic_sun"
+                                app:tint="@color/sun" />
+
+                            <TextView
+                                android:id="@+id/placeText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:lineSpacingExtra="8sp"
+                                android:text="@string/placeText" />
+
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            android:background="@drawable/round_rectangle"
+                            android:backgroundTint="@color/light_grey" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/insect"
+                        style="@style/SEASRCH_DETAIL_LINEAR_STYLE">
+
+                        <ImageView
+                            android:id="@+id/ic_bug"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:src="@drawable/ic_bugs"
+                            app:tint="@color/detail_bug" />
+
+                        <TextView
+                            android:id="@+id/insectInfoText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="8sp"
+                            android:text="@string/insectInfoText" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/addPotBtn"
+            style="@style/MAIN_BTN"
+            android:layout_margin="10dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/actionBarItemBackground"
+            android:text="식물 등록하기" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
