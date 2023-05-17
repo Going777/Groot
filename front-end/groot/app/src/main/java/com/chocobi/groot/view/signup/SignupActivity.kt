@@ -18,6 +18,7 @@ import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import org.json.JSONException
@@ -262,11 +263,14 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun signup(textId: String, textName: String, textPw: String) {
+
+        val firebaseToken = UserData.getUserFirebase()
+
         //        retrofit 객체 만들기
         var retrofit = RetrofitClient.basicClient()!!
         var signupService = retrofit.create(SignupService::class.java)
 
-        signupService.requestSignup(SignupRequest(textId, textName, textPw))
+        signupService.requestSignup(SignupRequest(textId, textName, textPw, firebaseToken))
             .enqueue(object : Callback<SignupResponse> {
                 override fun onResponse(
                     call: Call<SignupResponse>,
