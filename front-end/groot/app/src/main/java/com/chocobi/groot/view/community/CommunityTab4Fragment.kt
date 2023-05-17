@@ -167,12 +167,12 @@ class CommunityTab4Fragment : Fragment() {
                         }
                     }
                     if (usage == "loadMore") {
-                        ThreadUtil.startUIThread(1000) {
+                        ThreadUtil.startUIThread(100) {
                             adapter.loadMore(list)
                             hideProgress()
                         }
                     } else {
-                        ThreadUtil.startUIThread(1000) {
+                        ThreadUtil.startUIThread(100) {
                             adapter.reload(list)
                             hideProgress()
                         }
