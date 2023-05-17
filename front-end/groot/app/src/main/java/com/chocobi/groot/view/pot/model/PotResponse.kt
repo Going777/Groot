@@ -132,6 +132,7 @@ class EditDiaryRequest internal constructor(
     val sun: Boolean?,
     val nutrients: Boolean?,
     val userPK : Int,
+    val imgPath: String?
 )
 
 data class DiaryCheckStatusResponse(

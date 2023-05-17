@@ -70,6 +70,7 @@ class PotDiaryBottomSheet(
 //    private var potName: String? = null
     private var potPlant: String? = null
     private var imageFile: File? = null
+    private var imgpath: String? = null
 
     private lateinit var mActivity: MainActivity
 
@@ -155,6 +156,7 @@ class PotDiaryBottomSheet(
             attachPhotoSection!!.visibility = View.VISIBLE
             attachedPhotoSection!!.visibility = View.GONE
             imageFile = null
+            imgpath = pastImgPath
         }
 //        }
 
@@ -257,7 +259,8 @@ class PotDiaryBottomSheet(
                 bug = bug,
                 sun = sun,
                 nutrients = nutrients,
-                userPK = userPK
+                userPK = userPK,
+                imgPath = imgpath,
             ), filePart
         )
             .enqueue(object : retrofit2.Callback<BasicResponse> {

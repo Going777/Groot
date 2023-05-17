@@ -329,7 +329,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             dpToPx(20)
         )
         val redCount =
-            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt()
+            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt()+1
         repeat(redCount) {
             var heart = ImageView(context)
             heart.setImageResource(R.drawable.ic_heart)

@@ -33,6 +33,7 @@ class PotCalendarRVAdapter(val context: Context, val items: List<Diary>) :
     RecyclerView.Adapter<PotCalendarRVAdapter.ViewHolder>() {
 
     private val TAG = "PotCalendarRVAdapter"
+    private var code = 0
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         var view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_pot_calendar_item, parent, false)
@@ -65,17 +66,23 @@ class PotCalendarRVAdapter(val context: Context, val items: List<Diary>) :
                 "potId:${items[position].potId} / code:${items[position].code} / isChecked:${checkBox.isChecked}"
             )
             if (checkBox.isChecked) {
+                var checked = false
 //                다이어리 쓰기
                 var dialog = AlertDialog.Builder(
                     context,
                     android.R.style.Theme_DeviceDefault_Light_Dialog_NoActionBar_MinWidth
                 )
                 dialog.setTitle("식물 미션")
-                dialog.setMessage("화분에게 물을 주었나요?")
+                if (items[position].code == 0) {
+                    dialog.setMessage("화분에게 물을 주었나요?")
+                } else {
+                    dialog.setMessage("화분에게 영양제를 주었나요?")
+                }
                 dialog.setPositiveButton(
                     "완료",
                     DialogInterface.OnClickListener { dialog, which ->
                         postDiary(items[position].potId, items[position].code)
+                        checkBox.isChecked = true
                         dialog.dismiss()
                     })
                 dialog.setNegativeButton(
@@ -85,6 +92,7 @@ class PotCalendarRVAdapter(val context: Context, val items: List<Diary>) :
                         dialog.dismiss()
                     })
                 dialog.show()
+                checkBox.isChecked = checked
             } else {
 //                다이어리 삭제
                 Toast.makeText(context, "이미 완료한 미션이에요.", Toast.LENGTH_SHORT).show()
@@ -108,6 +116,7 @@ class PotCalendarRVAdapter(val context: Context, val items: List<Diary>) :
             val potMission = itemView.findViewById<TextView>(R.id.potMission)
             val potImg = itemView.findViewById<CircleImageView>(R.id.potImg)
             potName.text = item.potName
+            code = item.code
             if (item.code == 0) {
                 potMission.text = "물 주기"
             } else {
@@ -137,6 +146,7 @@ class PotCalendarRVAdapter(val context: Context, val items: List<Diary>) :
             }
         }
     }
+
     private fun postDiary(potId: Int, code: Int) {
         val retrofit = RetrofitClient.getClient()!!
         val potService = retrofit.create(PotService::class.java)
