@@ -79,6 +79,7 @@ class SearchDetailFragment : Fragment() {
     private var placeText: TextView? = null
     private var insectInfoText: TextView? = null
     private lateinit var addPotBtn: AppCompatButton
+    private lateinit var mActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,7 +96,7 @@ class SearchDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_search_detail, container, false)
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
 
 //        ================================================================
 //        ================================================================
@@ -128,6 +129,8 @@ class SearchDetailFragment : Fragment() {
         }
         return rootView
     }
+
+
 
     private fun findView(rootView: View) {
         levelLinearLayout = rootView.findViewById(R.id.level)
