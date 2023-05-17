@@ -80,6 +80,8 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
     private var potId: Int = 0
+    private var plantId: Int = 0
+    private var plantImgUri: String = ""
     private var potName: String = "화분 이름"
     private var potPlant: String = "화분 식물"
     private var potCharImg: String = "화분 이미지 URL"
@@ -89,6 +91,14 @@ class MainActivity : AppCompatActivity() {
     fun setPotId(id: Int) {
         potId = id
         Log.d("potDiary", "$potId")
+    }
+
+    fun setPlantId(id: Int) {
+        plantId = id
+    }
+
+    fun setPlantImgUri(name: String) {
+        plantImgUri = name
     }
 
     fun setPotName(name: String) {
@@ -161,9 +171,13 @@ class MainActivity : AppCompatActivity() {
 
             "search_detail" -> {
                 val bundle = Bundle()
-                bundle.putString(
-                    "plant_id", intent.getStringExtra("plant_id")
-                )
+                if (intent.getStringExtra("plant_id") == null){
+                    bundle.putString(
+                        "plant_id", plantId.toString()
+                    )
+                } else {
+                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
+                }
                 bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
                 fragment.arguments = bundle

@@ -98,6 +98,8 @@ class SearchFragment : Fragment() {
     private var growth5: String? = null
     private var growth6: String? = null
 
+    private lateinit var mActivity: MainActivity
+
     private fun isAllBlank() =
         (plantName == null || plantName == "") && difficulty1 == null && difficulty2 == null && difficulty3 == null
                 && lux1 == null && lux2 == null && lux3 == null &&
@@ -123,7 +125,7 @@ class SearchFragment : Fragment() {
 
 
 //        Fragment 이동 조작
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
 
         findView(rootView)
         recmmText.text = "\uD83D\uDCA1 ${UserData.getNickName()}님을 위한 AI 추천 식물"
@@ -310,17 +312,20 @@ class SearchFragment : Fragment() {
 
         rvAdapter.itemClick = object : DictRVAdapter.ItemClick {
             override fun onClick(view: View, position: Int) {
-                val bundle = Bundle().apply {
-                    putString("plant_id", plants!![position].plantId.toString())
-                }
+//                val bundle = Bundle().apply {
+//                    putString("plant_id", plants!![position].plantId.toString())
+//                }
+//
+//                val passBundleBFragment = SearchDetailFragment().apply {
+//                    arguments = bundle
+//                }
+//
+//                parentFragmentManager.beginTransaction()
+//                    .replace(R.id.fl_container, passBundleBFragment)
+//                    .commit()
 
-                val passBundleBFragment = SearchDetailFragment().apply {
-                    arguments = bundle
-                }
-
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fl_container, passBundleBFragment)
-                    .commit()
+                mActivity.setPlantId(plants!![position].plantId!!)
+                mActivity.changeFragment("search_detail")
             }
         }
     }
