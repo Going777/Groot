@@ -16,7 +16,10 @@ data class User(
     var userId: String,
     var nickName: String,
     var profile: String,
-    var registerDate: Int
+    var registerDate: Int,
+    var waterAlarm: Boolean,
+    var commentAlarm: Boolean,
+    var chattingAlarm: Boolean
 )
 
 

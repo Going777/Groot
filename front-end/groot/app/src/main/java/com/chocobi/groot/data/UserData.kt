@@ -14,9 +14,9 @@ class UserData : Application() {
         private var registerDate = 0
         private var firebaseToken = ""
         private var socialLoginCategory: String = ""
-        private var isNoti1: Boolean = true
-        private var isNoti2: Boolean = true
-        private var isNoti3: Boolean = true
+        private var isNoti1: Boolean = false
+        private var isNoti2: Boolean = false
+        private var isNoti3: Boolean = false
         private var editArticle: Article? = null
 
         fun getUserFirebase(): String {
@@ -99,7 +99,5 @@ class UserData : Application() {
             editArticle = article
         }
     }
-
-
 }
 

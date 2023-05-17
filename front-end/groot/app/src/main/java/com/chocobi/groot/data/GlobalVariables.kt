@@ -77,6 +77,9 @@ class GlobalVariables : Application() {
                         UserData.setNickName(getUserBody.user.nickName)
                         UserData.setProfile(getUserBody.user.profile)
                         UserData.setRegisterDate(getUserBody.user.registerDate)
+                        UserData.setIsNotificationAllowed(1, getUserBody.user.waterAlarm)
+                        UserData.setIsNotificationAllowed(2, getUserBody.user.commentAlarm)
+                        UserData.setIsNotificationAllowed(3, getUserBody.user.chattingAlarm)
                     } else {
                         refresh()
                     }

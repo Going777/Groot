@@ -201,7 +201,6 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
             placementMode = PlacementMode.INSTANT,
             instantAnchor = true,
             followHitPosition = false,
-
             ).apply {
 //            applyPoseRotation = model.applyPoseRotation
             loadModelGlbAsync(
