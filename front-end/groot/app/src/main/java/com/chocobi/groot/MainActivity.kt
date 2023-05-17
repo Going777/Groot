@@ -1,5 +1,6 @@
 package com.chocobi.groot
 
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Context
@@ -9,6 +10,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -18,8 +21,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -50,6 +55,8 @@ import com.chocobi.groot.view.search.SearchDetailFragment
 import com.chocobi.groot.view.search.SearchFragment
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
+import com.chocobi.groot.view.user.model.NotiStatusRequest
+import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -68,6 +75,8 @@ class MainActivity : AppCompatActivity() {
 //    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
 //        return activityToolbar
 //    }
+    private val CHANNEL_ID = "NOTI_CHANNEL" // 알림 채널의 고유 식별자
+
     private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
     private var potId: Int = 0
@@ -98,17 +107,15 @@ class MainActivity : AppCompatActivity() {
     val notificationPermissionRequestCode = 1001
 
     // 알림 권한을 요청하는 메서드
-    private fun openAppNotificationSettings() {
+    fun openAppNotificationSettings() {
         val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-        startActivity(intent)
+        startActivityForResult(intent, notificationPermissionRequestCode)
     }
 
     //        fragment 조작
     fun changeFragment(index: String) {
         var fragment: Fragment? = null
-
-
 
         when (index) {
             "pot" -> {
@@ -177,6 +184,7 @@ class MainActivity : AppCompatActivity() {
             "community_tip" -> {
                 fragment = CommunityPostFragment("Tip")
             }
+
             "community_edit_post" -> {
                 fragment = CommunityEditPostFragment("자유")
             }
@@ -259,7 +267,6 @@ class MainActivity : AppCompatActivity() {
                         ) == PackageManager.PERMISSION_GRANTED
                     }
             } else {
-
                 isAllPermissionsGranted =
                     permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
             }
@@ -363,19 +370,23 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == notificationPermissionRequestCode) {
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (notificationManager.isNotificationPolicyAccessGranted) {
-                // 권한이 부여된 경우 처리할 작업 수행
-                // 예: 알림 사용 코드 작성
-                Toast.makeText(this, "알림이 허용 되었습니다.", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "알림이 거부 되었습니다.", Toast.LENGTH_SHORT).show()
-                // 권한이 거부된 경우 처리할 작업 수행
-                UserData.setIsNotificationAllowed(1, false)
-                UserData.setIsNotificationAllowed(2, false)
-                UserData.setIsNotificationAllowed(3, false)
-            }
+            // 변경된 알림 설정 상태를 사용하여 추가 작업 수행 (500ms 지연 후에 호출)
+            Handler(Looper.getMainLooper()).postDelayed({
+                val areNotificationsEnabled = areNotificationsEnabled()
+                if (areNotificationsEnabled) {
+                    Toast.makeText(this, "알림이 허용되었습니다.", Toast.LENGTH_SHORT).show()
+                    UserData.setIsNotificationAllowed(1, true)
+                    UserData.setIsNotificationAllowed(2, true)
+                    UserData.setIsNotificationAllowed(3, true)
+                    requestChangeNotiStatus(true)
+                } else {
+                    Toast.makeText(this, "알림이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                    UserData.setIsNotificationAllowed(1, false)
+                    UserData.setIsNotificationAllowed(2, false)
+                    UserData.setIsNotificationAllowed(3, false)
+                    requestChangeNotiStatus(false)
+                }
+            }, 500)
         }
 
 
@@ -424,6 +435,22 @@ class MainActivity : AppCompatActivity() {
 //        fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun areNotificationsEnabled(): Boolean {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // API 26 이상인 경우
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = notificationManager.getNotificationChannel(CHANNEL_ID)
+            if (channel != null) {
+                return channel.importance != NotificationManager.IMPORTANCE_NONE
+            }
+        }
+
+        // API 25 이하인 경우 또는 알림 채널이 null인 경우
+        return NotificationManagerCompat.from(this).areNotificationsEnabled()
+    }
+
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -440,11 +467,21 @@ class MainActivity : AppCompatActivity() {
                 openAppNotificationSettings()
             }
             dialog.setNegativeButton("취소") { dialog, which ->
+                UserData.setIsNotificationAllowed(1, false)
+                UserData.setIsNotificationAllowed(2, false)
+                UserData.setIsNotificationAllowed(3, false)
+                requestChangeNotiStatus(false)
                 dialog.dismiss()
             }
             dialog.show()
 
         }
+//        else {
+//            UserData.setIsNotificationAllowed(1, false)
+//            UserData.setIsNotificationAllowed(2, false)
+//            UserData.setIsNotificationAllowed(3, false)
+//            requestChangeNotiStatus(false)
+//        }
 
 
 //        requestSubscribe()
@@ -721,6 +758,33 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<PopularTagResponse>, t: Throwable) {
                     Log.d("CommunityFragment", "onFailure() 인기태그 조회 실패2")
+                }
+
+            })
+    }
+
+    private fun requestChangeNotiStatus(option: Boolean) {
+        Log.d("MainActivity","requestChangeNotiStatus() 요청 한번에 감 $option")
+        val retrofit = RetrofitClient.getClient()!!
+        val userService = retrofit.create(UserService::class.java)
+
+        userService.changeNotiStatus(NotiStatusRequest(option, option, option))
+            .enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val body = response.body()
+                        Log.d("SettingFragment", "onResponse() 성공11111111 ${body?.msg}")
+                        requestChangeNotiStatus(option)
+                    } else {
+                        val body = response.body()
+                        Log.d("SettingFragment", "onResponse() 실패 ${body?.msg}")
+                    }
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
                 }
 
             })

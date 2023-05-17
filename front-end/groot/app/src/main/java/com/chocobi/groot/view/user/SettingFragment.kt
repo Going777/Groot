@@ -1,6 +1,8 @@
 package com.chocobi.groot.view.user
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,6 +20,7 @@ import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.user.model.NotiStatusRequest
@@ -137,6 +140,9 @@ class SettingFragment : Fragment() {
     }
 
     private fun controlNotification(view: View) {
+        val mActivity = activity as MainActivity
+        val notificationManager =
+            requireContext().applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val onOff1Btn = view.findViewById<LinearLayout>(R.id.onOff1Btn)
         val onOff2Btn = view.findViewById<LinearLayout>(R.id.onOff2Btn)
         val onOff3Btn = view.findViewById<LinearLayout>(R.id.onOff3Btn)
@@ -159,16 +165,55 @@ class SettingFragment : Fragment() {
         }
 
         onOff1Btn.setOnClickListener {
-            switchOnOff(1, onOff1Image, onOff1Text, !isNoti1)
-            requestChangeNotiStatus()
+            // 알림 설정
+            if (!notificationManager.areNotificationsEnabled()) {
+                val dialog = AlertDialog.Builder(requireContext())
+                dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")
+                dialog.setPositiveButton("확인") { dialog, which ->
+                    mActivity.openAppNotificationSettings()
+                }
+                dialog.setNegativeButton("취소") { dialog, which ->
+                    dialog.dismiss()
+                }
+                dialog.show()
+            } else {
+                switchOnOff(1, onOff1Image, onOff1Text, !isNoti1)
+                requestChangeNotiStatus()
+            }
         }
         onOff2Btn.setOnClickListener {
-            switchOnOff(2, onOff2Image, onOff2Text, !isNoti2)
-            requestChangeNotiStatus()
+            // 알림 설정
+            if (!notificationManager.areNotificationsEnabled()) {
+                val dialog = AlertDialog.Builder(requireContext())
+                dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")
+                dialog.setPositiveButton("확인") { dialog, which ->
+                    mActivity.openAppNotificationSettings()
+                }
+                dialog.setNegativeButton("취소") { dialog, which ->
+                    dialog.dismiss()
+                }
+                dialog.show()
+            } else {
+                switchOnOff(2, onOff2Image, onOff2Text, !isNoti2)
+                requestChangeNotiStatus()
+            }
         }
         onOff3Btn.setOnClickListener {
-            switchOnOff(3, onOff3Image, onOff3Text, !isNoti3)
-            requestChangeNotiStatus()
+            // 알림 설정
+            if (!notificationManager.areNotificationsEnabled()) {
+                val dialog = AlertDialog.Builder(requireContext())
+                dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")
+                dialog.setPositiveButton("확인") { dialog, which ->
+                    mActivity.openAppNotificationSettings()
+                }
+                dialog.setNegativeButton("취소") { dialog, which ->
+                    dialog.dismiss()
+                }
+                dialog.show()
+            } else {
+                switchOnOff(3, onOff3Image, onOff3Text, !isNoti3)
+                requestChangeNotiStatus()
+            }
         }
     }
 
@@ -188,7 +233,6 @@ class SettingFragment : Fragment() {
             2 -> isNoti2 = option
             3 -> isNoti3 = option
         }
-        Log.d("SettingFragment", "onCreate() 알람 눌림 ${isNoti1} ${isNoti2} $isNoti3")
     }
 
     private fun requestChangeNotiStatus() {
@@ -207,7 +251,7 @@ class SettingFragment : Fragment() {
                 ) {
                     if (response.code() == 200) {
                         val body = response.body()
-                        Log.d("SettingFragment", "onResponse() 성공 ${body?.msg}")
+                        Log.d("SettingFragment", "onResponse() 성공222222222 ${body?.msg}")
                     } else {
                         val body = response.body()
                         Log.d("SettingFragment", "onResponse() 실패 ${body?.msg}")
