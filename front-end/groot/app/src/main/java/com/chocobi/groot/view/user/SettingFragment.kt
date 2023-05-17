@@ -1,6 +1,8 @@
 package com.chocobi.groot.view.user
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,8 +20,10 @@ import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.user.model.NotiStatusRequest
 import com.chocobi.groot.view.user.model.PasswordRequest
 import com.chocobi.groot.view.user.model.User
 import com.chocobi.groot.view.user.model.UserService
@@ -63,6 +67,7 @@ class SettingFragment : Fragment() {
         isNoti1 = notificationList[0]
         isNoti2 = notificationList[1]
         isNoti3 = notificationList[2]
+        Log.d("SettingFragment", "onCreate() 처음 알람 ${isNoti1} ${isNoti2} $isNoti3")
     }
 
     @SuppressLint("MissingInflatedId")
@@ -135,6 +140,9 @@ class SettingFragment : Fragment() {
     }
 
     private fun controlNotification(view: View) {
+        val mActivity = activity as MainActivity
+        val notificationManager =
+            requireContext().applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val onOff1Btn = view.findViewById<LinearLayout>(R.id.onOff1Btn)
         val onOff2Btn = view.findViewById<LinearLayout>(R.id.onOff2Btn)
         val onOff3Btn = view.findViewById<LinearLayout>(R.id.onOff3Btn)
@@ -148,20 +156,64 @@ class SettingFragment : Fragment() {
 //        알림 설정 거부되어 있으면 모두 OFF
         if (!isNoti1) {
             switchOnOff(1, onOff1Image, onOff1Text, false)
-        } else if (!isNoti2) {
+        }
+        if (!isNoti2) {
             switchOnOff(2, onOff2Image, onOff2Text, false)
-        } else if (!isNoti3) {
+        }
+        if (!isNoti3) {
             switchOnOff(3, onOff3Image, onOff3Text, false)
         }
 
         onOff1Btn.setOnClickListener {
-            switchOnOff(1, onOff1Image, onOff1Text, !isNoti1)
+            // 알림 설정
+            if (!notificationManager.areNotificationsEnabled()) {
+                val dialog = AlertDialog.Builder(requireContext())
+                dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")
+                dialog.setPositiveButton("확인") { dialog, which ->
+                    mActivity.openAppNotificationSettings()
+                }
+                dialog.setNegativeButton("취소") { dialog, which ->
+                    dialog.dismiss()
+                }
+                dialog.show()
+            } else {
+                switchOnOff(1, onOff1Image, onOff1Text, !isNoti1)
+                requestChangeNotiStatus()
+            }
         }
         onOff2Btn.setOnClickListener {
-            switchOnOff(2, onOff2Image, onOff2Text, !isNoti2)
+            // 알림 설정
+            if (!notificationManager.areNotificationsEnabled()) {
+                val dialog = AlertDialog.Builder(requireContext())
+                dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")
+                dialog.setPositiveButton("확인") { dialog, which ->
+                    mActivity.openAppNotificationSettings()
+                }
+                dialog.setNegativeButton("취소") { dialog, which ->
+                    dialog.dismiss()
+                }
+                dialog.show()
+            } else {
+                switchOnOff(2, onOff2Image, onOff2Text, !isNoti2)
+                requestChangeNotiStatus()
+            }
         }
         onOff3Btn.setOnClickListener {
-            switchOnOff(3, onOff3Image, onOff3Text, !isNoti3)
+            // 알림 설정
+            if (!notificationManager.areNotificationsEnabled()) {
+                val dialog = AlertDialog.Builder(requireContext())
+                dialog.setMessage("원활한 식물 리마인더를 위해 알림 권한을 허용해주세요.")
+                dialog.setPositiveButton("확인") { dialog, which ->
+                    mActivity.openAppNotificationSettings()
+                }
+                dialog.setNegativeButton("취소") { dialog, which ->
+                    dialog.dismiss()
+                }
+                dialog.show()
+            } else {
+                switchOnOff(3, onOff3Image, onOff3Text, !isNoti3)
+                requestChangeNotiStatus()
+            }
         }
     }
 
@@ -174,12 +226,42 @@ class SettingFragment : Fragment() {
             icon.setImageResource(R.drawable.ic_noti_off)
             text.setText("OFF")
             UserData.setIsNotificationAllowed(type, false)
+            isNoti2 = option
         }
         when (type) {
             1 -> isNoti1 = option
             2 -> isNoti2 = option
             3 -> isNoti3 = option
         }
+    }
+
+    private fun requestChangeNotiStatus() {
+        val retrofit = RetrofitClient.getClient()!!
+        val userService = retrofit.create(UserService::class.java)
+        Log.d(
+            "SettingFragment",
+            "requestChangeNotiStatus() 요청가는 값 ${isNoti1} ${isNoti2} ${isNoti3}"
+        )
+
+        userService.changeNotiStatus(NotiStatusRequest(isNoti1, isNoti2, isNoti3))
+            .enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val body = response.body()
+                        Log.d("SettingFragment", "onResponse() 성공222222222 ${body?.msg}")
+                    } else {
+                        val body = response.body()
+                        Log.d("SettingFragment", "onResponse() 실패 ${body?.msg}")
+                    }
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                }
+
+            })
     }
 
     private fun logout() {

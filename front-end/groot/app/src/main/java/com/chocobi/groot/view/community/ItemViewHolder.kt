@@ -75,8 +75,7 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         textViewNickName.text = communityArticleListResponse.articles.content[0].nickName
         eyeCnt.text = communityArticleListResponse.articles.content[0].views.toString()
         commentCnt.text = communityArticleListResponse.articles.content[0].commentCnt.toString()
-        val koreahour = communityArticleListResponse.articles.content[0].createTime.time.hour + 9
-        createTime.text = communityArticleListResponse.articles.content[0].createTime.date.year.toString() + '.'+ communityArticleListResponse.articles.content[0].createTime.date.month.toString() + '.' + communityArticleListResponse.articles.content[0].createTime.date.day.toString() + ' ' + koreahour + ':'+ communityArticleListResponse.articles.content[0].createTime.time.minute.toString()
+        createTime.text = communityArticleListResponse.articles.content[0].createTime.date.year.toString() + '.'+ communityArticleListResponse.articles.content[0].createTime.date.month.toString() + '.' + communityArticleListResponse.articles.content[0].createTime.date.day.toString() + ' ' +  communityArticleListResponse.articles.content[0].createTime.time.hour + ':'+ communityArticleListResponse.articles.content[0].createTime.time.minute.toString()
 
         // 북마크 여부에 따라 아이콘 변경
         if (communityArticleListResponse.articles.content[0].bookmark) {

@@ -28,7 +28,8 @@ interface SignupService {
 class SignupRequest internal constructor(
     val userId: String,
     val nickName: String,
-    val password: String
+    val password: String,
+    val firebaseToken: String?,
 )
 
 
