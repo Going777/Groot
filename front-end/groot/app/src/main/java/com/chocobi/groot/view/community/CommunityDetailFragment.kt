@@ -24,6 +24,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -54,7 +55,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CommunityDetailFragment : Fragment() {
+class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     private lateinit var bookmarkButton: ImageButton
     private val TAG = "CommunityDetailFragment"
     private lateinit var postCommentBtn: Button
@@ -134,6 +135,10 @@ class CommunityDetailFragment : Fragment() {
         imageAdapter = CommunityTabAdapter(this)
 
         return view
+    }
+
+    override fun onGetDetailRequested() {
+        getArticleDetail()
     }
 
     private fun getArticleDetail() {
@@ -602,8 +607,12 @@ class CommunityDetailFragment : Fragment() {
 
             if (articleDetailData?.shareStatus == true) {
                 shareStateText.visibility = View.VISIBLE
+                shareStateText.text = "나눔 완료"
+                shareStateText.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
             } else if (articleDetailData?.shareStatus == false) {
-                shareStateText.visibility = View.GONE
+                shareStateText.visibility = View.VISIBLE
+                shareStateText.text = "나눔 중"
+                shareStateText.setTextColor(ContextCompat.getColor(requireContext(), R.color.main))
             }
             sharePosition.visibility = View.VISIBLE
             shareSection.visibility = View.VISIBLE
@@ -628,7 +637,11 @@ class CommunityDetailFragment : Fragment() {
         if (UserData.getUserPK() == articleDetailData?.userPK) {
             UserData.setEditArticle(articleDetailData!!)
             spinnerButton.setOnClickListener {
-                val articleBottomSheet = ArticleBottomSheet(requireContext(), articleId)
+                var isShareCategory = false
+                if (detailCategory.text == "나눔") {
+                    isShareCategory = true
+                }
+                var articleBottomSheet = ArticleBottomSheet(requireContext(), articleId, isShareCategory, articleDetailData?.shareStatus == true, this)
                 articleBottomSheet.show(
                     mActivity.supportFragmentManager,
                     articleBottomSheet.tag
@@ -683,19 +696,9 @@ class CommunityDetailFragment : Fragment() {
         progressSection.visibility = View.GONE
     }
 
-    private fun setShareText(selectedOption: String) {
-        if (selectedOption == " 나눔 완료 ") {
-            changeShareStatus(articleId, UserData.getUserPK())
-            shareStateText.visibility = View.VISIBLE
-            shareStateText.text = "나눔 완료"
-            shareStatus = true
 
-        } else if (selectedOption == " 나눔 취소 ") {
-            changeShareStatus(articleId, UserData.getUserPK())
-            shareStateText.visibility = View.VISIBLE
-            shareStateText.text = "나눔 취소"
-            shareStatus = false
-        }
-    }
 }
 
+interface ArticleBottomSheetListener {
+    fun onGetDetailRequested()
+}
