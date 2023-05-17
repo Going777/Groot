@@ -305,10 +305,8 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
                     response: Response<CommunityCommentResponse>
                 ) {
                     if (response.isSuccessful) {
-                        Log.d("commentResponse", response.body().toString())
-                        val commentitem = response.body()!!.comment[0]
-                        Log.d("commentItem", commentitem.toString())
                     }
+                    getArticleComment()
                 }
 
 
@@ -494,12 +492,19 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
                     getCommentData = response.body()!!
                     Log.d("CommunityCommentFragment", "$checkResponse")
 
+                    if (checkResponse?.size == 0 && articleDetailData?.category != "나눔") {
+                        noComment.visibility = View.VISIBLE
+                    } else {
+                        noComment.visibility = View.GONE
+                    }
+
                     val list = createDummyData()
-                    ThreadUtil.startUIThread(1000) {
+                    ThreadUtil.startUIThread(0) {
                         commentAdapter.reload(list)
                         hideProgress()
-
                     }
+
+                    detailCommentCnt.text = "댓글 (" + checkResponse?.size.toString() + ")"
 
 
                 } else {
@@ -574,7 +579,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
             var content = postCommentInput?.text.toString()
             if (articleId != null) {
                 postComment(articleId, content)
-                getArticleComment()
+
             }
 
             // 입력창 리셋 및 키보드 닫기
@@ -671,7 +676,13 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
                 if (detailCategory.text == "나눔") {
                     isShareCategory = true
                 }
-                var articleBottomSheet = ArticleBottomSheet(requireContext(), articleId, isShareCategory, articleDetailData?.shareStatus == true, this)
+                var articleBottomSheet = ArticleBottomSheet(
+                    requireContext(),
+                    articleId,
+                    isShareCategory,
+                    articleDetailData?.shareStatus == true,
+                    this
+                )
                 articleBottomSheet.show(
                     mActivity.supportFragmentManager,
                     articleBottomSheet.tag
@@ -726,12 +737,13 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         progressSection.visibility = View.GONE
     }
 
-        //    채팅창으로 이동
+    //    채팅창으로 이동
     private fun requestMoveChat() {
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
 
-        val roomId:String = changeRoomNumber(UserData.getUserPK().toString(), detailUserPK.toString())
+        val roomId: String =
+            changeRoomNumber(UserData.getUserPK().toString(), detailUserPK.toString())
 
         val chatFragment = ChatFragment()
         val bundle = Bundle()

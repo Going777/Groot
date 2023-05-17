@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -47,9 +49,11 @@ class CommentAdapter(
     interface RecyclerViewAdapterDelegate {
         fun onLoadMore()
     }
+
     interface ItemClickListener {
         fun onDeleteBtnClick(view: View, position: Int)
     }
+
     private lateinit var deleteBtnClickListner: CommentAdapter.ItemClickListener
 
     fun setItemClickListener(itemClickListener: CommentAdapter.ItemClickListener) {
@@ -84,7 +88,9 @@ class CommentAdapter(
                 "확인",
                 DialogInterface.OnClickListener { dialog, which ->
                     holder.deleteComment(holder.communityCommentResponse.comment[0].id)
-                    deleteBtnClickListner.onDeleteBtnClick(it, position)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        deleteBtnClickListner.onDeleteBtnClick(it, position)
+                    }, 500)
                     dialog.dismiss()
                 })
             dialog.show()
@@ -176,9 +182,11 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
                 val fragmentActivity = it.context as? FragmentActivity
                 if (fragmentActivity != null) {
                     val fragmentManager: FragmentManager = fragmentActivity.supportFragmentManager
-                    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+                    val fragmentTransaction: FragmentTransaction =
+                        fragmentManager.beginTransaction()
 
-                    val roomId = changeRoomNumber(UserData.getUserPK().toString(), userPK.toString())
+                    val roomId =
+                        changeRoomNumber(UserData.getUserPK().toString(), userPK.toString())
                     val chatFragment = ChatFragment()
                     val bundle = Bundle()
                     bundle.putString("userPK", userPK)
@@ -188,10 +196,11 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
                     Log.d("받아온 데이터", bundle.toString())
 
                     chatFragment.arguments = bundle
-                    fragmentTransaction.replace(R.id.fl_container, chatFragment).addToBackStack(null).commit()
+                    fragmentTransaction.replace(R.id.fl_container, chatFragment)
+                        .addToBackStack(null).commit()
                 }
             }
-            moveChatDialog.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss()}
+            moveChatDialog.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             moveChatDialog.create().show()
         }
 
@@ -203,7 +212,8 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         pickNickName = communityCommentResponse.comment[0].nickName
         pickProfile = communityCommentResponse.comment[0].profile.toString()
         nickName.text = communityCommentResponse.comment[0].nickName
-        createTime.text = communityCommentResponse.comment[0].createTime.date.year.toString() + '.'+ communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + communityCommentResponse.comment[0].createTime.time.hour + ':'+ communityCommentResponse.comment[0].createTime.time.minute.toString()
+        createTime.text =
+            communityCommentResponse.comment[0].createTime.date.year.toString() + '.' + communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + communityCommentResponse.comment[0].createTime.time.hour + ':' + communityCommentResponse.comment[0].createTime.time.minute.toString()
 
         if (communityCommentResponse.comment[0].userPK == UserData.getUserPK()) {
             deleteButton.visibility = View.VISIBLE
@@ -234,6 +244,7 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         }
 
     }
+
     private fun changeRoomNumber(senderNumber: String?, receiverNumber: String?): String {
         val senderRoomNumber = senderNumber?.padStart(6, '0')
         val receiverRoomNumber = receiverNumber?.padStart(6, '0')
@@ -256,6 +267,7 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
                     if (response.isSuccessful) {
                         Log.d(TAG, "댓글 삭제 성공")
                     }
+
                 }
 
                 override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
