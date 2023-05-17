@@ -142,10 +142,11 @@ public class PlantServiceImpl implements PlantService{
         }
         else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
             logger.info("image file is not a plant");
-            return PlantWithCharacterDTO.builder()
-                    .plantIdentificationDTO(defaultReturn(0))
-                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
-                    .build();
+            return null;
+//            return PlantWithCharacterDTO.builder()
+//                    .plantIdentificationDTO(defaultReturn(0))
+//                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+//                    .build();
         }
         else {
             logger.info("Plantnet request failed with response code : {}", response.getStatusCode());
@@ -303,12 +304,12 @@ public class PlantServiceImpl implements PlantService{
         // return for not found
         else {
             logger.info("Failed to find plant from db");
-            return PlantWithCharacterDTO.builder()
-                    .plantIdentificationDTO(defaultReturn(11))
-                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
-                    .build();
+            return null;
+//            return PlantWithCharacterDTO.builder()
+//                    .plantIdentificationDTO(defaultReturn(11))
+//                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+//                    .build();
         }
-//        return null;
     }
 
     /**
