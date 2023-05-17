@@ -1,6 +1,8 @@
 package com.chocobi.groot.view.community.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,20 +21,35 @@ import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.community.CommentPostRequest
 import com.chocobi.groot.view.community.CommunityCommentPostService
-import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.chocobi.groot.view.community.model.CommunityShareItemResponse
+import com.chocobi.groot.view.pot.PotBottomSheetListener
+import com.chocobi.groot.view.pot.adapter.PotDiaryListRVAdapter
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.ref.WeakReference
 
 
-class CommentAdapter(private val recyclerView: RecyclerView) :
+class CommentAdapter(
+    private val recyclerView: RecyclerView,
+    private val context: Context
+) :
     RecyclerView.Adapter<CommentItemViewHolder>() {
 
     interface RecyclerViewAdapterDelegate {
         fun onLoadMore()
     }
+    interface ItemClickListener {
+        fun onDeleteBtnClick(view: View, position: Int)
+    }
+    private lateinit var deleteBtnClickListner: CommentAdapter.ItemClickListener
 
+    fun setItemClickListener(itemClickListener: CommentAdapter.ItemClickListener) {
+        this.deleteBtnClickListner = itemClickListener
+    }
 
     private var mutableList: MutableList<CommunityCommentResponse> = mutableListOf()
 
@@ -47,11 +65,32 @@ class CommentAdapter(private val recyclerView: RecyclerView) :
     override fun onBindViewHolder(holder: CommentItemViewHolder, position: Int) {
         holder.communityCommentResponse = mutableList[position]
 
+        val deleteButton = holder.itemView.findViewById<ImageButton>(R.id.deleteButton)
+        deleteButton.setOnClickListener {
+            val dialog = AlertDialog.Builder(context)
+            dialog.setTitle("댓글 삭제")
+            dialog.setMessage("댓글을 삭제하시겠습니까?")
+            dialog.setNegativeButton(
+                "취소",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            dialog.setPositiveButton(
+                "확인",
+                DialogInterface.OnClickListener { dialog, which ->
+                    holder.deleteComment(holder.communityCommentResponse.comment[0].id)
+                    deleteBtnClickListner.onDeleteBtnClick(it, position)
+                    dialog.dismiss()
+                })
+            dialog.show()
+        }
+
         holder.delegate = object : CommentItemViewHolder.CommentItemViewHolderDelegate {
 
         }
 
         holder.updateView()
+
 
         if (position == mutableList.size - 1) {
             delegate?.onLoadMore()
@@ -131,9 +170,9 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         if (communityCommentResponse.comment[0].userPK == UserData.getUserPK()) {
             deleteButton.visibility = View.VISIBLE
         }
-        deleteButton.setOnClickListener {
-            Log.d(TAG, "delete click")
-        }
+//        deleteButton.setOnClickListener {
+//            deleteComment(communityCommentResponse.comment[0].id)
+//        }
         nickName.text = communityCommentResponse.comment[0].nickName
         val koreahour = communityCommentResponse.comment[0].createTime.time.hour + 9
         createTime.text =
@@ -158,11 +197,27 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
     }
 
-    private fun deleteComment(commentId: Int) {
+    fun deleteComment(commentId: Int) {
         val userPK = UserData.getUserPK()
         var retrofit = RetrofitClient.getClient()!!
         val communityCommentPostService = retrofit.create(CommunityCommentPostService::class.java)
 
+        communityCommentPostService.requestCommentDelete(commentId, userPK)
+            .enqueue(object : Callback<CommunityCommentResponse> {
+                override fun onResponse(
+                    call: Call<CommunityCommentResponse>,
+                    response: Response<CommunityCommentResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "댓글 삭제 성공")
+                    }
+                }
+
+                override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
+                    Log.d(TAG, "댓글 삭제 실패")
+
+                }
+            })
 
     }
 

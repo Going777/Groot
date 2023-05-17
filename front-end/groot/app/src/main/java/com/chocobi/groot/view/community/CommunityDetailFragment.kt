@@ -45,6 +45,7 @@ import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.chocobi.groot.view.community.model.CommunityService
+import com.chocobi.groot.view.pot.adapter.PotDiaryListRVAdapter
 import com.chocobi.groot.view.weather.Main
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -103,7 +104,6 @@ class CommunityDetailFragment : Fragment() {
     private val imagesList: MutableList<String?> = arrayListOf()
 
     private lateinit var getData: CommunityArticleDetailResponse
-
 
     @SuppressLint("NotifyDataSetChanged", "MissingInflatedId")
     override fun onCreateView(
@@ -281,52 +281,6 @@ class CommunityDetailFragment : Fragment() {
                         Log.d("commentResponse", response.body().toString())
                         val commentitem = response.body()!!.comment[0]
                         Log.d("commentItem", commentitem.toString())
-//                        for (commentReturn in response.body()!!.comment) {
-//                            val communityCommentResponse = CommunityCommentResponse(
-//                                comment = listOf(
-//                                    Comment(
-//                                        userPK = commentitem.userPK ?: 0,
-//                                        nickName = commentitem.nickName ?: "",
-//                                        commentId = commentitem.commentId ?: 0,
-//                                        content = commentitem.content ?: "",
-//                                        profile = commentitem.profile ?: "",
-//                                        createTime = commentitem.createTime,
-//                                        updateTime = commentitem.updateTime
-//                                    )
-//                                ),
-//                                result = getCommentData.result,
-//                                msg = getCommentData.msg
-//                            )
-//                        }
-
-//                            userPK = userPK,
-//                            nickname = nickname,
-//                            content = content,
-//                            createTime = createTime,
-//                            updateTime = updateTime
-//                        )
-//                        commentAdapter.addComment(comment)
-
-//                        val comments = getCommentData.comment
-//                        Log.d("CommunityCommentFragmentComments", comments.toString())
-//                        for (commentitem in comments) {
-//                            val communityCommentResponse = CommunityCommentResponse(
-//                                comment = listOf(
-//                                    Comment(
-//                                        userPK = commentitem.userPK ?: 0,
-//                                        nickName = commentitem.nickName ?: "",
-//                                        commentId = commentitem.commentId ?: 0,
-//                                        content = commentitem.content ?: "",
-//                                        profile = commentitem.profile ?: "",
-//                                        createTime = commentitem.createTime,
-//                                        updateTime = commentitem.updateTime
-//                                    )
-//                                ),
-//                                result = getCommentData.result,
-//                                msg = getCommentData.msg
-//                            )
-//                            commentAdapter.addComment(communityCommentResponse)
-//                        }
                     }
                 }
 
@@ -402,8 +356,8 @@ class CommunityDetailFragment : Fragment() {
     }
 
     private fun initList() {
-        commentAdapter = CommentAdapter(commentRecyclerView)
-        commentRecyclerView.adapter = commentAdapter // RecyclerView에 Adapter 설정
+        commentAdapter = CommentAdapter(commentRecyclerView, requireContext())
+//        commentRecyclerView.adapter = commentAdapter // RecyclerView에 Adapter 설정
         val size = commentAdapter.itemCount
         commentRecyclerView.scrollToPosition(size - 1)
 
@@ -421,6 +375,11 @@ class CommunityDetailFragment : Fragment() {
         }
         commentRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         commentRecyclerView.adapter = commentAdapter
+        commentAdapter.setItemClickListener(object : CommentAdapter.ItemClickListener {
+            override fun onDeleteBtnClick(view: View, position: Int) {
+                getArticleComment()
+            }
+        })
     }
 
     private fun showProgress() {
@@ -443,7 +402,7 @@ class CommunityDetailFragment : Fragment() {
                     Comment(
                         userPK = commentitem.userPK ?: 0,
                         nickName = commentitem.nickName ?: "",
-                        commentId = commentitem.commentId ?: 0,
+                        id = commentitem.id ?: 0,
                         content = commentitem.content ?: "",
                         profile = commentitem.profile ?: "",
                         createTime = commentitem.createTime,
@@ -739,3 +698,4 @@ class CommunityDetailFragment : Fragment() {
         }
     }
 }
+

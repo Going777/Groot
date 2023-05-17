@@ -9,7 +9,7 @@ data class CommunityCommentResponse(
 )
 
 data class Comment (
-    val commentId: Int,
+    val id: Int,
     val userPK: Int,
     val nickName: String,
     val content: String,
