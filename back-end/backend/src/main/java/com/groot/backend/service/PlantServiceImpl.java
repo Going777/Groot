@@ -12,7 +12,6 @@ import com.groot.backend.util.RestTemplateErrorHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,6 +41,8 @@ public class PlantServiceImpl implements PlantService{
     private final PlantRepository plantRepository;
 
     private final CharacterRepository characterRepository;
+
+    private final float thresholdScore = 0.02F;
 
     @Value("${plant.temp.dir}")
     private String plantTempDir;
@@ -142,10 +143,11 @@ public class PlantServiceImpl implements PlantService{
         }
         else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
             logger.info("image file is not a plant");
-            return PlantWithCharacterDTO.builder()
-                    .plantIdentificationDTO(defaultReturn(0))
-                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
-                    .build();
+            return null;
+//            return PlantWithCharacterDTO.builder()
+//                    .plantIdentificationDTO(defaultReturn(0))
+//                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+//                    .build();
         }
         else {
             logger.info("Plantnet request failed with response code : {}", response.getStatusCode());
@@ -264,6 +266,12 @@ public class PlantServiceImpl implements PlantService{
 
             for(int i=0; i<plantOrder.length; i++) {
                 logger.info("Find genus : {} th : {}", i, plantOrder[i][0]);
+
+                if(Float.parseFloat(plantOrder[i][2]) < thresholdScore) {
+                    logger.info("Insufficient score : {}, {}", plantOrder[i][0], plantOrder[i][2]);
+                    continue;
+                }
+
                 String[][] candidates = getCandidates(result, plantOrder[i][0]);
                 String genus = plantOrder[i][0];
                 if(candidates.length < 1 || plantEntities.stream().noneMatch(plantEntity -> {
@@ -298,17 +306,14 @@ public class PlantServiceImpl implements PlantService{
                         .characterAssetDTO(getAsset(plantEntity))
                         .build();
             }
-            throw new NotYetImplementedException();
         }
         // return for not found
-        else {
-            logger.info("Failed to find plant from db");
-            return PlantWithCharacterDTO.builder()
-                    .plantIdentificationDTO(defaultReturn(11))
-                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
-                    .build();
-        }
-//        return null;
+        logger.info("Failed to find plant from db");
+        return null;
+//        return PlantWithCharacterDTO.builder()
+//                .plantIdentificationDTO(defaultReturn(11))
+//                .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+//                .build();
     }
 
     /**
