@@ -157,6 +157,8 @@ class DiaryItemViewHolder(itemView: View) :
         if (!diary.content.isNullOrBlank()) {
             diaryContent.visibility = View.VISIBLE
             diaryContent.text = diary.content
+        } else {
+            diaryContent.text = ""
         }
 //        diaryContent.run {
 //            doOnLayout {
