@@ -678,6 +678,10 @@ class MainActivity : AppCompatActivity() {
                     changeFragment(toPage)
                 }
 
+                "pot_detail" -> {
+                    changeFragment(toPage)
+                }
+
                 "search_camera" -> {
                     requirePermissions(
                         arrayOf(android.Manifest.permission.CAMERA),
