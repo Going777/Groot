@@ -53,6 +53,8 @@ class CommunityTab4Fragment : Fragment() {
     private lateinit var getData: CommunityArticleListResponse
 
     private var keyword: String = ""
+    private lateinit var noArticleSection: LinearLayout
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,6 +97,8 @@ class CommunityTab4Fragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+        noArticleSection = view.findViewById(R.id.noArticleSection)
+
     }
 
     private fun setListeners() {
@@ -161,6 +165,11 @@ class CommunityTab4Fragment : Fragment() {
             ) {
                 if (response.code() == 200) {
                     getData = response.body()!!
+                    if (getData.articles.total != 0) {
+                        noArticleSection.visibility = View.GONE
+                    } else {
+                        noArticleSection.visibility = View.VISIBLE
+                    }
                     val list = createDummyData(0, REQUESTPAGESIZE)
                     if (usage != "reload") {
                         val totalElements = getData.articles.total // 전체 데이터 수

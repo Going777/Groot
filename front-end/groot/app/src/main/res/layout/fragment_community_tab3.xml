@@ -67,6 +67,28 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <LinearLayout
+            android:id="@+id/noArticleSection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_community"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:text="게시글이 없습니다."
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/grey"/>
+
+        </LinearLayout>
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
