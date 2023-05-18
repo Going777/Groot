@@ -140,6 +140,14 @@
 
 ---
 
+### 메인 화면
+
+![main](/uploads/ef9c3a771d966f5d8150a07e21d06511/main.gif)
+
+### AR
+
+![ar_green_cat](/uploads/ff949027d265ec94e3f309bfd154df5f/ar_green_cat.gif)
+
 ### 리사이클러뷰를 통한 무한 스크롤
 
 <br>
