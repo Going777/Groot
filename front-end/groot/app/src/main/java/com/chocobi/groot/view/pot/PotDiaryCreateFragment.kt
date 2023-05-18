@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.MainActivity
@@ -51,6 +52,7 @@ class PotDiaryCreateFragment : Fragment() {
 
     private lateinit var mActivity: MainActivity
 
+    private lateinit var nestedScrollView: NestedScrollView
     private lateinit var attachedPhoto: ImageView
     private lateinit var attachPhotoSection: LinearLayout
     private lateinit var attachedPhotoSection: ConstraintLayout
@@ -200,12 +202,11 @@ class PotDiaryCreateFragment : Fragment() {
 
         diaryContent = view.findViewById(R.id.diaryContent)
         postDiaryBtnClickBtn = view.findViewById(R.id.postDiaryBtn)
+
+        nestedScrollView = view.findViewById(R.id.nestedScrollView)
     }
 
     private fun filterChipGroup() {
-        if (waterStatus == true) {
-            Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show()
-        }
         waterChip.setOnCheckedChangeListener { buttonView, isChecked ->
             water = isChecked
         }
@@ -217,7 +218,6 @@ class PotDiaryCreateFragment : Fragment() {
         }
         sunChip.setOnCheckedChangeListener { buttonView, isChecked ->
             sun = isChecked
-            Log.d("PotDiaryCreateFragment", "filterChipGroup() 해해ㅐ $isChecked")
         }
         pillChip.setOnCheckedChangeListener { buttonView, isChecked ->
             nutrients = isChecked
@@ -292,6 +292,9 @@ class PotDiaryCreateFragment : Fragment() {
         attachedPhotoSection!!.visibility = View.VISIBLE
         attachedPhoto?.setImageURI(uri)
         imageFile = uriToFile(uri)
+        nestedScrollView.post {
+            nestedScrollView.smoothScrollTo(0, nestedScrollView.getChildAt(0).height)
+        }
     }
 
     private fun uriToFile(uri: Uri): File? {
