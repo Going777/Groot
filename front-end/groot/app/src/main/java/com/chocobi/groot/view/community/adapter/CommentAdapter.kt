@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.chat.ChatFragment
@@ -42,7 +43,7 @@ import java.lang.ref.WeakReference
 
 class CommentAdapter(
     private val recyclerView: RecyclerView,
-    private val context: Context
+    private val context: Context, private val mActivity: MainActivity
 ) :
     RecyclerView.Adapter<CommentItemViewHolder>() {
 
@@ -68,7 +69,7 @@ class CommentAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentItemViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_community_comment_item, parent, false)
-        return CommentItemViewHolder(view)
+        return CommentItemViewHolder(view, mActivity)
     }
 
     override fun onBindViewHolder(holder: CommentItemViewHolder, position: Int) {
@@ -130,7 +131,8 @@ class CommentAdapter(
 }
 
 
-class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class CommentItemViewHolder(itemView: View, private val mActivity: MainActivity) :
+    RecyclerView.ViewHolder(itemView) {
 
     interface CommentItemViewHolderDelegate {
         fun onItemViewClick(communityCommentResponse: CommunityCommentResponse) {
@@ -179,26 +181,35 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             val moveChatDialog = AlertDialog.Builder(it.context)
             moveChatDialog.setMessage("$pickNickName 님과 채팅을 하시겠습니까?")
             moveChatDialog.setPositiveButton("OK") { dialog, which ->
-                val fragmentActivity = it.context as? FragmentActivity
-                if (fragmentActivity != null) {
-                    val fragmentManager: FragmentManager = fragmentActivity.supportFragmentManager
-                    val fragmentTransaction: FragmentTransaction =
-                        fragmentManager.beginTransaction()
 
-                    val roomId =
-                        changeRoomNumber(UserData.getUserPK().toString(), userPK.toString())
-                    val chatFragment = ChatFragment()
-                    val bundle = Bundle()
-                    bundle.putString("userPK", userPK)
-                    bundle.putString("nickName", pickNickName)
-                    bundle.putString("profile", pickProfile)
-                    bundle.putString("roomId", roomId)
-                    Log.d("받아온 데이터", bundle.toString())
+                val roomId =
+                    changeRoomNumber(UserData.getUserPK().toString(), userPK.toString())
+                mActivity.setChatUserPK(userPK)
+                mActivity.setChatPickNickName(pickNickName)
+                mActivity.setChatPickProfile(pickProfile)
+                mActivity.setChatRoomId(roomId)
 
-                    chatFragment.arguments = bundle
-                    fragmentTransaction.replace(R.id.fl_container, chatFragment)
-                        .addToBackStack(null).commit()
-                }
+                mActivity.changeFragment("chat")
+
+
+//                val fragmentActivity = it.context as? FragmentActivity
+//                if (fragmentActivity != null) {
+//                    val fragmentManager: FragmentManager = fragmentActivity.supportFragmentManager
+//                    val fragmentTransaction: FragmentTransaction =
+//                        fragmentManager.beginTransaction()
+//
+//                    val chatFragment = ChatFragment()
+//                    val bundle = Bundle()
+//                    bundle.putString("userPK", userPK)
+//                    bundle.putString("nickName", pickNickName)
+//                    bundle.putString("profile", pickProfile)
+//                    bundle.putString("roomId", roomId)
+//                    Log.d("받아온 데이터", bundle.toString())
+//
+//                    chatFragment.arguments = bundle
+//                    fragmentTransaction.replace(R.id.fl_container, chatFragment)
+//                        .addToBackStack(null).commit()
+//                }
             }
             moveChatDialog.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             moveChatDialog.create().show()

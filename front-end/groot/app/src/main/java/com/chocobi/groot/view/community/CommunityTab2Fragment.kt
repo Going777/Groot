@@ -13,6 +13,7 @@ import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
@@ -23,6 +24,7 @@ import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.community.model.ArticleContent
 import com.chocobi.groot.view.community.model.CommunityService
+import com.chocobi.groot.view.weather.Main
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,6 +33,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class CommunityTab2Fragment : Fragment() {
     private val TAG = "CommunityTab2Fragment"
+
+    private lateinit var mActivity:MainActivity
     private val CATEGORY = "자유"
     private val REQUESTPAGESIZE = 10
     private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
@@ -57,6 +61,7 @@ class CommunityTab2Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community_tab2, container, false)
+        mActivity = activity as MainActivity
         Log.d("CommunityTab2Fragment", "onCreateView()")
         findViews(view)
         //        태그 데이터 세팅
@@ -102,7 +107,7 @@ class CommunityTab2Fragment : Fragment() {
 
     private fun initList() {
         Log.d("CommunityTab2Fragment", "initList()")
-        adapter = RecyclerViewAdapter()
+        adapter = RecyclerViewAdapter(mActivity)
         adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
                 loadMore()
