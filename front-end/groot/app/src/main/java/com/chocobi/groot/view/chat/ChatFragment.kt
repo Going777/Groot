@@ -284,17 +284,17 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 키보드가 올라올 때 이벤트를 처리하는 리스너 등록
-        val activityRootView = requireActivity().window.decorView.findViewById<View>(android.R.id.content)
-        activityRootView.viewTreeObserver.addOnGlobalLayoutListener {
-            val rect = Rect()
-            activityRootView.getWindowVisibleDisplayFrame(rect)
-            val screenHeight = activityRootView.rootView.height
-            val keyboardHeight = screenHeight - rect.bottom
-            if (keyboardHeight > dpToPx(requireContext(), 200)) { // 키보드 높이가 200dp 이상인 경우
-                scrollToBottom()
-            }
-        }
+//        // 키보드가 올라올 때 이벤트를 처리하는 리스너 등록
+//        val activityRootView = requireActivity().window.decorView.findViewById<View>(android.R.id.content)
+//        activityRootView.viewTreeObserver.addOnGlobalLayoutListener {
+//            val rect = Rect()
+//            activityRootView.getWindowVisibleDisplayFrame(rect)
+//            val screenHeight = activityRootView.rootView.height
+//            val keyboardHeight = screenHeight - rect.bottom
+//            if (keyboardHeight > dpToPx(requireContext(), 200)) { // 키보드 높이가 200adp 이상인 경우
+//                scrollToBottom()
+//            }
+//        }
     }
 
     private fun scrollToBottom() {
