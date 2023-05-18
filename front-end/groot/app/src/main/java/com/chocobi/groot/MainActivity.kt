@@ -204,13 +204,13 @@ class MainActivity : AppCompatActivity() {
 
             "search_detail" -> {
                 val bundle = Bundle()
-                if (intent.getStringExtra("plant_id") == null) {
+//                if (intent.getStringExtra("plant_id") == null) {
                     bundle.putString(
                         "plant_id", plantId.toString()
                     )
-                } else {
-                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
-                }
+//                } else {
+//                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
+//                }
                 bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
                 fragment.arguments = bundle
@@ -542,7 +542,7 @@ class MainActivity : AppCompatActivity() {
 //        화분 이름 받아오기
             getPlantNameList()
         }
-        if(isExistRegionData == "") {
+        if (isExistRegionData == "") {
 //            지역 받아오기
             getRegionNameList()
         }
@@ -664,7 +664,9 @@ class MainActivity : AppCompatActivity() {
 
         //        특정 프레그먼트로 이동
         var toPage = intent.getStringExtra("toPage")
-        val plantId = intent.getStringExtra("plant_id")
+        if (!intent.getStringExtra("plant_id").isNullOrEmpty()) {
+            plantId = intent.getStringExtra("plant_id")!!.toInt()
+        }
         if (intent.getStringExtra("cameraStatus") != null) {
             cameraStatus = intent.getStringExtra("cameraStatus")
 
