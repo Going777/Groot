@@ -266,6 +266,9 @@ public class DiaryServiceImpl implements DiaryService{
         }
         PotEntity pot = diaryEntity.getPotEntity();
         // null이면 원래 entity값 가져가고 아니면 추가
+        // 물주기 등 활동 중복안하려면 diarycheck 확인하고 둘다 true면 new Diary에는 false로? - 아직 안함 생각만
+        boolean isWater = diaryCheck.getWater() && diaryDTO.getWater()!=null && diaryDTO.getWater()? false: true;
+        boolean isNutrients = diaryCheck.getNutrients() && diaryDTO.getNutrients()!=null && diaryDTO.getNutrients()? false: true;
         DiaryEntity newDiary = DiaryEntity.builder()
                 .id(diaryEntity.getId())
                 .userEntity(diaryEntity.getUserEntity())
@@ -277,8 +280,8 @@ public class DiaryServiceImpl implements DiaryService{
                 .pruning(diaryDTO.getPruning()!=null?diaryDTO.getPruning():diaryEntity.getPruning())
                 .content(diaryDTO.getContent()!=null?diaryDTO.getContent():diaryEntity.getContent())
                 .imgPath(storedFileName)
-                .water(diaryDTO.getWater()!=null?diaryDTO.getWater():diaryEntity.getWater())
-                .nutrients(diaryDTO.getNutrients()!=null?diaryDTO.getNutrients():diaryEntity.getNutrients())
+                .water(diaryDTO.getWater()!=null?isWater:diaryEntity.getWater())
+                .nutrients(diaryDTO.getNutrients()!=null?isNutrients:diaryEntity.getNutrients())
                 .isUserLast(diaryEntity.getIsUserLast())
                 .isPotLast(diaryEntity.getIsPotLast())
                 .build();
@@ -320,11 +323,11 @@ public class DiaryServiceImpl implements DiaryService{
         // 새로운 미션을 수행했을 때
         UserEntity user = diaryEntity.getUserEntity();
 
-        if(!diaryEntity.getWater() && newDiary.getWater()) {
+        if(!diaryEntity.getWater() && newDiary.getWater() && !diaryCheck.getWater()) {
             addDonePlan(user, pot, 0, diaryEntity);
         }
         //영양제 일정 추가
-        if(!diaryEntity.getNutrients() && newDiary.getNutrients()) {
+        if(!diaryEntity.getNutrients() && newDiary.getNutrients() && !diaryCheck.getNutrients()) {
             addDonePlan(user, pot, 1, diaryEntity);
         }
 
@@ -381,8 +384,12 @@ public class DiaryServiceImpl implements DiaryService{
             diaryRepository.deleteById(diaryId);
 
             // isLast 수정 - 마지막 false를 true로
-            diaryRepository.updateIsPotLastToTrueByPotIdAndDateTime(pot.getId(), diaryEntity.getCreatedDate());
-            diaryRepository.updateIsPotLastToTrueByUserIdAndDateTime(diaryEntity.getUserPK(), diaryEntity.getCreatedDate());
+            if(diaryEntity.getIsPotLast()) {
+                diaryRepository.updateIsPotLastToTrueByPotIdAndDateTime(pot.getId(), diaryEntity.getCreatedDate());
+            }
+            if(diaryEntity.getIsUserLast()){
+                diaryRepository.updateIsPotLastToTrueByUserIdAndDateTime(diaryEntity.getUserPK(), diaryEntity.getCreatedDate());
+            }
 
 
             // check 테이블 수정
