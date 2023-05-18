@@ -19,7 +19,7 @@ import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.ChatFragment
-import com.chocobi.groot.view.chat.ChatMessage
+import com.chocobi.groot.view.chat.model.ChatMessage
 import com.chocobi.groot.view.chat.model.ChatUserListResponse
 import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.ref.WeakReference
