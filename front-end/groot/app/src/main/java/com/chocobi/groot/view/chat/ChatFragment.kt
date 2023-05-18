@@ -1,18 +1,23 @@
 package com.chocobi.groot.view.chat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -40,6 +45,7 @@ import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+
 class ChatFragment : Fragment() {
 
     private lateinit var receiverRoom: String //받는 대화방
@@ -52,6 +58,8 @@ class ChatFragment : Fragment() {
     private lateinit var lastMessage: String
     private lateinit var lastTime: String
     private var firstMessage: Boolean = true
+    private lateinit var inputLayout: CardView
+    private lateinit var chatRecyclerView: RecyclerView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +67,7 @@ class ChatFragment : Fragment() {
 
     }
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,6 +82,7 @@ class ChatFragment : Fragment() {
         val chatNickName = arguments?.getString("nickName")
         val chatProfile = arguments?.getString("profile")
         val roomId = arguments?.getString("roomId")
+        inputLayout = view.findViewById(R.id.inputLayout)
 
         Log.d("받아온 데이터", chatUserPK.toString())
         Log.d("받아온 데이터", chatNickName.toString())
@@ -82,7 +91,7 @@ class ChatFragment : Fragment() {
         messageList = ArrayList()
         val chatMessageAdapter: ChatMessageAdapter =
             ChatMessageAdapter(requireContext(), messageList)
-        val chatRecyclerView = view.findViewById<RecyclerView>(R.id.chatRecyclerView)
+        chatRecyclerView = view.findViewById(R.id.chatRecyclerView)
         chatRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         chatRecyclerView.adapter = chatMessageAdapter
 
@@ -136,6 +145,7 @@ class ChatFragment : Fragment() {
 //        받는이방
         receiverRoom = senderUid + receiverUid
 
+        val messageEdit = view.findViewById<EditText>(R.id.messageEdit)
 
         // 메시지 전송
         val sendBtn = view.findViewById<AppCompatButton>(R.id.sendBtn)
@@ -144,9 +154,9 @@ class ChatFragment : Fragment() {
             val formatter = DateTimeFormatter.ofPattern("a h:mm")
             val saveTime = createdTime.format(formatter)
 
-            val messageEdit = view.findViewById<EditText>(R.id.messageEdit)
             val message = messageEdit.text.toString()
             val messageObject = ChatMessage(message, senderUid, saveTime)
+
 
 
             // 첫번째 메세지일 때 채팅 목록에 추가
@@ -271,5 +281,30 @@ class ChatFragment : Fragment() {
         return formattedNumber ?: ""
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        // 키보드가 올라올 때 이벤트를 처리하는 리스너 등록
+        val activityRootView = requireActivity().window.decorView.findViewById<View>(android.R.id.content)
+        activityRootView.viewTreeObserver.addOnGlobalLayoutListener {
+            val rect = Rect()
+            activityRootView.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = activityRootView.rootView.height
+            val keyboardHeight = screenHeight - rect.bottom
+            if (keyboardHeight > dpToPx(requireContext(), 200)) { // 키보드 높이가 200dp 이상인 경우
+                scrollToBottom()
+            }
+        }
+    }
+
+    private fun scrollToBottom() {
+        chatRecyclerView.postDelayed({
+            chatRecyclerView.smoothScrollToPosition(messageList.size - 1)
+        }, 0) // 200ms 후에 스크롤 이동 (필요에 따라 조정 가능)
+    }
+
+    private fun dpToPx(context: Context, dp: Int): Int {
+        val density = context.resources.displayMetrics.density
+        return (dp * density).toInt()
+    }
 }
