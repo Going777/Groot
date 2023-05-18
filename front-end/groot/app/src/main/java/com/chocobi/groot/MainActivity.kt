@@ -667,15 +667,27 @@ class MainActivity : AppCompatActivity() {
         //        특정 프레그먼트로 이동
         var toPage = intent.getStringExtra("toPage")
         val plantId = intent.getStringExtra("plant_id")
+        if (intent.getStringExtra("cameraStatus") != null) {
+            cameraStatus = intent.getStringExtra("cameraStatus")
+
+        }
         if (toPage != null) {
             Log.d(TAG, "toPage" + toPage)
 
             when (toPage) {
                 "search_detail" -> {
                     bnv_main.run { selectedItemId = R.id.searchFragment }
+                    changeFragment(toPage)
+                }
+
+                "search_camera" -> {
+                    requirePermissions(
+                        arrayOf(android.Manifest.permission.CAMERA),
+                        PERMISSION_CAMERA
+                    )
+
                 }
             }
-            changeFragment(toPage)
 
         }
     }
