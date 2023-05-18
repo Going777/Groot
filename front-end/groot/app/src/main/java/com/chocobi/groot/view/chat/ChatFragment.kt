@@ -145,16 +145,7 @@ class ChatFragment : Fragment() {
 //        받는이방
         receiverRoom = senderUid + receiverUid
 
-        inputLayout.setOnClickListener {
-            Log.d("scroll", "scroll")
-            chatRecyclerView.scrollToPosition(messageList.size - 1)
-        }
         val messageEdit = view.findViewById<EditText>(R.id.messageEdit)
-
-        messageEdit.setOnClickListener {
-            Log.d("scroll", "scroll")
-            chatRecyclerView.scrollToPosition(messageList.size - 1)
-        }
 
         // 메시지 전송
         val sendBtn = view.findViewById<AppCompatButton>(R.id.sendBtn)
@@ -308,8 +299,8 @@ class ChatFragment : Fragment() {
 
     private fun scrollToBottom() {
         chatRecyclerView.postDelayed({
-            chatRecyclerView.scrollToPosition(messageList.size - 1)
-        }, 200) // 200ms 후에 스크롤 이동 (필요에 따라 조정 가능)
+            chatRecyclerView.smoothScrollToPosition(messageList.size - 1)
+        }, 0) // 200ms 후에 스크롤 이동 (필요에 따라 조정 가능)
     }
 
     private fun dpToPx(context: Context, dp: Int): Int {
