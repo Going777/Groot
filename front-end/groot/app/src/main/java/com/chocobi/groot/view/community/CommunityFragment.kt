@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.Button
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -40,11 +41,20 @@ class CommunityFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        // 소프트 인풋 모드를 원래대로 복원
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         Log.d("CommunityFragment", "onCreateView()")
+        // 소프트 인풋 모드를 재설정
+        requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
         val rootView = inflater.inflate(R.layout.fragment_community, container, false)
 
