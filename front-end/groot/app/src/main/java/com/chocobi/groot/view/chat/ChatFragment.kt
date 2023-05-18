@@ -11,6 +11,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -60,6 +61,8 @@ class ChatFragment : Fragment() {
     private var firstMessage: Boolean = true
     private lateinit var inputLayout: CardView
     private lateinit var chatRecyclerView: RecyclerView
+
+    private var globalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -284,7 +287,13 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        // 키보드가 올라올 때 이벤트를 처리하는 리스너 등록
+
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        //        // 키보드가 올라올 때 이벤트를 처리하는 리스너 등록
 //        val activityRootView = requireActivity().window.decorView.findViewById<View>(android.R.id.content)
 //        activityRootView.viewTreeObserver.addOnGlobalLayoutListener {
 //            val rect = Rect()
@@ -295,6 +304,29 @@ class ChatFragment : Fragment() {
 //                scrollToBottom()
 //            }
 //        }
+
+        // 키보드 이벤트 리스너 등록
+        val activityRootView = requireActivity().window.decorView.findViewById<View>(android.R.id.content)
+        globalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+            val rect = Rect()
+            activityRootView.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = activityRootView.rootView.height
+            val keyboardHeight = screenHeight - rect.bottom
+            if (keyboardHeight > dpToPx(requireContext(), 200)) {
+                scrollToBottom()
+            }
+        }
+        activityRootView.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        // 키보드 이벤트 리스너 제거
+        val activityRootView = requireActivity().window.decorView.findViewById<View>(android.R.id.content)
+        activityRootView.viewTreeObserver.removeOnGlobalLayoutListener(globalLayoutListener)
+        globalLayoutListener = null
     }
 
     private fun scrollToBottom() {
