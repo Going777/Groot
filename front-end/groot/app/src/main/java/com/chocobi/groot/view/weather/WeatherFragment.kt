@@ -139,7 +139,10 @@ class WeatherFragment : Fragment() {
         val geocoder: Geocoder = Geocoder(requireContext())
         var addressData: Address?
         addressData = geocoder.getFromLocation(lat, lon, 1)?.get(0)!!
-        val address = "${addressData?.adminArea} ${addressData?.locality}"
+        val fullAddress = addressData.getAddressLine(0)
+        val splitFullAddress = fullAddress.split(" ")
+        val address = splitFullAddress.get(1) + " " + splitFullAddress.get(2)
+        Log.d("WeatherFragment","getAddress() 주소 $address")
         addressText.setText(address)
         GlobalVariables.updateAddress(address)
     }
