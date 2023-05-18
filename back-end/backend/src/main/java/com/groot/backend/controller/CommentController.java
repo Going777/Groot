@@ -45,7 +45,7 @@ public class CommentController {
     public ResponseEntity updateComment(@RequestBody CommentDTO commentDTO, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        if(userId != commentDTO.getUserPK()){
+        if(userId != commentDTO.getUserPK() && commentService.checkDelete(commentDTO.getId(), userId)){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "댓글 수정 권한이 없습니다.");
             return ResponseEntity.badRequest().body(resultMap);
@@ -66,7 +66,7 @@ public class CommentController {
     public ResponseEntity deleteComment(@PathVariable Long commentId, @PathVariable Long userPK, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        if(userId != userPK){
+        if(commentService.checkDelete(commentId, userId)){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "댓글 삭제 권한이 없습니다.");
             return ResponseEntity.badRequest().body(resultMap);

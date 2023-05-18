@@ -41,6 +41,15 @@ public class CommentServiceImpl implements CommentService{
     private final FirebaseMessaging firebaseMessaging;
 
     @Override
+    public Boolean checkDelete(Long commentId, Long userPK) {
+        CommentEntity comment = commentRepository.findById(commentId).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."));
+        if(userPK == comment.getUserPK()){
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     @Transactional
     public CommentEntity insertComment(CommentDTO commentDTO, Long userPK) {
         UserEntity writer = userRepository.findById(userPK).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
