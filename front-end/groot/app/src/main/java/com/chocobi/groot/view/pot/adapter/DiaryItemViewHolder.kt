@@ -190,18 +190,31 @@ class DiaryItemViewHolder(itemView: View) :
 
         if (diary.water) {
             waterBadge.visibility = View.VISIBLE
+        } else {
+            waterBadge.visibility = View.GONE
         }
         if (diary.pruning) {
             potBadge.visibility = View.VISIBLE
+        } else {
+            potBadge.visibility = View.GONE
         }
         if (diary.bug) {
             bugBadge.visibility = View.VISIBLE
+        } else {
+            bugBadge.visibility = View.GONE
+
         }
         if (diary.sun) {
             sunnnyBadge.visibility = View.VISIBLE
+        } else {
+            sunnnyBadge.visibility = View.GONE
+
         }
         if (diary.nutrients) {
             pillBadge.visibility = View.VISIBLE
+        } else {
+            pillBadge.visibility = View.GONE
+
         }
     }
 
