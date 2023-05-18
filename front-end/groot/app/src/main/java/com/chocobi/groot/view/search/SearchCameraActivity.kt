@@ -205,6 +205,41 @@ class SearchCameraActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<PlantIdentifyResponse>, t: Throwable) {
                     Log.d(TAG, "식물 식별 실패")
                     hideProgress()
+
+                    val dialog = AlertDialog.Builder(context)
+                    dialog.setTitle("식물 식별에 실패하였습니다.")
+//                        dialog.setMessage("식물 식별에 실패하였습니다. 다시 시도하시겠습니까?")
+                    val dialogArray = arrayOf("다시 시도하기", "직접 검색하기")
+                    dialog.setItems(dialogArray) { _, which ->
+                        when (which) {
+                            0 -> {
+//                                    메인 액티비티 이동 후 카메라 켜는 코드
+                                val intent = Intent(context, MainActivity::class.java)
+                                intent.putExtra("toPage", "search_camera")
+                                intent.putExtra("cameraStatus", cameraStatus)
+
+                                startActivity(intent)
+                            }
+
+                            1 -> {
+                                val plantBottomSheet =
+                                    PlantBottomSheet(context, "fail_serach", imageUri)
+                                plantBottomSheet.show(
+                                    supportFragmentManager,
+                                    plantBottomSheet.tag
+                                )
+                            }
+                        }
+                    }
+                    dialog.setNegativeButton(
+                        "돌아가기",
+                        DialogInterface.OnClickListener { dialog, which ->
+                            val intent = Intent(context, MainActivity::class.java)
+                            startActivity(intent)
+                            dialog.dismiss()
+                        })
+                    dialog.show()
+
                 }
             })
     }
