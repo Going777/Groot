@@ -345,6 +345,7 @@ public class UserServiceImpl implements UserService{
 
             return TokenDTO.builder()
                     .grantType("Bearer")
+                    .userPK(userEntity.getId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .build();
