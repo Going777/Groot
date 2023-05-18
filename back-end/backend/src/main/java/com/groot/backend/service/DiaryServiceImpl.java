@@ -384,10 +384,10 @@ public class DiaryServiceImpl implements DiaryService{
             diaryRepository.deleteById(diaryId);
 
             // isLast 수정 - 마지막 false를 true로
-            if(diaryEntity.getIsPotLast()) {
+            if(diaryEntity.getIsPotLast()!=null && diaryEntity.getIsPotLast()) {
                 diaryRepository.updateIsPotLastToTrueByPotIdAndDateTime(pot.getId(), diaryEntity.getCreatedDate());
             }
-            if(diaryEntity.getIsUserLast()){
+            if(diaryEntity.getIsUserLast()!=null && diaryEntity.getIsUserLast()){
                 diaryRepository.updateIsPotLastToTrueByUserIdAndDateTime(diaryEntity.getUserPK(), diaryEntity.getCreatedDate());
             }
 
