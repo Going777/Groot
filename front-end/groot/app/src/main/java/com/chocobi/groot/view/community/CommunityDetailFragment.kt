@@ -67,7 +67,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     private lateinit var recyclerView: RecyclerView
     private var tagList: List<String> = emptyList()
 
-    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+//    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var commentRecyclerView: RecyclerView
     private lateinit var commentAdapter: CommentAdapter
     private lateinit var frameLayoutProgress: FrameLayout
@@ -134,7 +134,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         val communityUserShareFragment = CommunityUserShareFragment()
         communityUserShareFragment.arguments = args
         childFragmentManager.beginTransaction()
-            .add(R.id.communityUserShareFragment, communityUserShareFragment)
+            .replace(R.id.shareSection, communityUserShareFragment)
             .commit()
 
 //        ================================================================
@@ -235,7 +235,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
 
 
 //        댓글
-        setListeners()
+//        setListeners()
         initList()
         showProgress()
         commentRecyclerView.layoutManager =
@@ -365,7 +365,6 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         noComment = view.findViewById(R.id.noComment)
 
         //    댓글 리사이클러뷰
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         commentRecyclerView = view.findViewById(R.id.commentRecycleView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
 
@@ -378,11 +377,11 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     }
 
     //    댓글 리사이클러뷰
-    private fun setListeners() {
-        swipeRefreshLayout.setOnRefreshListener {
-            swipeRefreshLayout.isRefreshing = false
-        }
-    }
+//    private fun setListeners() {
+//        swipeRefreshLayout.setOnRefreshListener {
+//            swipeRefreshLayout.isRefreshing = false
+//        }
+//    }
 
     private fun initList() {
         commentAdapter = CommentAdapter(commentRecyclerView, requireContext())

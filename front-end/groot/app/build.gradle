@@ -40,6 +40,8 @@ android {
         buildConfigField "String", "WEATHER_API_KEY", properties['weather_api_key']
 
         buildConfigField "String", "YOUTUBE_API_KEY", properties['youtube_api_key']
+
+
     }
 
     packagingOptions {
