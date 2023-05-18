@@ -34,6 +34,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.chat.ChatUserListFragment
+import com.chocobi.groot.view.community.CommunityDetailFragment
 import com.chocobi.groot.view.community.CommunityEditPostFragment
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
@@ -95,6 +96,8 @@ class MainActivity : AppCompatActivity() {
     private var chatPickProfile: String = ""
     private var chatRoomId: String = ""
 
+    private var communityArticleId: Int = 0
+
 
     private lateinit var bnv_main: BottomNavigationView
 
@@ -139,6 +142,9 @@ class MainActivity : AppCompatActivity() {
         chatRoomId = name
     }
 
+    fun setCommunityArticleId(id: Int) {
+        communityArticleId = id
+    }
 
     //    알림 요청
     val notificationPermissionRequestCode = 1001
@@ -207,6 +213,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
+                fragment.arguments = bundle
+            }
+
+            "community_detail" -> {
+                fragment = CommunityDetailFragment()
+                val bundle = Bundle()
+                bundle.putInt("articleId", communityArticleId)
                 fragment.arguments = bundle
             }
 
@@ -695,8 +708,11 @@ class MainActivity : AppCompatActivity() {
             val tag11: Fragment? = supportFragmentManager.findFragmentByTag("setting")
             val tag12: Fragment? = supportFragmentManager.findFragmentByTag("chat")
             val tag13: Fragment? = supportFragmentManager.findFragmentByTag("chat_user_list")
+            val tag14: Fragment? = supportFragmentManager.findFragmentByTag("community_qna")
+            val tag15: Fragment? = supportFragmentManager.findFragmentByTag("community_tip")
+            val tag16: Fragment? = supportFragmentManager.findFragmentByTag("community_detail")
 
-            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null && tag12 == null && tag13 == null) {
+            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null && tag12 == null && tag13 == null && tag14 == null && tag15 == null && tag16 == null) {
                 var intent = Intent(this, IntroActivity::class.java)
                 startActivity(intent)
             }

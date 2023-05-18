@@ -11,6 +11,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.RetrofitClient
@@ -27,6 +28,8 @@ import retrofit2.Response
 class UserTab2Fragment : Fragment() {
 
     private val TAG = "UserTab2Fragment"
+
+    private lateinit var mActivity: MainActivity
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
@@ -42,6 +45,7 @@ class UserTab2Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_user_tab2, container, false)
+        mActivity = activity as MainActivity
         findViews(view)
         setListeners()
         initList()
@@ -127,7 +131,7 @@ class UserTab2Fragment : Fragment() {
     }
 
     private fun initList() {
-        adapter = RecyclerViewAdapter()
+        adapter = RecyclerViewAdapter(mActivity)
         adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
                 loadMore()

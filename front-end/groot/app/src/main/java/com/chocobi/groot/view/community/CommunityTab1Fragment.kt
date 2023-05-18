@@ -34,6 +34,8 @@ import retrofit2.Response
 class CommunityTab1Fragment : Fragment() {
 
     private val TAG = "CommunityTab1Fragment"
+
+    private lateinit var mActivity: MainActivity
     private val CATEGORY = "나눔"
     private val REQUESTPAGESIZE = 10
     private val LIMITREGIONCNT = 3
@@ -65,7 +67,7 @@ class CommunityTab1Fragment : Fragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_community_tab1, container, false)
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
 
         /** 지역 필터 버튼 눌렀을 때 처리 **/
         val regionFilterBtn = view.findViewById<MaterialButton>(R.id.regionFilterBtn)
@@ -159,7 +161,7 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun initList() {
-        adapter = RecyclerViewAdapter()
+        adapter = RecyclerViewAdapter(mActivity)
         adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
                 loadMore()

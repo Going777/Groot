@@ -384,7 +384,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
 //    }
 
     private fun initList() {
-        commentAdapter = CommentAdapter(commentRecyclerView, requireContext())
+        commentAdapter = CommentAdapter(commentRecyclerView, requireContext(), mActivity)
 //        commentRecyclerView.adapter = commentAdapter // RecyclerView에 Adapter 설정
         val size = commentAdapter.itemCount
         commentRecyclerView.scrollToPosition(size - 1)
