@@ -3,8 +3,10 @@ package com.groot.backend.service;
 import com.groot.backend.dto.request.PlantSearchDTO;
 import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.CharacterEntity;
+import com.groot.backend.entity.PlantAltNameEntity;
 import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.repository.CharacterRepository;
+import com.groot.backend.repository.PlantAltNameRepository;
 import com.groot.backend.repository.PlantRepository;
 import com.groot.backend.util.JsonParserUtil;
 import com.groot.backend.util.PlantCodeUtil;
@@ -39,6 +41,8 @@ public class PlantServiceImpl implements PlantService{
     private final Logger logger = LoggerFactory.getLogger(PlantServiceImpl.class);
 
     private final PlantRepository plantRepository;
+
+    private final PlantAltNameRepository plantAltNameRepository;
 
     private final CharacterRepository characterRepository;
 
@@ -111,14 +115,21 @@ public class PlantServiceImpl implements PlantService{
 
         logger.info("{} plants found", list.size());
 
-        list.forEach(plantEntity -> {
-            ret.add(PlantThumbnailDTO.builder()
-                            .plantId(plantEntity.getId())
-                            .krName(plantEntity.getKrName())
-                            .img(plantEntity.getImg())
-                            .build());
-        });
-        return ret;
+        if(list.size() > 0) {
+            list.forEach(plantEntity -> {
+                ret.add(PlantThumbnailDTO.builder()
+                        .plantId(plantEntity.getId())
+                        .krName(plantEntity.getKrName())
+                        .img(plantEntity.getImg())
+                        .build());
+            });
+            return ret;
+        }
+        else if(plantSearchDTO.getName() != null && !plantSearchDTO.getName().equals("")) {
+            logger.info("no plants found, search with name : {}", plantSearchDTO.getName());
+            return searchWithName(plantSearchDTO.getName());
+        }
+        return null;
     }
 
     @Override
@@ -433,5 +444,28 @@ public class PlantServiceImpl implements PlantService{
                 .sciName(plantEntity.getSciName())
                 .score(score)
                 .build();
+    }
+
+    /**
+     * Search plants with alternative name
+     * @param altName searching keyword
+     * @return plant list that matches alternative names
+     */
+    private List<PlantThumbnailDTO> searchWithName(String altName) {
+        List<PlantAltNameEntity> plantAltNameEntityList =
+                plantAltNameRepository.findAllByAltNameContaining(altName);
+
+        List<PlantThumbnailDTO> ret = new ArrayList<>(plantAltNameEntityList.size());
+        logger.info("Search plant with alternative name : {}, found : {}", altName, plantAltNameEntityList.size());
+
+        plantAltNameEntityList.forEach(plantAltNameEntity -> {
+            ret.add(PlantThumbnailDTO.builder()
+                            .plantId(plantAltNameEntity.getPlantEntity().getId())
+                            .krName(plantAltNameEntity.getPlantEntity().getKrName())
+                            .img(plantAltNameEntity.getPlantEntity().getImg())
+                    .build());
+        });
+
+        return ret;
     }
 }
