@@ -61,6 +61,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     private var waterComingDate: ComingDate? = null
     private var nutrientComingDate: ComingDate? = null
     private var pruningComingDate: ComingDate? = null
+    private lateinit var mActivity: MainActivity
 
 
     override fun onGetDetailRequested() {
@@ -79,7 +80,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
     ): View? {
         Log.d(TAG, "onCreate")
         var rootView = inflater.inflate(R.layout.fragment_pot_detail, container, false)
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
         potId = arguments?.getInt("potId") ?: 0
         getPotDetail(potId)
         potPlantImg = rootView.findViewById(R.id.potPlantImg)
@@ -316,11 +317,9 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
         potNameText.text = pot?.potName
         potPlantText.text = pot?.plantKrName!!.replace(" (", "\n(").replace(" ‘", "\n‘")
         potPlantText.setOnClickListener {
-            var intent = Intent(requireContext(), MainActivity::class.java)
-            intent.putExtra("toPage", "search_detail")
-            intent.putExtra("plant_id", pot?.plantId.toString())
-            intent.putExtra("imageUri", plant?.img.toString())
-            startActivity(intent)
+            mActivity.setPlantId(pot?.plantId!!)
+//            mActivity.setPlantImgUri(plant?.img.toString())
+            mActivity.changeFragment("search_detail")
         }
         val expCount = (pot?.experience?.div(pot?.level!!) ?: 0)
         progressBar.progress = (expCount * 10)
@@ -335,8 +334,10 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             dpToPx(20),
             dpToPx(20)
         )
+
         val redCount =
-            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt()+1
+            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt() + 1
+        var heartCnt = redCount
         repeat(redCount) {
             var heart = ImageView(context)
             heart.setImageResource(R.drawable.ic_heart)
@@ -347,16 +348,21 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             levelSection.addView(heart)
         }
 
+        if (heartCnt < 3) {
+            if (pot?.level!! > (redCount - 1) * 5 + 1) {
+                var greyHeart = ImageView(context)
+                greyHeart.setImageResource(R.drawable.ic_heart_half)
+                greyHeart.layoutParams = layoutParams
+                levelSection.addView(greyHeart)
+                heartCnt += 1
+            }
 
-        var greyHeart = ImageView(context)
-        if (redCount != 3 && pot?.level!! > (redCount) * 5 && pot?.level!! != 1) {
-            greyHeart.setImageResource(R.drawable.ic_heart_half)
-            greyHeart.layoutParams = layoutParams
-            levelSection.addView(greyHeart)
-        } else if (redCount != 3) {
-            greyHeart.setImageResource(R.drawable.ic_heart_grey)
-            greyHeart.layoutParams = layoutParams
-            levelSection.addView(greyHeart)
+            repeat(3 - heartCnt) {
+                var greyHeart = ImageView(context)
+                greyHeart.setImageResource(R.drawable.ic_heart_grey)
+                greyHeart.layoutParams = layoutParams
+                levelSection.addView(greyHeart)
+            }
         }
 
 

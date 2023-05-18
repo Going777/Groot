@@ -1,6 +1,5 @@
 package com.chocobi.groot
 
-import android.app.Activity
 import android.app.NotificationManager
 import android.content.ContentValues
 import android.content.Context
@@ -25,6 +24,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.chocobi.groot.data.BasicResponse
+import com.chocobi.groot.youtube.CallYoutube
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -32,7 +32,6 @@ import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.chat.ChatUserListFragment
 import com.chocobi.groot.view.community.CommunityEditPostFragment
 import com.chocobi.groot.view.community.CommunityFragment
@@ -58,6 +57,10 @@ import com.chocobi.groot.view.user.UserFragment
 import com.chocobi.groot.view.user.model.NotiStatusRequest
 import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -80,6 +83,8 @@ class MainActivity : AppCompatActivity() {
     private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
     private var potId: Int = 0
+    private var plantId: Int = 0
+    private var plantImgUri: String = ""
     private var potName: String = "화분 이름"
     private var potPlant: String = "화분 식물"
     private var potCharImg: String = "화분 이미지 URL"
@@ -89,6 +94,14 @@ class MainActivity : AppCompatActivity() {
     fun setPotId(id: Int) {
         potId = id
         Log.d("potDiary", "$potId")
+    }
+
+    fun setPlantId(id: Int) {
+        plantId = id
+    }
+
+    fun setPlantImgUri(name: String) {
+        plantImgUri = name
     }
 
     fun setPotName(name: String) {
@@ -161,9 +174,13 @@ class MainActivity : AppCompatActivity() {
 
             "search_detail" -> {
                 val bundle = Bundle()
-                bundle.putString(
-                    "plant_id", intent.getStringExtra("plant_id")
-                )
+                if (intent.getStringExtra("plant_id") == null){
+                    bundle.putString(
+                        "plant_id", plantId.toString()
+                    )
+                } else {
+                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
+                }
                 bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
                 fragment.arguments = bundle
@@ -209,22 +226,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun checkPotDetailFragmentInBackStack(): Boolean {
-        val fragmentManager = supportFragmentManager
-        val fragmentCount = fragmentManager.backStackEntryCount
-
-        if (fragmentCount > 0) {
-            val topFragment = fragmentManager.getBackStackEntryAt(fragmentCount - 1)
-            if (topFragment.name == PotDetailFragment::class.java.name) {
-                Log.d("MainActivity", "PotDetailFragment is at the top of the backstack")
-                return true
-            } else {
-                return false
-            }
-        }
-        return false
-
-    }
 
     //    camera 조작
     /**자식 액티비티에서 권한 요청 시 직접 호출하는 메서드
@@ -500,7 +501,18 @@ class MainActivity : AppCompatActivity() {
         }
 
 //        인기태그 가져오기
-        getPopularTag()
+        val isExistPopularTagData = GlobalVariables.prefs.getString("popular_tags_share","")
+        if (isExistPopularTagData == "") {
+            getPopularTag("나눔")
+            getPopularTag("자유")
+            getPopularTag("QnA")
+            getPopularTag("Tip")
+        } else {
+            getPopularTag("나눔")
+            getPopularTag("자유")
+            getPopularTag("QnA")
+            getPopularTag("Tip")
+        }
 
         potId = intent.getIntExtra("potId", 0)
         potName = intent.getStringExtra("potName").toString()
@@ -727,11 +739,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun getPopularTag() {
+    private fun getPopularTag(category: String) {
         val retrofit = RetrofitClient.basicClient()!!
         val communityService = retrofit.create(CommunityService::class.java)
-        communityService.requestPopularTags()
-            .enqueue(object : retrofit2.Callback<PopularTagResponse> {
+        communityService.requestPopularTags(category)
+            .enqueue(object : Callback<PopularTagResponse> {
                 override fun onResponse(
                     call: Call<PopularTagResponse>,
                     response: Response<PopularTagResponse>
@@ -744,10 +756,24 @@ class MainActivity : AppCompatActivity() {
                             for (tag in popularTags) {
                                 popularTagsList.add(tag.tag)
                             }
-                            GlobalVariables.prefs.setString(
-                                "popular_tags",
-                                popularTagsList.joinToString()
-                            )
+                            when (category) {
+                                "나눔" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_share",
+                                    popularTagsList.joinToString()
+                                )
+                                "자유" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_free",
+                                    popularTagsList.joinToString()
+                                )
+                                "QnA" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_qna",
+                                    popularTagsList.joinToString()
+                                )
+                                "Tip" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_tip",
+                                    popularTagsList.joinToString()
+                                )
+                            }
                             Log.d("CommunityFragment", "onResponse() 조회 성공 $popularTags")
                         }
                     } else {
@@ -764,7 +790,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestChangeNotiStatus(option: Boolean) {
-        Log.d("MainActivity","requestChangeNotiStatus() 요청 한번에 감 $option")
+        Log.d("MainActivity", "requestChangeNotiStatus() 요청 한번에 감 $option")
         val retrofit = RetrofitClient.getClient()!!
         val userService = retrofit.create(UserService::class.java)
 

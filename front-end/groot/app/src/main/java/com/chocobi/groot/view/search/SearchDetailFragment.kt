@@ -33,7 +33,15 @@ import com.chocobi.groot.view.search.model.PlantDetailData
 import com.chocobi.groot.view.search.model.PlantDetailResponse
 import com.chocobi.groot.view.search.model.PlantIdentifyResponse
 import com.chocobi.groot.view.search.model.SearchService
+import com.chocobi.groot.youtube.CallYoutube
 import com.google.android.filament.ToneMapper.Linear
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
+import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Callback
@@ -79,6 +87,8 @@ class SearchDetailFragment : Fragment() {
     private var placeText: TextView? = null
     private var insectInfoText: TextView? = null
     private lateinit var addPotBtn: AppCompatButton
+    private lateinit var mActivity: MainActivity
+    private lateinit var youtubePlayer: YouTubePlayerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,7 +105,7 @@ class SearchDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val rootView = inflater.inflate(R.layout.fragment_search_detail, container, false)
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
 
 //        ================================================================
 //        ================================================================
@@ -129,6 +139,8 @@ class SearchDetailFragment : Fragment() {
         return rootView
     }
 
+
+
     private fun findView(rootView: View) {
         levelLinearLayout = rootView.findViewById(R.id.level)
         docLinearLayout = rootView.findViewById(R.id.doc)
@@ -151,6 +163,8 @@ class SearchDetailFragment : Fragment() {
         placeText = rootView.findViewById(R.id.placeText)
         insectInfoText = rootView.findViewById(R.id.insectInfoText)
         addPotBtn = rootView.findViewById(R.id.addPotBtn)
+
+        youtubePlayer = rootView.findViewById(R.id.youtubePlayer)
     }
 
     private fun identifyPlant() {
@@ -201,6 +215,7 @@ class SearchDetailFragment : Fragment() {
                     if (res != null) {
                         plant = res.plant
                         plantImgUrl = res.plant.img
+                        updateYoutube()
                         updateView()
                     }
                 }
@@ -210,6 +225,25 @@ class SearchDetailFragment : Fragment() {
                 Log.d(TAG, "onFailure() 정보조회 실패")
             }
         })
+    }
+    private fun updateYoutube() {
+        CoroutineScope(Dispatchers.Main).launch {
+            CoroutineScope(Dispatchers.Default).async {
+                val callYoutube = CallYoutube(requireActivity().application, plant?.krName!! + " 키우는 방법")
+                val videoId = callYoutube.onCallYoutubeChannel()
+                if (!videoId.isNullOrBlank()) {
+                    youtubePlayer.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
+                        override fun onReady(youTubePlayer: YouTubePlayer) {
+                            youtubePlayer.visibility = View.VISIBLE
+                            youTubePlayer.cueVideo(videoId, 0f)
+//                            youTubePlayer.loadVideo(videoId, 0f)
+                            youtubePlayer.enableAutomaticInitialization = false
+                        }
+                    })
+                }
+                Log.e("INFO", "유튜브aaaaaa $videoId")
+            }
+        }
     }
 
     private fun updateView() {
@@ -228,7 +262,7 @@ class SearchDetailFragment : Fragment() {
         plantEnName?.text = plant?.sciName
 
         GlobalVariables.changeImgView(plantImg!!, plant!!.img, requireContext())
-        isExist(plant?.mgmtLevel!!, levelLinearLayout!!, mgmtLevelBtn!!)
+        isExist(plant?.mgmtLevel!!, levelLinearLayout!!, mgmtLevelBtn!!, true)
         isExist(plant?.description!!, docLinearLayout!!, descriptionText!!)
         convertSpannableString(
             typeDesc,
@@ -262,11 +296,15 @@ class SearchDetailFragment : Fragment() {
         )
     }
 
-    private fun isExist(targetText: String, linearLayout: LinearLayout, textView: TextView) {
+    private fun isExist(targetText: String, linearLayout: LinearLayout, textView: TextView, isMgmtLevel: Boolean = false) {
         if (targetText == "") {
             linearLayout!!.visibility = View.GONE
         } else {
-            textView!!.text = targetText
+            if (isMgmtLevel) {
+                textView!!.text = targetText + "용"
+            } else {
+                textView!!.text = targetText
+            }
         }
     }
 

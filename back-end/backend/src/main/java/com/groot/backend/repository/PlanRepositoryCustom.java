@@ -37,7 +37,10 @@ public interface PlanRepositoryCustom {
 
     List<PlanEntity> findAllByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
 
+    // 해야할 날짜가 지났지만 done이 0인 애들
+    List<PlanEntity> findByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
+
     @Transactional
-    @Modifying  // 해야할 날짜가 지났지만 done이 0인 애들 날짜 업데이트 // 수정해야함
-    long updateDateTimeByDoneAndDateTimeBetween(boolean done, LocalDateTime start, LocalDateTime end);
+    @Modifying
+    long updateDateTimeByPlanId(Long planId, LocalDateTime now);
 }

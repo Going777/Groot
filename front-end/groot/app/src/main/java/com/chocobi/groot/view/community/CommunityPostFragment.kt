@@ -30,6 +30,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
@@ -155,13 +156,12 @@ class CommunityPostFragment(private val postCategory: String) :
         val postCameraBtn = view.findViewById<ImageButton>(R.id.postCameraBtn)
 
         postCameraBtn.setOnClickListener {
+            GlobalVariables.defaultAlertDialog(requireContext(), message = "사진 첨부는 최대 3장까지 가능합니다.", positiveFtn = ::requestPermissions)
 //            val intent = Intent(Intent.ACTION_PICK)
 //            intent.type = "image/*"
 //            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
 //
 //            activityResult.launch(intent)
-            requestPermissions()
-
         }
 
 
@@ -195,7 +195,15 @@ class CommunityPostFragment(private val postCategory: String) :
             var content = contentInput?.text.toString()
             var shareRegion = ""
             var shareStatus = false
-            postArticle(category, title, content, tagList, shareRegion, shareStatus, imageList)
+            if (title.isNullOrBlank()) {
+                GlobalVariables.defaultAlertDialog(requireContext(), message = "제목을 입력해 주세요")
+            }
+            else if (content.isNullOrBlank()) {
+                GlobalVariables.defaultAlertDialog(requireContext(), message = "내용을 입력해 주세요")
+            }
+            else {
+                postArticle(category, title, content, tagList, shareRegion, shareStatus, imageList)
+            }
         })
 
         // 제목과 내용 글자 수 체크 및 제한

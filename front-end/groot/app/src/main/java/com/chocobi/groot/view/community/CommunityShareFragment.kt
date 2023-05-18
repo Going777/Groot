@@ -17,6 +17,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -31,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
@@ -74,6 +79,8 @@ class CommunityShareFragment : Fragment() {
     private lateinit var chipRegionGroup: ChipGroup
     private lateinit var articleSection: LinearLayout
     private lateinit var swipeLayout: SwipeRefreshLayout
+    private lateinit var autoCompleteTextView: AutoCompleteTextView
+    private lateinit var clearTextBtn: ImageButton
 
 
     override fun onCreateView(
@@ -105,6 +112,34 @@ class CommunityShareFragment : Fragment() {
         }
 //        ================================================================
 //        ================================================================
+
+//        자동완성으로 보여줄 내용들
+        val regionNames =
+            GlobalVariables.prefs.getString("region_names", "")?.split(", ") ?: emptyList()
+        val items = regionNames.toTypedArray()
+        var adapter = ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            items
+        )
+        autoCompleteTextView = view.findViewById(R.id.autoCompleteTextView)
+        clearTextBtn = view.findViewById(R.id.clearTextBtn)
+        autoCompleteTextView.setAdapter(adapter)
+
+//        자동 완성 필터 눌렀을 때 처리
+        autoCompleteTextView.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, view, position, id ->
+                region = autoCompleteTextView.text.toString()
+                GlobalVariables.hideKeyboard(requireActivity())
+                autoCompleteTextView.clearFocus() // 포커스를 설정합니다.
+            }
+
+        clearTextBtn.setOnClickListener {
+            autoCompleteTextView.setText("")
+            autoCompleteTextView.requestFocus()
+            region = null
+        }
+
 
         // 태그를 보여줄 RecyclerView와 입력을 받을 EditText를 레이아웃에서 참조합니다.
         tagRecyclerView = view.findViewById(R.id.tagRecyclerView)
@@ -161,13 +196,12 @@ class CommunityShareFragment : Fragment() {
         val postCameraBtn = view.findViewById<ImageButton>(R.id.postCameraBtn)
 
         postCameraBtn.setOnClickListener {
+            GlobalVariables.defaultAlertDialog(requireContext(), message = "사진 첨부는 최대 3장까지 가능합니다.", positiveFtn = ::requestPermissions)
 //            val intent = Intent(Intent.ACTION_PICK)
 //            intent.type = "image/*"
 //            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
 //
 //            activityResult.launch(intent)
-            requestPermissions()
-
         }
 
 
@@ -200,7 +234,19 @@ class CommunityShareFragment : Fragment() {
             val category = "나눔"
             var title = titleInput?.text.toString()
             var content = contentInput?.text.toString()
-            postArticle(category, title, content, tagList, region.toString(), false, imageList)
+
+            if (region.isNullOrBlank()) {
+                GlobalVariables.defaultAlertDialog(requireContext(), message = "나눔 지역을 설정해 주세요")
+            }
+            else if (title.isNullOrBlank()) {
+                GlobalVariables.defaultAlertDialog(requireContext(), message = "제목을 입력해 주세요")
+            }
+            else if (content.isNullOrBlank()) {
+                GlobalVariables.defaultAlertDialog(requireContext(), message = "내용을 입력해 주세요")
+            }
+            else {
+                postArticle(category, title, content, tagList, region!!, false, imageList)
+            }
         })
 
         // 제목과 내용 글자 수 체크 및 제한
@@ -276,53 +322,7 @@ class CommunityShareFragment : Fragment() {
         }
         textWatcher()
 
-        regionFilter(view)
-
         return view
-    }
-
-    override fun onResume() {
-        super.onResume()
-        region = arguments?.getStringArrayList("region_full_list")?.get(0)
-        addChip(region)
-    }
-
-    private fun alertRegionFilterFirst() {
-//        articleSection.setOnClickListener {
-//            if(region == null) {
-//                Toast.makeText(requireContext(), "지역을 먼저 선택해주세요", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
-    }
-
-    private fun addChip(test: String?) {
-        if (test != null) {
-            chipRegionGroup.addView(
-                Chip(
-                    requireContext(),
-                    null,
-                    R.style.REGION_CHIP_ICON
-                ).apply {
-                    text = test
-                    isCloseIconVisible = false
-                })
-        }
-    }
-
-    private fun regionFilter(view: View) {
-        val mActivity = activity as MainActivity
-        regionFilterBtn = view.findViewById(R.id.regionFilterBtn)
-        chipRegionGroup = view.findViewById(R.id.chipRegionGroup)
-
-        regionFilterBtn.setOnClickListener {
-            val regionFilterBottomSheet =
-                RegionFilterBottomSheet(requireContext(), LIMITREGIONCNT)
-            regionFilterBottomSheet.show(
-                mActivity.supportFragmentManager,
-                regionFilterBottomSheet.tag
-            )
-        }
     }
 
     private fun requestPermissions() {

@@ -176,12 +176,12 @@ class CommunityTab3Fragment : Fragment() {
                         }
                     }
                     if (usage == "loadMore") {
-                        ThreadUtil.startUIThread(1000) {
+                        ThreadUtil.startUIThread(100) {
                             adapter.loadMore(list)
                             hideProgress()
                         }
                     } else {
-                        ThreadUtil.startUIThread(1000) {
+                        ThreadUtil.startUIThread(100) {
                             adapter.reload(list)
                             hideProgress()
                         }
@@ -247,7 +247,7 @@ class CommunityTab3Fragment : Fragment() {
 
     private fun createPopularTagData(): List<String> {
         val popularTagList =
-            GlobalVariables.prefs.getString("popular_tags", "")?.split(", ") ?: emptyList()
+            GlobalVariables.prefs.getString("popular_tags_qna", "")?.split(", ") ?: emptyList()
         return popularTagList
     }
 

@@ -35,7 +35,6 @@
                 android:id="@+id/name_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="세히"
                 android:textSize="16sp"
                 android:textStyle="bold"/>
 
@@ -43,7 +42,6 @@
                 android:id="@+id/dateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="오후 3:01"
                 android:textSize="11sp" />
 
         </com.google.android.flexbox.FlexboxLayout>
@@ -56,7 +54,6 @@
             android:id="@+id/lastMessageText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="알겠습니다ㅠㅠㅠㅠㅠfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
             android:textSize="12sp"
             android:ellipsize="end"
             android:maxLines="1"/>

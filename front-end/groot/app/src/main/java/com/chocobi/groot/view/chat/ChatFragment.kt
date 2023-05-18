@@ -24,6 +24,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.adapter.ChatMessageAdapter
 import com.chocobi.groot.view.chat.model.AddChatRoomService
+import com.chocobi.groot.view.chat.model.ChatMessage
 import com.chocobi.groot.view.chat.model.ChatRoomRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -178,7 +179,11 @@ class ChatFragment : Fragment() {
                     }
                 })
 
+                lastMessage = message
 
+                fireStore?.collection("chats")?.document(senderRoom)?.set(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))?.addOnSuccessListener {
+                    fireStore?.collection("chats")?.document(receiverRoom)?.set(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))
+                }
                 firstMessage = false
             }
             //데이터 저장
@@ -203,8 +208,8 @@ class ChatFragment : Fragment() {
 //            fireStore?.collection("chats")?.document(senderRoom)?.delete()?.addOnSuccessListener {
 //                fireStore?.collection("chats")?.document(receiverRoom)?.delete()
 //            }
-            fireStore?.collection("chats")?.document(senderRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime))?.addOnSuccessListener {
-                fireStore?.collection("chats")?.document(receiverRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime))
+            fireStore?.collection("chats")?.document(senderRoom)?.set(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))?.addOnSuccessListener {
+                fireStore?.collection("chats")?.document(receiverRoom)?.set(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))
             }
 
 
@@ -232,6 +237,21 @@ class ChatFragment : Fragment() {
 
                     if (messageList.size != 0) {
                         Log.d("lastMessage", lastMessage)
+                    }
+
+
+//                    알람 처리
+                    if (snapshot.hasChildren()) {
+                        // 마지막 메시지
+                        val lastMessageSnapshot = snapshot.children.last()
+                        val lastMessage = lastMessageSnapshot.getValue(ChatMessage::class.java)
+                        if (lastMessage != null) {
+                            // 여기에 알람을 처리하는 로직을 추가
+                            val sender = lastMessage.sendId
+                            val message = lastMessage.message
+//                            val toastMessage = "새로운 메시지 도착\n보낸이: $sender\n메시지: $message"
+//                            Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show()
+                        }
                     }
 
                 }

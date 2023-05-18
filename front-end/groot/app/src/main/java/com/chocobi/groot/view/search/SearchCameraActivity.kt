@@ -1,7 +1,9 @@
 package com.chocobi.groot.view.search
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,6 +20,7 @@ import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.addpot.Pot1Activity
@@ -37,22 +40,23 @@ import java.io.FileOutputStream
 class SearchCameraActivity : AppCompatActivity() {
     private val TAG = "SearchCameraActivity"
     private var file: File? = null
-    private var plantId : Int? = null
-    private var plantName : String? = null
-    private var plantSci : String? = null
+    private var plantId: Int? = null
+    private var plantName: String? = null
+    private var plantSci: String? = null
     private var cameraStatus: String? = null
     private var growType: String? = null
     private var mgmtLevel: String? = null
     private var characterGlbPath: String? = null
 
-    private lateinit var plantNameText : TextView
-    private lateinit var plantScoreText : TextView
-    private lateinit var plantSciText : TextView
+    private lateinit var plantNameText: TextView
+    private lateinit var plantScoreText: TextView
+    private lateinit var plantSciText: TextView
     private lateinit var frameLayoutProgress: LinearLayout
     private lateinit var cardView: CardView
     private lateinit var addPotBtn: Button
     private lateinit var searchBtn: Button
     private lateinit var detailBtn: Button
+    private var imageUri: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +73,10 @@ class SearchCameraActivity : AppCompatActivity() {
         cardView = findViewById(R.id.cardView)
 
 //        imageUri 전달받기
-        var imageUri = intent.getStringExtra("imageUri")
+        imageUri = intent.getStringExtra("imageUri") ?: ""
         cameraStatus = intent.getStringExtra("cameraStatus")
-        Log.d(TAG, "intent/imageUri:"+imageUri.toString())
-        Log.d(TAG, "intent/cameraStatus:"+cameraStatus.toString())
+        Log.d(TAG, "intent/imageUri:" + imageUri.toString())
+        Log.d(TAG, "intent/cameraStatus:" + cameraStatus.toString())
 
 
         if (imageUri != null) {
@@ -89,7 +93,7 @@ class SearchCameraActivity : AppCompatActivity() {
         //        디테일 버튼 조작
         detailBtn = findViewById(R.id.detailBtn)
         detailBtn.setOnClickListener {
-            Log.d("SearchCameraActivity","onCreate() ${plantId}볼랲ㅍ")
+            Log.d("SearchCameraActivity", "onCreate() ${plantId}볼랲ㅍ")
             var intent = Intent(this, MainActivity::class.java)
             intent.putExtra("toPage", "search_detail")
             intent.putExtra("plant_id", plantId.toString())
@@ -105,8 +109,8 @@ class SearchCameraActivity : AppCompatActivity() {
             intent.putExtra("plantId", plantId)
             intent.putExtra("growType", growType)
             intent.putExtra("mgmtLevel", mgmtLevel)
-            Log.d("Pot2Activity","onCreate() 보내는 값 ///생장 ${growType}///")
-            Log.d("Pot2Activity","onCreate() 보내는 값 ///숙련도 ${mgmtLevel}///")
+            Log.d("Pot2Activity", "onCreate() 보내는 값 ///생장 ${growType}///")
+            Log.d("Pot2Activity", "onCreate() 보내는 값 ///숙련도 ${mgmtLevel}///")
             intent.putExtra("characterGlbPath", characterGlbPath)
             startActivity(intent)
         }
@@ -159,6 +163,38 @@ class SearchCameraActivity : AppCompatActivity() {
                         hideProgress()
                     } else {
                         Log.d(TAG, "${response.errorBody()}")
+
+                        val dialog = AlertDialog.Builder(context)
+                        dialog.setTitle("식물 식별 실패")
+                        dialog.setMessage("식물 식별에 실패하였습니다. 다시 시도하시겠습니까?")
+                        val dialogArray = arrayOf("다시 시도하기", "직접 검색하기")
+                        dialog.setItems(dialogArray) { _, which ->
+                            when (which) {
+                                0 -> {
+//                                    메인 액티비티 이동 후 카메라 켜는 코드
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    startActivity(intent)
+                                }
+
+                                1 -> {
+                                    val plantBottomSheet =
+                                        PlantBottomSheet(context, "fail_serach", imageUri)
+                                    plantBottomSheet.show(
+                                        supportFragmentManager,
+                                        plantBottomSheet.tag
+                                    )
+                                }
+                            }
+                        }
+                        dialog.setNegativeButton(
+                            "돌아가기",
+                            DialogInterface.OnClickListener { dialog, which ->
+                                val intent = Intent(context, MainActivity::class.java)
+                                startActivity(intent)
+                                dialog.dismiss()
+                            })
+                        dialog.show()
+
                         hideProgress()
                     }
                 }
@@ -183,7 +219,6 @@ class SearchCameraActivity : AppCompatActivity() {
         }
         return tempFile
     }
-
 
 
     private fun hideProgress() {

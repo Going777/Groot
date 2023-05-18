@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
@@ -41,6 +43,7 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class WeatherFragment : Fragment() {
+    private lateinit var addressText: TextView
 
     companion object {
         const val API_KEY: String = BuildConfig.WEATHER_API_KEY
@@ -69,6 +72,7 @@ class WeatherFragment : Fragment() {
 
 
 //        레이아웃에 오늘 날짜 적용
+        addressText = rootView.findViewById(R.id.addressText)
         val dateText = rootView.findViewById<TextView>(R.id.date_text)
         dateText.text = GlobalVariables.getCurrentDate()
 
@@ -101,10 +105,10 @@ class WeatherFragment : Fragment() {
         mLocationManager =
             requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         mLocationListener = LocationListener { p0 ->
-            val params: RequestParams = RequestParams()
             current_lat = p0.latitude.toString()
             current_lon = p0.longitude.toString()
             doNetworking(current_lat, current_lon, layoutParams)
+            getAddress(p0.latitude, p0.longitude)
         }
 
 //      권한 확인
@@ -129,12 +133,15 @@ class WeatherFragment : Fragment() {
             MIN_DISTANCE,
             mLocationListener!!
         )
-        mLocationManager!!.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            MIN_TIME,
-            MIN_DISTANCE,
-            mLocationListener!!
-        )
+    }
+
+    private fun getAddress(lat: Double, lon: Double) {
+        val geocoder: Geocoder = Geocoder(requireContext())
+        var addressData: Address?
+        addressData = geocoder.getFromLocation(lat, lon, 1)?.get(0)!!
+        val address = "${addressData?.adminArea} ${addressData?.locality}"
+        addressText.setText(address)
+        GlobalVariables.updateAddress(address)
     }
 
     private fun doNetworking(lat: String, lon: String, layoutParams: LayoutParams) {
@@ -198,9 +205,10 @@ class WeatherFragment : Fragment() {
     private fun updateWeatherImageView(
         layoutParams: LayoutParams,
     ) {
-        val (target, cTemp, hum) = GlobalVariables.getWeatherData()
+        val (target, cTemp, hum, address) = GlobalVariables.getWeatherData()
         layoutParams.thermometerText.text = cTemp.toString() + "℃"
         layoutParams.humidityText.text = hum.toString() + "%"
+        addressText.setText(address)
         when (target) {
             "sun" -> {
                 layoutParams.weatherBgView.setImageResource(R.drawable.weather_sun_gradient_bg)

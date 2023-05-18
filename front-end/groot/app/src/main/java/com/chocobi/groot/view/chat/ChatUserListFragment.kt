@@ -87,7 +87,7 @@ class ChatUserListFragment : Fragment() {
                         getData = response.body()!!
                         Log.d("chatUserList", getData.chatting.toString())
                         val list = createDummyData()
-                        ThreadUtil.startUIThread(1000) {
+                        ThreadUtil.startUIThread(100) {
                             adapter.reload(list)
                             hideProgress()
                         }

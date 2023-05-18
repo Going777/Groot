@@ -187,6 +187,7 @@ class GlobalVariables : Application() {
             val weatherType: String,
             val temperature: Int,
             val humidity: Int,
+            val address: String?,
         )
 
         private var current = LocalDateTime.now()
@@ -195,19 +196,24 @@ class GlobalVariables : Application() {
         private var weatherType: String = "sun"
         private var temperature: Int = 15
         private var humidity: Int = 20
+        private var address: String? = ""
 
         fun getCurrentDate(): String {
             return currentDate
         }
 
         fun getWeatherData(): WeatherData {
-            return WeatherData(weatherType, temperature, humidity)
+            return WeatherData(weatherType, temperature, humidity, address)
         }
 
         fun updateWeatherData(type: String, temp: Int, hum: Int) {
             weatherType = type
             temperature = temp
             humidity = hum
+        }
+
+        fun updateAddress(addres: String) {
+            address = addres
         }
     }
 
