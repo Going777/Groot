@@ -228,6 +228,8 @@ class CommentItemViewHolder(itemView: View, private val mActivity: MainActivity)
 
         if (communityCommentResponse.comment[0].userPK == UserData.getUserPK()) {
             deleteButton.visibility = View.VISIBLE
+        } else {
+            deleteButton.visibility = View.GONE
         }
 //        deleteButton.setOnClickListener {
 //            deleteComment(communityCommentResponse.comment[0].id)

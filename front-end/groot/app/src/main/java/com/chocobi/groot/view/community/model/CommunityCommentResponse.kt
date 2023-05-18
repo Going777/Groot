@@ -8,6 +8,12 @@ data class CommunityCommentResponse(
     val msg: String,
 )
 
+data class CommunityCommentPostResponse(
+    val comment: Comment,
+    val result: String,
+    val msg: String,
+)
+
 data class Comment (
     val id: Int,
     val userPK: Int,
