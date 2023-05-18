@@ -307,6 +307,9 @@ public class DiaryServiceImpl implements DiaryService{
             // 실행 날짜 업데이트
             LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
             log.info("plan에 미션 완료 표시");
+            if(date==null){
+                date = pot.getCreatedDate();
+            }
             addPlan(diaryEntity.getUserEntity(), pot, 0, date);
         }
         //영양제 일정 추가
@@ -316,6 +319,9 @@ public class DiaryServiceImpl implements DiaryService{
             // 실행 날짜 업데이트
             LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 1);
             log.info("plan에 미션 완료 표시");
+            if(date==null){
+                date = pot.getCreatedDate();
+            }
             addPlan(diaryEntity.getUserEntity(), pot, 1, date);
         }
 
@@ -413,6 +419,9 @@ public class DiaryServiceImpl implements DiaryService{
                 // 마지막으로 실행한 날짜 가져오기
                 LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
                 log.info("plan done check water");
+                if(date==null){
+                    date = pot.getCreatedDate();
+                }
                 addPlan(diaryEntity.getUserEntity(), pot, 0, date);
             }
 
@@ -421,6 +430,9 @@ public class DiaryServiceImpl implements DiaryService{
                 // 마지막으로 실행한 날짜 가져오기
                 LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 1);
                 log.info("plan done check nutrients");
+                if(date==null){
+                    date = pot.getCreatedDate();
+                }
                 addPlan(diaryEntity.getUserEntity(), pot, 1, date);
             }
 
