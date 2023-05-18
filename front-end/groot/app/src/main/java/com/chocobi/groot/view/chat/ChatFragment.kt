@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +24,7 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.adapter.ChatMessageAdapter
 import com.chocobi.groot.view.chat.model.AddChatRoomService
+import com.chocobi.groot.view.chat.model.ChatMessage
 import com.chocobi.groot.view.chat.model.ChatRoomRequest
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -208,8 +208,8 @@ class ChatFragment : Fragment() {
 //            fireStore?.collection("chats")?.document(senderRoom)?.delete()?.addOnSuccessListener {
 //                fireStore?.collection("chats")?.document(receiverRoom)?.delete()
 //            }
-            fireStore?.collection("chats")?.document(senderRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))?.addOnSuccessListener {
-                fireStore?.collection("chats")?.document(receiverRoom)?.update(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))
+            fireStore?.collection("chats")?.document(senderRoom)?.set(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))?.addOnSuccessListener {
+                fireStore?.collection("chats")?.document(receiverRoom)?.set(mapOf("lastMessage" to lastMessage, "saveTime" to saveTime, "receiverRoom" to receiverRoom))
             }
 
 

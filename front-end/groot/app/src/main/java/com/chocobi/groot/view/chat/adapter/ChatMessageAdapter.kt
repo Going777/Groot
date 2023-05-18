@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.chat.ChatMessage
+import com.chocobi.groot.view.chat.model.ChatMessage
 
 class ChatMessageAdapter(private val context: Context, private val messageList: ArrayList<ChatMessage>):
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
