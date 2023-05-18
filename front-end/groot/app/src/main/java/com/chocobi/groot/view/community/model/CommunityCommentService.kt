@@ -1,8 +1,7 @@
 package com.chocobi.groot.view.community
 
-import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
-import com.chocobi.groot.view.community.model.CommunityArticleListResponse
+
+import com.chocobi.groot.view.community.model.CommunityCommentPostResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -28,7 +27,7 @@ interface CommunityCommentPostService {
     @POST("api/comments")
     fun requestCommentPost(
         @Body params: CommentPostRequest
-    ) : Call<CommunityCommentResponse>
+    ) : Call<CommunityCommentPostResponse>
 
     @DELETE("api/comments/{commentId}/{userPK}")
     fun requestCommentDelete(

@@ -385,8 +385,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
-
-
     }
 
     //    사진 하나만 첨부할 때 사용
