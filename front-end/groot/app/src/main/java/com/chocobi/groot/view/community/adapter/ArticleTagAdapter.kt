@@ -17,11 +17,14 @@ class ArticleTagAdapter(private val items: List<String>) : RecyclerView.Adapter<
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tag = items[position]
+
+
         holder.bind(tag)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.fragment_community_article_tag_item, parent, false)
+
         return ViewHolder(itemView)
     }
 

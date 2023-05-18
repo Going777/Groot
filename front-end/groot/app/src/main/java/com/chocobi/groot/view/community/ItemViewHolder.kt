@@ -1,12 +1,14 @@
 package com.chocobi.groot.adapter.item
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +18,10 @@ import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.community.adapter.ArticleTagAdapter
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import java.lang.ref.WeakReference
 
 class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -132,9 +138,12 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
         // 태그
+        val context: Context = itemView.context
+        val flexboxLayoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.WRAP)
+        flexboxLayoutManager.justifyContent = JustifyContent.FLEX_START
+
         recyclerView = itemView.findViewById(R.id.tagList)
-        recyclerView.layoutManager =
-            LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = flexboxLayoutManager
 
         // Adapter 설정
         tagList = communityArticleListResponse.articles.content[0].tags as List<String>
