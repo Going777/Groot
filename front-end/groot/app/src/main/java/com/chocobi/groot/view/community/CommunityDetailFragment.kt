@@ -134,7 +134,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         val communityUserShareFragment = CommunityUserShareFragment()
         communityUserShareFragment.arguments = args
         childFragmentManager.beginTransaction()
-            .add(R.id.communityUserShareFragment, communityUserShareFragment)
+            .replace(R.id.shareSection, communityUserShareFragment)
             .commit()
 
 //        ================================================================
@@ -385,7 +385,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     }
 
     private fun initList() {
-        commentAdapter = CommentAdapter(commentRecyclerView, requireContext())
+        commentAdapter = CommentAdapter(commentRecyclerView, requireContext(), mActivity)
 //        commentRecyclerView.adapter = commentAdapter // RecyclerView에 Adapter 설정
         val size = commentAdapter.itemCount
         commentRecyclerView.scrollToPosition(size - 1)

@@ -66,8 +66,8 @@ class ChatUserAdapter(private val recyclerView: RecyclerView) :
                 Log.d("받아온 데이터", bundle.toString())
 
                 chatFragment.arguments = bundle
-                fragmentTransaction.replace(R.id.fl_container, chatFragment).addToBackStack(null)
-                    .commit()
+                fragmentTransaction.replace(R.id.fl_container, chatFragment, "chat").addToBackStack("chat")
+                    .commitAllowingStateLoss()
             }
         }
 

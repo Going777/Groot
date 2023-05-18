@@ -218,11 +218,11 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <fragment
-                        android:id="@+id/communityUserShareFragment"
-                        android:name="com.chocobi.groot.view.community.CommunityUserShareFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp" />
+<!--                    <fragment-->
+<!--                        android:id="@+id/communityUserShareFragment"-->
+<!--                        android:name="com.chocobi.groot.view.community.CommunityUserShareFragment"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="250dp" />-->
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
