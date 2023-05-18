@@ -299,7 +299,9 @@ class ChatFragment : Fragment() {
 
     private fun scrollToBottom() {
         chatRecyclerView.postDelayed({
-            chatRecyclerView.smoothScrollToPosition(messageList.size - 1)
+            if (messageList.size > 2) {
+                chatRecyclerView.smoothScrollToPosition(messageList.size - 1)
+            }
         }, 0) // 200ms 후에 스크롤 이동 (필요에 따라 조정 가능)
     }
 
