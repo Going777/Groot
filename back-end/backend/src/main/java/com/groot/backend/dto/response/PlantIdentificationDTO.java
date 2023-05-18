@@ -19,5 +19,7 @@ public class PlantIdentificationDTO {
 
     private String mgmtLevel;
 
+    private String img;
+
     private int score;
 }
