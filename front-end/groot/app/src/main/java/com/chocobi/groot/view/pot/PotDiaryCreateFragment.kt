@@ -82,6 +82,8 @@ class PotDiaryCreateFragment : Fragment() {
 
     private var myImageView: ImageView? = null
 
+    private var isPosting: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        변수 받기
@@ -236,9 +238,16 @@ class PotDiaryCreateFragment : Fragment() {
     }
 
     private fun postDiaryBtnClick() {
+
         postDiaryBtnClickBtn.setOnClickListener {
-            content = diaryContent.text.toString()
-            postDiary()
+            if (isPosting) {
+                Toast.makeText(context, "다이어리를 작성중입니다. 잠시만 기다려주세요.", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
+                isPosting = true
+                content = diaryContent.text.toString()
+                postDiary()
+            }
         }
     }
 
@@ -277,13 +286,16 @@ class PotDiaryCreateFragment : Fragment() {
 //                            다이어리 페이지로 이동
                             mActivity.changeFragment("pot_diary")
                         }
+
                     } else {
                         Log.d("PotDiaryCreateFragment", "onResponse() 다이어리 작성 실패ㅜㅜㅜ $response")
                     }
+                    isPosting = false
                 }
 
                 override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
                     Log.d(TAG, "다이어리 작성 실패")
+                    isPosting = false
                 }
             })
     }
