@@ -156,19 +156,30 @@ class CommunityShareFragment : Fragment() {
         // RecyclerView에 레이아웃 매니저와 어댑터를 설정합니다.
         tagRecyclerView.layoutManager = flexboxLayoutManager
         tagRecyclerView.adapter = tagAdapter
-        val tagList = mutableListOf<String>()
 
         // EditText의 키보드 액션을 설정합니다.
         tagInput.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
                 // EditText의 내용을 가져옵니다.
                 val tag = tagInput.text.toString().trim()
-                if (tag.isNotEmpty()) {
+
+                if (tagAdapter.containsTag(tag)) {
+                    Toast.makeText(requireContext(), "이미 추가된 태그입니다.", Toast.LENGTH_SHORT).show();
+                } else if (tag.isNotEmpty() && tagAdapter.getItemCount() < 10 && tagInput.length() <= 10) {
                     // 태그 어댑터에 태그를 추가합니다.
-                    tagAdapter.addTag(tag)
-                    tagList.add(tag)
+                    tagAdapter.addTag(tag);
                     // EditText의 내용을 리셋합니다.
-                    tagInput.setText("")
+                    tagInput.setText("");
+                }
+
+
+                if (tagAdapter.itemCount >= 10) {
+                    Toast.makeText(requireContext(), "태그는 10개까지 입력 가능합니다.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                if (tagInput.length() > 10) {
+                    Toast.makeText(requireContext(), "10자 이내로 작성해주세요.", Toast.LENGTH_SHORT)
+                        .show()
                 }
                 true
             } else {
@@ -181,12 +192,23 @@ class CommunityShareFragment : Fragment() {
             if (!hasFocus) {
                 // EditText의 내용을 가져옵니다.
                 val tag = tagInput.text.toString().trim()
-                if (tag.isNotEmpty()) {
+                if (tagAdapter.containsTag(tag)) {
+                    Toast.makeText(requireContext(), "이미 추가된 태그입니다.", Toast.LENGTH_SHORT).show();
+                } else if (tag.isNotEmpty() && tagAdapter.getItemCount() < 10 && tagInput.length() <= 10) {
                     // 태그 어댑터에 태그를 추가합니다.
-                    tagAdapter.addTag(tag)
-                    tagList.add(tag)
+                    tagAdapter.addTag(tag);
                     // EditText의 내용을 리셋합니다.
-                    tagInput.setText("")
+                    tagInput.setText("");
+                }
+
+
+                if (tagAdapter.itemCount >= 10) {
+                    Toast.makeText(requireContext(), "태그는 10개까지 입력 가능합니다.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                if (tagInput.length() > 10) {
+                    Toast.makeText(requireContext(), "10자 이내로 작성해주세요.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
@@ -230,7 +252,12 @@ class CommunityShareFragment : Fragment() {
 
         // 등록 버튼 클릭 시 제목과 내용 입력값
         toPostListBtn.setOnClickListener(View.OnClickListener {
+            val tagList = mutableListOf<String>()
+            for (i in 0 until tagAdapter.itemCount) {
+                val item = tagAdapter.getItem(i) as String
 
+                tagList.add(item)
+            }
             val category = "나눔"
             var title = titleInput?.text.toString()
             var content = contentInput?.text.toString()
