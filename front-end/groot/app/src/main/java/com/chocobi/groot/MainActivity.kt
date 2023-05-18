@@ -28,7 +28,6 @@ import com.chocobi.groot.youtube.CallYoutube
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
-import com.chocobi.groot.data.PERMISSION_WRITE_STORAGE
 import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
@@ -324,7 +323,6 @@ class MainActivity : AppCompatActivity() {
             if (isAllPermissionsGranted) {
                 permissionGranted(requestCode)
             } else {
-                Log.d("MainActivity","requirePermissions() 캐릭터 요청받음")
                 // 사용자에 권한 승인 요청
                 ActivityCompat.requestPermissions(this, permissions, requestCode)
             }
@@ -356,7 +354,6 @@ class MainActivity : AppCompatActivity() {
         when (requestCode) {
             PERMISSION_CAMERA -> openCamera()
             PERMISSION_GALLERY -> openGallery()
-            PERMISSION_WRITE_STORAGE -> saveGallery()
         }
     }
 
@@ -371,12 +368,6 @@ class MainActivity : AppCompatActivity() {
             PERMISSION_GALLERY -> Toast.makeText(
                 this,
                 "저장소 권한을 승인해야 앨범에서 이미지를 불러올 수 있습니다.",
-                Toast.LENGTH_LONG
-            ).show()
-
-            PERMISSION_WRITE_STORAGE -> Toast.makeText(
-                this,
-                "저장소 권한을 승인해야 캡처한 사진을 저장할 수 있습니다.",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -394,6 +385,8 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
+
+
     }
 
     //    사진 하나만 첨부할 때 사용
@@ -401,10 +394,6 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = MediaStore.Images.Media.CONTENT_TYPE
         startActivityForResult(intent, REQUEST_STORAGE)
-    }
-
-    private fun saveGallery() {
-        Log.d("MainActivity","saveGallery() 캐릭터 여기 들어옵니다")
     }
 
 

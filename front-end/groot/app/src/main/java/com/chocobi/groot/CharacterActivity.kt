@@ -1,12 +1,8 @@
 package com.chocobi.groot
 
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 
 import android.view.Menu
@@ -15,13 +11,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.getDescription
@@ -31,23 +23,27 @@ import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
 
 class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     private val TAG = "CharacterActivity"
-    private val PERMISSION_WRITE_STORAGE = 4
-
     lateinit var sceneView: ArSceneView
 
     private lateinit var GLBfile: String
     private lateinit var level: String
     private lateinit var potName: String
     private lateinit var potPlant: String
-    private lateinit var capture: ExtendedFloatingActionButton
+
+    //    lateinit var loadingView: View
+//    private lateinit var statusText: TextView
+
+    //    lateinit var placeModelButton: ExtendedFloatingActionButton
+//    lateinit var newModelButton: ExtendedFloatingActionButton
     lateinit var changeAnimationButton: ExtendedFloatingActionButton
+
+    //    lateinit var stopAnimationButton: ExtendedFloatingActionButton
+//    lateinit var resumeAnimationButton: ExtendedFloatingActionButton
     private var animationIdx = 0
+//    private var time = System.currentTimeMillis()
 
     //    뒤로가기 조작
     override fun onBackPressed() {
@@ -68,16 +64,20 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     val models =
         Model(
             fileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/tree_2.glb",
+//            placementMode = PlacementMode.INSTANT,
+//            applyPoseRotation = false
         )
 
     var modelNode: ArModelNode? = null
+        //    var isLoading = false
         set(value) {
             field = value
+//            loadingView.isGone = !value
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mActivity = MainActivity()
+//        setContentView(R.layout.activity_character)
 
         GLBfile = intent.getStringExtra("GLBfile").toString()
         level = intent.getStringExtra("level").toString()
@@ -96,16 +96,33 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
             fitsSystemWindows = false
         )
 
+//        setSupportActionBar(findViewById<Toolbar>(R.id.toolbar)?.apply {
+//            doOnApplyWindowInsets { systemBarsInsets ->
+//                (layoutParams as ViewGroup.MarginLayoutParams).topMargin = systemBarsInsets.top
+//            }
+//            title = ""
+//        })
+//        statusText = findViewById(R.id.statusText)
+//        statusText.text = potName
         sceneView = findViewById<ArSceneView?>(R.id.sceneView).apply {
             onArTrackingFailureChanged = { reason ->
                 Toast.makeText(context, "사물을 감지하지 못해 메인 화면으로 돌아갑니다", Toast.LENGTH_LONG).show()
                 val intent = Intent(context, MainActivity::class.java)
                 startActivity(intent)
+//                statusText.text = reason?.getDescription(context)
+//                statusText.isGone = reason == null
             }
             isDepthOcclusionEnabled = false
         }
+
+//        loadingView = findViewById(R.id.loadingView)
+//        newModelButton = findViewById<ExtendedFloatingActionButton>(R.id.newModelButton).apply {
+//            // Add system bar margins
+//        }
+//        placeModelButton = findViewById<ExtendedFloatingActionButton>(R.id.placeModelButton).apply {
+//            setOnClickListener { placeModelNode() }
+//        }
         changeAnimationButton = findViewById(R.id.changeAnimation)
-        capture = findViewById(R.id.capture)
         changeAnimationButton.apply {
             val bottomMargin = (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
             doOnApplyWindowInsets { systemBarsInsets ->
@@ -116,75 +133,30 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 
         }
 
-        capture.setOnClickListener {
-            Log.d("CharacterActivity","onCreate() 캐릭터 눌림")
-//            MainActivity().requirePermissions(
-//                arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-//                PERMISSION_WRITE_STORAGE
-//            )
-            checkPermissionsAndCapture()
-        }
+//        stopAnimationButton = findViewById(R.id.stopAnimation)
+//        stopAnimationButton.apply {
+//            val bottomMargin = (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
+//            doOnApplyWindowInsets { systemBarsInsets ->
+//                (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin =
+//                    systemBarsInsets.bottom + bottomMargin
+//            }
+//            setOnClickListener { stopAnimtion() }
+//
+//        }
+//
+//        resumeAnimationButton = findViewById(R.id.resumeAnimation)
+//        resumeAnimationButton.setOnClickListener {
+//            resumeAnimation()
+//        }
 
         newModelNode()
-    }
-    private fun checkPermissionsAndCapture() {
-        val permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        val permissionCheck = ContextCompat.checkSelfPermission(this, permission)
-
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            Log.d("CharacterActivity","checkPermissionsAndCapture() 캐릭터 권한 거부")
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_WRITE_STORAGE)
-        } else {
-            Log.d("CharacterActivity","checkPermissionsAndCapture() 캐릭터 권한 승인")
-            captureAndSaveImage()
-        }
+//        placeModelNode()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        Log.d("CharacterActivity","onRequestPermissionsResult() 캐릭터")
-
-        if (requestCode == PERMISSION_WRITE_STORAGE) {
-            Log.d("CharacterActivity","onRequestPermissionsResult() $grantResults")
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                captureAndSaveImage()
-            } else {
-                Toast.makeText(this, "Permission denied. Cannot capture and save image.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    private fun captureAndSaveImage() {
-        // 캡처할 View 객체
-//        val viewToCapture = findViewById<View>(R.id.sceneView) // 캡처할 View ID로 변경하세요
-
-        // View의 스크린샷 캡처
-        val bitmap = Bitmap.createBitmap(sceneView.width, sceneView.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        sceneView.draw(canvas)
-
-        // 저장할 폴더 및 파일 경로 설정
-        val folderPath = Environment.getExternalStorageDirectory().absolutePath + "/groot"
-        val fileName = "captured_image.jpg"
-        val filePath = "$folderPath/$fileName"
-
-        // 폴더 생성
-        val folder = File(folderPath)
-        if (!folder.exists()) {
-            folder.mkdirs()
-        }
-
-        // 이미지 파일 저장
-        try {
-            FileOutputStream(filePath).use { outStream ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
-                Toast.makeText(this, "Image captured and saved: $filePath", Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(this, "Failed to save image.", Toast.LENGTH_SHORT).show()
-        }
-    }
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.a, menu)
+//        return super.onCreateOptionsMenu(menu)
+//    }
 
     fun changeAnimation() {
         modelNode?.stopAnimation(animationIdx)
@@ -194,8 +166,29 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
             animationIdx =
                 if (level == "0" || level == "1" || level == "2" || level == "3" || level == "4") 9 else 0
         }
+//        modelNode?.animator?.playbackSpeed =0.5f
+        modelNode?.playAnimation(animationIdx)
+//        val duration = modelNode?.animator?.getAnimationDuration(animationIdx)
+//        val elapsedTimeInSeconds = duration?.times(2f) ?: 0f
+//        modelNode?.animator?.applyAnimation(animationIdx, duration?.times(1f)!!)
+//        Log.d("CharacterActivity", "changeAnimation() ${modelNode?.animator}")
+//        Log.d("CharacterActivity", "changeAnimation() ${elapsedTimeInSeconds} ${duration}")
+    }
+
+    fun stopAnimtion() {
+        modelNode?.stopAnimation(animationIdx)
+    }
+
+    fun resumeAnimation() {
         modelNode?.playAnimation(animationIdx)
     }
+
+//    fun placeModelNode() {
+//        Log.d(TAG, "placeModelNode()")
+//        modelNode?.anchor()
+//        placeModelButton.isVisible = false
+//        sceneView.planeRenderer.isVisible = false
+//    }
 
     fun newModelNode() {
 //        isLoading = true
@@ -204,11 +197,13 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
             it.destroy()
         }
         val model = models
+//        modelIndex = (modelIndex + 1) % models.size
         modelNode = ArModelNode(
             placementMode = PlacementMode.INSTANT,
             instantAnchor = true,
             followHitPosition = false,
-            ).apply {
+        ).apply {
+//            applyPoseRotation = model.applyPoseRotation
             loadModelGlbAsync(
                 glbFileLocation = GLBfile ?: model.fileLocation,
                 autoAnimate = false,
@@ -221,10 +216,25 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
                 isRotationEditable = true
                 followHitPosition = false
                 instantAnchor = true
+
+//                applyPosePosition = false
+
+//                isScaleEditable = false
+//            playAnimation(0, true)
             }
+//            position = Position(x = 0.0f, y = 0f, z = 10f)
+//            rotation = Rotation(x=10.0f, y = -10f, z=0f)
+//            scale = Scale(1f)
             setReceiveShadows(false)
             setCastShadows(false)
             setScreenSpaceContactShadows(false)
+
+//            onAnchorChanged = { anchor ->
+//                placeModelButton.isGone = anchor != null
+//            }
+//            onHitResult = { node, _ ->
+//                placeModelButton.isGone = !node.isTracking
+//            }
         }
         modelNode?.anchor()
 
@@ -234,73 +244,4 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         sceneView.selectedNode = modelNode
 
     }
-
-    private fun captureSceneView() {
-        val bitmap = Bitmap.createBitmap(sceneView.width, sceneView.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        sceneView.draw(canvas)
-
-        Log.d("CharacterActivity","captureSceneView()  $bitmap")
-
-        // 비트맵을 저장하거나 다른 용도로 사용할 수 있습니다.
-        // 예시: 저장하기
-//        saveBitmap(bitmap)
-    }
-
-    private fun saveBitmap(bitmap: Bitmap) {
-        val folderPath = Environment.getExternalStorageDirectory().absolutePath
-        val filePath = "$folderPath/scene_capture.png"
-
-        try {
-            FileOutputStream(filePath).use { outStream ->
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-                Toast.makeText(this, "Scene captured and saved: $filePath", Toast.LENGTH_SHORT).show()
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            Toast.makeText(this, "Failed to save scene capture.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-//    private fun checkPermissionsAndCapture() {
-//        val permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-//
-//        if (ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED) {
-//            captureSceneView()
-//        } else {
-//            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-//                // 권한 요청에 대한 설명을 표시할 수 있는 경우
-//                showPermissionRationale()
-//            } else {
-//                // 권한 요청 대화 상자 표시
-//                ActivityCompat.requestPermissions(this, arrayOf(permission), PERMISSION_WRITE_STORAGE)
-//            }
-//        }
-//    }
-
-    private fun showPermissionRationale() {
-        // 권한 요청에 대한 설명을 표시하는 로직을 구현합니다.
-        // AlertDialog 또는 다른 사용자 인터페이스 요소를 사용하여 권한에 대한 설명을 표시합니다.
-        // 예시:
-        AlertDialog.Builder(this)
-            .setTitle("Permission Required")
-            .setMessage("To capture scene view, the app needs permission to write external storage.")
-            .setPositiveButton("OK") { _, _ ->
-                ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_WRITE_STORAGE)
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//
-//        if (requestCode == PERMISSION_WRITE_STORAGE) {
-//                captureSceneView()
-////            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-////            } else {
-////                Toast.makeText(this, "Permission denied. Cannot capture scene view.", Toast.LENGTH_SHORT).show()
-////            }
-//        }
-//    }
 }
