@@ -401,6 +401,7 @@ public class PlantServiceImpl implements PlantService{
                 .sciName(plantEntity.getSciName())
                 .score((int)(Float.parseFloat(score) * 100))
                 .grwType(plantEntity.getGrwType())
+                .img(plantEntity.getImg())
                 .mgmtLevel(PlantCodeUtil.mgmtLevelCode[plantEntity.getMgmtLevel()])
                 .build();
     }
