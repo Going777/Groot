@@ -536,15 +536,15 @@ class MainActivity : AppCompatActivity() {
 
         //        화분 정보 받아왔는지 체크
         val isExistPlantData = GlobalVariables.prefs.getString("plant_names", "")
+        val isExistRegionData = GlobalVariables.prefs.getString("region_names", "")
         if (isExistPlantData == "") {
 //            Toast.makeText(this, "지역 / 식물 다 받아올 거임", Toast.LENGTH_SHORT).show()
 //        화분 이름 받아오기
             getPlantNameList()
+        }
+        if(isExistRegionData == "") {
 //            지역 받아오기
             getRegionNameList()
-        } else {
-//            GlobalVariables.prefs.setString("plant_names", "")
-//            Toast.makeText(this, "지역 / 식물 다 받아옴", Toast.LENGTH_SHORT).show()
         }
 
 //        인기태그 가져오기
