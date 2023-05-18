@@ -50,6 +50,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
+                android:clickable="false"
+
                 android:src="@drawable/ic_chevron_right"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -80,6 +82,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
+                android:clickable="false"
+
                 android:src="@drawable/ic_chevron_right"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -110,6 +114,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
+                android:clickable="false"
                 android:src="@drawable/ic_chevron_right"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -140,6 +145,8 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@color/white"
+                android:clickable="false"
+
                 android:src="@drawable/ic_chevron_right"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -171,6 +178,7 @@
                 android:layout_height="40dp"
                 android:background="@color/white"
                 android:src="@drawable/ic_chevron_right"
+                android:clickable="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -17,6 +17,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.NestedScrollView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.MainActivity
@@ -42,7 +43,7 @@ import java.io.FileOutputStream
 
 class PotDiaryEditFragment : Fragment() {
 
-    private val TAG = "PotDiaryCreateFragment"
+    private val TAG = "PotDiaryEditFragment"
 
     private var potId: Int? = null
     private var potName: String? = null
@@ -56,6 +57,7 @@ class PotDiaryEditFragment : Fragment() {
     private lateinit var attachedPhotoSection: ConstraintLayout
     private lateinit var diaryContent: EditText
     private lateinit var postDiaryBtnClickBtn: AppCompatButton
+    private lateinit var nestedScrollView: NestedScrollView
 
     private lateinit var waterChip: Chip
     private lateinit var potChip: Chip
@@ -97,7 +99,7 @@ class PotDiaryEditFragment : Fragment() {
 
         requestDiaryCheck()
         findView(rootView)
-        filterChipGroup()
+//        filterChipGroup()
         postDiaryBtnClick()
 
         potCharImg = arguments?.getString("potCharImg")
@@ -164,19 +166,19 @@ class PotDiaryEditFragment : Fragment() {
                             sunStatus = res?.diary?.sun!!
                             nutrientsStatus = res?.diary?.nutrients!!
                         }
-                        Log.d("PotDiaryCreateFragment", "onResponse() 성공 $res")
+                        Log.d("PotDiaryEditFragment", "onResponse() 성공 $res")
                         alertConstraintChip(waterChip, waterStatus, "물 주기")
                         alertConstraintChip(potChip, potStatus, "분갈이")
                         alertConstraintChip(bugChip, bugStatus, "해충 퇴치")
                         alertConstraintChip(sunChip, sunStatus, "햇빛 쬐기")
                         alertConstraintChip(pillChip, nutrientsStatus, "영양제 주기")
                     } else {
-                        Log.d("PotDiaryCreateFragment", "onResponse() 실패1")
+                        Log.d("PotDiaryEditFragment", "onResponse() 실패1")
                     }
                 }
 
                 override fun onFailure(call: Call<DiaryCheckStatusResponse>, t: Throwable) {
-                    Log.d("PotDiaryCreateFragment", "onResponse() 실패2")
+                    Log.d("PotDiaryEditFragment", "onResponse() 실패2")
                 }
 
             })
@@ -200,39 +202,37 @@ class PotDiaryEditFragment : Fragment() {
 
         diaryContent = view.findViewById(R.id.diaryContent)
         postDiaryBtnClickBtn = view.findViewById(R.id.postDiaryBtn)
+        nestedScrollView = view.findViewById(R.id.nestedScrollView)
     }
 
-    private fun filterChipGroup() {
-        if (waterStatus == true) {
-            Toast.makeText(requireContext(), "", Toast.LENGTH_SHORT).show()
-        }
-        waterChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            water = isChecked
-        }
-        potChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            pruning = isChecked
-        }
-        bugChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            bug = isChecked
-        }
-        sunChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            sun = isChecked
-            Log.d("PotDiaryCreateFragment", "filterChipGroup() 해해ㅐ $isChecked")
-        }
-        pillChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            nutrients = isChecked
-        }
-    }
+//    private fun filterChipGroup() {
+//        waterChip.setOnCheckedChangeListener { buttonView, isChecked ->
+//            water = isChecked
+//        }
+//        potChip.setOnCheckedChangeListener { buttonView, isChecked ->
+//            pruning = isChecked
+//        }
+//        bugChip.setOnCheckedChangeListener { buttonView, isChecked ->
+//            bug = isChecked
+//        }
+//        sunChip.setOnCheckedChangeListener { buttonView, isChecked ->
+//            sun = isChecked
+//        }
+//        pillChip.setOnCheckedChangeListener { buttonView, isChecked ->
+//            nutrients = isChecked
+//        }
+//    }
 
     //    비활성화 칩 처리
     private fun alertConstraintChip(targetChip: Chip, targetStatus: Boolean, action: String) {
         if (targetStatus == true) {
-            targetChip.setOnClickListener {
                 targetChip.isChecked = false
-                Toast.makeText(requireContext(), "오늘은 이미 ${action}를 완료했어요", Toast.LENGTH_SHORT)
-                    .show()
-            }
+//            targetChip.setOnClickListener {
+//                Toast.makeText(requireContext(), "오늘은 이미 ${action}를 완료했어요", Toast.LENGTH_SHORT)
+//                    .show()
+//            }
         }
+            targetChip.isEnabled = false
     }
 
     private fun postDiaryBtnClick() {
@@ -256,11 +256,11 @@ class PotDiaryEditFragment : Fragment() {
             DiaryRequest(
                 potId!!,
                 content,
-                water,
-                pruning,
-                bug,
-                sun,
-                nutrients
+                null,
+                null,
+                null,
+                null,
+                null
             ), filePart
         )
             .enqueue(object : retrofit2.Callback<BasicResponse> {
@@ -278,7 +278,7 @@ class PotDiaryEditFragment : Fragment() {
                             mActivity.changeFragment("pot_diary")
                         }
                     } else {
-                        Log.d("PotDiaryCreateFragment", "onResponse() 다이어리 작성 실패ㅜㅜㅜ $response")
+                        Log.d("PotDiaryEditFragment", "onResponse() 다이어리 작성 실패ㅜㅜㅜ $response")
                     }
                 }
 
@@ -288,23 +288,23 @@ class PotDiaryEditFragment : Fragment() {
             })
     }
 
-    fun attachPhoto(uri: Uri) {
-        attachedPhotoSection!!.visibility = View.VISIBLE
-        attachedPhoto?.setImageURI(uri)
-        imageFile = uriToFile(uri)
-    }
+//    fun attachPhoto(uri: Uri) {
+//        attachedPhotoSection!!.visibility = View.VISIBLE
+//        attachedPhoto?.setImageURI(uri)
+//        imageFile = uriToFile(uri)
+//    }
 
-    private fun uriToFile(uri: Uri): File? {
-        val inputStream = context?.contentResolver?.openInputStream(uri)
-        val tempFile = File.createTempFile("prefix", "extension")
-        tempFile.deleteOnExit()
-        val outputStream = FileOutputStream(tempFile)
-
-        inputStream?.use { input ->
-            outputStream.use { output ->
-                input.copyTo(output)
-            }
-        }
-        return tempFile
-    }
+//    private fun uriToFile(uri: Uri): File? {
+//        val inputStream = context?.contentResolver?.openInputStream(uri)
+//        val tempFile = File.createTempFile("prefix", "extension")
+//        tempFile.deleteOnExit()
+//        val outputStream = FileOutputStream(tempFile)
+//
+//        inputStream?.use { input ->
+//            outputStream.use { output ->
+//                input.copyTo(output)
+//            }
+//        }
+//        return tempFile
+//    }
 }

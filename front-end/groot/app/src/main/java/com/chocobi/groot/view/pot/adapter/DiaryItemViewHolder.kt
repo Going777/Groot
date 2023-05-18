@@ -40,7 +40,8 @@ class DiaryItemViewHolder(itemView: View) :
     private lateinit var titleDateText: TextView
     private lateinit var diaryPhoto: ImageView
     private lateinit var diaryContent: TextView
-    private lateinit var detailOption: TextView
+
+    //    private lateinit var detailOption: TextView
     private lateinit var waterBadge: ImageView
     private lateinit var potBadge: ImageView
     private lateinit var bugBadge: ImageView
@@ -64,7 +65,7 @@ class DiaryItemViewHolder(itemView: View) :
             diaryPhoto = it.findViewById(R.id.diaryPhoto)
 
             diaryContent = it.findViewById(R.id.diaryContent)
-            detailOption = it.findViewById(R.id.detailOption)
+//            detailOption = it.findViewById(R.id.detailOption)
 
             waterBadge = it.findViewById(R.id.waterBadge)
             potBadge = it.findViewById(R.id.potBadge)
@@ -153,34 +154,37 @@ class DiaryItemViewHolder(itemView: View) :
             diaryPhoto.visibility = View.GONE
         }
 
-        diaryContent.text = diary.content
-        diaryContent.run {
-            doOnLayout {
-                val lineCount = lineCount
-                val maxLine = 2
-                Log.d(TAG, "$lineCount")
-                if (lineCount > maxLine) {
-                    maxLines = maxLine
-                    ellipsize = TextUtils.TruncateAt.END
-                    detailOption.visibility = View.VISIBLE
-                } else {
-                    detailOption.visibility = View.GONE
-                }
-            }
+        if (!diary.content.isNullOrBlank()) {
+            diaryContent.visibility = View.VISIBLE
+            diaryContent.text = diary.content
         }
-        detailOption.setOnClickListener {
-            when (diaryContent.maxLines) {
-                2 -> {
-                    diaryContent.maxLines = 100
-                    detailOption.text = "간단히 보기"
-                }
-
-                else -> {
-                    diaryContent.maxLines = 2
-                    detailOption.text = "자세히 보기"
-                }
-            }
-        }
+//        diaryContent.run {
+//            doOnLayout {
+//                val lineCount = lineCount
+//                val maxLine = 2
+//                Log.d(TAG, "$lineCount")
+//                if (lineCount > maxLine) {
+//                    maxLines = maxLine
+//                    ellipsize = TextUtils.TruncateAt.END
+//                    detailOption.visibility = View.VISIBLE
+//                } else {
+//                    detailOption.visibility = View.GONE
+//                }
+//            }
+//        }
+//        detailOption.setOnClickListener {
+//            when (diaryContent.maxLines) {
+//                2 -> {
+//                    diaryContent.maxLines = 100
+//                    detailOption.text = "간단히 보기"
+//                }
+//
+//                else -> {
+//                    diaryContent.maxLines = 2
+//                    detailOption.text = "자세히 보기"
+//                }
+//            }
+//        }
 
         if (diary.water) {
             waterBadge.visibility = View.VISIBLE

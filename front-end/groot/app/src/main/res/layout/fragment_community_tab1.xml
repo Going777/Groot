@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginBottom="10dp"
-                    android:text="인기 검색어"
+                    android:text="나눔 인기 태그"
                     android:textColor="@color/point"
                     android:textSize="18sp"
                     android:textStyle="bold" />
