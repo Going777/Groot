@@ -40,6 +40,7 @@
         android:contentDescription="+"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@color/white"
         app:srcCompat="@drawable/ic_chat" />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/communityPostFab"
@@ -49,6 +50,7 @@
         android:contentDescription="+"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:backgroundTint="@color/white"
         app:srcCompat="@drawable/ic_post" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
