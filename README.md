@@ -10,21 +10,25 @@
 
 ## 👨‍👩‍👧‍👦팀원 소개
 
-**[박세희](https://github.com/9jinseok)** :
+---
 
-**[김민우](https://github.com/bkkmw)** :
+**[박세희](https://github.com/9jinseok)** : `팀장`, `Client`
 
-**[김정원](https://github.com/limgilhun)** :
+**[김민우](https://github.com/bkkmw)** : `BackEnd`
 
-**[서다경](https://github.com/0901jbh)** :
+**[김정원](https://github.com/limgilhun)** : `Client`
 
-**[윤민주](https://github.com/seotai)** :
+**[서다경](https://github.com/0901jbh)** : `Client`
 
-**[조승희](https://github.com/HWANGSAN)** :
+**[윤민주](https://github.com/seotai)** : `BackEnd`
+
+**[조승희](https://github.com/HWANGSAN)** : `BackEnd`, `UCC`
 
 <br>
 
 ## 프로젝트 개요
+
+---
 
 ### 기획 배경
 
@@ -40,6 +44,8 @@
 <br>
 
 ## 주요 기능
+
+---
 
 ### 화분 등록
 
@@ -73,10 +79,13 @@
 - 카테고리 별 게시글 검색 : 나눔, 자유, QnA 등 카테고리별 게시판 기능을 제공합니다.
 - 실시간 인기 태그 : 카테고리 별 인기 태그 정보를 제공합니다.
 - 북마크 기능 : 다시 보고싶은 게시물에 북마크를 등록하여, 마이페이지에서 쉽게 확인할 수 있습니다.
+- 채팅 기능 : 사용자 간 채팅을 통해 자유로운 나눔과 대화가 가능하며 푸쉬 알림을 통해 사용자의 device에 알림을 줄 수 있습니다.
 
 <br>
 
 ## 주요 기술
+
+---
 
 ### 시스템 아키텍처
 
@@ -89,22 +98,66 @@
 
 ## 개발 및 협업 환경
 
-### BE 개발 환경
+---
 
-### Android 개발 환경
+**Backend**
 
-### 협업 환경
+<img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white">
+<img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white">
+<img src="https://img.shields.io/badge/Spring_Data_JPA-6DB33F?style=for-the-badge&logo=Hibernate&logoColor=white">
+<img src="https://img.shields.io/badge/QueryDSL-3388ff?style=for-the-badge&logo=Query&logoColor=white">
+<img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=Flask&logoColor=white">
+<img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=OpenJDK&logoColor=white">
+<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=Python&logoColor=white">
+<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
+<img src="https://img.shields.io/badge/Intellij_IDEA-000000?style=for-the-badge&logo=IntellijIDEA&logoColor=white">
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
+<img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">
+<img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=white">
+
+**Android**
+
+<img src="https://img.shields.io/badge/Kotlin-4FC08D?style=for-the-badge&logo=Kotlin&logoColor=white">
+<img src="https://img.shields.io/badge/AR_CORE-007ACC?style=for-the-badge&logo=C&logoColor=white">
+<img src="https://img.shields.io/badge/ML Kit-007ACC?style=for-the-badge&logo=Android Studio&logoColor=white">
+<img src="https://img.shields.io/badge/Retrofit2-2FC774?style=for-the-badge&logo=Square&logoColor=white">
+<img src="https://img.shields.io/badge/Glide-00CCBC?style=for-the-badge&logo=Google Play&logoColor=white">
+<img src="https://img.shields.io/badge/Android_Studio-007ACC?style=for-the-badge&logo=Android Studio&logoColor=white">
+<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
+<img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=Firebase&logoColor=white">
+
+**Server**
+
+<img src="https://img.shields.io/badge/Amazon EC2-FF9900?style=for-the-badge&logo=Amazon EC2&logoColor=white"> <img src="https://img.shields.io/badge/Jenkins-D24939?style=for-the-badge&logo=Jenkins&logoColor=white"> <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white"> <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white"> <img src="https://img.shields.io/badge/S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">
+
+**Cooperation & Communication**
+
+<img src="https://img.shields.io/badge/gitlab-FC6D26?style=for-the-badge&logo=GitLab&logoColor=white"> <img src="https://img.shields.io/badge/jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white"> <img src="https://img.shields.io/badge/MatterMOST-009688?style=for-the-badge&logo=Mattermost&logoColor=white"> <img src="https://img.shields.io/badge/Notion-EF1970?style=for-the-badge&logo=Notion&logoColor=white"> <img src="https://img.shields.io/badge/Discord-FDA061?style=for-the-badge&logo=Discord&logoColor=white">
 
 <br>
 
 ## 서비스 화면
 
+---
+
+### 리사이클러뷰를 통한 무한 스크롤
+
 <br>
 
 ## 프로젝트 산출물
 
+---
+
 ### 와이어 프레임
 
-### 기능 명세서
+![wireframe](/uploads/1100f4d8637cb082a5d9d599e03d379f/wireframe.png)
+
+### ERD
+
+![ERD](/uploads/94df969a4a4d1698d3063756947eef30/ERD.png)
 
 ### API 명세서
+
+![API_specification](/uploads/188b29ec99eac1065d7da31d918a5c89/API_specification.png)
+
+[API 명세서](https://superficial-brush-0a1.notion.site/API-1641b7cde4b34f659bcf60af60eeeb6d)
