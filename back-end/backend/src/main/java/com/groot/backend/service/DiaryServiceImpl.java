@@ -214,10 +214,11 @@ public class DiaryServiceImpl implements DiaryService{
         }
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
-        if(tempExp>=pot.getLevel()*10){
+        while(tempExp>=pot.getLevel()*10){
             tempExp -= pot.getLevel()*10;
             tempLevel+=1;
-        }else if(tempExp < 0){
+        }
+        while(tempExp < 0){
             tempLevel -= 1;
             tempExp += tempLevel*10;
         }
@@ -361,10 +362,11 @@ public class DiaryServiceImpl implements DiaryService{
         // 경험치 및 레벨 계산
         int tempExp = pot.getExperience()+score;
         int tempLevel = pot.getLevel();
-        if(tempExp>=pot.getLevel()*10){
+        while(tempExp>=pot.getLevel()*10){
             tempExp -= pot.getLevel()*10;
             tempLevel+=1;
-        }else if(tempExp < 0){
+        }
+        while(tempExp < 0){
             tempLevel -= 1;
             tempExp += tempLevel*10;
         }
