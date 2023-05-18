@@ -15,6 +15,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.UserData
@@ -25,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.ref.WeakReference
 
 
-class ChatUserAdapter(private val recyclerView: RecyclerView) :
+class ChatUserAdapter(private val recyclerView: RecyclerView, private val mActivity: MainActivity) :
     RecyclerView.Adapter<ChatUserViewHolder>() {
 
 
@@ -53,21 +54,31 @@ class ChatUserAdapter(private val recyclerView: RecyclerView) :
         holder.delegate = object : ChatUserViewHolder.ChatUserViewHolderDelegate {
             override fun onItemViewClick(chatUserListResponse: ChatUserListResponse) {
                 Log.d("ChatUserViewHolder", "clicked")
-                val fragmentManager: FragmentManager =
-                    (recyclerView.context as FragmentActivity).supportFragmentManager
-                val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
 
-                val chatFragment = ChatFragment()
-                val bundle = Bundle()
-                bundle.putString("userPK", chatUserListResponse.chatting[0].userPK.toString())
-                bundle.putString("nickName", chatUserListResponse.chatting[0].nickName)
-                bundle.putString("profile", chatUserListResponse.chatting[0].profile)
-                bundle.putString("roomId", chatUserListResponse.chatting[0].roomId)
-                Log.d("받아온 데이터", bundle.toString())
+                mActivity.setChatUserPK(chatUserListResponse.chatting[0].userPK.toString())
+                mActivity.setChatPickNickName(chatUserListResponse.chatting[0].nickName)
+                mActivity.setChatPickProfile(chatUserListResponse.chatting[0].profile)
+                mActivity.setChatRoomId(chatUserListResponse.chatting[0].roomId)
 
-                chatFragment.arguments = bundle
-                fragmentTransaction.replace(R.id.fl_container, chatFragment).addToBackStack(null)
-                    .commit()
+                mActivity.changeFragment("chat")
+
+
+//                val fragmentManager: FragmentManager =
+//                    (recyclerView.context as FragmentActivity).supportFragmentManager
+//                val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//
+//                val chatFragment = ChatFragment()
+//                val bundle = Bundle()
+//                bundle.putString("userPK", chatUserListResponse.chatting[0].userPK.toString())
+//                bundle.putString("nickName", chatUserListResponse.chatting[0].nickName)
+//                bundle.putString("profile", chatUserListResponse.chatting[0].profile)
+//                bundle.putString("roomId", chatUserListResponse.chatting[0].roomId)
+//                Log.d("받아온 데이터", bundle.toString())
+//
+//                chatFragment.arguments = bundle
+//                fragmentTransaction.replace(R.id.fl_container, chatFragment).addToBackStack("chat")
+////                    .commit()
+//                    .commitAllowingStateLoss()
             }
         }
 

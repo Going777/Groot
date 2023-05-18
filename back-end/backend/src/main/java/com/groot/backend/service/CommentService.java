@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import java.util.List;
 
 public interface CommentService {
+    Boolean checkDelete(Long commentId, Long userPK);
     CommentEntity insertComment(CommentDTO commentDTO, Long userPK);
     CommentEntity updateComment(CommentDTO commentDTO);
     boolean deleteComment(Long commentId);

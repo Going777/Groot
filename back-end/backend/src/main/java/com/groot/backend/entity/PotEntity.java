@@ -86,6 +86,10 @@ public class PotEntity extends BaseEntity{
     @JsonManagedReference
     private List<DiaryEntity> diaryEntities;
 
+    @OneToMany(mappedBy = "potEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<DiaryCheckEntity> diaryCheckEntities;
+
     @ManyToOne(targetEntity = PlantEntity.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "plant_id")
     @JsonBackReference

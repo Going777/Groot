@@ -425,8 +425,11 @@ public class UserController {
                 resultMap.put("msg", "존재하지 않는 사용자, 회원가입을 진행해주세요.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
+
+            String firebaseUserPK = String.format("%06d", result.getUserPK());    // 6자리 맞추기
             resultMap.put("accessToken", result.getAccessToken());
             resultMap.put("refreshToken", result.getRefreshToken());
+            resultMap.put("userPK", firebaseUserPK);
             resultMap.put("result", SUCCESS);
             resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 성공");
             return ResponseEntity.ok().body(resultMap);

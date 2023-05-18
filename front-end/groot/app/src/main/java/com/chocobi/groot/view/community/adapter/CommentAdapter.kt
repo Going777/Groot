@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.chat.ChatFragment
@@ -42,7 +43,7 @@ import java.lang.ref.WeakReference
 
 class CommentAdapter(
     private val recyclerView: RecyclerView,
-    private val context: Context
+    private val context: Context, private val mActivity: MainActivity
 ) :
     RecyclerView.Adapter<CommentItemViewHolder>() {
 
@@ -68,7 +69,7 @@ class CommentAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentItemViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_community_comment_item, parent, false)
-        return CommentItemViewHolder(view)
+        return CommentItemViewHolder(view, mActivity)
     }
 
     override fun onBindViewHolder(holder: CommentItemViewHolder, position: Int) {
@@ -130,7 +131,8 @@ class CommentAdapter(
 }
 
 
-class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class CommentItemViewHolder(itemView: View, private val mActivity: MainActivity) :
+    RecyclerView.ViewHolder(itemView) {
 
     interface CommentItemViewHolderDelegate {
         fun onItemViewClick(communityCommentResponse: CommunityCommentResponse) {
@@ -179,26 +181,35 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             val moveChatDialog = AlertDialog.Builder(it.context)
             moveChatDialog.setMessage("$pickNickName 님과 채팅을 하시겠습니까?")
             moveChatDialog.setPositiveButton("OK") { dialog, which ->
-                val fragmentActivity = it.context as? FragmentActivity
-                if (fragmentActivity != null) {
-                    val fragmentManager: FragmentManager = fragmentActivity.supportFragmentManager
-                    val fragmentTransaction: FragmentTransaction =
-                        fragmentManager.beginTransaction()
 
-                    val roomId =
-                        changeRoomNumber(UserData.getUserPK().toString(), userPK.toString())
-                    val chatFragment = ChatFragment()
-                    val bundle = Bundle()
-                    bundle.putString("userPK", userPK)
-                    bundle.putString("nickName", pickNickName)
-                    bundle.putString("profile", pickProfile)
-                    bundle.putString("roomId", roomId)
-                    Log.d("받아온 데이터", bundle.toString())
+                val roomId =
+                    changeRoomNumber(UserData.getUserPK().toString(), userPK.toString())
+                mActivity.setChatUserPK(userPK)
+                mActivity.setChatPickNickName(pickNickName)
+                mActivity.setChatPickProfile(pickProfile)
+                mActivity.setChatRoomId(roomId)
 
-                    chatFragment.arguments = bundle
-                    fragmentTransaction.replace(R.id.fl_container, chatFragment)
-                        .addToBackStack(null).commit()
-                }
+                mActivity.changeFragment("chat")
+
+
+//                val fragmentActivity = it.context as? FragmentActivity
+//                if (fragmentActivity != null) {
+//                    val fragmentManager: FragmentManager = fragmentActivity.supportFragmentManager
+//                    val fragmentTransaction: FragmentTransaction =
+//                        fragmentManager.beginTransaction()
+//
+//                    val chatFragment = ChatFragment()
+//                    val bundle = Bundle()
+//                    bundle.putString("userPK", userPK)
+//                    bundle.putString("nickName", pickNickName)
+//                    bundle.putString("profile", pickProfile)
+//                    bundle.putString("roomId", roomId)
+//                    Log.d("받아온 데이터", bundle.toString())
+//
+//                    chatFragment.arguments = bundle
+//                    fragmentTransaction.replace(R.id.fl_container, chatFragment)
+//                        .addToBackStack(null).commit()
+//                }
             }
             moveChatDialog.setNegativeButton("Cancel") { dialog, which -> dialog.dismiss() }
             moveChatDialog.create().show()
@@ -208,40 +219,49 @@ class CommentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
     @SuppressLint("SetTextI18n")
     fun updateView() {
-        userPK = communityCommentResponse.comment[0].userPK.toString()
-        pickNickName = communityCommentResponse.comment[0].nickName
-        pickProfile = communityCommentResponse.comment[0].profile.toString()
-        nickName.text = communityCommentResponse.comment[0].nickName
+        var comment = communityCommentResponse.comment[0]
+        userPK = comment.userPK.toString()
+        pickNickName = comment.nickName
+        pickProfile = comment.profile.toString()
+        nickName.text = comment.nickName
         createTime.text =
-            communityCommentResponse.comment[0].createTime.date.year.toString() + '.' + communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + communityCommentResponse.comment[0].createTime.time.hour + ':' + communityCommentResponse.comment[0].createTime.time.minute.toString()
+            comment.createTime.date.year.toString() + '.' + comment.createTime.date.month.toString() + '.' + comment.createTime.date.day.toString() + ' ' + comment.createTime.time.hour + ':' + comment.createTime.time.minute.toString()
 
-        if (communityCommentResponse.comment[0].userPK == UserData.getUserPK()) {
+        if (comment.userPK == UserData.getUserPK()) {
             deleteButton.visibility = View.VISIBLE
+        } else {
+            deleteButton.visibility = View.GONE
         }
 //        deleteButton.setOnClickListener {
-//            deleteComment(communityCommentResponse.comment[0].id)
+//            deleteComment(comment.id)
 //        }
-        nickName.text = communityCommentResponse.comment[0].nickName
-        val koreahour = communityCommentResponse.comment[0].createTime.time.hour + 9
+        nickName.text = comment.nickName
+        val koreahour = comment.createTime.time.hour + 9
         createTime.text =
-            communityCommentResponse.comment[0].createTime.date.year.toString() + '.' + communityCommentResponse.comment[0].createTime.date.month.toString() + '.' + communityCommentResponse.comment[0].createTime.date.day.toString() + ' ' + communityCommentResponse.comment[0].createTime.time.hour + ':' + communityCommentResponse.comment[0].createTime.time.minute.toString()
-        content.text = communityCommentResponse.comment[0].content
-        profile.post {
-            view.get()?.let {
-                ThreadUtil.startThread {
-                    val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
-                        .asBitmap()
-                        .load(communityCommentResponse.comment.getOrNull(0)?.profile)
-                        .submit(profile.width, profile.height)
+            comment.createTime.date.year.toString() + '.' + comment.createTime.date.month.toString() + '.' + comment.createTime.date.day.toString() + ' ' + comment.createTime.time.hour + ':' + comment.createTime.time.minute.toString()
+        content.text = comment.content
 
-                    val bitmap = futureTarget.get()
+        if (comment.profile != null && comment.profile != "") {
+            profile.post {
+                view.get()?.let {
+                    ThreadUtil.startThread {
+                        val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                            .asBitmap()
+                            .load(communityCommentResponse.comment.getOrNull(0)?.profile)
+                            .submit(profile.width, profile.height)
 
-                    ThreadUtil.startUIThread(0) {
-                        profile.setImageBitmap(bitmap)
+                        val bitmap = futureTarget.get()
+
+                        ThreadUtil.startUIThread(0) {
+                            profile.setImageBitmap(bitmap)
+                        }
                     }
                 }
             }
+        } else {
+            profile.setImageResource(R.drawable.basic_profile)
         }
+
 
     }
 

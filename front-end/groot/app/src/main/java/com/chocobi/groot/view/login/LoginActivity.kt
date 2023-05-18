@@ -24,6 +24,7 @@ import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.signup.SignupActivity
+import com.chocobi.groot.view.signup.SignupResponse
 import com.chocobi.groot.view.signup.SocialSignupActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
@@ -215,10 +216,10 @@ class LoginActivity : AppCompatActivity() {
         val loginService = retrofit.create(LoginService::class.java)
         val firebaseToken = UserData.getUserFirebase()
         loginService.requestSocialLogin(SocialLoginRequest(oauthProvider = type, accessToken =  socialAccessToken!!, firebaseToken = firebaseToken))
-            .enqueue(object : Callback<LoginResponse> {
+            .enqueue(object : Callback<SignupResponse> {
                 override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
+                    call: Call<SignupResponse>,
+                    response: Response<SignupResponse>
                 ) {
 //                    우리 서버에 존재하는 경우
                     if (response.code() == 200) {
@@ -259,7 +260,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                override fun onFailure(call: Call<SignupResponse>, t: Throwable) {
 //                    통신 실패시 실행되는 코드
                     var dialog = AlertDialog.Builder(this@LoginActivity)
                     dialog.setTitle("실패!")

@@ -47,6 +47,7 @@ data class PlantIdentifyData(
     val sciName: String,
     val grwType: String,
     val mgmtLevel: String,
+    val img: String,
     val score: Int
 )
 

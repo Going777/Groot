@@ -48,6 +48,7 @@ import com.chocobi.groot.view.community.model.Article
 import com.chocobi.groot.view.community.model.BookmarkResponse
 import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
+import com.chocobi.groot.view.community.model.CommunityCommentPostResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.pot.adapter.PotDiaryListRVAdapter
@@ -299,20 +300,22 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
 
 
         communityCommentPostService.requestCommentPost(CommentPostRequest(articleId, content))
-            .enqueue(object : Callback<CommunityCommentResponse> {
+            .enqueue(object : Callback<CommunityCommentPostResponse> {
                 override fun onResponse(
-                    call: Call<CommunityCommentResponse>,
-                    response: Response<CommunityCommentResponse>
+                    call: Call<CommunityCommentPostResponse>,
+                    response: Response<CommunityCommentPostResponse>
                 ) {
                     if (response.isSuccessful) {
                     }
+                    Log.d("Retrofit", "dd")
                     getArticleComment()
                 }
 
 
-                override fun onFailure(call: Call<CommunityCommentResponse>, t: Throwable) {
+                override fun onFailure(call: Call<CommunityCommentPostResponse>, t: Throwable) {
                     Log.d("CommunityDetailFragment", "댓글 작성 실패")
                     Log.d("CommunityDetailFragmentCommentPost", "$t")
+//                    getArticleComment()
                 }
             })
     }
@@ -365,6 +368,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         noComment = view.findViewById(R.id.noComment)
 
         //    댓글 리사이클러뷰
+
         commentRecyclerView = view.findViewById(R.id.commentRecycleView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
 
@@ -384,7 +388,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
 //    }
 
     private fun initList() {
-        commentAdapter = CommentAdapter(commentRecyclerView, requireContext())
+        commentAdapter = CommentAdapter(commentRecyclerView, requireContext(), mActivity)
 //        commentRecyclerView.adapter = commentAdapter // RecyclerView에 Adapter 설정
         val size = commentAdapter.itemCount
         commentRecyclerView.scrollToPosition(size - 1)

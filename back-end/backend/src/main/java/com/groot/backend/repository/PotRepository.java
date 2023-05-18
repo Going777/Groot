@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PotRepository extends JpaRepository<PotEntity, Long>, PotRepositoryCustom {
 
-    public List<PotEntity> findAllByUserId(Long userId);
+    public List<PotEntity> findAllByUserIdOrderByCreatedDateDesc(Long userId);
 
-    public List<PotEntity> findAllByUserIdAndSurvival(Long userId, Boolean survival);
+    public List<PotEntity> findAllByUserIdAndSurvivalOrderByCreatedDateDesc(Long userId, Boolean survival);
 }

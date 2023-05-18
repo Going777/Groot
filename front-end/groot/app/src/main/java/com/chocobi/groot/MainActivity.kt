@@ -32,7 +32,9 @@ import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
+import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.chat.ChatUserListFragment
+import com.chocobi.groot.view.community.CommunityDetailFragment
 import com.chocobi.groot.view.community.CommunityEditPostFragment
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
@@ -89,6 +91,14 @@ class MainActivity : AppCompatActivity() {
     private var potPlant: String = "화분 식물"
     private var potCharImg: String = "화분 이미지 URL"
 
+    private var chatUserPK: String = ""
+    private var chatPickNickName: String = ""
+    private var chatPickProfile: String = ""
+    private var chatRoomId: String = ""
+
+    private var communityArticleId: Int = 0
+
+
     private lateinit var bnv_main: BottomNavigationView
 
     fun setPotId(id: Int) {
@@ -114,6 +124,26 @@ class MainActivity : AppCompatActivity() {
 
     fun setPotCharImg(plant: String) {
         potCharImg = plant
+    }
+
+    fun setChatUserPK(name: String) {
+        chatUserPK = name
+    }
+
+    fun setChatPickNickName(name: String) {
+        chatPickNickName = name
+    }
+
+    fun setChatPickProfile(name: String) {
+        chatPickProfile = name
+    }
+
+    fun setChatRoomId(name: String) {
+        chatRoomId = name
+    }
+
+    fun setCommunityArticleId(id: Int) {
+        communityArticleId = id
     }
 
     //    알림 요청
@@ -174,15 +204,22 @@ class MainActivity : AppCompatActivity() {
 
             "search_detail" -> {
                 val bundle = Bundle()
-                if (intent.getStringExtra("plant_id") == null){
+//                if (intent.getStringExtra("plant_id") == null) {
                     bundle.putString(
                         "plant_id", plantId.toString()
                     )
-                } else {
-                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
-                }
+//                } else {
+//                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
+//                }
                 bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
+                fragment.arguments = bundle
+            }
+
+            "community_detail" -> {
+                fragment = CommunityDetailFragment()
+                val bundle = Bundle()
+                bundle.putInt("articleId", communityArticleId)
                 fragment.arguments = bundle
             }
 
@@ -213,6 +250,19 @@ class MainActivity : AppCompatActivity() {
             "chat_user_list" -> {
                 fragment = ChatUserListFragment()
             }
+
+            "chat" -> {
+                fragment = ChatFragment()
+                val bundle = Bundle()
+                bundle.putString("userPK", chatUserPK)
+                bundle.putString("nickName", chatPickNickName)
+                bundle.putString("profile", chatPickProfile)
+                bundle.putString("roomId", chatRoomId)
+                Log.d("받아온 데이터", bundle.toString())
+
+                fragment.arguments = bundle
+            }
+
         }
         if (fragment != null) {
             supportFragmentManager
@@ -224,7 +274,6 @@ class MainActivity : AppCompatActivity() {
                 .commitAllowingStateLoss()
         }
     }
-
 
 
     //    camera 조작
@@ -336,8 +385,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
-
-
     }
 
     //    사진 하나만 첨부할 때 사용
@@ -489,19 +536,19 @@ class MainActivity : AppCompatActivity() {
 
         //        화분 정보 받아왔는지 체크
         val isExistPlantData = GlobalVariables.prefs.getString("plant_names", "")
+        val isExistRegionData = GlobalVariables.prefs.getString("region_names", "")
         if (isExistPlantData == "") {
 //            Toast.makeText(this, "지역 / 식물 다 받아올 거임", Toast.LENGTH_SHORT).show()
 //        화분 이름 받아오기
             getPlantNameList()
+        }
+        if (isExistRegionData == "") {
 //            지역 받아오기
             getRegionNameList()
-        } else {
-//            GlobalVariables.prefs.setString("plant_names", "")
-//            Toast.makeText(this, "지역 / 식물 다 받아옴", Toast.LENGTH_SHORT).show()
         }
 
 //        인기태그 가져오기
-        val isExistPopularTagData = GlobalVariables.prefs.getString("popular_tags_share","")
+        val isExistPopularTagData = GlobalVariables.prefs.getString("popular_tags_share", "")
         if (isExistPopularTagData == "") {
             getPopularTag("나눔")
             getPopularTag("자유")
@@ -617,16 +664,34 @@ class MainActivity : AppCompatActivity() {
 
         //        특정 프레그먼트로 이동
         var toPage = intent.getStringExtra("toPage")
-        val plantId = intent.getStringExtra("plant_id")
+        if (!intent.getStringExtra("plant_id").isNullOrEmpty()) {
+            plantId = intent.getStringExtra("plant_id")!!.toInt()
+        }
+        if (intent.getStringExtra("cameraStatus") != null) {
+            cameraStatus = intent.getStringExtra("cameraStatus")
+
+        }
         if (toPage != null) {
             Log.d(TAG, "toPage" + toPage)
 
             when (toPage) {
                 "search_detail" -> {
                     bnv_main.run { selectedItemId = R.id.searchFragment }
+                    changeFragment(toPage)
+                }
+
+                "pot_detail" -> {
+                    changeFragment(toPage)
+                }
+
+                "search_camera" -> {
+                    requirePermissions(
+                        arrayOf(android.Manifest.permission.CAMERA),
+                        PERMISSION_CAMERA
+                    )
+
                 }
             }
-            changeFragment(toPage)
 
         }
     }
@@ -657,8 +722,13 @@ class MainActivity : AppCompatActivity() {
             val tag9: Fragment? = supportFragmentManager.findFragmentByTag("community_share")
             val tag10: Fragment? = supportFragmentManager.findFragmentByTag("community_post")
             val tag11: Fragment? = supportFragmentManager.findFragmentByTag("setting")
+            val tag12: Fragment? = supportFragmentManager.findFragmentByTag("chat")
+            val tag13: Fragment? = supportFragmentManager.findFragmentByTag("chat_user_list")
+            val tag14: Fragment? = supportFragmentManager.findFragmentByTag("community_qna")
+            val tag15: Fragment? = supportFragmentManager.findFragmentByTag("community_tip")
+            val tag16: Fragment? = supportFragmentManager.findFragmentByTag("community_detail")
 
-            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null) {
+            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null && tag12 == null && tag13 == null && tag14 == null && tag15 == null && tag16 == null) {
                 var intent = Intent(this, IntroActivity::class.java)
                 startActivity(intent)
             }
@@ -761,14 +831,17 @@ class MainActivity : AppCompatActivity() {
                                     "popular_tags_share",
                                     popularTagsList.joinToString()
                                 )
+
                                 "자유" -> GlobalVariables.prefs.setString(
                                     "popular_tags_free",
                                     popularTagsList.joinToString()
                                 )
+
                                 "QnA" -> GlobalVariables.prefs.setString(
                                     "popular_tags_qna",
                                     popularTagsList.joinToString()
                                 )
+
                                 "Tip" -> GlobalVariables.prefs.setString(
                                     "popular_tags_tip",
                                     popularTagsList.joinToString()

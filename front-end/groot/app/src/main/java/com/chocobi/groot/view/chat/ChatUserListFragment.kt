@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
@@ -33,14 +34,20 @@ import retrofit2.Response
 
 class ChatUserListFragment : Fragment() {
 
+    private val TAG = "ChatUserListFragment"
+
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ChatUserAdapter
     private lateinit var frameLayoutProgress: FrameLayout
     private lateinit var getData: ChatUserListResponse
 
+    private lateinit var mActivity: MainActivity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        Log.d(TAG, "와우와우와")
 
     }
 
@@ -51,6 +58,7 @@ class ChatUserListFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_chat_user_list, container, false)
 
+        mActivity = activity as MainActivity
         val categoryNameTextView = view.findViewById<TextView>(R.id.categoryName)
         val categoryIcon = view.findViewById<ImageView>(R.id.categoryIcon)
         categoryNameTextView.text = "채팅방"
@@ -75,32 +83,36 @@ class ChatUserListFragment : Fragment() {
         recyclerView = view.findViewById<RecyclerView>(R.id.chatUserList)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
 
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
 
 
         var retrofit = RetrofitClient.getClient()!!
         var chatUserListService = retrofit.create(ChatUserListService::class.java)
         chatUserListService.requestChatUserList().enqueue(object :
             Callback<ChatUserListResponse> {
-                override fun onResponse(call: Call<ChatUserListResponse>, response: Response<ChatUserListResponse>) {
-                    if (response.code() == 200) {
-                        getData = response.body()!!
-                        Log.d("chatUserList", getData.chatting.toString())
-                        val list = createDummyData()
-                        ThreadUtil.startUIThread(100) {
-                            adapter.reload(list)
-                            hideProgress()
-                        }
-                    } else {
-                        Log.d("ChatUserListFragment", "실패 1")
+            override fun onResponse(
+                call: Call<ChatUserListResponse>,
+                response: Response<ChatUserListResponse>
+            ) {
+                if (response.code() == 200) {
+                    getData = response.body()!!
+                    Log.d("chatUserList", getData.chatting.toString())
+                    val list = createDummyData()
+                    ThreadUtil.startUIThread(100) {
+                        adapter.reload(list)
+                        hideProgress()
                     }
+                } else {
+                    Log.d("ChatUserListFragment", "실패 1")
                 }
+            }
 
             override fun onFailure(call: Call<ChatUserListResponse>, t: Throwable) {
                 Log.d("ChatUserListFragment", "실패2")
 
             }
-            }
+        }
 
         )
 
@@ -108,6 +120,7 @@ class ChatUserListFragment : Fragment() {
 
         return view
     }
+
     private fun findViews(view: View) {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById<RecyclerView>(R.id.chatUserList)
@@ -123,7 +136,7 @@ class ChatUserListFragment : Fragment() {
     }
 
     private fun initList() {
-        adapter = ChatUserAdapter(recyclerView)
+        adapter = ChatUserAdapter(recyclerView, mActivity)
 
         recyclerView.adapter = adapter // RecyclerView에 Adapter 설정
         val size = adapter.itemCount

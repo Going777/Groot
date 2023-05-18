@@ -114,6 +114,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
             }
             isDepthOcclusionEnabled = false
         }
+
 //        loadingView = findViewById(R.id.loadingView)
 //        newModelButton = findViewById<ExtendedFloatingActionButton>(R.id.newModelButton).apply {
 //            // Add system bar margins
@@ -201,7 +202,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
             placementMode = PlacementMode.INSTANT,
             instantAnchor = true,
             followHitPosition = false,
-            ).apply {
+        ).apply {
 //            applyPoseRotation = model.applyPoseRotation
             loadModelGlbAsync(
                 glbFileLocation = GLBfile ?: model.fileLocation,

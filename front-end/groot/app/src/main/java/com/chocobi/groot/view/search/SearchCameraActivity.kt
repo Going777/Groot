@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -18,8 +19,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.pot.PlantBottomSheet
@@ -53,6 +57,7 @@ class SearchCameraActivity : AppCompatActivity() {
     private lateinit var plantSciText: TextView
     private lateinit var frameLayoutProgress: LinearLayout
     private lateinit var cardView: CardView
+    private lateinit var plantDicImg: ImageView
     private lateinit var addPotBtn: Button
     private lateinit var searchBtn: Button
     private lateinit var detailBtn: Button
@@ -71,6 +76,7 @@ class SearchCameraActivity : AppCompatActivity() {
         plantScoreText = findViewById(R.id.plantScoreText)
         frameLayoutProgress = findViewById(R.id.frameLayoutProgress)
         cardView = findViewById(R.id.cardView)
+        plantDicImg = findViewById(R.id.plantDicImg)
 
 //        imageUri 전달받기
         imageUri = intent.getStringExtra("imageUri") ?: ""
@@ -160,50 +166,69 @@ class SearchCameraActivity : AppCompatActivity() {
                         growType = body.plant.grwType
                         mgmtLevel = body.plant.mgmtLevel
                         characterGlbPath = body.character.glbPath
+                        ThreadUtil.startThread {
+                            val futureTarget: FutureTarget<Bitmap> = Glide.with(context)
+                                .asBitmap()
+                                .load(body.plant.img)
+                                .submit()
+
+                            val bitmap = futureTarget.get()
+
+                            ThreadUtil.startUIThread(0) {
+                                plantDicImg.setImageBitmap(bitmap)
+                            }
+                        }
                         hideProgress()
                     } else {
                         Log.d(TAG, "${response.errorBody()}")
-
-                        val dialog = AlertDialog.Builder(context)
-                        dialog.setTitle("식물 식별 실패")
-                        dialog.setMessage("식물 식별에 실패하였습니다. 다시 시도하시겠습니까?")
-                        val dialogArray = arrayOf("다시 시도하기", "직접 검색하기")
-                        dialog.setItems(dialogArray) { _, which ->
-                            when (which) {
-                                0 -> {
-//                                    메인 액티비티 이동 후 카메라 켜는 코드
-                                    val intent = Intent(context, MainActivity::class.java)
-                                    startActivity(intent)
-                                }
-
-                                1 -> {
-                                    val plantBottomSheet =
-                                        PlantBottomSheet(context, "fail_serach", imageUri)
-                                    plantBottomSheet.show(
-                                        supportFragmentManager,
-                                        plantBottomSheet.tag
-                                    )
-                                }
-                            }
-                        }
-                        dialog.setNegativeButton(
-                            "돌아가기",
-                            DialogInterface.OnClickListener { dialog, which ->
-                                val intent = Intent(context, MainActivity::class.java)
-                                startActivity(intent)
-                                dialog.dismiss()
-                            })
-                        dialog.show()
-
+                        showDialog(context)
                         hideProgress()
                     }
                 }
 
                 override fun onFailure(call: Call<PlantIdentifyResponse>, t: Throwable) {
                     Log.d(TAG, "식물 식별 실패")
+                    showDialog(context)
                     hideProgress()
                 }
             })
+    }
+
+    private fun showDialog(context: Context) {
+        val dialog = AlertDialog.Builder(context)
+        dialog.setTitle("식물 식별에 실패하였습니다.")
+//                        dialog.setMessage("식물 식별에 실패하였습니다. 다시 시도하시겠습니까?")
+        val dialogArray = arrayOf("다시 시도하기", "직접 검색하기")
+        dialog.setItems(dialogArray) { _, which ->
+            when (which) {
+                0 -> {
+//                                    메인 액티비티 이동 후 카메라 켜는 코드
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.putExtra("toPage", "search_camera")
+                    intent.putExtra("cameraStatus", cameraStatus)
+
+                    startActivity(intent)
+                }
+
+                1 -> {
+                    val plantBottomSheet =
+                        PlantBottomSheet(context, "fail_serach", imageUri)
+                    plantBottomSheet.show(
+                        supportFragmentManager,
+                        plantBottomSheet.tag
+                    )
+                }
+            }
+        }
+        dialog.setNegativeButton(
+            "돌아가기",
+            DialogInterface.OnClickListener { dialog, which ->
+                val intent = Intent(context, MainActivity::class.java)
+                startActivity(intent)
+                dialog.dismiss()
+            })
+        dialog.show()
+
     }
 
     private fun uriToFile(uri: Uri): File? {

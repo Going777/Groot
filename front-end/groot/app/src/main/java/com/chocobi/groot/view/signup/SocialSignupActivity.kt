@@ -19,9 +19,10 @@ import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.login.LoginResponse
 import com.chocobi.groot.view.login.LoginService
 import com.chocobi.groot.view.login.SocialLoginRequest
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.kakao.sdk.common.util.Utility
 import org.json.JSONException
 import org.json.JSONObject
@@ -138,10 +139,10 @@ class SocialSignupActivity : AppCompatActivity() {
                 firebaseToken = firebaseToken
             )
         )
-            .enqueue(object : Callback<LoginResponse> {
+            .enqueue(object : Callback<SignupResponse> {
                 override fun onResponse(
-                    call: Call<LoginResponse>,
-                    response: Response<LoginResponse>
+                    call: Call<SignupResponse>,
+                    response: Response<SignupResponse>
                 ) {
                     if (response.code() == 200) {
 
@@ -161,12 +162,32 @@ class SocialSignupActivity : AppCompatActivity() {
                                 "Groot에 오신 것을 환영합니다!", ::moveToMain, false
                             )
                         }
+
+                        // 파이어베이스에 등록
+                        // Firebase Realtime Database에 접속합니다.
+                        val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+                        val usersRef: DatabaseReference = database.getReference("users")
+
+                        // 이미 등록된 사용자의 정보를 가져와서 Firebase에 저장합니다.
+                        fun registerUserInFirebase(userId: String, userLoginId: String) {
+                            // 사용자 정보를 usersRef에 추가합니다.
+                            val userRef: DatabaseReference = usersRef.child(userId)
+                            userRef.child("username").setValue(userLoginId)
+                        }
+
+// 사용자 등록 예시
+//                        val userId = userPk // 이미 존재하는 사용자의 고유한 ID
+                        val userId = response.body()!!.userPK
+                        val userLoginId = userId
+
+                        registerUserInFirebase(userId, userLoginId)
+
                     } else {
                         Log.d("SocialSignupActivity", "onResponse() 실패 $resources")
                     }
                 }
 
-                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                override fun onFailure(call: Call<SignupResponse>, t: Throwable) {
 //                    통신 실패시 실행되는 코드
                     GlobalVariables.defaultAlertDialog(
                         this@SocialSignupActivity,

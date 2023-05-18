@@ -13,6 +13,7 @@ import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
@@ -31,6 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class CommunityTab4Fragment : Fragment() {
     private val TAG = "CommunityTab4Fragment"
+
+    private lateinit var mActivity: MainActivity
     private val CATEGORY = "Tip"
     private val REQUESTPAGESIZE = 10
     private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
@@ -50,6 +53,8 @@ class CommunityTab4Fragment : Fragment() {
     private lateinit var getData: CommunityArticleListResponse
 
     private var keyword: String = ""
+    private lateinit var noArticleSection: LinearLayout
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,6 +62,8 @@ class CommunityTab4Fragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_community_tab4, container, false)
+
+        mActivity = activity as MainActivity
         Log.d("CommunityTab4Fragment", "onCreateView()")
         findViews(view)
         //        태그 데이터 세팅
@@ -90,6 +97,8 @@ class CommunityTab4Fragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
+        noArticleSection = view.findViewById(R.id.noArticleSection)
+
     }
 
     private fun setListeners() {
@@ -102,7 +111,7 @@ class CommunityTab4Fragment : Fragment() {
 
     private fun initList() {
         Log.d("CommunityTab4Fragment", "initList()")
-        adapter = RecyclerViewAdapter()
+        adapter = RecyclerViewAdapter(mActivity)
         adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
                 loadMore()
@@ -156,6 +165,11 @@ class CommunityTab4Fragment : Fragment() {
             ) {
                 if (response.code() == 200) {
                     getData = response.body()!!
+                    if (getData.articles.total != 0) {
+                        noArticleSection.visibility = View.GONE
+                    } else {
+                        noArticleSection.visibility = View.VISIBLE
+                    }
                     val list = createDummyData(0, REQUESTPAGESIZE)
                     if (usage != "reload") {
                         val totalElements = getData.articles.total // 전체 데이터 수

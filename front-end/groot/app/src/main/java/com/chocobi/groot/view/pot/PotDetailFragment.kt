@@ -335,34 +335,42 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
             dpToPx(20)
         )
 
-        val redCount =
-            pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt() + 1
-        var heartCnt = redCount
-        repeat(redCount) {
-            var heart = ImageView(context)
-            heart.setImageResource(R.drawable.ic_heart)
+        if (pot?.survival == true) {
+
+            val redCount =
+                pot?.characterGLBPath!!.substringAfterLast("_").substringBefore(".glb").toInt() + 1
+            var heartCnt = redCount
+            repeat(redCount) {
+                var heart = ImageView(context)
+                heart.setImageResource(R.drawable.ic_heart)
 
 
-            heart.layoutParams = layoutParams
+                heart.layoutParams = layoutParams
 
-            levelSection.addView(heart)
-        }
-
-        if (heartCnt < 3) {
-            if (pot?.level!! > (redCount - 1) * 5 + 1) {
-                var greyHeart = ImageView(context)
-                greyHeart.setImageResource(R.drawable.ic_heart_half)
-                greyHeart.layoutParams = layoutParams
-                levelSection.addView(greyHeart)
-                heartCnt += 1
+                levelSection.addView(heart)
             }
 
-            repeat(3 - heartCnt) {
-                var greyHeart = ImageView(context)
-                greyHeart.setImageResource(R.drawable.ic_heart_grey)
-                greyHeart.layoutParams = layoutParams
-                levelSection.addView(greyHeart)
+            if (heartCnt < 3) {
+                if (pot?.level!! > (redCount - 1) * 5 + 1) {
+                    var greyHeart = ImageView(context)
+                    greyHeart.setImageResource(R.drawable.ic_heart_half)
+                    greyHeart.layoutParams = layoutParams
+                    levelSection.addView(greyHeart)
+                    heartCnt += 1
+                }
+
+                repeat(3 - heartCnt) {
+                    var greyHeart = ImageView(context)
+                    greyHeart.setImageResource(R.drawable.ic_heart_grey)
+                    greyHeart.layoutParams = layoutParams
+                    levelSection.addView(greyHeart)
+                }
             }
+        } else {
+            var greyHeart = ImageView(context)
+            greyHeart.setImageResource(R.drawable.ic_heart_grey)
+            greyHeart.layoutParams = layoutParams
+            levelSection.addView(greyHeart)
         }
 
 
