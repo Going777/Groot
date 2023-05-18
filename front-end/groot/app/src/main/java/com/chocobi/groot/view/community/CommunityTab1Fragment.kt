@@ -60,6 +60,8 @@ class CommunityTab1Fragment : Fragment() {
     private var regionFullFilterList: ArrayList<String>? = null
     private lateinit var chipRegionGroup: ChipGroup
 
+    private lateinit var noArticleSection: LinearLayout
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -98,7 +100,7 @@ class CommunityTab1Fragment : Fragment() {
 //        reload()
         showProgress()
 
-        requestSearchAricle("load")
+        requestSearchArticle("load")
         return view
     }
 
@@ -151,6 +153,7 @@ class CommunityTab1Fragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
         chipRegionGroup = view.findViewById(R.id.chipRegionGroup)
+        noArticleSection = view.findViewById(R.id.noArticleSection)
     }
 
     private fun setListeners() {
@@ -172,7 +175,7 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun reload() {
-        requestSearchAricle("reload")
+        requestSearchArticle("reload")
     }
 
 
@@ -181,7 +184,7 @@ class CommunityTab1Fragment : Fragment() {
             return
         }
         showProgress()
-        requestSearchAricle("loadMore")
+        requestSearchArticle("loadMore")
     }
 
     private fun showProgress() {
@@ -192,7 +195,7 @@ class CommunityTab1Fragment : Fragment() {
         frameLayoutProgress.visibility = View.GONE
     }
 
-    private fun requestSearchAricle(usage: String) {
+    private fun requestSearchArticle(usage: String) {
         Log.d("CommunityTab1Fragment","requestSearchAricle() 게시글을 받아옵니다")
         if (usage == "loadMore") {
             communityArticlePage++
@@ -228,6 +231,11 @@ class CommunityTab1Fragment : Fragment() {
             ) {
                 if (response.code() == 200) {
                     getData = response.body()!!
+                    if (getData.articles.total != 0) {
+                        noArticleSection.visibility = View.GONE
+                    } else {
+                        noArticleSection.visibility = View.VISIBLE
+                    }
                     val list = createDummyData(0, REQUESTPAGESIZE)
                     if (usage != "reload") {
                         val totalElements = getData.articles.total // 전체 데이터 수
@@ -342,7 +350,7 @@ class CommunityTab1Fragment : Fragment() {
                 popularTagSection.visibility = View.GONE
                 communitySearchView.clearFocus()
 
-                requestSearchAricle("load")
+                requestSearchArticle("load")
                 return false
             }
 
