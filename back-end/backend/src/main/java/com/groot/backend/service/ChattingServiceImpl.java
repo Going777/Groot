@@ -111,7 +111,7 @@ public class ChattingServiceImpl implements ChattingService{
 
     @Override
     public List<ChatResponseDTO> getList(Long userId) throws ExecutionException, InterruptedException {
-        List<ChattingEntity> entityList = chattingRepository.findBySenderId(userId);
+        List<ChattingEntity> entityList = chattingRepository.findBySenderIdOrderByCreatedDateDesc(userId);
         List<ChatResponseDTO> dtoList = new ArrayList<>();
         for(ChattingEntity chattingEntity: entityList){
             UserEntity receiver = userRepository.findById(chattingEntity.getReceiverId()).orElseThrow();

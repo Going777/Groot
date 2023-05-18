@@ -70,16 +70,17 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom{
         LocalDateTime start = LocalDateTime.of(LocalDate.from(dateTime), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.of(LocalDate.from(dateTime), LocalTime.of(23, 59, 59));
 
+        LocalDateTime date = queryFactory.select(qDiary.createdDate.max())
+                .from(qDiary)
+                .where(qDiary.createdDate.between(start, end)).fetchOne();
+
         Long updateCnt = queryFactory.update(qDiary)
                 .set(qDiary.isPotLast, true)
                 .where(qDiary.potId.eq(potId), qDiary.createdDate.eq(
-                        JPAExpressions
-                                .select(qDiary.createdDate.max())
-                                .from(qDiary)
-                                .where(qDiary.createdDate.between(start, end))
+                        date
                 ))
                 .execute();
-
+        log.info("update isPotLast");
         return updateCnt;
     }
 
@@ -89,16 +90,16 @@ public class DiaryRepositoryImpl implements DiaryRepositoryCustom{
         LocalDateTime start = LocalDateTime.of(LocalDate.from(dateTime), LocalTime.of(0, 0, 0));
         LocalDateTime end = LocalDateTime.of(LocalDate.from(dateTime), LocalTime.of(23, 59, 59));
 
-        Long updateCnt = queryFactory.update(qDiary)
-                .set(qDiary.isPotLast, true)
-                .where(qDiary.userPK.eq(userId), qDiary.createdDate.eq(
-                        JPAExpressions
-                                .select(qDiary.createdDate.max())
-                                .from(qDiary)
-                                .where(qDiary.createdDate.between(start, end))
-                ))
-                .execute();
+        LocalDateTime date = queryFactory.select(qDiary.createdDate.max())
+                .from(qDiary)
+                .where(qDiary.createdDate.between(start, end)).fetchOne();
 
+        Long updateCnt = queryFactory.update(qDiary)
+                .set(qDiary.isUserLast, true)
+                .where(qDiary.userPK.eq(userId), qDiary.createdDate.eq(date)
+                )
+                .execute();
+        log.info("update isUserLast");
         return updateCnt;
     }
 
