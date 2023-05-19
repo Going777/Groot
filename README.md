@@ -177,10 +177,6 @@
 
 ![ar_tree](/uploads/0b1bf6e405db440f860dfb39035c828d/ar_tree.mp4)
 
-### 플래너
-
-### 다이어리 및 캐릭터 육성
-
 ### 식물 이름 검색 및 이름 자동완성
 
 ![search_name](/uploads/3d37e1812297b2970ee1e1cb9b39a727/search_name.mp4)
@@ -192,10 +188,6 @@
 ### 식물 식별
 
 ![identif_성미인](/uploads/b62ca1016555e4bf10579d01176b74a7/identif_성미인.mp4)
-
-### 커뮤니티
-
-### 리사이클러뷰를 통한 무한 스크롤
 
 <br>
 
