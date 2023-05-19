@@ -4,7 +4,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.groot.backend.dto.request.*;
 import com.groot.backend.dto.response.TokenDTO;
+import com.groot.backend.dto.response.UserDTO;
+import com.groot.backend.entity.UserAlarmEntity;
 import com.groot.backend.entity.UserEntity;
+import com.groot.backend.repository.UserAlarmRepository;
 import com.groot.backend.repository.UserRepository;
 import com.groot.backend.util.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,9 @@ import javax.transaction.Transactional;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +31,7 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserAlarmRepository userAlarmRepository;
     private final String KAKAO = "kakao";
     private final String NAVER = "naver";
     private final String KAKAO_REQ_URL = "https://kapi.kakao.com/v2/user/me";
@@ -80,6 +87,15 @@ public class UserServiceImpl implements UserService{
                 .build();
 
         userRepository.save(newUserEntity);
+
+        UserAlarmEntity alarm = UserAlarmEntity.builder()
+                .userEntity(userEntity)
+                .waterAlarm(false)
+                .commentAlarm(false)
+                .chattingAlarm(false)
+                .build();
+        userAlarmRepository.save(alarm);
+
         return TokenDTO.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
@@ -89,8 +105,34 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserEntity readUser(Long id) {
-        return userRepository.findById(id).orElseThrow();
+    public UserDTO readUser(Long id) {
+        UserEntity userEntity = userRepository.findById(id).orElseThrow();
+        UserAlarmEntity alarmEntity;
+        try {
+            alarmEntity = userAlarmRepository.findById(id).get();
+        }catch (NoSuchElementException e){
+            alarmEntity = UserAlarmEntity.builder()
+                    .userEntity(userEntity)
+                    .waterAlarm(false)
+                    .commentAlarm(false)
+                    .chattingAlarm(false)
+                    .build();
+            userAlarmRepository.save(alarmEntity);
+        }
+
+
+        Long date = Duration.between(userEntity.getCreatedDate(), LocalDateTime.now()).toDays() +1;
+        UserDTO userDTO = UserDTO.builder()
+                .userPK(userEntity.getId())
+                .userId(userEntity.getUserId())
+                .nickName(userEntity.getNickName())
+                .profile(userEntity.getProfile())
+                .registerDate(date)
+                .chattingAlarm(alarmEntity.getChattingAlarm() )
+                .commentAlarm(alarmEntity.getCommentAlarm())
+                .waterAlarm(alarmEntity.getWaterAlarm())
+                .build();
+        return userDTO;
     }
 
 
@@ -303,6 +345,7 @@ public class UserServiceImpl implements UserService{
 
             return TokenDTO.builder()
                     .grantType("Bearer")
+                    .userPK(userEntity.getId())
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
                     .build();

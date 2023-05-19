@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.SearchView
@@ -34,6 +35,8 @@ import retrofit2.Response
 class CommunityTab1Fragment : Fragment() {
 
     private val TAG = "CommunityTab1Fragment"
+
+    private lateinit var mActivity: MainActivity
     private val CATEGORY = "나눔"
     private val REQUESTPAGESIZE = 10
     private val LIMITREGIONCNT = 3
@@ -58,6 +61,8 @@ class CommunityTab1Fragment : Fragment() {
     private var regionFullFilterList: ArrayList<String>? = null
     private lateinit var chipRegionGroup: ChipGroup
 
+    private lateinit var noArticleSection: LinearLayout
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,7 +70,7 @@ class CommunityTab1Fragment : Fragment() {
     ): View? {
 
         val view = inflater.inflate(R.layout.fragment_community_tab1, container, false)
-        val mActivity = activity as MainActivity
+        mActivity = activity as MainActivity
 
         /** 지역 필터 버튼 눌렀을 때 처리 **/
         val regionFilterBtn = view.findViewById<MaterialButton>(R.id.regionFilterBtn)
@@ -96,9 +101,11 @@ class CommunityTab1Fragment : Fragment() {
 //        reload()
         showProgress()
 
-        requestSearchAricle("load")
+        requestSearchArticle("load")
         return view
     }
+
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -149,6 +156,7 @@ class CommunityTab1Fragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
         chipRegionGroup = view.findViewById(R.id.chipRegionGroup)
+        noArticleSection = view.findViewById(R.id.noArticleSection)
     }
 
     private fun setListeners() {
@@ -159,7 +167,7 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun initList() {
-        adapter = RecyclerViewAdapter()
+        adapter = RecyclerViewAdapter(mActivity)
         adapter.delegate = object : RecyclerViewAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
                 loadMore()
@@ -170,7 +178,7 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun reload() {
-        requestSearchAricle("reload")
+        requestSearchArticle("reload")
     }
 
 
@@ -179,7 +187,7 @@ class CommunityTab1Fragment : Fragment() {
             return
         }
         showProgress()
-        requestSearchAricle("loadMore")
+        requestSearchArticle("loadMore")
     }
 
     private fun showProgress() {
@@ -190,7 +198,7 @@ class CommunityTab1Fragment : Fragment() {
         frameLayoutProgress.visibility = View.GONE
     }
 
-    private fun requestSearchAricle(usage: String) {
+    private fun requestSearchArticle(usage: String) {
         Log.d("CommunityTab1Fragment","requestSearchAricle() 게시글을 받아옵니다")
         if (usage == "loadMore") {
             communityArticlePage++
@@ -226,6 +234,11 @@ class CommunityTab1Fragment : Fragment() {
             ) {
                 if (response.code() == 200) {
                     getData = response.body()!!
+                    if (getData.articles.total != 0) {
+                        noArticleSection.visibility = View.GONE
+                    } else {
+                        noArticleSection.visibility = View.VISIBLE
+                    }
                     val list = createDummyData(0, REQUESTPAGESIZE)
                     if (usage != "reload") {
                         val totalElements = getData.articles.total // 전체 데이터 수
@@ -237,12 +250,12 @@ class CommunityTab1Fragment : Fragment() {
                         }
                     }
                     if (usage == "loadMore") {
-                        ThreadUtil.startUIThread(1000) {
+                        ThreadUtil.startUIThread(100) {
                             adapter.loadMore(list)
                             hideProgress()
                         }
                     } else {
-                        ThreadUtil.startUIThread(1000) {
+                        ThreadUtil.startUIThread(100) {
                             adapter.reload(list)
                             hideProgress()
                         }
@@ -305,7 +318,7 @@ class CommunityTab1Fragment : Fragment() {
 
     private fun createPopularTagData(): List<String> {
         val popularTagList =
-            GlobalVariables.prefs.getString("popular_tags", "")?.split(", ") ?: emptyList()
+            GlobalVariables.prefs.getString("popular_tags_share", "")?.split(", ") ?: emptyList()
         return popularTagList
     }
 
@@ -340,7 +353,7 @@ class CommunityTab1Fragment : Fragment() {
                 popularTagSection.visibility = View.GONE
                 communitySearchView.clearFocus()
 
-                requestSearchAricle("load")
+                requestSearchArticle("load")
                 return false
             }
 

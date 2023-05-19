@@ -1,11 +1,15 @@
 package com.chocobi.groot.adapter.item
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -14,9 +18,13 @@ import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.view.community.adapter.ArticleTagAdapter
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexWrap
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
 import java.lang.ref.WeakReference
 
-class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     interface ItemViewHolderDelegate {
         fun onItemViewClick(communityArticleListResponse: CommunityArticleListResponse) {
@@ -56,7 +64,7 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             eyeCnt = it.findViewById(R.id.eyeCnt)
             commentIcon = it.findViewById(R.id.commentIcon)
             commentCnt = it.findViewById(R.id.commentCnt)
-            createTime= it.findViewById(R.id.createTime)
+            createTime = it.findViewById(R.id.createTime)
             position = it.findViewById(R.id.position)
             shareStatus = it.findViewById(R.id.shareStatus)
             bookmarkLine = it.findViewById(R.id.bookmarkLine)
@@ -69,14 +77,15 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             delegate?.onItemViewClick(communityArticleListResponse)
         }
     }
+
     @SuppressLint("SetTextI18n")
     fun updateView() {
         textViewTitle.text = communityArticleListResponse.articles.content[0].title
         textViewNickName.text = communityArticleListResponse.articles.content[0].nickName
         eyeCnt.text = communityArticleListResponse.articles.content[0].views.toString()
         commentCnt.text = communityArticleListResponse.articles.content[0].commentCnt.toString()
-        val koreahour = communityArticleListResponse.articles.content[0].createTime.time.hour + 9
-        createTime.text = communityArticleListResponse.articles.content[0].createTime.date.year.toString() + '.'+ communityArticleListResponse.articles.content[0].createTime.date.month.toString() + '.' + communityArticleListResponse.articles.content[0].createTime.date.day.toString() + ' ' + koreahour + ':'+ communityArticleListResponse.articles.content[0].createTime.time.minute.toString()
+        createTime.text =
+            communityArticleListResponse.articles.content[0].createTime.date.year.toString() + '.' + communityArticleListResponse.articles.content[0].createTime.date.month.toString() + '.' + communityArticleListResponse.articles.content[0].createTime.date.day.toString() + ' ' + communityArticleListResponse.articles.content[0].createTime.time.hour + ':' + communityArticleListResponse.articles.content[0].createTime.time.minute.toString()
 
         // 북마크 여부에 따라 아이콘 변경
         if (communityArticleListResponse.articles.content[0].bookmark) {
@@ -105,26 +114,36 @@ class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
             }
         }
 
-        imageView.post {
-            view.get()?.let {
-                ThreadUtil.startThread {
-                    val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
-                        .asBitmap()
-                        .load(communityArticleListResponse.articles.content.getOrNull(0)?.img)
-                        .submit(imageView.width, imageView.height)
+        if (communityArticleListResponse.articles.content[0].img != null) {
 
-                    val bitmap = futureTarget.get()
+            imageView.post {
+                view.get()?.let {
+                    ThreadUtil.startThread {
+                        val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                            .asBitmap()
+                            .load(communityArticleListResponse.articles.content.getOrNull(0)?.img)
+                            .submit(imageView.width, imageView.height)
 
-                    ThreadUtil.startUIThread(0) {
-                        imageView.setImageBitmap(bitmap)
+                        val bitmap = futureTarget.get()
+
+                        ThreadUtil.startUIThread(0) {
+                            imageView.setImageBitmap(bitmap)
+                        }
                     }
                 }
             }
+        } else {
+            imageView.setImageResource(R.drawable.plant_default)
         }
 
+
         // 태그
+        val context: Context = itemView.context
+        val flexboxLayoutManager = FlexboxLayoutManager(context, FlexDirection.ROW, FlexWrap.WRAP)
+        flexboxLayoutManager.justifyContent = JustifyContent.FLEX_START
+
         recyclerView = itemView.findViewById(R.id.tagList)
-        recyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        recyclerView.layoutManager = flexboxLayoutManager
 
         // Adapter 설정
         tagList = communityArticleListResponse.articles.content[0].tags as List<String>

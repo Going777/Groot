@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,7 @@ class CommunityUserShareFragment()  : Fragment() {
     private lateinit var getData: CommunityShareItemResponse
     private lateinit var shareListSection: FrameLayout
     private lateinit var shareListTitle: TextView
+    private lateinit var noShare: LinearLayout
     private var articleId: Int = 0
 
     @SuppressLint("MissingInflatedId")
@@ -78,16 +80,19 @@ class CommunityUserShareFragment()  : Fragment() {
                     Log.d("CommunityUserShareFragment", "$checkResponse")
 
                     if (response.body()!!.articles.isEmpty()) {
-                        shareListSection.visibility = View.GONE
                         shareListTitle.visibility = View.GONE
+                        noShare.visibility = View.VISIBLE
+                    } else {
+                        noShare.visibility = View.GONE
                     }
 
 
                     val list = createDummyData()
-                    ThreadUtil.startUIThread(1000) {
+                    ThreadUtil.startUIThread(100) {
                         adapter.reload(list)
                         hideProgress()
                     }
+
                 } else {
                     Log.d("CommunityUserShareFragment", "실패1")
                 }
@@ -108,7 +113,7 @@ class CommunityUserShareFragment()  : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         recyclerView = view.findViewById<RecyclerView>(R.id.shareItemList)
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
-
+        noShare = view.findViewById(R.id.noShare)
 
     }
 
@@ -119,7 +124,7 @@ class CommunityUserShareFragment()  : Fragment() {
     }
 
     private fun initList() {
-        adapter = ShareItemAdapter(recyclerView)
+        adapter = ShareItemAdapter(recyclerView, requireFragmentManager())
 
         recyclerView.adapter = adapter // RecyclerView에 Adapter 설정
         val size = adapter.itemCount

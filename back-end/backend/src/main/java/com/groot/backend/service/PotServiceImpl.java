@@ -131,11 +131,11 @@ public class PotServiceImpl implements PotService{
         List<PotEntity> list;
         if(isArchive) {
             logger.info("get archive");
-            list = potRepository.findAllByUserId(userPK);
+            list = potRepository.findAllByUserIdOrderByCreatedDateDesc(userPK);
         }
         else {
             logger.info("get active pots");
-            list = potRepository.findAllByUserIdAndSurvival(userPK, true);
+            list = potRepository.findAllByUserIdAndSurvivalOrderByCreatedDateDesc(userPK, true);
         }
 
         if(list == null || list.size() < 1) throw new NoSuchElementException();

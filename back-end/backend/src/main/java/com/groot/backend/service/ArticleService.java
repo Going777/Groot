@@ -27,7 +27,7 @@ public interface ArticleService {
     List<UserSharedArticleDTO> readUserShared(Long articleId);
     Page<ArticleListDTO> readUserArticles(Long userPK,Integer page, Integer size);
     Page<ArticleListDTO> readUserBookmarks(Long userPK,Integer page, Integer size);
-    List<TagRankDTO> readTagRanking();
+    List<TagRankDTO> readTagRanking(String category);
     // 스케줄러
     void updateTagCountTable();
     void updateShareStatus(Long userPK, ShareStatusDTO shareStatusDTO);

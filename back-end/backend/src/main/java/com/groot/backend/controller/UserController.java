@@ -3,6 +3,7 @@ package com.groot.backend.controller;
 import com.groot.backend.dto.request.*;
 import com.groot.backend.dto.response.ArticleListDTO;
 import com.groot.backend.dto.response.TokenDTO;
+import com.groot.backend.dto.response.UserDTO;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.service.ArticleService;
 import com.groot.backend.service.S3Service;
@@ -116,13 +117,13 @@ public class UserController {
         }
         Long id = jwtTokenProvider.getIdByAccessToken(request);
 
-        UserEntity userEntity = userService.readUser(id);
-        if(userEntity == null){
+        UserDTO userDTO = userService.readUser(id);
+        if(userDTO == null){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "존재하지 않는 사용자입니다.");
             return ResponseEntity.badRequest().body(resultMap);
         }else {
-            resultMap.put("user", userEntity.toUserDTO());
+            resultMap.put("user", userDTO);
             resultMap.put("result", SUCCESS);
             resultMap.put("msg", "회원정보 조회 완료");
             return ResponseEntity.ok().body(resultMap);
@@ -424,8 +425,11 @@ public class UserController {
                 resultMap.put("msg", "존재하지 않는 사용자, 회원가입을 진행해주세요.");
                 return ResponseEntity.badRequest().body(resultMap);
             }
+
+            String firebaseUserPK = String.format("%06d", result.getUserPK());    // 6자리 맞추기
             resultMap.put("accessToken", result.getAccessToken());
             resultMap.put("refreshToken", result.getRefreshToken());
+            resultMap.put("userPK", firebaseUserPK);
             resultMap.put("result", SUCCESS);
             resultMap.put("msg", oAuthUserDTO.getOauthProvider()+" 로그인 성공");
             return ResponseEntity.ok().body(resultMap);

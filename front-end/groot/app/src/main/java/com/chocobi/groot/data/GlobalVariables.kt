@@ -77,6 +77,9 @@ class GlobalVariables : Application() {
                         UserData.setNickName(getUserBody.user.nickName)
                         UserData.setProfile(getUserBody.user.profile)
                         UserData.setRegisterDate(getUserBody.user.registerDate)
+                        UserData.setIsNotificationAllowed(1, getUserBody.user.waterAlarm)
+                        UserData.setIsNotificationAllowed(2, getUserBody.user.commentAlarm)
+                        UserData.setIsNotificationAllowed(3, getUserBody.user.chattingAlarm)
                     } else {
                         refresh()
                     }
@@ -184,6 +187,7 @@ class GlobalVariables : Application() {
             val weatherType: String,
             val temperature: Int,
             val humidity: Int,
+            val address: String?,
         )
 
         private var current = LocalDateTime.now()
@@ -192,19 +196,24 @@ class GlobalVariables : Application() {
         private var weatherType: String = "sun"
         private var temperature: Int = 15
         private var humidity: Int = 20
+        private var address: String? = ""
 
         fun getCurrentDate(): String {
             return currentDate
         }
 
         fun getWeatherData(): WeatherData {
-            return WeatherData(weatherType, temperature, humidity)
+            return WeatherData(weatherType, temperature, humidity, address)
         }
 
         fun updateWeatherData(type: String, temp: Int, hum: Int) {
             weatherType = type
             temperature = temp
             humidity = hum
+        }
+
+        fun updateAddress(addres: String) {
+            address = addres
         }
     }
 

@@ -10,11 +10,9 @@ import android.widget.TextView
 import com.chocobi.groot.R
 
 
-
-
 class PotDetailTab3Fragment : Fragment() {
     private val TAG = "PotDetailTab3Fragment"
-    private var insectInfo : String? = null
+    private var insectInfo: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +30,10 @@ class PotDetailTab3Fragment : Fragment() {
         arguments?.let {
             insectInfo = it.getString("insectInfo")
         }
-        val insectDesc = "${insectInfo?.replace(",",", ")} 주의가 필요해요."!!
+        var insectDesc = "벌레에 강한 식물이에요."
+        if (!insectInfo.isNullOrBlank()) {
+            insectDesc = "${insectInfo?.replace(",", ", ")} 주의가 필요해요."!!
+        }
         val bugTabContent = view.findViewById<TextView>(R.id.bugTabContent)
         bugTabContent.text = insectDesc
 

@@ -3,8 +3,10 @@ package com.groot.backend.service;
 import com.groot.backend.dto.request.PlantSearchDTO;
 import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.CharacterEntity;
+import com.groot.backend.entity.PlantAltNameEntity;
 import com.groot.backend.entity.PlantEntity;
 import com.groot.backend.repository.CharacterRepository;
+import com.groot.backend.repository.PlantAltNameRepository;
 import com.groot.backend.repository.PlantRepository;
 import com.groot.backend.util.JsonParserUtil;
 import com.groot.backend.util.PlantCodeUtil;
@@ -12,7 +14,6 @@ import com.groot.backend.util.RestTemplateErrorHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.impl.InvalidContentTypeException;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +42,11 @@ public class PlantServiceImpl implements PlantService{
 
     private final PlantRepository plantRepository;
 
+    private final PlantAltNameRepository plantAltNameRepository;
+
     private final CharacterRepository characterRepository;
+
+    private final float thresholdScore = 0.02F;
 
     @Value("${plant.temp.dir}")
     private String plantTempDir;
@@ -110,14 +115,21 @@ public class PlantServiceImpl implements PlantService{
 
         logger.info("{} plants found", list.size());
 
-        list.forEach(plantEntity -> {
-            ret.add(PlantThumbnailDTO.builder()
-                            .plantId(plantEntity.getId())
-                            .krName(plantEntity.getKrName())
-                            .img(plantEntity.getImg())
-                            .build());
-        });
-        return ret;
+        if(list.size() > 0) {
+            list.forEach(plantEntity -> {
+                ret.add(PlantThumbnailDTO.builder()
+                        .plantId(plantEntity.getId())
+                        .krName(plantEntity.getKrName())
+                        .img(plantEntity.getImg())
+                        .build());
+            });
+            return ret;
+        }
+        else if(plantSearchDTO.getName() != null && !plantSearchDTO.getName().equals("")) {
+            logger.info("no plants found, search with name : {}", plantSearchDTO.getName());
+            return searchWithName(plantSearchDTO.getName());
+        }
+        return null;
     }
 
     @Override
@@ -142,10 +154,11 @@ public class PlantServiceImpl implements PlantService{
         }
         else if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
             logger.info("image file is not a plant");
-            return PlantWithCharacterDTO.builder()
-                    .plantIdentificationDTO(defaultReturn(0))
-                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
-                    .build();
+            return null;
+//            return PlantWithCharacterDTO.builder()
+//                    .plantIdentificationDTO(defaultReturn(0))
+//                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+//                    .build();
         }
         else {
             logger.info("Plantnet request failed with response code : {}", response.getStatusCode());
@@ -242,9 +255,14 @@ public class PlantServiceImpl implements PlantService{
     private PlantWithCharacterDTO searchFromDB(String[][] result) {
         logger.info("search {} from database", result[0][0]);
         String regex = "";
+        String scores = "";
         for(int i=0; i< result.length; i++) {
             regex += result[i][0].split(" ")[0];
-            if(i != result.length - 1) regex += "|";
+            scores += result[i][1];
+            if(i != result.length - 1) {
+                regex += "|";
+                scores += "|";
+            }
         };
 
         logger.info("Load all matched plants from DB : {}", regex);
@@ -255,10 +273,16 @@ public class PlantServiceImpl implements PlantService{
         if(plantEntities.size() > 0) {
             logger.info("searching found : {}", plantEntities.size());
             // order might be changed - current : counts
-            String[][] plantOrder = countPlantFreq(regex);
+            String[][] plantOrder = countPlantFreqWithScore(regex, scores);
 
             for(int i=0; i<plantOrder.length; i++) {
                 logger.info("Find genus : {} th : {}", i, plantOrder[i][0]);
+
+                if(Float.parseFloat(plantOrder[i][2]) < thresholdScore) {
+                    logger.info("Insufficient score : {}, {}", plantOrder[i][0], plantOrder[i][2]);
+                    continue;
+                }
+
                 String[][] candidates = getCandidates(result, plantOrder[i][0]);
                 String genus = plantOrder[i][0];
                 if(candidates.length < 1 || plantEntities.stream().noneMatch(plantEntity -> {
@@ -279,7 +303,8 @@ public class PlantServiceImpl implements PlantService{
                             logger.info("{} found, return", plantEntity.getSciName());
 
                             return PlantWithCharacterDTO.builder()
-                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[j][1]))
+//                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[j][1]))
+                                    .plantIdentificationDTO(buildIdentificationDTO(plantEntity, plantOrder[i][2]))
                                     .characterAssetDTO(getAsset(plantEntity))
                                     .build();
                         }
@@ -287,53 +312,59 @@ public class PlantServiceImpl implements PlantService{
                 }
                 logger.info("No exact matches found : {}", plantOrder[i][0]);
                 return PlantWithCharacterDTO.builder()
-                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[0][1]))
+//                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, candidates[0][1]))
+                        .plantIdentificationDTO(buildIdentificationDTO(plantEntity, plantOrder[i][2]))
                         .characterAssetDTO(getAsset(plantEntity))
                         .build();
             }
-            throw new NotYetImplementedException();
         }
         // return for not found
-        else {
-            logger.info("Failed to find plant from db");
-            return PlantWithCharacterDTO.builder()
-                    .plantIdentificationDTO(defaultReturn(11))
-                    .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
-                    .build();
-        }
-//        return null;
+        logger.info("Failed to find plant from db");
+        return null;
+//        return PlantWithCharacterDTO.builder()
+//                .plantIdentificationDTO(defaultReturn(11))
+//                .characterAssetDTO(getAsset(plantRepository.findById(19449L).get()))
+//                .build();
     }
 
     /**
      * Count numbers of species[0] in regex
-     * @param regex
-     * @return array with name and cound
+     * @param regex that used for DB searching
+     * @param scores scores distinguished by |
+     * @return array with name, count and accumulated score
      */
-    public String[][] countPlantFreq(String regex) {
+    public String[][] countPlantFreqWithScore(String regex, String scores) {
         logger.info("Get frequency from : {}", regex);
         Map<String, Integer> map = new HashMap<>();
         List<Integer> counts = new ArrayList<>();
+        List<Float> genusScore = new ArrayList<>();
         String[] species = regex.split("\\|");
+        String[] speciesScores = scores.split("\\|");
         int index = 0;
 
         for(int i=0; i<species.length; i++) {
             if (map.get(species[i]) == null) {
                 map.put(species[i], index);
-                counts.add(index++, 1);
+                counts.add(index, 1);
+                genusScore.add(index++, Float.parseFloat(speciesScores[i]));
             } else {
                 int idx = map.get(species[i]);
                 int cnt = counts.get(idx);
+                float score = genusScore.get(idx);
                 counts.remove(idx);
                 counts.add(idx, cnt + 1);
+                genusScore.remove(idx);
+                genusScore.add(idx, score += Float.parseFloat(speciesScores[i]));
             }
         }
 
-        String[][] ret = new String[index][2];
+        String[][] ret = new String[index][3];
 
         map.forEach((key, value) -> {
             ret[value][0] = key;
             ret[value][1] = Integer.toString(counts.get(value));
-            logger.info("count results : {}, {}", ret[value][0], ret[value][1]);
+            ret[value][2] = Float.toString(genusScore.get(value));
+            logger.info("count results : {}, {}, {}", ret[value][0], ret[value][1], ret[value][2]);
         });
 
         Arrays.sort(ret, (o1, o2) -> {
@@ -381,13 +412,15 @@ public class PlantServiceImpl implements PlantService{
                 .sciName(plantEntity.getSciName())
                 .score((int)(Float.parseFloat(score) * 100))
                 .grwType(plantEntity.getGrwType())
+                .img(plantEntity.getImg())
                 .mgmtLevel(PlantCodeUtil.mgmtLevelCode[plantEntity.getMgmtLevel()])
                 .build();
     }
 
     /**
      * find character assets resources
-     * @return
+     * @param plantEntity plantEntity
+     * @return asset glb and png url
      */
     private CharacterAssetDTO getAsset(PlantEntity plantEntity) {
         CharacterEntity characterEntity =
@@ -399,6 +432,11 @@ public class PlantServiceImpl implements PlantService{
                 .build();
     }
 
+    /**
+     * used for test level : returns 19449 with score
+     * @param score score as integer value
+     * @return
+     */
     private PlantIdentificationDTO defaultReturn(int score) {
         PlantEntity plantEntity = plantRepository.findById(19449L).get();
         return PlantIdentificationDTO.builder()
@@ -407,5 +445,28 @@ public class PlantServiceImpl implements PlantService{
                 .sciName(plantEntity.getSciName())
                 .score(score)
                 .build();
+    }
+
+    /**
+     * Search plants with alternative name
+     * @param altName searching keyword
+     * @return plant list that matches alternative names
+     */
+    private List<PlantThumbnailDTO> searchWithName(String altName) {
+        List<PlantAltNameEntity> plantAltNameEntityList =
+                plantAltNameRepository.findAllByAltNameContaining(altName);
+
+        List<PlantThumbnailDTO> ret = new ArrayList<>(plantAltNameEntityList.size());
+        logger.info("Search plant with alternative name : {}, found : {}", altName, plantAltNameEntityList.size());
+
+        plantAltNameEntityList.forEach(plantAltNameEntity -> {
+            ret.add(PlantThumbnailDTO.builder()
+                            .plantId(plantAltNameEntity.getPlantEntity().getId())
+                            .krName(plantAltNameEntity.getPlantEntity().getKrName())
+                            .img(plantAltNameEntity.getPlantEntity().getImg())
+                    .build());
+        });
+
+        return ret;
     }
 }

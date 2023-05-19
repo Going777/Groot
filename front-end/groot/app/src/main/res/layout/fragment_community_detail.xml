@@ -26,7 +26,7 @@
             android:layout_marginHorizontal="10dp"
             android:layout_weight="1">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -38,7 +38,8 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/carousel_pager"
@@ -56,18 +57,20 @@
                     style="@style/BASIC_LINE"
                     android:layout_marginBottom="15dp" />
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:gravity="center_vertical">
+                    android:layout_marginBottom="3dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/detailProfileImg"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@drawable/basic_profile"
-                        app:civ_circle_background_color="@color/background" />
+                        app:civ_circle_background_color="@color/background"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/detailNickName"
@@ -76,31 +79,26 @@
                         android:layout_marginLeft="5dp"
                         android:text="닉네임임ㅇ밍임"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/dropdownSection"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/detailProfileImg"
+                        app:layout_constraintTop_toTopOf="parent" />
 
 
-                        <ImageButton
+                    <ImageButton
+                        android:id="@+id/spinnerButton"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@color/white"
+                        android:src="@drawable/ic_vertical_dots"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:ignore="MissingConstraints" />
 
-                            android:id="@+id/spinnerButton"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="4dp"
-                            android:background="@color/white"
-                            android:src="@drawable/ic_vertical_dots"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            tools:ignore="MissingConstraints" />
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
                     style="@style/BASIC_LINE"
@@ -147,7 +145,6 @@
                             android:gravity="center">
 
 
-
                             <TextView
                                 android:id="@+id/detailCreateTime"
                                 android:layout_width="wrap_content"
@@ -155,6 +152,7 @@
                                 android:text="2023.04.28 09:23"
                                 android:textColor="@color/grey"
                                 android:textSize="14sp" />
+
                             <ImageView
                                 android:layout_width="16dp"
                                 android:layout_height="16dp"
@@ -217,14 +215,14 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/shareSection"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="250dp"
                     android:orientation="vertical">
 
-                    <fragment
-                        android:id="@+id/communityUserShareFragment"
-                        android:name="com.chocobi.groot.view.community.CommunityUserShareFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="250dp" />
+<!--                    <fragment-->
+<!--                        android:id="@+id/communityUserShareFragment"-->
+<!--                        android:name="com.chocobi.groot.view.community.CommunityUserShareFragment"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="250dp" />-->
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -241,10 +239,65 @@
                         android:text="댓글 (2)"
                         android:textSize="18dp"
                         android:textStyle="bold" />
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/commentInputSection"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:layout_marginVertical="5dp"
+                        android:backgroundTint="@color/background"
+                        app:cardCornerRadius="10dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="5dp"
+                            android:layout_weight="0"
+                            android:orientation="horizontal">
+
+
+                            <de.hdodenhof.circleimageview.CircleImageView
+                                android:id="@+id/userProfile"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_margin="10dp"
+                                android:layout_weight="0"
+                                android:src="@drawable/basic_profile" />
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_weight="1"
+                                android:backgroundTint="@color/white"
+                                app:cardCornerRadius="10dp">
+
+                                <EditText
+                                    android:id="@+id/postCommentInput"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:background="@color/white"
+                                    android:hint="댓글을 남겨보세요"
+                                    android:paddingHorizontal="5dp"
+                                    android:paddingVertical="0dp" />
+                            </androidx.cardview.widget.CardView>
+
+                            <Button
+                                android:id="@+id/postCommentBtn"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_margin="10dp"
+                                android:layout_weight="0"
+                                android:background="@drawable/ic_plant" />
+
+
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
 
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/commentRecycleView"
+                        android:paddingBottom="30dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -265,67 +318,51 @@
                     </FrameLayout>
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <LinearLayout
+                    android:id="@+id/noComment"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:src="@drawable/ic_comment" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:text="아직 댓글이 없어요"
+                        android:textColor="@color/grey"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+            </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/commentInputSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginVertical="5dp"
-            android:backgroundTint="@color/background"
-            app:cardCornerRadius="10dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:layout_weight="0"
-                android:orientation="horizontal">
-
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/userProfile"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="0"
-                    android:src="@drawable/basic_profile" />
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/white"
-                    app:cardCornerRadius="10dp">
-
-                    <EditText
-                        android:id="@+id/postCommentInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/white"
-                        android:hint="댓글을 남겨보세요"
-                        android:paddingHorizontal="5dp"
-                        android:paddingVertical="0dp" />
-                </androidx.cardview.widget.CardView>
-
-                <Button
-                    android:id="@+id/postCommentBtn"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="0"
-                    android:background="@drawable/ic_plant" />
-
-
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/progressSection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/point"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -359,11 +396,13 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/shareStateText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="30dp"
             android:text="나눔 중"
             android:textColor="@color/grey"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/bookmarkLine"
@@ -371,6 +410,7 @@
 
 
         <Button
+            android:id="@+id/moveChatBtn"
             android:layout_width="50dp"
             android:layout_height="28dp"
             android:layout_gravity="center"

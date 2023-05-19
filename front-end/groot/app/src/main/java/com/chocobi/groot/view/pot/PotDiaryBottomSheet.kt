@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
@@ -70,6 +71,7 @@ class PotDiaryBottomSheet(
 //    private var potName: String? = null
     private var potPlant: String? = null
     private var imageFile: File? = null
+    private var imgpath: String? = null
 
     private lateinit var mActivity: MainActivity
 
@@ -78,6 +80,7 @@ class PotDiaryBottomSheet(
     private lateinit var attachedPhotoSection: ConstraintLayout
     private lateinit var diaryContent: TextInputEditText
     private lateinit var postDiaryBtnClickBtn: AppCompatButton
+    private lateinit var nestedScrollView: NestedScrollView
 
     private lateinit var waterChip: Chip
     private lateinit var potChip: Chip
@@ -108,7 +111,7 @@ class PotDiaryBottomSheet(
         mActivity = activity as MainActivity
 
         findView(rootView)
-        filterChipGroup()
+//        filterChipGroup()
         postDiaryBtnClick()
 
         potCharImg = arguments?.getString("potCharImg")
@@ -155,6 +158,7 @@ class PotDiaryBottomSheet(
             attachPhotoSection!!.visibility = View.VISIBLE
             attachedPhotoSection!!.visibility = View.GONE
             imageFile = null
+            imgpath = pastImgPath
         }
 //        }
 
@@ -163,6 +167,7 @@ class PotDiaryBottomSheet(
 
 
     private fun findView(view: View) {
+        nestedScrollView = view.findViewById(R.id.nestedScrollView)
         //        사진 첨부 섹션
         attachPhotoSection = view.findViewById(R.id.attachPhotoSection)
 //        첨부된 이미지 섹션
@@ -200,39 +205,34 @@ class PotDiaryBottomSheet(
 
     private fun filterChipGroup() {
         waterChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            water = isChecked
+            Toast.makeText(requireContext(), "수행한 활동은 변경하실 수 없습니다", Toast.LENGTH_SHORT).show()
         }
         potChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            pruning = isChecked
+            Toast.makeText(requireContext(), "수행한 활동은 변경하실 수 없습니다", Toast.LENGTH_SHORT).show()
         }
         bugChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            bug = isChecked
+            Toast.makeText(requireContext(), "수행한 활동은 변경하실 수 없습니다", Toast.LENGTH_SHORT).show()
         }
         sunChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            sun = isChecked
-            Log.d("PotDiaryCreateFragment", "filterChipGroup() 해해ㅐ $isChecked")
+            Toast.makeText(requireContext(), "수행한 활동은 변경하실 수 없습니다", Toast.LENGTH_SHORT).show()
         }
         pillChip.setOnCheckedChangeListener { buttonView, isChecked ->
-            nutrients = isChecked
+            Toast.makeText(requireContext(), "수행한 활동은 변경하실 수 없습니다", Toast.LENGTH_SHORT).show()
         }
     }
 
     //    비활성화 칩 처리
     private fun alertConstraintChip(targetChip: Chip, targetStatus: Boolean, action: String) {
         if (targetStatus == true) {
-            targetChip.setOnClickListener {
-                targetChip.isChecked = true
-                Toast.makeText(requireContext(), "이미 ${action}를 완료했어요", Toast.LENGTH_SHORT)
-                    .show()
-            }
+            targetChip.isChecked = true
         }
+        targetChip.isEnabled = false
     }
 
     private fun postDiaryBtnClick() {
         postDiaryBtnClickBtn.setOnClickListener {
             content = diaryContent.text.toString()
             editDiary()
-
         }
     }
 
@@ -252,12 +252,13 @@ class PotDiaryBottomSheet(
                 id = diaryId,
                 potId = potId,
                 content = content,
-                water = water,
-                pruning = pruning,
-                bug = bug,
-                sun = sun,
-                nutrients = nutrients,
-                userPK = userPK
+                water = null,
+                pruning = null,
+                bug = null,
+                sun = null,
+                nutrients = null,
+                userPK = userPK,
+                imgPath = imgpath,
             ), filePart
         )
             .enqueue(object : retrofit2.Callback<BasicResponse> {
@@ -290,6 +291,9 @@ class PotDiaryBottomSheet(
         attachedPhotoSection!!.visibility = View.VISIBLE
         attachedPhoto?.setImageURI(uri)
         imageFile = uriToFile(uri)
+        nestedScrollView.post {
+            nestedScrollView.smoothScrollTo(0, nestedScrollView.getChildAt(0).height)
+        }
     }
 
     private fun uriToFile(uri: Uri): File? {

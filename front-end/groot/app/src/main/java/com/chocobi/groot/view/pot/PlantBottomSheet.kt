@@ -35,10 +35,11 @@ import retrofit2.Response
 import retrofit2.create
 
 
-class PlantBottomSheet(context: Context, requestPage: String? = null) :
+class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: String? = null) :
     BottomSheetDialogFragment() {
 
     private val REQUEST_PAGE = requestPage
+    private val imageUri = imageUri
     private lateinit var plants: Array<PlantMetaData>
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
     private var plantName: String? = null
@@ -46,6 +47,7 @@ class PlantBottomSheet(context: Context, requestPage: String? = null) :
     private lateinit var autoCompleteTextView: AutoCompleteTextView
     private lateinit var dictRecyclerView: RecyclerView
     private lateinit var searchPlantBtn: ImageButton
+    private lateinit var mActivity : MainActivity
 
 
     override fun onCreateView(
@@ -56,6 +58,7 @@ class PlantBottomSheet(context: Context, requestPage: String? = null) :
         super.onCreateView(inflater, container, savedInstanceState)
         val view = inflater.inflate(R.layout.bottom_sheet_plant, container, false)
 
+//        mActivity = activity as MainActivity
         findView(view)
         setAutocompltete()
         searchPlant(view)
@@ -175,10 +178,17 @@ class PlantBottomSheet(context: Context, requestPage: String? = null) :
 
 //                카메라로 식물 식별 했지만 못찾았거나 이름으로 다시 검색하는 경우
                 if (REQUEST_PAGE == "fail_serach") {
+//                    mActivity.setPlantId(plants[position].plantId!!)
+////            mActivity.setPlantImgUri(plant?.img.toString())
+//                    mActivity.changeFragment("search_detail")
+
                     var intent = Intent(requireContext(), MainActivity::class.java)
                     intent.putExtra("toPage", "search_detail")
                     intent.putExtra("plant_id", plants[position].plantId.toString())
+                    intent.putExtra("imageUri", imageUri)
                     startActivity(intent)
+
+
                 }
 //                홈화면에서 검색 진행하는 경우
                 else {

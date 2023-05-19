@@ -10,11 +10,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
@@ -49,9 +52,9 @@ class Pot2Activity : AppCompatActivity() {
     private val TAG = "Pot2Activity"
     private var plantId: Int = 0
     private var plantName: String = ""
-    private var isSuccessed = false
+    private var isRegistered = false
 
-    private lateinit var scrollView: LinearLayout
+    private lateinit var scrollView: RelativeLayout
     private lateinit var characterSceneView: SceneView
     private lateinit var lottieView: LottieAnimationView
     private lateinit var potNameLayout: TextInputLayout
@@ -118,21 +121,25 @@ class Pot2Activity : AppCompatActivity() {
         //        화분 등록 및 Plant Detail 페이지로 이동
         val add2Btn = findViewById<ImageButton>(R.id.add2Btn)
         add2Btn.setOnClickListener {
-            val potName = potNameEdit.text.toString()
-            if (potName == "") {
-                Toast.makeText(this, "루티에게 이름을 지어주세요", Toast.LENGTH_SHORT).show()
+            if (isRegistered) {
+                Toast.makeText(this, "화분을 등록중입니다.", Toast.LENGTH_SHORT).show()
             } else {
-                Log.d(TAG, plantId.toString())
-                Log.d(TAG, potName)
-                Log.d(TAG, imageUri.toString())
-                if (plantId > 0) {
-                    Log.d("Pot2Activity","onCreate() ${plantId}// ${imageUri}//")
-                    var file: File? = null
-                    if (imageUri != null) {
-                        file = uriToFile(imageUri.toUri())
-                    }
+                val potName = potNameEdit.text.toString()
+                if (potName == "") {
+                    Toast.makeText(this, "루티에게 이름을 지어주세요", Toast.LENGTH_SHORT).show()
+                } else {
+                    Log.d(TAG, plantId.toString())
+                    Log.d(TAG, potName)
+                    Log.d(TAG, imageUri.toString())
+                    if (plantId > 0) {
+                        Log.d("Pot2Activity", "onCreate() ${plantId}// ${imageUri}//")
+                        var file: File? = null
+                        if (imageUri != null) {
+                            file = uriToFile(imageUri.toUri())
+                        }
 
-                    addPot(this, plantId, potNameEdit.text.toString(), file)
+                        addPot(this, plantId, potNameEdit.text.toString(), file)
+                    }
                 }
             }
         }
@@ -192,7 +199,9 @@ class Pot2Activity : AppCompatActivity() {
     }
 
     private fun addPot(context: Context, plantId: Int, potName: String, file: File?) {
-        Log.d("Pot2Activity","addPot() 요청을 하겠어요")
+        Log.d("Pot2Activity", "addPot() 요청을 하겠어요")
+        isRegistered = true
+
         var retrofit = RetrofitClient.getClient()!!
         var AddPotService = retrofit.create(AddPotService::class.java)
 
@@ -221,12 +230,12 @@ class Pot2Activity : AppCompatActivity() {
                     var body = response.body()
                     Log.d(TAG, "$body")
                     if (body != null) {
-                        body.potId
-                        Toast.makeText(
-                            context,
-                            body.potId.toString() + "번 화분이 등록 되었습니다.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+//                        body.potId
+//                        Toast.makeText(
+//                            context,
+//                            body.potId.toString() + "번 화분이 등록 되었습니다.",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
                         var intent = Intent(context, MainActivity::class.java)
                         intent.putExtra("toPage", "pot_detail")
                         intent.putExtra("potId", body.potId)

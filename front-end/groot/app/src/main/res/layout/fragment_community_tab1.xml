@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_marginBottom="10dp"
-                    android:text="인기 검색어"
+                    android:text="나눔 인기 태그"
                     android:textColor="@color/point"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -68,6 +68,28 @@
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:id="@+id/noArticleSection"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/ic_community"/>
+            <TextView
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="100dp"
+                android:text="게시글이 없습니다."
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/grey"/>
+
+        </LinearLayout>
 
 
         <LinearLayout

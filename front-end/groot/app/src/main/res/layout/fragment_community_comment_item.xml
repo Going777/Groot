@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/commentItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="10dp"
-    android:layout_marginVertical="2dp"
-    android:id="@+id/commentItem">
+    android:layout_marginVertical="3dp"
+    app:cardCornerRadius="10dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,38 +17,69 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="6dp">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/commentProfileImg"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="0"
-                android:src="@drawable/basic_profile"/>
-            <TextView
-                android:id="@+id/commentNickname"
+            android:paddingTop="8dp"
+            android:paddingBottom="5dp"
+            android:paddingHorizontal="12dp">
+
+            <LinearLayout
+                android:id="@+id/commentProfileData"
                 android:layout_width="fill_parent"
                 android:layout_weight="1"
-                android:layout_height="fill_parent"
-                android:paddingHorizontal="7dp"
-                android:gravity="left|center"/>
-            <TextView
-                android:id="@+id/commentDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"/>
+                android:layout_height="30dp"
+                android:layout_gravity="center|left"
+                android:orientation="horizontal">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/commentProfileImg"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="0"
+                    android:src="@drawable/basic_profile" />
+
+                <TextView
+                    android:id="@+id/commentNickname"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="left|center"
+                    android:textSize="16dp"
+                    android:textStyle="bold"
+                    android:paddingHorizontal="6dp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/deleteButton"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:background="@drawable/circle_button_white"
+                android:layout_gravity="right"
+                android:cropToPadding="true"
+                android:src="@drawable/ic_cancle"
+                android:visibility="gone"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingHorizontal="12dp"
             android:paddingTop="1dp"
-            android:paddingHorizontal="6dp"
             android:paddingBottom="6dp">
+
             <TextView
                 android:id="@+id/commentContext"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="식물 댓글 남기는 중중중"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/commentDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="6dp"
+            android:layout_marginBottom="6dp"
+            android:layout_weight="0"
+            android:textColor="@color/main" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

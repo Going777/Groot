@@ -69,7 +69,7 @@ public class ArticleController {
 
         // 나눔일 경우 shareState와 shareRegion 존재 여부 확인
         if(category.equals("나눔")){
-            if((articleDTO.getShareStatus() == null || articleDTO.getShareRegion() == null || articleDTO.getShareRegion().equals(""))){
+            if((articleDTO.getShareStatus() == null || articleDTO.getShareRegion() == null || articleDTO.getShareRegion().equals("") || articleDTO.getShareRegion().equals("null"))){
                 resultMap.put("result", FAIL);
                 resultMap.put("msg","shareStatus 또는 shareRegion 값이 존재하지 않습니다.");
                 return ResponseEntity.badRequest().body(resultMap);
@@ -376,10 +376,17 @@ public class ArticleController {
 
     // 인기태그 조회
     @GetMapping("/tag")
-    public ResponseEntity readTagRanking(){
+    public ResponseEntity readTagRanking(@RequestParam String category){
         resultMap = new HashMap<>();
+
+        if(!(category.equals("나눔") || category.equals("자유") || category.equals("QnA") || category.equals("Tip"))){
+            resultMap.put("result", FAIL);
+            resultMap.put("msg","존재하지 않는 카테고리입니다.");
+            return ResponseEntity.badRequest().body(resultMap);
+        }
+
         try{
-            List<TagRankDTO> result = articleService.readTagRanking();
+            List<TagRankDTO> result = articleService.readTagRanking(category);
             if(result.size() == 0){
                 resultMap.put("result", SUCCESS);
                 resultMap.put("msg","존재하는 태그가 없습니다.");
@@ -401,7 +408,6 @@ public class ArticleController {
             resultMap.put("error", e.getMessage());
             return ResponseEntity.internalServerError().body(resultMap);
         }
-
     }
 
     // 나눔 게시글 지역 필터링

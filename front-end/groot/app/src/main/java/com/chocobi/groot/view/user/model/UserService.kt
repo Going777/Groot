@@ -61,14 +61,17 @@ interface UserService {
     fun refresh(
         @Body params: RefreshRequest
     ): Call<RefreshResponse>
+
+    @PUT("/api/notifications/setting")
+    fun changeNotiStatus(
+        @Body params: NotiStatusRequest
+    ): Call<BasicResponse>
 }
 
 class RefreshRequest internal constructor(
     val grantType: String,
     val accessToken: String,
     val refreshToken: String
-
-
 )
 
 class PasswordRequest internal constructor(
@@ -83,3 +86,8 @@ class ProfileRequest internal constructor(
     val profile: String?
 )
 
+class NotiStatusRequest internal constructor(
+    val waterAlarm: Boolean,
+    val commentAlarm: Boolean,
+    val chattingAlarm: Boolean
+)

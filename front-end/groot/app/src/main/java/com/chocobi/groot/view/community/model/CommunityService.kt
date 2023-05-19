@@ -21,7 +21,9 @@ interface CommunityService {
 
 
     @GET("/api/articles/tag")
-    fun requestPopularTags(): Call<PopularTagResponse>
+    fun requestPopularTags(
+        @Query("category") category: String
+    ): Call<PopularTagResponse>
 
     @DELETE("/api/articles/{articleId}")
     fun deleteArticle(

@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
@@ -18,16 +20,22 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.chocobi.groot.data.BasicResponse
+import com.chocobi.groot.youtube.CallYoutube
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_CAMERA
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.ChatFragment
 import com.chocobi.groot.view.chat.ChatUserListFragment
+import com.chocobi.groot.view.community.CommunityDetailFragment
+import com.chocobi.groot.view.community.CommunityEditPostFragment
 import com.chocobi.groot.view.community.CommunityFragment
 import com.chocobi.groot.view.community.CommunityPostFragment
 import com.chocobi.groot.view.community.CommunityShareFragment
@@ -48,7 +56,13 @@ import com.chocobi.groot.view.search.SearchDetailFragment
 import com.chocobi.groot.view.search.SearchFragment
 import com.chocobi.groot.view.user.SettingFragment
 import com.chocobi.groot.view.user.UserFragment
+import com.chocobi.groot.view.user.model.NotiStatusRequest
+import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -66,18 +80,38 @@ class MainActivity : AppCompatActivity() {
 //    fun getToolbar(): androidx.appcompat.widget.Toolbar? {
 //        return activityToolbar
 //    }
+    private val CHANNEL_ID = "NOTI_CHANNEL" // 알림 채널의 고유 식별자
+
     private val TAG = "MainActivity"
     private var photoImage: ImageView? = null
     private var potId: Int = 0
+    private var plantId: Int = 0
+    private var plantImgUri: String = ""
     private var potName: String = "화분 이름"
     private var potPlant: String = "화분 식물"
     private var potCharImg: String = "화분 이미지 URL"
+
+    private var chatUserPK: String = ""
+    private var chatPickNickName: String = ""
+    private var chatPickProfile: String = ""
+    private var chatRoomId: String = ""
+
+    private var communityArticleId: Int = 0
+
 
     private lateinit var bnv_main: BottomNavigationView
 
     fun setPotId(id: Int) {
         potId = id
         Log.d("potDiary", "$potId")
+    }
+
+    fun setPlantId(id: Int) {
+        plantId = id
+    }
+
+    fun setPlantImgUri(name: String) {
+        plantImgUri = name
     }
 
     fun setPotName(name: String) {
@@ -92,25 +126,47 @@ class MainActivity : AppCompatActivity() {
         potCharImg = plant
     }
 
+    fun setChatUserPK(name: String) {
+        chatUserPK = name
+    }
+
+    fun setChatPickNickName(name: String) {
+        chatPickNickName = name
+    }
+
+    fun setChatPickProfile(name: String) {
+        chatPickProfile = name
+    }
+
+    fun setChatRoomId(name: String) {
+        chatRoomId = name
+    }
+
+    fun setCommunityArticleId(id: Int) {
+        communityArticleId = id
+    }
+
     //    알림 요청
     val notificationPermissionRequestCode = 1001
 
     // 알림 권한을 요청하는 메서드
-    private fun openAppNotificationSettings() {
+    fun openAppNotificationSettings() {
         val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
-        startActivity(intent)
+        startActivityForResult(intent, notificationPermissionRequestCode)
     }
 
     //        fragment 조작
     fun changeFragment(index: String) {
         var fragment: Fragment? = null
 
-
-
         when (index) {
             "pot" -> {
                 bnv_main.run { selectedItemId = R.id.potFragment }
+            }
+
+            "user" -> {
+                fragment = UserFragment()
             }
 
             "pot_diary" -> {
@@ -148,10 +204,22 @@ class MainActivity : AppCompatActivity() {
 
             "search_detail" -> {
                 val bundle = Bundle()
-                bundle.putString(
-                    "plant_id", intent.getStringExtra("plant_id")
-                )
+//                if (intent.getStringExtra("plant_id") == null) {
+                    bundle.putString(
+                        "plant_id", plantId.toString()
+                    )
+//                } else {
+//                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
+//                }
+                bundle.putString("imageUri", intent.getStringExtra("imageUri"))
                 fragment = SearchDetailFragment()
+                fragment.arguments = bundle
+            }
+
+            "community_detail" -> {
+                fragment = CommunityDetailFragment()
+                val bundle = Bundle()
+                bundle.putInt("articleId", communityArticleId)
                 fragment.arguments = bundle
             }
 
@@ -171,6 +239,10 @@ class MainActivity : AppCompatActivity() {
                 fragment = CommunityPostFragment("Tip")
             }
 
+            "community_edit_post" -> {
+                fragment = CommunityEditPostFragment("자유")
+            }
+
             "setting" -> {
                 fragment = SettingFragment()
             }
@@ -178,10 +250,24 @@ class MainActivity : AppCompatActivity() {
             "chat_user_list" -> {
                 fragment = ChatUserListFragment()
             }
+
+            "chat" -> {
+                fragment = ChatFragment()
+                val bundle = Bundle()
+                bundle.putString("userPK", chatUserPK)
+                bundle.putString("nickName", chatPickNickName)
+                bundle.putString("profile", chatPickProfile)
+                bundle.putString("roomId", chatRoomId)
+                Log.d("받아온 데이터", bundle.toString())
+
+                fragment.arguments = bundle
+            }
+
         }
         if (fragment != null) {
             supportFragmentManager
                 .beginTransaction()
+//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                 .replace(R.id.fl_container, fragment, index)
                 .addToBackStack(index)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -189,23 +275,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-    private fun checkPotDetailFragmentInBackStack(): Boolean {
-        val fragmentManager = supportFragmentManager
-        val fragmentCount = fragmentManager.backStackEntryCount
-
-        if (fragmentCount > 0) {
-            val topFragment = fragmentManager.getBackStackEntryAt(fragmentCount - 1)
-            if (topFragment.name == PotDetailFragment::class.java.name) {
-                Log.d("MainActivity", "PotDetailFragment is at the top of the backstack")
-                return true
-            } else {
-                return false
-            }
-        }
-        return false
-
-    }
 
     //    camera 조작
     /**자식 액티비티에서 권한 요청 시 직접 호출하는 메서드
@@ -248,7 +317,6 @@ class MainActivity : AppCompatActivity() {
                         ) == PackageManager.PERMISSION_GRANTED
                     }
             } else {
-
                 isAllPermissionsGranted =
                     permissions.all { checkSelfPermission(it) == PackageManager.PERMISSION_GRANTED }
             }
@@ -317,8 +385,6 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(MediaStore.EXTRA_OUTPUT, realUri)
             startActivityForResult(intent, REQUEST_CAMERA)
         }
-
-
     }
 
     //    사진 하나만 첨부할 때 사용
@@ -352,16 +418,23 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == notificationPermissionRequestCode) {
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (notificationManager.isNotificationPolicyAccessGranted) {
-                // 권한이 부여된 경우 처리할 작업 수행
-                // 예: 알림 사용 코드 작성
-                Toast.makeText(this, "알림이 허용 되었습니다.", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "알림이 거부 되었습니다.", Toast.LENGTH_SHORT).show()
-                // 권한이 거부된 경우 처리할 작업 수행
-            }
+            // 변경된 알림 설정 상태를 사용하여 추가 작업 수행 (500ms 지연 후에 호출)
+            Handler(Looper.getMainLooper()).postDelayed({
+                val areNotificationsEnabled = areNotificationsEnabled()
+                if (areNotificationsEnabled) {
+                    Toast.makeText(this, "알림이 허용되었습니다.", Toast.LENGTH_SHORT).show()
+                    UserData.setIsNotificationAllowed(1, true)
+                    UserData.setIsNotificationAllowed(2, true)
+                    UserData.setIsNotificationAllowed(3, true)
+                    requestChangeNotiStatus(true)
+                } else {
+                    Toast.makeText(this, "알림이 거부되었습니다.", Toast.LENGTH_SHORT).show()
+                    UserData.setIsNotificationAllowed(1, false)
+                    UserData.setIsNotificationAllowed(2, false)
+                    UserData.setIsNotificationAllowed(3, false)
+                    requestChangeNotiStatus(false)
+                }
+            }, 500)
         }
 
 
@@ -410,6 +483,22 @@ class MainActivity : AppCompatActivity() {
 //        fragment?.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun areNotificationsEnabled(): Boolean {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // API 26 이상인 경우
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = notificationManager.getNotificationChannel(CHANNEL_ID)
+            if (channel != null) {
+                return channel.importance != NotificationManager.IMPORTANCE_NONE
+            }
+        }
+
+        // API 25 이하인 경우 또는 알림 채널이 null인 경우
+        return NotificationManagerCompat.from(this).areNotificationsEnabled()
+    }
+
 //    ============================================================
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -426,30 +515,51 @@ class MainActivity : AppCompatActivity() {
                 openAppNotificationSettings()
             }
             dialog.setNegativeButton("취소") { dialog, which ->
+                UserData.setIsNotificationAllowed(1, false)
+                UserData.setIsNotificationAllowed(2, false)
+                UserData.setIsNotificationAllowed(3, false)
+                requestChangeNotiStatus(false)
                 dialog.dismiss()
             }
             dialog.show()
 
         }
+//        else {
+//            UserData.setIsNotificationAllowed(1, false)
+//            UserData.setIsNotificationAllowed(2, false)
+//            UserData.setIsNotificationAllowed(3, false)
+//            requestChangeNotiStatus(false)
+//        }
 
 
 //        requestSubscribe()
 
         //        화분 정보 받아왔는지 체크
         val isExistPlantData = GlobalVariables.prefs.getString("plant_names", "")
+        val isExistRegionData = GlobalVariables.prefs.getString("region_names", "")
         if (isExistPlantData == "") {
 //            Toast.makeText(this, "지역 / 식물 다 받아올 거임", Toast.LENGTH_SHORT).show()
 //        화분 이름 받아오기
             getPlantNameList()
+        }
+        if (isExistRegionData == "") {
 //            지역 받아오기
             getRegionNameList()
-        } else {
-//            GlobalVariables.prefs.setString("plant_names", "")
-//            Toast.makeText(this, "지역 / 식물 다 받아옴", Toast.LENGTH_SHORT).show()
         }
 
 //        인기태그 가져오기
-        getPopularTag()
+        val isExistPopularTagData = GlobalVariables.prefs.getString("popular_tags_share", "")
+        if (isExistPopularTagData == "") {
+            getPopularTag("나눔")
+            getPopularTag("자유")
+            getPopularTag("QnA")
+            getPopularTag("Tip")
+        } else {
+            getPopularTag("나눔")
+            getPopularTag("자유")
+            getPopularTag("QnA")
+            getPopularTag("Tip")
+        }
 
         potId = intent.getIntExtra("potId", 0)
         potName = intent.getStringExtra("potName").toString()
@@ -485,9 +595,10 @@ class MainActivity : AppCompatActivity() {
                         // 다른 프래그먼트 화면으로 이동하는 기능
                         val homeFragment = PotFragment()
                         supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right)
                             .replace(R.id.fl_container, homeFragment, "pot")
                             .addToBackStack("pot")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commitAllowingStateLoss()
 //                            .commit()
 //                        // 프래그먼트가 변경되면서, 왼쪽 마진값을 0으로 변경
@@ -501,6 +612,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.searchFragment -> {
                         val boardFragment = SearchFragment()
                         supportFragmentManager.beginTransaction()
+//                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "search")
                             .addToBackStack("search")
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -515,6 +627,7 @@ class MainActivity : AppCompatActivity() {
                     R.id.communityFragment -> {
                         val boardFragment = CommunityFragment()
                         supportFragmentManager.beginTransaction()
+//                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "community")
                             .addToBackStack("community")
                             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -529,9 +642,10 @@ class MainActivity : AppCompatActivity() {
                     R.id.userFragment -> {
                         val boardFragment = UserFragment()
                         supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fl_container, boardFragment, "user")
                             .addToBackStack("user")
-                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+//                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                             .commitAllowingStateLoss()
 //                            .commit()
 //                        val params = frameLayout.layoutParams as ViewGroup.MarginLayoutParams
@@ -550,16 +664,34 @@ class MainActivity : AppCompatActivity() {
 
         //        특정 프레그먼트로 이동
         var toPage = intent.getStringExtra("toPage")
-        val plantId = intent.getStringExtra("plant_id")
+        if (!intent.getStringExtra("plant_id").isNullOrEmpty()) {
+            plantId = intent.getStringExtra("plant_id")!!.toInt()
+        }
+        if (intent.getStringExtra("cameraStatus") != null) {
+            cameraStatus = intent.getStringExtra("cameraStatus")
+
+        }
         if (toPage != null) {
             Log.d(TAG, "toPage" + toPage)
 
             when (toPage) {
                 "search_detail" -> {
                     bnv_main.run { selectedItemId = R.id.searchFragment }
+                    changeFragment(toPage)
+                }
+
+                "pot_detail" -> {
+                    changeFragment(toPage)
+                }
+
+                "search_camera" -> {
+                    requirePermissions(
+                        arrayOf(android.Manifest.permission.CAMERA),
+                        PERMISSION_CAMERA
+                    )
+
                 }
             }
-            changeFragment(toPage)
 
         }
     }
@@ -590,8 +722,13 @@ class MainActivity : AppCompatActivity() {
             val tag9: Fragment? = supportFragmentManager.findFragmentByTag("community_share")
             val tag10: Fragment? = supportFragmentManager.findFragmentByTag("community_post")
             val tag11: Fragment? = supportFragmentManager.findFragmentByTag("setting")
+            val tag12: Fragment? = supportFragmentManager.findFragmentByTag("chat")
+            val tag13: Fragment? = supportFragmentManager.findFragmentByTag("chat_user_list")
+            val tag14: Fragment? = supportFragmentManager.findFragmentByTag("community_qna")
+            val tag15: Fragment? = supportFragmentManager.findFragmentByTag("community_tip")
+            val tag16: Fragment? = supportFragmentManager.findFragmentByTag("community_detail")
 
-            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null) {
+            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null && tag12 == null && tag13 == null && tag14 == null && tag15 == null && tag16 == null) {
                 var intent = Intent(this, IntroActivity::class.java)
                 startActivity(intent)
             }
@@ -672,11 +809,11 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun getPopularTag() {
+    private fun getPopularTag(category: String) {
         val retrofit = RetrofitClient.basicClient()!!
         val communityService = retrofit.create(CommunityService::class.java)
-        communityService.requestPopularTags()
-            .enqueue(object : retrofit2.Callback<PopularTagResponse> {
+        communityService.requestPopularTags(category)
+            .enqueue(object : Callback<PopularTagResponse> {
                 override fun onResponse(
                     call: Call<PopularTagResponse>,
                     response: Response<PopularTagResponse>
@@ -689,10 +826,27 @@ class MainActivity : AppCompatActivity() {
                             for (tag in popularTags) {
                                 popularTagsList.add(tag.tag)
                             }
-                            GlobalVariables.prefs.setString(
-                                "popular_tags",
-                                popularTagsList.joinToString()
-                            )
+                            when (category) {
+                                "나눔" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_share",
+                                    popularTagsList.joinToString()
+                                )
+
+                                "자유" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_free",
+                                    popularTagsList.joinToString()
+                                )
+
+                                "QnA" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_qna",
+                                    popularTagsList.joinToString()
+                                )
+
+                                "Tip" -> GlobalVariables.prefs.setString(
+                                    "popular_tags_tip",
+                                    popularTagsList.joinToString()
+                                )
+                            }
                             Log.d("CommunityFragment", "onResponse() 조회 성공 $popularTags")
                         }
                     } else {
@@ -703,6 +857,33 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<PopularTagResponse>, t: Throwable) {
                     Log.d("CommunityFragment", "onFailure() 인기태그 조회 실패2")
+                }
+
+            })
+    }
+
+    private fun requestChangeNotiStatus(option: Boolean) {
+        Log.d("MainActivity", "requestChangeNotiStatus() 요청 한번에 감 $option")
+        val retrofit = RetrofitClient.getClient()!!
+        val userService = retrofit.create(UserService::class.java)
+
+        userService.changeNotiStatus(NotiStatusRequest(option, option, option))
+            .enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val body = response.body()
+                        Log.d("SettingFragment", "onResponse() 성공11111111 ${body?.msg}")
+                        requestChangeNotiStatus(option)
+                    } else {
+                        val body = response.body()
+                        Log.d("SettingFragment", "onResponse() 실패 ${body?.msg}")
+                    }
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
                 }
 
             })

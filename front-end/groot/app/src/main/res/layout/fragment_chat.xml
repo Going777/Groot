@@ -17,7 +17,7 @@
         android:id="@+id/chatRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/input_layout"
+        android:layout_above="@id/inputLayout"
         android:layout_below="@+id/topNavbar"/>
 
 
@@ -54,9 +54,8 @@
     <!--            android:text="전송"-->
     <!--            android:textColor="@android:color/white" />-->
     <!--    </LinearLayout>-->
-
     <androidx.cardview.widget.CardView
-        android:id="@+id/input_layout"
+        android:id="@+id/inputLayout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"

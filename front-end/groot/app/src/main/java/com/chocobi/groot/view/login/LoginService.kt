@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.login
 
+import com.chocobi.groot.view.signup.SignupResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,7 +26,7 @@ interface LoginService {
     @POST("/api/users/oauth")
     fun requestSocialLogin(
         @Body params: SocialLoginRequest
-    ): Call<LoginResponse>
+    ): Call<SignupResponse>
 
 }
 

@@ -26,8 +26,8 @@ android {
         applicationId "com.chocobi.groot"
         minSdk 28
         targetSdk 33
-        versionCode 9
-        versionName "1.5"
+        versionCode 13
+        versionName "1.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -38,6 +38,14 @@ android {
         resValue "string", "kakao_oauth_host", properties['kakao_oauth_host']
 
         buildConfigField "String", "WEATHER_API_KEY", properties['weather_api_key']
+
+        buildConfigField "String", "YOUTUBE_API_KEY", properties['youtube_api_key']
+
+
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
     }
 
     buildTypes {
@@ -76,6 +84,7 @@ dependencies {
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'com.google.firebase:firebase-database-ktx:20.2.1'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.4.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -175,6 +184,12 @@ dependencies {
 
 //    coroutine
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.1"
+
+//    youtube
+    implementation 'com.google.apis:google-api-services-youtube:v3-rev183-1.22.0'
+    implementation 'com.google.http-client:google-http-client-android:1.38.1'
+    implementation 'com.google.api-client:google-api-client-android:1.31.2'
+    implementation 'com.google.api-client:google-api-client-gson:1.31.2'
 }
 
 

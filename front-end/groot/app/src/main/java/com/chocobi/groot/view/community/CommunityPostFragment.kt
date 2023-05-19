@@ -17,8 +17,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
@@ -30,6 +28,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
+import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_STORAGE
 import com.chocobi.groot.data.RetrofitClient
@@ -37,7 +36,6 @@ import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import kotlinx.coroutines.NonDisposableHandle.parent
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -49,7 +47,8 @@ import java.io.FileOutputStream
 
 
 @Suppress("DEPRECATION")
-class CommunityPostFragment(private val postCategory:String) : Fragment() {
+class CommunityPostFragment(private val postCategory: String) :
+    Fragment() {
 
     private val TAG = "CommunityPostFragment"
 
@@ -68,7 +67,6 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
     private val tagList = mutableListOf<String>()
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -77,7 +75,8 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
         val view = inflater.inflate(R.layout.fragment_community_post, container, false)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, true)
+        recyclerView.layoutManager =
+            LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, true)
         val context: Context = requireContext()
         postImageAdapter = PostImageAdapter(imageList, context)
         recyclerView.adapter = postImageAdapter
@@ -99,7 +98,7 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
 //        ================================================================
 
 
-        // 태그를 보여줄 RecyclerView와 입력을 받을 EditText를 레이아웃에서 참조합니다.
+        // 태그를 보여줄 RecyclerView와 입력을 받을 EditText를 레이아웃에서 참조
         tagRecyclerView = view.findViewById(R.id.tagRecyclerView)
         val flexboxLayoutManager = FlexboxLayoutManager(context)
         flexboxLayoutManager.justifyContent = JustifyContent.FLEX_START
@@ -107,26 +106,37 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
 
         tagInput = view.findViewById(R.id.tagInput)
 
-        // RecyclerView에 사용할 레이아웃 매니저와 어댑터를 생성합니다.
+        // RecyclerView에 사용할 레이아웃 매니저와 어댑터 생성
 //        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         val tagAdapter = TagAdapter()
 
-        // RecyclerView에 레이아웃 매니저와 어댑터를 설정합니다.
+        // RecyclerView에 레이아웃 매니저와 어댑터 설정
         tagRecyclerView.layoutManager = flexboxLayoutManager
         tagRecyclerView.adapter = tagAdapter
-        val tagList = mutableListOf<String>()
 
         // EditText의 키보드 액션을 설정합니다.
         tagInput.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
                 // EditText의 내용을 가져옵니다.
                 val tag = tagInput.text.toString().trim()
-                if (tag.isNotEmpty()) {
+
+                if (tagAdapter.containsTag(tag)) {
+                    Toast.makeText(requireContext(), "이미 추가된 태그입니다.", Toast.LENGTH_SHORT).show();
+                } else if (tag.isNotEmpty() && tagAdapter.getItemCount() < 10 && tagInput.length() <= 10) {
                     // 태그 어댑터에 태그를 추가합니다.
-                    tagAdapter.addTag(tag)
-                    tagList.add(tag)
+                    tagAdapter.addTag(tag);
                     // EditText의 내용을 리셋합니다.
-                    tagInput.setText("")
+                    tagInput.setText("");
+                }
+
+
+                if (tagAdapter.itemCount >= 10) {
+                    Toast.makeText(requireContext(), "태그는 10개까지 입력 가능합니다.", Toast.LENGTH_SHORT)
+                    .show()
+                }
+                if (tagInput.length() > 10) {
+                    Toast.makeText(requireContext(), "10자 이내로 작성해주세요.", Toast.LENGTH_SHORT)
+                        .show()
                 }
                 true
             } else {
@@ -139,32 +149,38 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
             if (!hasFocus) {
                 // EditText의 내용을 가져옵니다.
                 val tag = tagInput.text.toString().trim()
-                if (tag.isNotEmpty()) {
+                if (tagAdapter.containsTag(tag)) {
+                    Toast.makeText(requireContext(), "이미 추가된 태그입니다.", Toast.LENGTH_SHORT).show();
+                } else if (tag.isNotEmpty() && tagAdapter.getItemCount() < 10 && tagInput.length() <= 10) {
                     // 태그 어댑터에 태그를 추가합니다.
-                    tagAdapter.addTag(tag)
-                    tagList.add(tag)
+                    tagAdapter.addTag(tag);
                     // EditText의 내용을 리셋합니다.
-                    tagInput.setText("")
+                    tagInput.setText("");
+                }
+
+
+                if (tagAdapter.itemCount >= 10) {
+                    Toast.makeText(requireContext(), "태그는 10개까지 입력 가능합니다.", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                if (tagInput.length() > 10) {
+                    Toast.makeText(requireContext(), "10자 이내로 작성해주세요.", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }
-
-
-
-
 
 
         // 이미지 업로드
         val postCameraBtn = view.findViewById<ImageButton>(R.id.postCameraBtn)
 
         postCameraBtn.setOnClickListener {
+            GlobalVariables.defaultAlertDialog(requireContext(), message = "사진 첨부는 최대 3장까지 가능합니다.", positiveFtn = ::requestPermissions)
 //            val intent = Intent(Intent.ACTION_PICK)
 //            intent.type = "image/*"
 //            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
 //
 //            activityResult.launch(intent)
-            requestPermissions()
-
         }
 
 
@@ -192,13 +208,27 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
 
         // 등록 버튼 클릭 시 제목과 내용 입력값
         toPostListBtn.setOnClickListener(View.OnClickListener {
+            val tagList = mutableListOf<String>()
+            for (i in 0 until tagAdapter.itemCount) {
+                val item = tagAdapter.getItem(i) as String
 
+                tagList.add(item)
+            }
+            Log.d("tagList", tagList.toString())
             val category = postCategory
             var title = titleInput?.text.toString()
             var content = contentInput?.text.toString()
             var shareRegion = ""
             var shareStatus = false
-            postArticle(category, title, content, tagList, shareRegion, shareStatus, imageList)
+            if (title.isNullOrBlank()) {
+                GlobalVariables.defaultAlertDialog(requireContext(), message = "제목을 입력해 주세요")
+            }
+            else if (content.isNullOrBlank()) {
+                GlobalVariables.defaultAlertDialog(requireContext(), message = "내용을 입력해 주세요")
+            }
+            else {
+                postArticle(category, title, content, tagList, shareRegion, shareStatus, imageList)
+            }
         })
 
         // 제목과 내용 글자 수 체크 및 제한
@@ -207,7 +237,6 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
 
         var titleCntValue = 0
         var contentCntValue = 0
-
 
 
         // 글자 수 체크 및 제한
@@ -285,7 +314,10 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
         } else {
             requestPermissions(
 //                권한 설정 수정
-                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.READ_MEDIA_IMAGES),
+                arrayOf(
+                    android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                    android.Manifest.permission.READ_MEDIA_IMAGES
+                ),
 //                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                 PERMISSION_GALLERY
             )
@@ -408,7 +440,8 @@ class CommunityPostFragment(private val postCategory:String) : Fragment() {
                 val context: Context = requireContext()
                 postImageAdapter = PostImageAdapter(imageList, context)
                 recyclerView.adapter = postImageAdapter
-                recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                recyclerView.layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
 
                 if (imageList.isNotEmpty()) {
                     recyclerView.visibility = View.VISIBLE

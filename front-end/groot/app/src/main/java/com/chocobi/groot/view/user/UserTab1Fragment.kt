@@ -1,17 +1,21 @@
 package com.chocobi.groot.view.user
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
 import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotListResponse
@@ -44,6 +48,37 @@ class UserTab1Fragment : Fragment() {
         val rootView = inflater.inflate(R.layout.fragment_user_tab1, container, false)
         val mActivity = activity as MainActivity
         potFirstView = rootView.findViewById(R.id.firstView)
+        potFirstView.setOnClickListener{
+            var dialog = AlertDialog.Builder(requireContext())
+            dialog.setTitle("새 화분 등록하기")
+            val dialogArray = arrayOf("카메라로 등록", "식물 이름으로 등록")
+
+            dialog.setItems(dialogArray) { _, which ->
+                when (which) {
+                    0 -> {
+                        mActivity.setCameraStatus("addPot")
+                        mActivity.requirePermissions(
+                            arrayOf(android.Manifest.permission.CAMERA),
+                            PERMISSION_CAMERA
+                        )
+                    }
+
+                    1 -> {
+                        val plantBottomSheet = PlantBottomSheet(requireContext())
+                        plantBottomSheet.show(
+                            mActivity.supportFragmentManager,
+                            plantBottomSheet.tag
+                        )
+                    }
+                }
+            }
+            dialog.setNegativeButton(
+                "취소",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            dialog.show()
+        }
         rv = rootView.findViewById(R.id.useTab1RecyclerView)
 
         getPotArchive(mActivity)
