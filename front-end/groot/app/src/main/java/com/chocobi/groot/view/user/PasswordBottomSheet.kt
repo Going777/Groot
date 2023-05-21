@@ -48,13 +48,13 @@ class PasswordBottomSheet(context: Context) : BottomSheetDialogFragment() {
             var newPwText2 = view?.findViewById<EditText>(R.id.newPwText2)?.text.toString()
 
             if (pwText == "") {
-                showDialog("비밀번호를 입력해주세요.")
+                showDialog("비밀번호를 입력해주세요")
             } else if (newPwText == "" || newPwText2 == "") {
                 showDialog("새로운 비밀번호를 입력해주세요")
             } else if (pwText == newPwText) {
-                showDialog("기존 비밀번호와 일치합니다.")
+                showDialog("기존 비밀번호와 일치합니다")
             } else if (newPwText != newPwText2) {
-                showDialog("비밀번호 확인이 일치하지 않습니다.")
+                showDialog("비밀번호 확인이 일치하지 않습니다")
             } else {
                 changePassword(pwText, newPwText)
             }

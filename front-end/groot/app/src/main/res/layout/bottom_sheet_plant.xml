@@ -71,23 +71,14 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="500dp">
+            android:layout_height="500dp"
+            android:gravity="center_horizontal">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dictRecyclerView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp" />
         </LinearLayout>
-
-        <!--    <androidx.appcompat.widget.AppCompatButton-->
-        <!--        android:id="@+id/button_bottom_sheet"-->
-        <!--        android:layout_width="match_parent"-->
-        <!--        android:layout_height="wrap_content"-->
-        <!--        android:text="이 식물로 할래요"-->
-        <!--        android:backgroundTint="@color/main"-->
-        <!--        android:textColor="@color/white" />-->
     </LinearLayout>
-
-
 </LinearLayout>

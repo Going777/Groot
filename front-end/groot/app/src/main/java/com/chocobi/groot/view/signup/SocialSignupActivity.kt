@@ -65,7 +65,7 @@ class SocialSignupActivity : AppCompatActivity() {
                 GlobalVariables.defaultAlertDialog(
                     this,
                     title = "닉네임 중복 체크",
-                    message = "닉네임을 입력해주세요."
+                    message = "닉네임을 입력해주세요"
                 )
             }
         }
@@ -77,7 +77,7 @@ class SocialSignupActivity : AppCompatActivity() {
                     GlobalVariables.defaultAlertDialog(
                         context = this,
                         title = "닉네임 중복 체크",
-                        message = "닉네임 중복 여부를 확인해주세요."
+                        message = "닉네임 중복 여부를 확인해주세요"
                     )
                 }
 
@@ -230,7 +230,7 @@ class SocialSignupActivity : AppCompatActivity() {
                             }
                         } catch (e: JSONException) {
                             // 예외 처리: msg 속성이 존재하지 않는 경우
-                            checkDupNameMsg = "닉네임을 입력해주세요."
+                            checkDupNameMsg = "닉네임을 입력해주세요"
                             e.printStackTrace()
                         }
                     } else {
