@@ -1,20 +1,33 @@
 package com.chocobi.groot
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.media.MediaScannerConnection
+import android.opengl.GLES20
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.Log
 
 import android.view.Menu
 import android.view.MenuItem
+import android.view.PixelCopy
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.github.sceneview.ar.ArSceneView
 import io.github.sceneview.ar.getDescription
 import io.github.sceneview.ar.node.ArModelNode
@@ -23,6 +36,13 @@ import io.github.sceneview.math.Position
 import io.github.sceneview.math.Rotation
 import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.nio.ByteBuffer
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     private val TAG = "CharacterActivity"
@@ -32,6 +52,8 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
     private lateinit var level: String
     private lateinit var potName: String
     private lateinit var potPlant: String
+    private lateinit var captureBtn: ExtendedFloatingActionButton
+    private lateinit var captureImg: ImageView
 
     //    lateinit var loadingView: View
 //    private lateinit var statusText: TextView
@@ -79,6 +101,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         super.onCreate(savedInstanceState)
 //        setContentView(R.layout.activity_character)
 
+
         GLBfile = intent.getStringExtra("GLBfile").toString()
         level = intent.getStringExtra("level").toString()
         Log.d("CharacterActivity", "onCreate() ${level}레벨레벨")
@@ -104,24 +127,16 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //        })
 //        statusText = findViewById(R.id.statusText)
 //        statusText.text = potName
+
         sceneView = findViewById<ArSceneView?>(R.id.sceneView).apply {
             onArTrackingFailureChanged = { reason ->
                 Toast.makeText(context, "사물을 감지하지 못해 메인 화면으로 돌아갑니다", Toast.LENGTH_LONG).show()
                 val intent = Intent(context, MainActivity::class.java)
                 startActivity(intent)
-//                statusText.text = reason?.getDescription(context)
-//                statusText.isGone = reason == null
             }
             isDepthOcclusionEnabled = false
         }
 
-//        loadingView = findViewById(R.id.loadingView)
-//        newModelButton = findViewById<ExtendedFloatingActionButton>(R.id.newModelButton).apply {
-//            // Add system bar margins
-//        }
-//        placeModelButton = findViewById<ExtendedFloatingActionButton>(R.id.placeModelButton).apply {
-//            setOnClickListener { placeModelNode() }
-//        }
         changeAnimationButton = findViewById(R.id.changeAnimation)
         changeAnimationButton.apply {
             val bottomMargin = (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin
@@ -149,8 +164,117 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 //            resumeAnimation()
 //        }
 
+        captureBtn = findViewById(R.id.captureBtn)
+        captureImg = findViewById(R.id.captureImg)
+        captureBtn.setOnClickListener {
+            captureSceneView()
+        }
+
+
         newModelNode()
 //        placeModelNode()
+    }
+
+//    private fun captureAndSaveImage() {
+//        // 캡처할 View 객체
+////        val viewToCapture = findViewById<View>(R.id.sceneView) // 캡처할 View ID로 변경하세요
+//
+//        // View의 스크린샷 캡처
+//        val bitmap = Bitmap.createBitmap(sceneView.width, sceneView.height, Bitmap.Config.ARGB_8888)
+//        val canvas = Canvas(bitmap)
+//        sceneView.draw(canvas)
+//
+//        // 저장할 폴더 및 파일 경로 설정
+//        val folderPath = Environment.getExternalStorageDirectory().absolutePath + "/groot"
+//        val fileName = "captured_image.jpg"
+//        val filePath = "$folderPath/$fileName"
+//
+//        // 폴더 생성
+//        val folder = File(folderPath)
+//        if (!folder.exists()) {
+//            folder.mkdirs()
+//        }
+//
+//        // 이미지 파일 저장
+//        try {
+//            FileOutputStream(filePath).use { outStream ->
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outStream)
+//                Toast.makeText(this, "Image captured and saved: $filePath", Toast.LENGTH_SHORT).show()
+//            }
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//            Toast.makeText(this, "Failed to save image.", Toast.LENGTH_SHORT).show()
+//        }
+//    }
+
+    private fun captureSceneView() {
+        val bitmap = Bitmap.createBitmap(
+            sceneView.width,
+            sceneView.height,
+            Bitmap.Config.ARGB_8888
+        )
+        PixelCopy.request(
+            sceneView, bitmap, { result ->
+                when (result) {
+                    PixelCopy.SUCCESS -> {
+                        val file = this@CharacterActivity.createExternalFile(
+                            environment = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                Environment.DIRECTORY_SCREENSHOTS
+                            } else {
+                                Environment.DIRECTORY_PICTURES
+                            }, extension = ".png"
+                        )
+                        file?.let { outputFile ->
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputFile.outputStream())
+
+                            // Generate a content URI for the file
+                            val fileUri = FileProvider.getUriForFile(
+                                this@CharacterActivity,
+                                "com.chocobi.groot.fileprovider",
+                                outputFile
+                            )
+
+                            // Create an intent to share the image
+                            val intent = Intent(Intent.ACTION_VIEW).apply {
+                                setDataAndType(fileUri, "image/png")
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+
+                            // Verify that the intent can be handled by an activity
+                            if (intent.resolveActivity(packageManager) != null) {
+                                startActivity(intent)
+                            } else {
+                                Log.d("CharacterActivity", "captureSceneView()  No app available to handle the image")
+//                                showToast("No app available to handle the image.")
+                            }
+                        }
+                    }
+                    else -> Log.d("CharacterActivity", "captureSceneView() 실패")
+                }
+            }, Handler(
+                HandlerThread("screenshot")
+                    .apply { start() }.looper
+            )
+        )
+    }
+
+    private fun createExternalFile(environment: String, extension: String): File? {
+        val storageDir = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            getExternalFilesDir(environment)
+        } else {
+            Environment.getExternalStoragePublicDirectory(environment)
+        }
+
+        return try {
+            val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val fileName = "IMG_$timeStamp$extension"
+            val file = File(storageDir, fileName)
+            file.createNewFile()
+            file
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -183,27 +307,17 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
         modelNode?.playAnimation(animationIdx)
     }
 
-//    fun placeModelNode() {
-//        Log.d(TAG, "placeModelNode()")
-//        modelNode?.anchor()
-//        placeModelButton.isVisible = false
-//        sceneView.planeRenderer.isVisible = false
-//    }
-
     fun newModelNode() {
-//        isLoading = true
         modelNode?.takeIf { !it.isAnchored }?.let {
             sceneView.removeChild(it)
             it.destroy()
         }
         val model = models
-//        modelIndex = (modelIndex + 1) % models.size
         modelNode = ArModelNode(
             placementMode = PlacementMode.INSTANT,
             instantAnchor = true,
             followHitPosition = false,
         ).apply {
-//            applyPoseRotation = model.applyPoseRotation
             loadModelGlbAsync(
                 glbFileLocation = GLBfile ?: model.fileLocation,
                 autoAnimate = false,
