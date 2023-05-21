@@ -82,10 +82,10 @@ class LoginActivity : AppCompatActivity() {
             Log.d("LoginActivity", "onCreate() ${textPw}// 비번")
 //            아이디 입력 안했을 때
             if (textId.isBlank()) {
-                GlobalVariables.defaultAlertDialog(context = this, message = "아이디를 입력해주세요.")
+                GlobalVariables.defaultAlertDialog(context = this, message = "아이디를 입력해주세요")
 //            비밀번호 입력 안했을 때
             } else if (textPw.isBlank()) {
-                GlobalVariables.defaultAlertDialog(context = this, message = "비밀번호를 입력해주세요.")
+                GlobalVariables.defaultAlertDialog(context = this, message = "비밀번호를 입력해주세요")
 //            로그인 함수 실행
             } else {
                 login(this)

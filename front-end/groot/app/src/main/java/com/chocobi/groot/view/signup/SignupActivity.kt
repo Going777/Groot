@@ -191,7 +191,7 @@ class SignupActivity : AppCompatActivity() {
                             }
                         } catch (e: JSONException) {
                             // 예외 처리: msg 속성이 존재하지 않는 경우
-                            checkDupIdMsg = "아이디를 입력해주세요."
+                            checkDupIdMsg = "아이디를 입력해주세요"
                             e.printStackTrace()
                         }
 
@@ -238,7 +238,7 @@ class SignupActivity : AppCompatActivity() {
                             }
                         } catch (e: JSONException) {
                             // 예외 처리: msg 속성이 존재하지 않는 경우
-                            checkDupNameMsg = "닉네임을 입력해주세요."
+                            checkDupNameMsg = "닉네임을 입력해주세요"
                             e.printStackTrace()
                         }
                     } else {

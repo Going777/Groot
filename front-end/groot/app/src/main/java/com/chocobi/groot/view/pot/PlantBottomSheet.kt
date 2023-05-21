@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.CustomAutoCompleteAdapter
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.search.SearchDetailFragment
@@ -84,14 +85,10 @@ class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: 
     private fun setAutocompltete() {
         val plantNames =
             GlobalVariables.prefs.getString("plant_names", "")?.split(", ") ?: emptyList()
-        val items = plantNames.toTypedArray() // 괄호 제거하고 쉼표로 분리
+        val items = plantNames // 괄호 제거하고 쉼표로 분리
 
         Log.d("PlantBottomSheet", "setAutocompltete() 자동완성 $plantNames")
-        var adapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            items
-        )
+        var adapter = CustomAutoCompleteAdapter(requireContext(), items)
         autoCompleteTextView.setAdapter(adapter)
     }
 
@@ -211,9 +208,10 @@ class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: 
 
     private fun search(targetText: String?) {
         if (targetText == "") {
-//            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
+        }else {
+            requestSearchPlant(targetText)
         }
-        requestSearchPlant(targetText)
 
 //        // 키보드 닫기
         GlobalVariables.hideKeyboard(requireActivity())
