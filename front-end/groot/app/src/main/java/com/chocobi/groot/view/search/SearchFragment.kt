@@ -31,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.CustomAutoCompleteAdapter
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
@@ -152,15 +153,11 @@ class SearchFragment : Fragment() {
         // 자동완성으로 보여줄 내용들
         val plantNames =
             GlobalVariables.prefs.getString("plant_names", "")?.split(", ") ?: emptyList()
-        val items = plantNames.toTypedArray() // 괄호 제거하고 쉼표로 분리
+        val items = plantNames // 괄호 제거하고 쉼표로 분리
 
         autoCompleteTextView =
             rootView.findViewById(R.id.autoCompleteTextView)
-        var adapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            items
-        )
+        var adapter = CustomAutoCompleteAdapter(requireContext(), items)
         autoCompleteTextView.setAdapter(adapter)
 
 //        자동완성된 필터 클릭 -> 검색
