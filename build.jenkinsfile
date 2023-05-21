@@ -110,7 +110,7 @@ pipeline {
           echo 'start build'
           sh 'docker build -t react .'
         }
-        updateGitlabCommitStatus name 'build-react', state: 'success'
+        updateGitlabCommitStatus name: 'build-react', state: 'success'
       }
     }
     stage('unload') {
