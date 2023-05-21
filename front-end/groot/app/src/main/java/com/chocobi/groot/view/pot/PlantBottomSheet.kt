@@ -76,7 +76,7 @@ class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: 
         dictRecyclerView = view.findViewById(R.id.dictRecyclerView)
         searchPlantBtn = view.findViewById(R.id.searchPlantBtn)
 
-        rvAdapter = DictRVAdapter(emptyArray())
+        rvAdapter = DictRVAdapter(ArrayList())
         dictRecyclerView.layoutManager = GridLayoutManager(activity, 3)
         dictRecyclerView.adapter = rvAdapter
     }
@@ -157,7 +157,7 @@ class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: 
                     Log.d("SearchFragment", "requestSearchPlant() api 성공 $searchBody")
                     if (searchBody != null) {
                         plants = searchBody.plants
-                        rvAdapter.setData(plants)
+                        rvAdapter.setData(ArrayList(plants.toList()))
                     }
 
                 } else {

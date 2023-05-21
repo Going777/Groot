@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
@@ -39,6 +40,7 @@ import com.chocobi.groot.view.search.adapter.DictRVAdapter
 import com.chocobi.groot.view.search.model.PlantMetaData
 import com.chocobi.groot.view.search.model.PlantSearchResponse
 import com.chocobi.groot.view.search.model.SearchService
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
@@ -50,9 +52,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchFragment : Fragment() {
+    private var requestPage = 0
     private var plantName: String? = null
-    private var plants: Array<PlantMetaData>? = null
+    private var plants: ArrayList<PlantMetaData>? = null
     private lateinit var rvAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
+    private lateinit var recmAdapter: DictRVAdapter // rvAdapter를 클래스 멤버 변수로 이동
 
     private lateinit var recmmText: TextView
     private lateinit var firstView: ConstraintLayout
@@ -84,6 +88,7 @@ class SearchFragment : Fragment() {
     private lateinit var youtubePlayer4: YouTubePlayerView
     private lateinit var youtubePlayer5: YouTubePlayerView
     private lateinit var youtubePlayer6: YouTubePlayerView
+    private lateinit var loadMoreBtn: MaterialButton
 
     private var difficulty1: String? = null
     private var difficulty2: String? = null
@@ -105,17 +110,6 @@ class SearchFragment : Fragment() {
                 && lux1 == null && lux2 == null && lux3 == null &&
                 growth1 == null && growth2 == null && growth3 == null && growth4 == null && growth5 == null && growth6 == null
 
-
-    private fun setupRecyclerView() {
-        // RecyclerView 설정
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // 맨 처음 시작했을 때 추천 받아오기 뜨기
-//        requestRecommendations()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -130,8 +124,9 @@ class SearchFragment : Fragment() {
         findView(rootView)
         recmmText.text = "\uD83D\uDCA1 ${UserData.getNickName()}님을 위한 AI 추천 식물"
 //        추천 식물 받아오기
-
-        requestRecommendations()
+        if(isAllBlank()) {
+            requestRecommendations()
+        }
         filterChipGroup()
 
 //        Camera 버튼 클릭
@@ -153,18 +148,6 @@ class SearchFragment : Fragment() {
         }
 
         recyclerViewSetting()
-        youtubeViewSetting(youtubePlayer1)
-        youtubeViewSetting(youtubePlayer2)
-        youtubeViewSetting(youtubePlayer3)
-        youtubeViewSetting(youtubePlayer4)
-        youtubeViewSetting(youtubePlayer5)
-        youtubeViewSetting(youtubePlayer6)
-
-//        if(plants == null) {
-//            firstView.visibility = View.VISIBLE
-//        } else {
-//            firstView.visibility = View.GONE
-//        }
 
         // 자동완성으로 보여줄 내용들
         val plantNames =
@@ -224,6 +207,7 @@ class SearchFragment : Fragment() {
         }
 
         addPot(mActivity)
+        loadMore()
 
         return rootView
     }
@@ -236,6 +220,7 @@ class SearchFragment : Fragment() {
         luxChipGroup = view.findViewById(R.id.luxChipGroup)
         growthChipGroup = view.findViewById(R.id.growthChipGroup)
         rv = view.findViewById(R.id.dictRecyclerView)
+        loadMoreBtn = view.findViewById(R.id.loadMoreBtn)
         recmmView = view.findViewById(R.id.recmmView)
         recmRv = view.findViewById(R.id.recmRecyclerView)
         contentScrollView = view.findViewById(R.id.contentScrollView)
@@ -262,70 +247,37 @@ class SearchFragment : Fragment() {
         youtubePlayer6 = view.findViewById(R.id.youtubePlayer6)
     }
 
+    private fun recyclerViewSetting() {
+//        검색 관련 리사이클러뷰 어댑터 설정
+        rvAdapter = DictRVAdapter(ArrayList())
+        rv.layoutManager = GridLayoutManager(activity, 3)
+        rv.adapter = rvAdapter
 
-    private fun youtubeViewSetting(youtubeView: YouTubePlayerView) {
-        var isHorizontalScrolling = false
-        var lastX = 0f
-        var lastY = 0f
-
-        youtubeView.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    lastX = event.x
-                    lastY = event.y
-                    youtubeView.parent.requestDisallowInterceptTouchEvent(true)
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    val deltaX = Math.abs(event.x - lastX)
-                    val deltaY = Math.abs(event.y - lastY)
-                    isHorizontalScrolling = deltaX > deltaY
-                    lastX = event.x
-                    lastY = event.y
-                    youtubeView.parent.requestDisallowInterceptTouchEvent(true)
-                }
-
-                MotionEvent.ACTION_UP -> {
-                    youtubeView.parent.requestDisallowInterceptTouchEvent(false)
-                    if (!isHorizontalScrolling) {
-                        // Handle the click event when not scrolling horizontally
-                    }
-                }
+        rvAdapter.itemClick = object : DictRVAdapter.ItemClick {
+            override fun onClick(view: View, position: Int) {
+                mActivity.setPlantId(rvAdapter.items[position].plantId!!)
+                mActivity.changeFragment("search_detail")
             }
-            false
         }
 
-        youtubeView.setOnClickListener {
-            if (!isHorizontalScrolling) {
-                // Handle the click event when not scrolling horizontally
+//        추천 관련 리사이클러뷰 어댑터 설정
+        recmAdapter = DictRVAdapter(ArrayList())
+        recmRv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        recmRv.adapter = recmAdapter
+
+        recmAdapter.itemClick = object: DictRVAdapter.ItemClick {
+            override fun onClick(view: View, position: Int) {
+                mActivity.setPlantId(recmAdapter.items[position].plantId!!)
+                mActivity.changeFragment("search_detail")
             }
         }
     }
 
-
-    private fun recyclerViewSetting() {
-        rvAdapter = DictRVAdapter(emptyArray())
-        rv.layoutManager = GridLayoutManager(activity, 3)
-        rv.adapter = rvAdapter
-        recmRv.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        recmRv.adapter = rvAdapter
-
-        rvAdapter.itemClick = object : DictRVAdapter.ItemClick {
-            override fun onClick(view: View, position: Int) {
-//                val bundle = Bundle().apply {
-//                    putString("plant_id", plants!![position].plantId.toString())
-//                }
-//
-//                val passBundleBFragment = SearchDetailFragment().apply {
-//                    arguments = bundle
-//                }
-//
-//                parentFragmentManager.beginTransaction()
-//                    .replace(R.id.fl_container, passBundleBFragment)
-//                    .commit()
-
-                mActivity.setPlantId(plants!![position].plantId!!)
-                mActivity.changeFragment("search_detail")
+    private fun loadMore() {
+        loadMoreBtn.setOnClickListener {
+            requestPage ++
+            ThreadUtil.startUIThread(1000) {
+                requestSearchPlant("loadMore")
             }
         }
     }
@@ -381,23 +333,15 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun requestSearchPlant() {
-        // 요청할 때마다 제일 최상단으로 스크롤 위치 이동
-        contentScrollView.scrollTo(0, 0)
+    private fun requestSearchPlant(option: String? = null) {
+        if(option != "loadMore") {
+            // 요청할 때마다 제일 최상단으로 스크롤 위치 이동
+            contentScrollView.scrollTo(0, 0)
+            requestPage = 0
+        }
         plantName = autoCompleteTextView.text.toString()
         val retrofit = RetrofitClient.basicClient()!!
         val plantSearchService = retrofit.create(SearchService::class.java)
-        Log.d("SearchFragment", "requestSearchPlant() $difficulty1")
-        Log.d("SearchFragment", "requestSearchPlant() $difficulty2")
-        Log.d("SearchFragment", "requestSearchPlant() $difficulty3")
-        Log.d("SearchFragment", "requestSearchPlant() $lux1")
-        Log.d("SearchFragment", "requestSearchPlant() $lux1")
-        Log.d("SearchFragment", "requestSearchPlant() $lux1")
-        Log.d("SearchFragment", "requestSearchPlant() $growth5")
-        Log.d("SearchFragment", "requestSearchPlant() $growth4")
-        Log.d("SearchFragment", "requestSearchPlant() $growth3")
-        Log.d("SearchFragment", "requestSearchPlant() $growth2")
-        Log.d("SearchFragment", "requestSearchPlant() $growth1")
         plantSearchService.requestSearchPlants(
             plantName,
             difficulty1,
@@ -412,6 +356,7 @@ class SearchFragment : Fragment() {
             growth3,
             growth4,
             growth6,
+            requestPage
         )
             .enqueue(object : Callback<PlantSearchResponse> {
                 override fun onResponse(
@@ -422,14 +367,27 @@ class SearchFragment : Fragment() {
                         val searchBody = response.body()
                         Log.d("SearchFragment", "requestSearchPlant() api 성공 $searchBody")
                         if (searchBody != null) {
-                            plants = searchBody.plants
+                            plants = ArrayList(searchBody.plants.toList())
                             Log.d("SearchFragment", "onResponse() 요청된 것 보기 $plants")
                             recmmView.visibility = View.GONE
                             youtubeViews.visibility = View.GONE
                             firstView.visibility = View.GONE
                             blankView.visibility = View.GONE
                             rv.visibility = View.VISIBLE
-                            rvAdapter.setData(plants!!)
+
+                            if(option == "loadMore") {
+                                ThreadUtil.startUIThread(100) {
+                                    rvAdapter.loadMore(plants!!)
+                                }
+                            } else {
+                                rvAdapter.setData(plants!!)
+                            }
+
+                            if (plants!!.size % 30 == 0) {
+                                loadMoreBtn.visibility = View.VISIBLE
+                            } else {
+                                loadMoreBtn.visibility = View.GONE
+                            }
                         }
                     } else {
                         Log.d("SearchFragment", "onResponse() 아무것도 값이 없어요")
@@ -438,6 +396,7 @@ class SearchFragment : Fragment() {
                         youtubeViews.visibility = View.GONE
                         firstView.visibility = View.GONE
                         blankView.visibility = View.VISIBLE
+                        loadMoreBtn.visibility = View.GONE
                     }
                 }
 
@@ -471,7 +430,7 @@ class SearchFragment : Fragment() {
                         val searchBody = response.body()
                         Log.d("SearchFragment", "requestRecommendations() api 성공 $searchBody")
                         if (searchBody != null) {
-                            plants = searchBody.plants
+                            plants = ArrayList(searchBody.plants.toList())
                             if (plants == null) {
                                 rv.visibility = View.GONE
                                 recmmView.visibility = View.GONE
@@ -484,7 +443,7 @@ class SearchFragment : Fragment() {
                                 youtubeViews.visibility = View.VISIBLE
                                 firstView.visibility = View.GONE
                                 blankView.visibility = View.GONE
-                                rvAdapter.setData(plants!!)
+                                recmAdapter.setData(plants!!)
                             }
                         }
                     } else {
@@ -502,7 +461,6 @@ class SearchFragment : Fragment() {
                 }
             })
     }
-
 
     private fun addPot(activity: MainActivity) {
         firstView.setOnClickListener {
