@@ -134,11 +134,11 @@ public class ChattingServiceImpl implements ChattingService{
 
     @Override
     @Transactional
-    public boolean deleteChatting(Long roomId, Long userPK) {
-        if(!chattingRepository.existsByRoomIdAndSenderId(roomId, userPK)){
+    public boolean deleteChatting(String roomId) {
+        if(!chattingRepository.existsByRoomId(roomId)){
             return false;
         }
-        chattingRepository.deleteByRoomIdAndSenderId(roomId, userPK);
+        chattingRepository.deleteByRoomId(roomId);
         return true;
     }
 
