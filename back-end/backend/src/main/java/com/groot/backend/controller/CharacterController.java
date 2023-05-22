@@ -45,7 +45,7 @@ public class CharacterController {
             result.put("characters", list);
             status = HttpStatus.OK;
         } catch (NoSuchElementException e) {
-            status = HttpStatus.NOT_FOUND;
+            status = HttpStatus.NO_CONTENT;
         } catch (Exception e) {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
@@ -73,16 +73,12 @@ public class CharacterController {
             result.put("positions", list);
             status = HttpStatus.OK;
         } catch (NoSuchElementException e) {
-            result.put("msg", "등록된 화분이 없습니다.");
-            status = HttpStatus.NOT_FOUND;
+            status = HttpStatus.NO_CONTENT;
         } catch (Exception e) {
             logger.info("error : {}", e.getStackTrace());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-//        result.put("msg", "도감 조회에 성공했습니다.");
-//        result.put("positions", new int[] {0, 1, 2, 13, 21});
-//        status = HttpStatus.OK;
         return new ResponseEntity<>(result, status);
     }
 }
