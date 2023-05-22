@@ -1,6 +1,7 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.response.CharacterCollectionDTO;
+import com.groot.backend.dto.response.CharacterDTO;
 import com.groot.backend.dto.response.CharacterImageDTO;
 import com.groot.backend.entity.CharacterEntity;
 import com.groot.backend.entity.PotEntity;
@@ -72,6 +73,31 @@ public class CharacterServiceImpl implements CharacterService {
         return ret;
     }
 
+    @Override
+    public List<CharacterCollectionDTO> getAll(Long userPK) {
+        List<CharacterImageDTO> imageList = getImageList();
+        List<Integer> collectionList = getCollections(userPK);
+        List<CharacterCollectionDTO> ret = new ArrayList<>(imageList.size());
+
+        imageList.forEach(characterImageDTO -> {
+            ret.add(CharacterCollectionDTO.builder()
+                            .grwType(characterImageDTO.getGrwType())
+                            .level(characterImageDTO.getLevel())
+                            .pngPath(characterImageDTO.getPngPath())
+                            .collected(false)
+                            .build());
+        });
+
+        collectionList.forEach(integer -> {
+            CharacterCollectionDTO characterCollectionDTO = ret.get(integer);
+            characterCollectionDTO.updateCollected(true);
+            logger.info("modified : {}", integer);
+            ret.set(integer, characterCollectionDTO);
+        });
+
+        return ret;
+    }
+
     /**
      * Add collection index to list
      * @param potEntity
@@ -83,7 +109,7 @@ public class CharacterServiceImpl implements CharacterService {
 
         for(int i=0; i<=charLevel; i ++) {
             logger.info("collected : {} lv.{} {}", grwType, charLevel, (PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + charLevel);
-            collected[(PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + charLevel] = true;
+            collected[(PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + i] = true;
         }
     }
 }
