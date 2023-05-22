@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.pot
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +12,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
+import com.chocobi.groot.view.chat.model.ChatInfoResponse
+import com.chocobi.groot.view.chat.model.ChatUserListService
+import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.pot.adapter.NotificationRVAdapter
 import com.chocobi.groot.view.pot.model.NotiMessage
 import com.chocobi.groot.view.pot.model.NotiResponse
 import com.chocobi.groot.view.pot.model.NotiService
 import com.chocobi.groot.view.user.adapter.UserTab1RVAdapter
+import com.chocobi.groot.view.user.model.UserService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -75,13 +83,15 @@ class NotificationFragment : Fragment() {
     }
 
     private fun setRecyclerView(notiList: List<NotiMessage>) {
-        notiRVAdapter = NotificationRVAdapter(notiList)
+        notiRVAdapter = NotificationRVAdapter(requireContext(), notiList)
         notiRecyclerView.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         notiRecyclerView.adapter = notiRVAdapter
 
         notiRVAdapter?.itemClick = object : UserTab1RVAdapter.ItemClick {
             override fun onClick(view: View, position: Int) {
+                requestReadCheck(notiList?.get(position)?.id!!)
+
                 if (notiList?.get(position)?.page == "article") {
                     mActivity.setCommunityArticleId(notiList?.get(position)?.contentId ?: 0)
                     mActivity.changeFragment("community_detail")
@@ -89,15 +99,53 @@ class NotificationFragment : Fragment() {
                     mActivity.setPotId(notiList?.get(position)?.contentId ?: 0)
                     mActivity.changeFragment("pot_detail")
                 } else {
-//                    mActivity.setChatUserPK(chatUserListResponse.chatting[0].userPK.toString())
-//                    mActivity.setChatPickNickName(chatUserListResponse.chatting[0].nickName)
-//                    mActivity.setChatPickProfile(chatUserListResponse.chatting[0].profile)
                     mActivity.setChatRoomId(notiList?.get(position)?.chattingRoomId!!)
-
-                    mActivity.changeFragment("chat")
+                    getChatInfo(notiList?.get(position)?.chattingRoomId!!)
                 }
             }
         }
+    }
+
+    private fun getChatInfo(roomId: String) {
+
+        var retrofit = RetrofitClient.getClient()!!
+        var chatService = retrofit.create(ChatUserListService::class.java)
+
+        chatService.getChatInfo(roomId).enqueue(object :
+            Callback<ChatInfoResponse> {
+            override fun onResponse(
+                call: Call<ChatInfoResponse>,
+                response: Response<ChatInfoResponse>
+            ) {
+                val body = response.body()
+
+                mActivity.setChatUserPK(body?.chatting?.userPK.toString())
+                mActivity.setChatPickNickName(body?.chatting?.nickName.toString())
+                mActivity.setChatPickProfile(body?.chatting?.profile.toString())
+                mActivity.changeFragment("chat")
+            }
+
+            override fun onFailure(call: Call<ChatInfoResponse>, t: Throwable) {
+            }
+        })
+    }
+
+    private fun requestReadCheck(notificationId: Int) {
+
+        val retrofit = RetrofitClient.getClient()!!
+        val notiService = retrofit.create(NotiService::class.java)
+
+        notiService.requestReadCheck(notificationId).enqueue(object :
+            Callback<BasicResponse> {
+            override fun onResponse(
+                call: Call<BasicResponse>,
+                response: Response<BasicResponse>
+            ) {
+            }
+
+            override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+            }
+        })
     }
 
     private fun showFirstView() {

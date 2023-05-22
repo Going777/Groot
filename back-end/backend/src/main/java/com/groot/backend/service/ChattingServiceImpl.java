@@ -49,12 +49,12 @@ public class ChattingServiceImpl implements ChattingService{
         ChattingEntity chatting1 = ChattingEntity.builder()
                 .sender(user1)
                 .receiver(user2)
-                .roomId(chatRequestDTO.getRoomId())
+                .roomId(chatRequestDTO.getSenderRoomId())
                 .build();
         ChattingEntity chatting2 = ChattingEntity.builder()
                 .sender(user2)
                 .receiver(user1)
-                .roomId(chatRequestDTO.getRoomId())
+                .roomId(chatRequestDTO.getReceiverRoomId())
                 .build();
         if(chattingRepository.save(chatting1)==null || chattingRepository.save(chatting2)==null) return false;
 
@@ -64,7 +64,7 @@ public class ChattingServiceImpl implements ChattingService{
 
         Optional<UserEntity> user = userRepository.findById(user2.getId());
         NotificationEntity noti = NotificationEntity.builder()
-                .chattingRoomId(chatRequestDTO.getRoomId())
+                .chattingRoomId(chatRequestDTO.getReceiverRoomId())
                 .page("chatting")
                 .isRead(false)
                 .content(body)
@@ -98,7 +98,7 @@ public class ChattingServiceImpl implements ChattingService{
     }
 
     @Override
-    public ChatDetailDTO getDetail(Long roomId, Long userId) {
+    public ChatDetailDTO getDetail(String roomId, Long userId) {
         ChattingEntity chatting = chattingRepository.findByRoomIdAndSenderId(roomId, userId);
         UserEntity user = userRepository.findById(chatting.getReceiverId()).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
         ChattingEntity receiverChatting = chattingRepository.findByRoomIdAndSenderId(roomId, user.getId());

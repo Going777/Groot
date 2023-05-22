@@ -5,6 +5,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 data class ChatUser(
     var uId: String,
@@ -20,6 +21,13 @@ interface ChatUserListService {
     fun requestChatUserList(
 
     ): Call<ChatUserListResponse>
+
+    @GET("/api/chattings/detail/{roomId}")
+    fun getChatInfo(
+        @Path("roomId") roomId: String
+    ): Call<ChatInfoResponse>
+
+
 }
 
 interface AddChatRoomService {
@@ -31,13 +39,14 @@ interface AddChatRoomService {
 
 class ChatRoomRequest internal constructor(
     val userPK: String?,
-    val roomId: String
+    val senderRoomId: String,
+    val receiverRoomId: String
 )
 
 data class ChatMessage(
     var message: String?,
     var sendId: String?,
     var saveTime: String?
-){
-    constructor():this("", "", "")
+) {
+    constructor() : this("", "", "")
 }

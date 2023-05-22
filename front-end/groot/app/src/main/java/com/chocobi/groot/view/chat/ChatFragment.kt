@@ -85,13 +85,17 @@ class ChatFragment : Fragment() {
         val chatUserPK = arguments?.getString("userPK")
         val chatNickName = arguments?.getString("nickName")
         val chatProfile = arguments?.getString("profile")
-        val roomId = arguments?.getString("roomId")
+        val senderRoomId = arguments?.getString("senderRoomId")
+        val receiverRoomId = arguments?.getString("receiverRoomId")
+
         inputLayout = view.findViewById(R.id.inputLayout)
 
         Log.d("받아온 데이터", chatUserPK.toString())
         Log.d("받아온 데이터", chatNickName.toString())
         Log.d("받아온 데이터", chatProfile.toString())
-        Log.d("받아온 데이터", roomId.toString())
+        Log.d("받아온 데이터", senderRoomId.toString())
+        Log.d("받아온 데이터", receiverRoomId.toString())
+
         messageList = ArrayList()
         val chatMessageAdapter: ChatMessageAdapter =
             ChatMessageAdapter(requireContext(), messageList)
@@ -144,9 +148,9 @@ class ChatFragment : Fragment() {
         var receiverUid = changeRoomNumber(chatUserPK)
 
 //        보낸이방
-        senderRoom = receiverUid + senderUid
+        senderRoom = senderUid + receiverUid
 //        받는이방
-        receiverRoom = senderUid + receiverUid
+        receiverRoom = receiverUid + senderUid
 
         val messageEdit = view.findViewById<EditText>(R.id.messageEdit)
 
@@ -173,7 +177,8 @@ class ChatFragment : Fragment() {
                 addChatRoomService.requestAddChatRoom(
                     ChatRoomRequest(
                         userPK = chatUserPK,
-                        roomId = receiverRoom
+                        senderRoomId = senderRoom,
+                        receiverRoomId = receiverRoom
 
                     )
                 ).enqueue(object : Callback<BasicResponse> {

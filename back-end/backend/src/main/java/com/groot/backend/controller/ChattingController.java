@@ -46,7 +46,7 @@ public class ChattingController {
 
     // 채팅방 클릭 시 상대방 정보 가져오기
     @GetMapping("/detail/{roomId}")
-    public ResponseEntity getChattingDetail(@PathVariable Long roomId, HttpServletRequest request){
+    public ResponseEntity getChattingDetail(@PathVariable String roomId, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         ChatDetailDTO result = chattingService.getDetail(roomId, userId);
