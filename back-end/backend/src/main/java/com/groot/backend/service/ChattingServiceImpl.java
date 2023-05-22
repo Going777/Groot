@@ -98,7 +98,7 @@ public class ChattingServiceImpl implements ChattingService{
     }
 
     @Override
-    public ChatDetailDTO getDetail(Long roomId, Long userId) {
+    public ChatDetailDTO getDetail(String roomId, Long userId) {
         ChattingEntity chatting = chattingRepository.findByRoomIdAndSenderId(roomId, userId);
         UserEntity user = userRepository.findById(chatting.getReceiverId()).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
         ChattingEntity receiverChatting = chattingRepository.findByRoomIdAndSenderId(roomId, user.getId());

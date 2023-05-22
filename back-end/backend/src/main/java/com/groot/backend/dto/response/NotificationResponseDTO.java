@@ -28,6 +28,13 @@ public class NotificationResponseDTO {
 
     private String chattingRoomId;
 
+    private Long userPK;
+
+    private String nickName;
+
+    private String profile;
+
+
     public static NotificationResponseDTO toDTO (NotificationEntity notification, Long id){
         NotificationResponseDTO result = NotificationResponseDTO.builder()
                 .content(notification.getContent())
