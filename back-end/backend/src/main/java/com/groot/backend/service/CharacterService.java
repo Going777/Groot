@@ -18,5 +18,5 @@ public interface CharacterService {
      * @param userPK user pk
      * @return list of collections
      */
-    public List<CharacterCollectionDTO> getCollections(Long userPK);
+    public List<Integer> getCollections(Long userPK);
 }
