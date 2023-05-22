@@ -46,6 +46,7 @@ import com.chocobi.groot.view.intro.IntroDataService
 import com.chocobi.groot.view.intro.PlantNamesResponse
 import com.chocobi.groot.view.intro.RegionNameResponse
 import com.chocobi.groot.view.login.LoginActivity
+import com.chocobi.groot.view.pot.NotificationFragment
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
@@ -262,6 +263,10 @@ class MainActivity : AppCompatActivity() {
                 Log.d("받아온 데이터", bundle.toString())
 
                 fragment.arguments = bundle
+            }
+
+            "notification" -> {
+                fragment = NotificationFragment()
             }
 
         }
@@ -733,8 +738,12 @@ class MainActivity : AppCompatActivity() {
             val tag14: Fragment? = supportFragmentManager.findFragmentByTag("community_qna")
             val tag15: Fragment? = supportFragmentManager.findFragmentByTag("community_tip")
             val tag16: Fragment? = supportFragmentManager.findFragmentByTag("community_detail")
+            val tag17: Fragment? = supportFragmentManager.findFragmentByTag("notification")
 
-            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null && tag12 == null && tag13 == null && tag14 == null && tag15 == null && tag16 == null) {
+            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null &&
+                tag10 == null && tag11 == null && tag12 == null && tag13 == null && tag14 == null &&
+                tag15 == null && tag16 == null && tag17 == null
+            ) {
                 var intent = Intent(this, IntroActivity::class.java)
                 startActivity(intent)
             }
