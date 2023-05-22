@@ -3,16 +3,19 @@ import styled from "styled-components";
 // import { styled as muistyled } from "@mui/material/styles";
 // import Button, { ButtonProps } from "@mui/material/Button";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-// import landing1 from "/assets/img/land_animation1.png";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // import landing1 from "/assets/img/land_animation1.png";
 // import landing2 from "/assets/img/land_animation2.png";
 // import landing3 from "/assets/img/land_animation3.png";
 // import landing4 from "/assets/img/land_animation4.png";
-import three from "../assets/cactuso_0.png";
-import four from "../assets/mole_0.png";
-import one from "../assets/rabby_0.png";
-import five from "../assets/sprout_0.png";
-import two from "../assets/tree_0.png";
+// import three from "../assets/cactuso_0.png";
+// import four from "../assets/mole_0.png";
+// import one from "../assets/rabby_0.png";
+// import five from "../assets/sprout_0.png";
+// import two from "../assets/tree_0.png";
+import group from "../assets/Group 243.png";
+import qr from "../assets/qrcode.png";
+import google_play from "../assets/google_play.png";
+
 import AOS from "aos";
 
 const LandingComp1 = () => {
@@ -33,17 +36,42 @@ const LandingComp1 = () => {
             <StyledDescription>보상도 얻을 수 있습니다.</StyledDescription>
           </ContentScript>
         </Content> */}
+        {/* <CustomedImage
+          data-aos="fade-up"
+          data-aos-delay="300"
+          data-aos-duration="1500"
+          src={logo}
+          style={{
+            // width: "300px",
+            // height: "150px",
+            top: "5vh",
+            left: "35vw",
+            zIndex: 2,
+          }}
+        ></CustomedImage> */}
+
         <ImgWrapper>
-          <CustomedImage
+          <StyledDescription
+            style={{
+              // width: "300px",
+              // height: "150px",
+              top: "5vh",
+              left: "40vw",
+              zIndex: 2,
+            }}
+          >
+            화분 속 작은 친구
+          </StyledDescription>
+          {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="1500"
             src={one}
             style={{
-              width: "200px",
-              height: "150px",
+              width: "150px",
+              height: "100px",
               top: "10vh",
-              left: "10vw",
+              left: "23vw",
               zIndex: 2,
             }}
           ></CustomedImage>
@@ -53,36 +81,36 @@ const LandingComp1 = () => {
             data-aos-duration="1500"
             src={two}
             style={{
-              width: "200px",
-              height: "150px",
+              width: "150px",
+              height: "100px",
               top: "10vh",
-              left: "20vw",
+              left: "34vw",
               zIndex: 3,
             }}
-          ></CustomedImage>
+          ></CustomedImage> */}
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1000"
             data-aos-duration="1500"
-            src={three}
+            src={group}
             style={{
-              width: "150px",
-              height: "150px",
-              top: "10vh",
-              left: "32vw",
+              width: "900px",
+              height: "500px",
+              top: "40vh",
+              left: "23vw",
               zIndex: 4,
             }}
           ></CustomedImage>
-          <CustomedImage
+          {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1500"
             data-aos-duration="1500"
             src={four}
             style={{
-              width: "200px",
-              height: "150px",
+              width: "150px",
+              height: "100px",
               top: "10vh",
-              left: "40vw",
+              left: "54vw",
               zIndex: 5,
             }}
           ></CustomedImage>
@@ -92,17 +120,43 @@ const LandingComp1 = () => {
             data-aos-duration="1500"
             src={five}
             style={{
-              width: "200px",
-              height: "150px",
+              width: "150px",
+              height: "100px",
               top: "10vh",
-              left: "50vw",
+              left: "64vw",
+              zIndex: 5,
+            }}
+          ></CustomedImage> */}
+          <CustomedImage
+            data-aos="fade-up"
+            data-aos-delay="1500"
+            data-aos-duration="1500"
+            src={qr}
+            style={{
+              width: "100px",
+              height: "100px",
+              top: "80vh",
+              left: "90vw",
+              zIndex: 5,
+            }}
+          ></CustomedImage>
+          <CustomedImage
+            data-aos="fade-up"
+            data-aos-delay="1500"
+            data-aos-duration="1500"
+            src={google_play}
+            style={{
+              width: "300px",
+              height: "100px",
+              top: "80vh",
+              left: "70vw",
               zIndex: 5,
             }}
           ></CustomedImage>
         </ImgWrapper>
       </TitleDescriptionWrapper>
       <Bounce>
-        <KeyboardDoubleArrowDownIcon sx={IconStyle} />
+        <ExpandMoreIcon sx={IconStyle} />
       </Bounce>
     </Background>
   );
@@ -112,12 +166,12 @@ export default LandingComp1;
 const Background = styled.div`
   background: #fbfbfb;
   /* padding: 15vh 15vh 0px 15vh; */
-  z-index: 0;
+  /* z-index: 0; */
   height: 100vh;
 `;
 
 const TitleDescriptionWrapper = styled.div`
-  top: 10em;
+  top: 10vh;
   padding-top: 10vh;
   margin-bottom: 30em;
   display: flex;
@@ -133,10 +187,12 @@ const StyledTitle = styled.h2`
 const StyledDescription = styled.h2`
   width: "10px";
   font-family: "ONE-Mobile-Regular";
+  top: "5vh";
+  left: "35vw";
 `;
 
 const ImgWrapper = styled.div`
-  position: relative;
+  /* position: relative; */
   width: 500px;
   text-align: center;
 `;
@@ -160,7 +216,7 @@ const IconStyle = {
   // right: "50px",
   // textAlign: "center",
   fontSize: "70px",
-  color: "#005112",
+  color: "#C4C4C4",
 };
 
 const ContentScript = styled.div`

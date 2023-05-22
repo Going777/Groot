@@ -9,7 +9,7 @@ import LandingComp2 from "./components/LandingComp2";
 import LandingComp3 from "./components/LandingComp3";
 import LandingComp4 from "./components/LandingComp4";
 import LandingComp5 from "./components/LandingComp5";
-// import logo from "";
+import logo from "./assets/groot_logo.png";
 
 function App() {
   // const navigate = useNavigate();
@@ -22,11 +22,7 @@ function App() {
     <>
       <div>
         {/* <ExtraBox style={{ textAlign: "center" }}> */}
-        {/* <FloatLogo
-            src={logo}
-            style={{ width: "200px" }}
-            onClick={() => navigate("/main")}
-          /> */}
+        <FloatLogo src={logo} style={{ width: "200px" }} />
         <LandingComp0 />
         <LandingComp1 />
         <LandingComp2 />
@@ -76,12 +72,12 @@ const Float = styled.div`
   /* width: 120px; */
 `;
 
-// const FloatLogo = styled.img`
-//   position: fixed;
-//   width: "20px";
-//   height: "3rem";
-//   left: 1em;
-//   top: 1em;
-//   z-index: 999;
-//   /* width: 120px; */
-// `;
+const FloatLogo = styled.img`
+  position: fixed;
+  width: "20px";
+  height: "3rem";
+  left: 1em;
+  top: 1em;
+  z-index: 999;
+  /* width: 120px; */
+`;
