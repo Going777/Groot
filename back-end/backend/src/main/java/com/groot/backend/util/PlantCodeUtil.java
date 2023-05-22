@@ -58,6 +58,14 @@ public class PlantCodeUtil {
     );
 
     /**
+     * Character names
+     */
+    public static String[] characterName = {
+            "", "군생형", "다육형", "로제트형", "포도송이형", "불규칙형", "탑형",
+            "관목형", "직립형", "포복형", "덩굴성", "풀모양", "", "호엥"
+    };
+
+    /**
      * Succulent plants Except 다육형
      */
     public static String[] succulents = {"군생형", "로제트형", "포도송이형", "불규칙형", "탑형"};
