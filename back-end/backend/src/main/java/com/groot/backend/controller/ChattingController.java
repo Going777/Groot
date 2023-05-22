@@ -67,11 +67,11 @@ public class ChattingController {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         List<ChatResponseDTO> result = chattingService.getList(userId);
-        if(result.isEmpty()){
-            resultMap.put("result", FAIL);
-            resultMap.put("msg", "채팅방 리스트 불러오기를 실패했습니다.");
-            return ResponseEntity.badRequest().body(resultMap);
-        }
+//        if(result.isEmpty()){
+//            resultMap.put("result", FAIL);
+//            resultMap.put("msg", "채팅방 리스트 불러오기를 실패했습니다.");
+//            return ResponseEntity.badRequest().body(resultMap);
+//        }
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "채팅방 리스트 불러오기를 성공했습니다.");
         resultMap.put("chatting", result);
