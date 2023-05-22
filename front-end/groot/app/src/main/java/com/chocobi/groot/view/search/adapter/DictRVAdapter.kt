@@ -2,6 +2,7 @@ package com.chocobi.groot.view.search.adapter
 
 import android.graphics.Bitmap
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,62 +20,7 @@ import com.chocobi.groot.view.search.model.PlantMetaData
 import com.chocobi.groot.view.search.model.PlantSearchResponse
 import java.lang.ref.WeakReference
 
-//class DictRVAdapter: RecyclerView.Adapter<SearchItemViewHolder>() {
-//
-//    interface RecyclerViewAdapterDelegate {
-//        fun onLoadMore()
-//    }
-//
-//    private var mutableList: MutableList<PlantSearchResponse> = mutableListOf()
-//
-//    var delegate: RecyclerViewAdapterDelegate? = null
-//
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchItemViewHolder {
-//        val view = LayoutInflater.from(parent.context).inflate(R.layout.fragment_search_result_item, parent, false)
-//        return SearchItemViewHolder(view)
-//    }
-//
-//    override fun getItemCount(): Int {
-//        return mutableList.size
-//    }
-//
-//    override fun onBindViewHolder(holder: SearchItemViewHolder, position: Int) {
-//        holder.plantSearchResponse = mutableList[position]
-//
-//        holder.delegate = object : SearchItemViewHolder.ItemViewHolderDelegate {
-//            override fun onItemViewClick(plantSearchResponse: PlantSearchResponse) {
-//                super.onItemViewClick(plantSearchResponse)
-////                val context = holder.itemView.context
-////                if (context is FragmentActivity) {
-////                    val fragmentManager = context.supportFragmentManager
-////                    val searchDetailFragment = SearchDetailFragment()
-////
-////                }
-//            }
-//        }
-//
-//        holder.updateView()
-//
-//        if(position == mutableList.size - 1) {
-//            delegate?.onLoadMore()
-//        }
-//    }
-//
-//    fun reload(mutableList: MutableList<PlantSearchResponse>) {
-//        this.mutableList.clear()
-//        this.mutableList.addAll(mutableList)
-//        notifyDataSetChanged()
-//    }
-//
-//    fun loadMore(mutableList: MutableList<PlantSearchResponse>) {
-//        this.mutableList.addAll(mutableList)
-//        notifyItemRangeChanged(this.mutableList.size - mutableList.size, mutableList.size)
-//    }
-//}
-
-
-
-class DictRVAdapter(var items: Array<PlantMetaData>) :
+class DictRVAdapter(var items: ArrayList<PlantMetaData>) :
     RecyclerView.Adapter<DictRVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -93,7 +39,7 @@ class DictRVAdapter(var items: Array<PlantMetaData>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (itemClick != null) {
             holder.itemView.setOnClickListener { v ->
-                itemClick?.onClick(v, position)
+                itemClick?.onClick(v, holder.adapterPosition) // 변경된 부분
             }
         }
         holder.bindItems(items[position])
@@ -104,9 +50,15 @@ class DictRVAdapter(var items: Array<PlantMetaData>) :
         return items.size
     }
 
-    fun setData(plants: Array<PlantMetaData>) {
+    fun setData(plants: ArrayList<PlantMetaData>) {
         this.items = plants
         notifyDataSetChanged()
+    }
+
+    fun loadMore(newPlants: ArrayList<PlantMetaData>) {
+        val prevItemCount = this.items.size
+        this.items.addAll(newPlants)
+        notifyItemRangeInserted(prevItemCount, newPlants.size)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -127,7 +79,7 @@ class DictRVAdapter(var items: Array<PlantMetaData>) :
 
                         val bitmap = futureTarget.get()
 
-                        ThreadUtil.startUIThread(0) {
+                        ThreadUtil.startUIThread(100) {
                             rv_img.setImageBitmap(bitmap)
                         }
                     }

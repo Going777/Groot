@@ -70,8 +70,6 @@ class RecyclerViewAdapter(private val mActivity: MainActivity): RecyclerView.Ada
 
     }
     fun reload(mutableList: MutableList<CommunityArticleListResponse>) {
-
-
         this.mutableList.clear()
         this.mutableList.addAll(mutableList)
         notifyDataSetChanged()
