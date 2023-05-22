@@ -43,6 +43,13 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <View
+        android:id="@+id/line"
+        style="@style/BASIC_LINE"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notiRecyclerView"
         android:layout_width="match_parent"

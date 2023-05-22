@@ -51,7 +51,7 @@ class PotFragment : Fragment() {
 //        알림 리스트로 이동
         val notiListBtn = rootView.findViewById<ImageButton>(R.id.notiListBtn)
         notiListBtn.setOnClickListener {
-
+            mActivity.changeFragment("notification")
         }
 
 //        Pot Diary 페이지로 이동
