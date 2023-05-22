@@ -60,7 +60,7 @@ public class ChattingServiceImpl implements ChattingService{
 
         // 채팅방 생성 알림
         String title = "채팅 알림";
-        String body = user1.getNickName()+"님이 나눔 채팅을 시작하였습니다.";
+        String body = user1.getNickName()+"님이 채팅을 시작하였습니다.";
 
         Optional<UserEntity> user = userRepository.findById(user2.getId());
         NotificationEntity noti = NotificationEntity.builder()
@@ -71,9 +71,9 @@ public class ChattingServiceImpl implements ChattingService{
                 .title(title)
                 .receiver(user.get())
                 .build();
-        notificationRepository.save(noti);
 
         if(user.isPresent()) {
+            notificationRepository.save(noti);
             if (user.get().getFirebaseToken() != null && user.get().getUserAlarmEntity().getChattingAlarm()) {
                 FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(user.get().getFirebaseToken());
                 String uid = decodedToken.getUid();
