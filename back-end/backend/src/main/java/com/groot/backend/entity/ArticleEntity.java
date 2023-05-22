@@ -58,4 +58,12 @@ public class ArticleEntity extends BaseEntity{
     @JsonManagedReference
     private List<ArticleTagEntity> articleTagEntityList;
 
+    @OneToMany(mappedBy = "articleEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<ArticleBookmarkEntity> articleBookmarkEntityList;
+
+    @OneToMany(mappedBy = "articleEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<CommentEntity> commentEntityList;
+
 }

@@ -31,4 +31,6 @@ public interface ArticleService {
     // 스케줄러
     void updateTagCountTable();
     void updateShareStatus(Long userPK, ShareStatusDTO shareStatusDTO);
+    // test용
+    List<TagRankDTO> readTagRankingTest(String category);
 }

@@ -55,6 +55,10 @@ public class UserEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
     @JsonManagedReference
+    private List<CommentEntity> commentEntities;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
     private List<PlanEntity> planEntities;
 
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
