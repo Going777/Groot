@@ -22,6 +22,7 @@ import com.chocobi.groot.view.pot.model.DateTime
 import com.chocobi.groot.view.pot.model.NotiMessage
 import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.sensor.SensorActivity
+import com.chocobi.groot.view.user.adapter.UserTab1RVAdapter
 import java.lang.ref.WeakReference
 
 class NotificationRVAdapter(val items: List<NotiMessage>) :
@@ -38,8 +39,20 @@ class NotificationRVAdapter(val items: List<NotiMessage>) :
         return ViewHolder(view)
     }
 
+    interface ItemClick {
+        fun onClick(view: View, position: Int)
+    }
+
+    var itemClick: UserTab1RVAdapter.ItemClick? = null
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (itemClick != null) {
+            holder.itemView.setOnClickListener { v ->
+                itemClick?.onClick(v, position)
+            }
+        }
+
         holder.bindItems(items[position])
 
         val postBtn = holder.itemView.findViewById<ImageButton>(R.id.potPostDiaryBtn)
