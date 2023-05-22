@@ -13,6 +13,7 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
@@ -107,7 +108,6 @@ class ChatFragment : Fragment() {
         categoryIcon.visibility = View.GONE
         categoryProfileImg.visibility = View.VISIBLE
         if (!chatProfile.isNullOrBlank()) {
-
             categoryProfileImg.post {
                 ThreadUtil.startThread {
                     val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
@@ -154,8 +154,9 @@ class ChatFragment : Fragment() {
         val sendBtn = view.findViewById<AppCompatButton>(R.id.sendBtn)
         sendBtn.setOnClickListener {
             val createdTime: LocalDateTime = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("a h:mm")
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd a h:mm")
             val saveTime = createdTime.format(formatter)
+            Log.d("createdTime", saveTime.toString())
 
             val message = messageEdit.text.toString()
             val messageObject = ChatMessage(message, senderUid, saveTime)
@@ -341,4 +342,6 @@ class ChatFragment : Fragment() {
         val density = context.resources.displayMetrics.density
         return (dp * density).toInt()
     }
+
+
 }

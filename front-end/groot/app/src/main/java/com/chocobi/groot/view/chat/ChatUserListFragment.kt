@@ -46,9 +46,6 @@ class ChatUserListFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.d(TAG, "와우와우와")
-
     }
 
     @SuppressLint("MissingInflatedId")
@@ -131,7 +128,11 @@ class ChatUserListFragment : Fragment() {
 
     private fun setListeners() {
         swipeRefreshLayout.setOnRefreshListener {
-            swipeRefreshLayout.isRefreshing = false
+            ThreadUtil.startUIThread(100) {
+                val list = createDummyData()
+                adapter.reload(list)
+                swipeRefreshLayout.isRefreshing = false
+            }
         }
     }
 
