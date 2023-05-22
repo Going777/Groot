@@ -75,7 +75,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     private lateinit var getCommentData: CommunityCommentResponse
     private var articleId: Int = 0
     private lateinit var frameLayoutComment: FrameLayout
-    private var shareStatus = false
+    private var shareStatus = true
     private var userPK: Int = 0
     private var bookmarkStatus = false
     private lateinit var shareStateText: TextView
@@ -451,32 +451,6 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     }
 
 
-    private fun changeShareStatus(articleId: Int, userPK: Int) {
-        val retrofit = RetrofitClient.getClient()
-        val communityShareStatusService = retrofit?.create(CommunityShareStatusService::class.java)
-        communityShareStatusService?.requestCommunityShareStatus(
-            ShareStatusRequest(
-                articleId,
-                userPK
-            )
-        )
-            ?.enqueue(object : Callback<BasicResponse> {
-                override fun onResponse(
-                    call: Call<BasicResponse>,
-                    response: Response<BasicResponse>
-                ) {
-                    if (response.code() == 200) {
-                        shareStatus = !shareStatus
-
-                    }
-                }
-
-                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
-                    Log.d(TAG, "나눔상태 변경 실패")
-                }
-            })
-
-    }
 
     private fun getArticleComment() {
         // retrofit 객체 만들기
@@ -643,11 +617,11 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         if (detailCategory.text == "나눔") {
             shareStatus = articleDetailData?.shareStatus!!
 
-            if (articleDetailData?.shareStatus == true) {
+            if (articleDetailData?.shareStatus == false) {
                 shareStateText.visibility = View.VISIBLE
                 shareStateText.text = "나눔 완료"
                 shareStateText.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
-            } else if (articleDetailData?.shareStatus == false) {
+            } else if (articleDetailData?.shareStatus == true) {
                 shareStateText.visibility = View.VISIBLE
                 shareStateText.text = "나눔 중"
                 shareStateText.setTextColor(ContextCompat.getColor(requireContext(), R.color.main))
@@ -683,7 +657,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
                     requireContext(),
                     articleId,
                     isShareCategory,
-                    articleDetailData?.shareStatus == true,
+                    articleDetailData?.shareStatus == false,
                     this
                 )
                 articleBottomSheet.show(
