@@ -220,6 +220,10 @@ class SearchCameraActivity : AppCompatActivity() {
             "돌아가기",
             DialogInterface.OnClickListener { dialog, which ->
                 val intent = Intent(context, MainActivity::class.java)
+                if (cameraStatus == "searchPlant") {
+                    intent.putExtra("toPage", "search")
+                }
+
                 startActivity(intent)
                 dialog.dismiss()
             })

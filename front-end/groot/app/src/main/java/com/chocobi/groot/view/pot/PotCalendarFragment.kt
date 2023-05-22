@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -59,6 +60,7 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
     private var selectedDate = LocalDate.now()
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
     private lateinit var binding: FragmentPotCalendarBinding
+    private lateinit var monthText: TextView
 
 
     override fun onCreateView(
@@ -71,6 +73,8 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
         mActivity = activity as MainActivity
         potFirstView = rootView.findViewById(R.id.firstView)
         rv = rootView.findViewById(R.id.potCalendarRecyclerView)
+        monthText = rootView.findViewById(R.id.monthText)
+
         val currentDate = LocalDate.now()
         getDateDiary(currentDate.toString())
 
@@ -120,7 +124,9 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
         }
 
         binding.exSevenCalendar.weekScrollListener = { weekDays ->
-            binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
+//            binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
+            monthText.text = getWeekPageTitle(weekDays)
+//            Log.d(TAG, getWeekPageTitle(weekDays))
         }
 
         val currentMonth = YearMonth.now()

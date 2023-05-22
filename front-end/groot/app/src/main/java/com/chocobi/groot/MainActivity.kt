@@ -59,6 +59,7 @@ import com.chocobi.groot.view.user.UserFragment
 import com.chocobi.groot.view.user.model.NotiStatusRequest
 import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.kakao.sdk.common.util.Utility
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -205,9 +206,9 @@ class MainActivity : AppCompatActivity() {
             "search_detail" -> {
                 val bundle = Bundle()
 //                if (intent.getStringExtra("plant_id") == null) {
-                    bundle.putString(
-                        "plant_id", plantId.toString()
-                    )
+                bundle.putString(
+                    "plant_id", plantId.toString()
+                )
 //                } else {
 //                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
 //                }
@@ -505,6 +506,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
 //        알림 설정
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -675,6 +677,10 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "toPage" + toPage)
 
             when (toPage) {
+                "search" -> {
+                    bnv_main.run { selectedItemId = R.id.searchFragment }
+                }
+
                 "search_detail" -> {
                     bnv_main.run { selectedItemId = R.id.searchFragment }
                     changeFragment(toPage)
