@@ -15,6 +15,7 @@ interface CommunityService {
         @Query("region") region2: String? = null,
         @Query("region") region3: String? = null,
         @Query("keyword") keyword: String? = null,
+        @Query("shareStatus") shareStatus: Boolean = false,
         @Query("page") pageInput: Int,
         @Query("size") sizeInput: Int,
     ): Call<CommunityArticleListResponse>

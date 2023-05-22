@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.CheckBox
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.SearchView
@@ -42,6 +43,7 @@ class CommunityTab1Fragment : Fragment() {
     private val LIMITREGIONCNT = 3
     private var communityArticlePage = 0 // 초기 페이지 번호를 0으로 설정합니다.
     private var isLastPage = false // 마지막 페이지인지 여부를 저장하는 변수입니다.
+    private var isChecked = false
 
     private lateinit var communitySearchView: SearchView
     private lateinit var communityRecyclerView: RecyclerView
@@ -60,6 +62,7 @@ class CommunityTab1Fragment : Fragment() {
     private var regionFilterList: ArrayList<String>? = null
     private var regionFullFilterList: ArrayList<String>? = null
     private lateinit var chipRegionGroup: ChipGroup
+    private lateinit var checkBox: CheckBox
 
     private lateinit var noArticleSection: LinearLayout
 
@@ -100,16 +103,23 @@ class CommunityTab1Fragment : Fragment() {
         initList()
 //        reload()
         showProgress()
+//        checkbox제어
+        controlCheckBox()
 
         requestSearchArticle("load")
         return view
     }
 
-
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         clickItem()
+    }
+
+    private fun controlCheckBox() {
+        checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            this.isChecked = isChecked
+            requestSearchArticle("load")
+        }
     }
 
     //        필터 데이터 받기
@@ -119,7 +129,7 @@ class CommunityTab1Fragment : Fragment() {
 //        필터 모드인지 아닌지 구분
         isFiltered = !regionFilterList.isNullOrEmpty()
         if (isFiltered) {
-            for (idx in 0..regionFilterList!!.count()-1) {
+            for (idx in 0..regionFilterList!!.count() - 1) {
                 chipRegionGroup.addView(
                     Chip(
                         requireContext(),
@@ -157,6 +167,8 @@ class CommunityTab1Fragment : Fragment() {
         frameLayoutProgress = view.findViewById(R.id.frameLayoutProgress)
         chipRegionGroup = view.findViewById(R.id.chipRegionGroup)
         noArticleSection = view.findViewById(R.id.noArticleSection)
+
+        checkBox = view.findViewById(R.id.checkBox)
     }
 
     private fun setListeners() {
@@ -199,7 +211,7 @@ class CommunityTab1Fragment : Fragment() {
     }
 
     private fun requestSearchArticle(usage: String) {
-        Log.d("CommunityTab1Fragment","requestSearchAricle() 게시글을 받아옵니다")
+        Log.d("CommunityTab1Fragment", "requestSearchAricle() 게시글을 받아옵니다")
         if (usage == "loadMore") {
             communityArticlePage++
         } else {
@@ -208,15 +220,19 @@ class CommunityTab1Fragment : Fragment() {
         val retrofit = RetrofitClient.getClient()!!
         val regionFilterService = retrofit.create(CommunityService::class.java)
         val regions = arrayListOf("", null, null)
-        Log.d("CommunityTab1Fragment","requestSearchAricle() 넘기게 될 지역 데이터 //$regionFullFilterList//")
+        Log.d(
+            "CommunityTab1Fragment",
+            "requestSearchAricle() 넘기게 될 지역 데이터 //$regionFullFilterList//"
+        )
         if (regionFullFilterList != null) {
             for (idx in 0..regionFullFilterList!!.count() - 1) {
                 regions[idx] = regionFullFilterList!![idx]
             }
         }
-        Log.d("CommunityTab1Fragment","requestSearchAricle() 보내는 ㄷ이터 ///${regions[0]}///")
-        Log.d("CommunityTab1Fragment","requestSearchAricle() 보내는 ㄷ이터 ///${regions[1]}///")
-        Log.d("CommunityTab1Fragment","requestSearchAricle() 보내는 ㄷ이터 ///${regions[2]}///")
+        Log.d("CommunityTab1Fragment", "requestSearchAricle() 보내는 ㄷ이터 지역1 ///${regions[0]}///")
+        Log.d("CommunityTab1Fragment", "requestSearchAricle() 보내는 ㄷ이터 지역2 ///${regions[1]}///")
+        Log.d("CommunityTab1Fragment", "requestSearchAricle() 보내는 ㄷ이터 지역3 ///${regions[2]}///")
+        Log.d("CommunityTab1Fragment", "requestSearchAricle() 보내는 ㄷ이터 나눔 여부 ///${isChecked}///")
 
         regionFilterService.requestSearchArticle(
             category = CATEGORY,
@@ -224,6 +240,7 @@ class CommunityTab1Fragment : Fragment() {
             region2 = regions[1],
             region3 = regions[2],
             keyword = keyword,
+            shareStatus = isChecked,
             pageInput = communityArticlePage,
             sizeInput = REQUESTPAGESIZE
         ).enqueue(object :
