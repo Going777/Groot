@@ -114,11 +114,11 @@
 
 ### 시스템 아키텍처
 
-![Architecture](/uploads/f7243a321a6c781df8a3935588f981ee/Architecture.png)
+![Architecture](/images/docs/Architecture.png)
 
 ### 기술 스택
 
-![tech_stack](/uploads/3fe32ae01339d08dbbcfd5dbc74c8a60/tech_stack.png)
+![tech_stack](/images/docs/tech_stack.png)
 <br>
 
 ## 개발 및 협업 환경
@@ -167,27 +167,28 @@
 
 ### 메인 화면
 
-![main_short](/uploads/7c75b917e0da053400085b97476536e6/main_short.mp4)
+![main_short](/images/screen/main.gif)
 
 ### 화분 등록
 
-![register_pot](/uploads/2fbf1445e679126e76b1fc06709e1dba/register_pot.mp4)
+![register_pot](/images/screen/register_pot_.gif)
 
 ### AR
 
-![ar_tree](/uploads/0b1bf6e405db440f860dfb39035c828d/ar_tree.mp4)
+![ar_tree](/images/screen/ar_tree.gif)
+![ar_cat](/images/screen/ar_green_cat.gif)
 
 ### 식물 이름 검색 및 이름 자동완성
 
-![search_name](/uploads/3d37e1812297b2970ee1e1cb9b39a727/search_name.mp4)
+![search_name](/images/screen/searching_name.gif)
 
 ### 식물 필터링 검색
 
-![filtering_and_recomm](/uploads/46ed927e8b61e6ae6206e2f1d2c8456e/filtering_and_recomm.mp4)
+![filtering_and_recomm](/images/screen/searching_filter.gif)
 
 ### 식물 식별
 
-![identif_성미인](/uploads/b62ca1016555e4bf10579d01176b74a7/identif_성미인.mp4)
+![identif_성미인](/images/screen/identif_oviferum.gif)
 
 <br>
 
@@ -197,15 +198,15 @@
 
 ### 와이어 프레임
 
-![wireframe](/uploads/1100f4d8637cb082a5d9d599e03d379f/wireframe.png)
+![wireframe](/images/docs/wireframe.png)
 
 ### ERD
 
-![ERD](/uploads/94df969a4a4d1698d3063756947eef30/ERD.png)
+![ERD](/images/docs/ERD.png)
 
 ### API 명세서
 
-![API_specification](/uploads/188b29ec99eac1065d7da31d918a5c89/API_specification.png)
+![API_specification](/images/docs/API_specification.png)
 
 [API 명세서](https://superficial-brush-0a1.notion.site/API-1641b7cde4b34f659bcf60af60eeeb6d)
 
@@ -213,4 +214,4 @@
 
 # 🏡 GROOT
 
-![play_store_QR](/uploads/5228af8e7dcebed0d6a5dbc529b1ff98/play_store_QR.png)
+![play_store_QR](/images/docs/play_store_QR.png)
