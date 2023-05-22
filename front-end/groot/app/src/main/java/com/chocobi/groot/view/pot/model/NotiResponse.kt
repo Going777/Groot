@@ -16,7 +16,7 @@ data class NotiMessage(
     val content: String,
     val page: String,
     val contentId: Int?,
-    val chattingRoomId: Int?,
+    val chattingRoomId: String?,
     val isRead: Boolean,
     val id: Int,
     val createDate: DateTime
