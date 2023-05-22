@@ -745,15 +745,18 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         val fragmentManager: FragmentManager = requireActivity().supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
 
-        val roomId: String =
+        val senderRoomId: String =
             changeRoomNumber(UserData.getUserPK().toString(), detailUserPK.toString())
+        val receiverRoomId: String =
+            changeRoomNumber(detailUserPK.toString(), UserData.getUserPK().toString())
 
         val chatFragment = ChatFragment()
         val bundle = Bundle()
         bundle.putString("userPK", detailUserPK.toString())
         bundle.putString("nickName", detailNickName.text.toString())
         bundle.putString("profile", detailProfileImgString)
-        bundle.putString("roomId", roomId)
+        bundle.putString("senderRoomId", senderRoomId)
+        bundle.putString("receiverRoomId", receiverRoomId)
         Log.d("받아온 데이터", bundle.toString())
 
         chatFragment.arguments = bundle

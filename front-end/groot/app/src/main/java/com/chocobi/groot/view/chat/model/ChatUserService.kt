@@ -31,7 +31,8 @@ interface AddChatRoomService {
 
 class ChatRoomRequest internal constructor(
     val userPK: String?,
-    val roomId: String
+    val senderRoomId: String,
+    val receiverRoomId: String
 )
 
 data class ChatMessage(
