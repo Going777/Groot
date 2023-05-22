@@ -107,7 +107,7 @@ class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             commentIcon.visibility = View.GONE
             commentCnt.visibility = View.GONE
 
-            if (communityArticleListResponse.articles.content[0].shareStatus == false) {
+            if (communityArticleListResponse.articles.content[0].shareStatus == true) {
                 shareStatus.visibility = View.GONE
             } else {
                 shareStatus.visibility = View.VISIBLE
