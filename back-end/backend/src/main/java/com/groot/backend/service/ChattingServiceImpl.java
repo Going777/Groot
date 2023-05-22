@@ -22,6 +22,7 @@ import com.groot.backend.entity.ChattingEntityPK;
 import com.groot.backend.entity.NotificationEntity;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.ChattingRepository;
+import com.groot.backend.repository.NotificationRepository;
 import com.groot.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,7 @@ public class ChattingServiceImpl implements ChattingService{
     private final UserRepository userRepository;
     private final FirebaseMessaging firebaseMessaging;
     public static final String COLLECTION_NAME = "chats";
+    private final NotificationRepository notificationRepository;
 
     @Override
     public boolean insertChatting(ChatRequestDTO chatRequestDTO, Long userId) throws FirebaseAuthException {
@@ -69,9 +71,10 @@ public class ChattingServiceImpl implements ChattingService{
                 .title(title)
                 .receiver(user.get())
                 .build();
+        notificationRepository.save(noti);
 
-        if(user.isPresent() && user.get().getUserAlarmEntity().getChattingAlarm()) {
-            if (user.get().getFirebaseToken() != null) {
+        if(user.isPresent()) {
+            if (user.get().getFirebaseToken() != null && user.get().getUserAlarmEntity().getChattingAlarm()) {
                 FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(user.get().getFirebaseToken());
                 String uid = decodedToken.getUid();
                 Notification notification = Notification.builder()
