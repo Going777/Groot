@@ -351,8 +351,8 @@ class AppRenderer(val activity: ArActivity) : DefaultLifecycleObserver, SampleRe
                     objects.isEmpty() -> showSnackbar("Classification model returned no results.")
                     anchors.size != objects.size ->
                         showSnackbar(
-                            "Objects were classified, but could not be attached to an anchor. " +
-                                    "Try moving your device around to obtain a better understanding of the environment."
+                            "카메라의 초점이 맞지 않습니다." +
+                                    "주변 환경을 파악할 수 있도록 카메라를 조금 이동시켜 주세요."
                         )
                 }
             }
