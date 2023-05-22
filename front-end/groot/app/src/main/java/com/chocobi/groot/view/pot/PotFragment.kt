@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import com.chocobi.groot.MainActivity
 import com.chocobi.groot.R
@@ -45,6 +46,13 @@ class PotFragment : Fragment() {
 
 //        Fragment 이동 조작
         val mActivity = activity as MainActivity
+
+
+//        알림 리스트로 이동
+        val notiListBtn = rootView.findViewById<ImageButton>(R.id.notiListBtn)
+        notiListBtn.setOnClickListener {
+            mActivity.changeFragment("notification")
+        }
 
 //        Pot Diary 페이지로 이동
         val toDiaryBtn = rootView.findViewById<Button>(R.id.toDiaryBtn)

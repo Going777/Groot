@@ -85,7 +85,7 @@ class CharacterActivity : AppCompatActivity(R.layout.activity_character) {
 
     val models =
         Model(
-            fileLocation = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/tree_2.glb",
+            fileLocation = "",
 //            placementMode = PlacementMode.INSTANT,
 //            applyPoseRotation = false
         )

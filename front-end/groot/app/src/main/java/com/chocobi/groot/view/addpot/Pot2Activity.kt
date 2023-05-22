@@ -159,8 +159,7 @@ class Pot2Activity : AppCompatActivity() {
 
         modelNode = ModelNode().apply {
             loadModelGlbAsync(
-                glbFileLocation = characterGlbPath
-                    ?: "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
+                glbFileLocation = characterGlbPath!!,
                 autoAnimate = false,
                 scaleToUnits = 0.8f,
                 centerOrigin = Position(x = 0f, y = 1f, z = 0f),

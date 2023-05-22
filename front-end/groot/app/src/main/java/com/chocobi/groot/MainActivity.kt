@@ -46,6 +46,7 @@ import com.chocobi.groot.view.intro.IntroDataService
 import com.chocobi.groot.view.intro.PlantNamesResponse
 import com.chocobi.groot.view.intro.RegionNameResponse
 import com.chocobi.groot.view.login.LoginActivity
+import com.chocobi.groot.view.pot.NotificationFragment
 import com.chocobi.groot.view.pot.PotDetailFragment
 import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.PotDiaryCreateFragment
@@ -59,6 +60,7 @@ import com.chocobi.groot.view.user.UserFragment
 import com.chocobi.groot.view.user.model.NotiStatusRequest
 import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.kakao.sdk.common.util.Utility
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -205,9 +207,9 @@ class MainActivity : AppCompatActivity() {
             "search_detail" -> {
                 val bundle = Bundle()
 //                if (intent.getStringExtra("plant_id") == null) {
-                    bundle.putString(
-                        "plant_id", plantId.toString()
-                    )
+                bundle.putString(
+                    "plant_id", plantId.toString()
+                )
 //                } else {
 //                    bundle.putString("plant_id", intent.getStringExtra("plant_id"))
 //                }
@@ -261,6 +263,10 @@ class MainActivity : AppCompatActivity() {
                 Log.d("받아온 데이터", bundle.toString())
 
                 fragment.arguments = bundle
+            }
+
+            "notification" -> {
+                fragment = NotificationFragment()
             }
 
         }
@@ -505,6 +511,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
 //        알림 설정
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -675,6 +682,10 @@ class MainActivity : AppCompatActivity() {
             Log.d(TAG, "toPage" + toPage)
 
             when (toPage) {
+                "search" -> {
+                    bnv_main.run { selectedItemId = R.id.searchFragment }
+                }
+
                 "search_detail" -> {
                     bnv_main.run { selectedItemId = R.id.searchFragment }
                     changeFragment(toPage)
@@ -727,8 +738,12 @@ class MainActivity : AppCompatActivity() {
             val tag14: Fragment? = supportFragmentManager.findFragmentByTag("community_qna")
             val tag15: Fragment? = supportFragmentManager.findFragmentByTag("community_tip")
             val tag16: Fragment? = supportFragmentManager.findFragmentByTag("community_detail")
+            val tag17: Fragment? = supportFragmentManager.findFragmentByTag("notification")
 
-            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null && tag10 == null && tag11 == null && tag12 == null && tag13 == null && tag14 == null && tag15 == null && tag16 == null) {
+            if (tag5 == null && tag6 == null && tag7 == null && tag8 == null && tag9 == null &&
+                tag10 == null && tag11 == null && tag12 == null && tag13 == null && tag14 == null &&
+                tag15 == null && tag16 == null && tag17 == null
+            ) {
                 var intent = Intent(this, IntroActivity::class.java)
                 startActivity(intent)
             }

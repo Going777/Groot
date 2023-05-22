@@ -71,7 +71,7 @@ class ArticleBottomSheet(
             }
             shareArticleText?.setOnClickListener {
                 changeShareStatus(articleId, userPK)
-                listener.onGetDetailRequested()
+
                 dismiss()
             }
         } else {
@@ -140,8 +140,7 @@ class ArticleBottomSheet(
                     response: Response<BasicResponse>
                 ) {
                     if (response.code() == 200) {
-
-
+                        listener.onGetDetailRequested()
                     }
                 }
 
