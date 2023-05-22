@@ -65,6 +65,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/captureBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/sub"
+        android:gravity="center"
+        app:icon="@drawable/ic_camera_fill"
+        app:iconTint="@color/white"
+        android:translationZ="100dp"
+        app:layout_constraintStart_toEndOf="@id/changeAnimation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/changeAnimation"
+        />
+
     <!--    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
     <!--        android:id="@+id/stopAnimation"-->
     <!--        android:layout_width="wrap_content"-->
