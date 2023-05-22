@@ -214,6 +214,9 @@ class CommunityTab1Fragment : Fragment() {
         Log.d("CommunityTab1Fragment", "requestSearchAricle() 게시글을 받아옵니다")
         if (usage == "loadMore") {
             communityArticlePage++
+        } else if (usage == "load") {
+            isLastPage = false
+            communityArticlePage = 0
         } else {
             communityArticlePage = 0
         }
