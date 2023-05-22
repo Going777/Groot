@@ -1,43 +1,72 @@
 package com.chocobi.groot.view.community.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.data.BasicResponse
+import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.model.ChatUserListResponse
+import com.chocobi.groot.view.chat.model.DeleteRoomService
 import com.google.firebase.firestore.FirebaseFirestore
+import io.github.sceneview.utils.TAG
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.lang.ref.WeakReference
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 
-class ChatUserAdapter(private val recyclerView: RecyclerView, private val mActivity: MainActivity) :
+class ChatUserAdapter(
+    private val recyclerView: RecyclerView,
+    private val mActivity: MainActivity) :
     RecyclerView.Adapter<ChatUserViewHolder>() {
 
 
     interface RecyclerViewAdapterDelegate {
         fun onLoadMore()
-        fun onItemViewClick(chatUserListResponse: ChatUserListResponse)
+    }
+
+    interface ItemClickListener {
+        fun onDeleteBtnClick(view: View, position: Int)
     }
 
     private var mutableList: MutableList<ChatUserListResponse> = mutableListOf()
-
+    private var deleteBtnClickListner: ItemClickListener? = null
 
     var delegate: RecyclerViewAdapterDelegate? = null
+    private lateinit var context: Context
 
+    fun setItemClickListener(itemClickListener: ItemClickListener) {
+        this.deleteBtnClickListner = itemClickListener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatUserViewHolder {
+        context = parent.context
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_chat_user_list_item, parent, false)
         return ChatUserViewHolder(view)
@@ -68,6 +97,31 @@ class ChatUserAdapter(private val recyclerView: RecyclerView, private val mActiv
         if (position == mutableList.size - 1 && mutableList.size > 1) {
             delegate?.onLoadMore()
         }
+
+
+        // 채팅방 삭제
+        val chatRoomDeleteBtn = holder.itemView.findViewById<ImageButton>(R.id.chatRoomDeleteBtn)
+        chatRoomDeleteBtn.setOnClickListener {
+            val dialog = AlertDialog.Builder(context)
+            dialog.setTitle("채팅방 나가기")
+            dialog.setMessage("채팅방을 나가시겠습니까?")
+            dialog.setNegativeButton(
+                "취소",
+                DialogInterface.OnClickListener { dialog, which ->
+                    dialog.dismiss()
+                })
+            dialog.setPositiveButton(
+                "확인",
+                DialogInterface.OnClickListener { dialog, which ->
+                    holder.deleteRoom(holder.chatUserListResponse.chatting[0].roomId)
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        deleteBtnClickListner?.onDeleteBtnClick(it, position) // null 체크
+                    }, 500)
+                    dialog.dismiss()
+                })
+            dialog.show()
+        }
+        holder.updateView()
     }
 
 
@@ -100,7 +154,7 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private var fireStore: FirebaseFirestore? = null
 
-
+    private lateinit var swipeView: RelativeLayout
     private var view: WeakReference<View> = WeakReference(itemView)
     private var findUserPK: Int = 0
     private lateinit var nickname: TextView
@@ -123,6 +177,7 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             profile = it.findViewById(R.id.profile_image)
             dateText = it.findViewById(R.id.dateText)
             lastMessageText = it.findViewById(R.id.lastMessageText)
+            swipeView = it.findViewById(R.id.swipeView)
         }
     }
 
@@ -260,4 +315,25 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
 
+    fun deleteRoom(senderRoomId: String) {
+        
+        val retrofit = RetrofitClient.getClient()!!
+        val deleteRoomService = retrofit.create(DeleteRoomService::class.java)
+        deleteRoomService.requestDeleteRoom(senderRoomId)
+            .enqueue(object: Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "채팅방 삭제 성공")
+                    }
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                    Log.d(TAG, "채팅방 삭제 실패")
+
+                }
+            })
+    }
 }

@@ -36,5 +36,26 @@
 <!--                    android:layout_width="wrap_content"-->
 <!--                    android:layout_height="wrap_content"/>-->
 
-    </FrameLayout>
+    </FrameLayout>'
+    <LinearLayout
+        android:id="@+id/noChat"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_chat" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:text="아직 개설된 채팅방이 없어요"
+            android:textColor="@color/grey"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>

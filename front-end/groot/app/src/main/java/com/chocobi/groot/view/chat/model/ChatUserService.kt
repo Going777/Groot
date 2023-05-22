@@ -1,8 +1,10 @@
 package com.chocobi.groot.view.chat.model
 
+import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.data.BasicResponse
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -47,6 +49,13 @@ data class ChatMessage(
     var message: String?,
     var sendId: String?,
     var saveTime: String?
-) {
-    constructor() : this("", "", "")
+){
+    constructor():this("", "", "")
+}
+
+interface DeleteRoomService {
+    @DELETE("api/chattings/{roomId}")
+    fun requestDeleteRoom(
+        @Path("roomId") senderRoomId:String
+    ) : Call<BasicResponse>
 }
