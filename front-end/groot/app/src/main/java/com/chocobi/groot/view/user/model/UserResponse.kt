@@ -29,3 +29,8 @@ data class RefreshResponse(
     var msg: String,
     var accessToken: String
 )
+
+data class CollectionResponse(
+    val msg: String,
+    val positions: MutableList<Int>,
+)

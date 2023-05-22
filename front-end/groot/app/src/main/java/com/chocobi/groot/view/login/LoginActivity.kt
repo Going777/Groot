@@ -5,9 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Base64
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
@@ -17,8 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.airbnb.lottie.BuildConfig
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
@@ -29,7 +26,6 @@ import com.chocobi.groot.view.signup.SocialSignupActivity
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK
 import com.navercorp.nid.oauth.NidOAuthLogin

@@ -13,7 +13,7 @@ import android.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
@@ -27,8 +27,6 @@ import com.chocobi.groot.view.community.model.CommunityService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class CommunityTab3Fragment : Fragment() {
     private val TAG = "CommunityTab3Fragment"

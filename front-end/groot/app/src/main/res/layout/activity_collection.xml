@@ -11,8 +11,11 @@
         layout="@layout/top_category_navbar" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
+        android:id="@+id/collectionRV"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@id/topCategoryNavbar"/>
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/topCategoryNavbar"/> <!-- 중앙 정렬을 위해 layout_centerInParent 속성 추가 -->
 
 </RelativeLayout>

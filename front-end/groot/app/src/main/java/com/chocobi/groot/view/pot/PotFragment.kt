@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.google.android.material.floatingactionbutton.FloatingActionButton

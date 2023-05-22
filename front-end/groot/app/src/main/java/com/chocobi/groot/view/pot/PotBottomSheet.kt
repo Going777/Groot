@@ -22,7 +22,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.MsgResponse
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -33,7 +33,6 @@ import com.chocobi.groot.view.pot.model.PotNameRequest
 import com.chocobi.groot.view.pot.model.PotService
 import com.chocobi.groot.view.pot.model.PotStatusRequest
 import com.chocobi.groot.view.sensor.SensorActivity
-import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody

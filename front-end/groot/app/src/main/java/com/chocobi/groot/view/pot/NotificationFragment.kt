@@ -1,6 +1,5 @@
 package com.chocobi.groot.view.pot
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,12 +9,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.RetrofitClient
-import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.pot.adapter.NotificationRVAdapter
-import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
 import com.chocobi.groot.view.pot.model.NotiMessage
 import com.chocobi.groot.view.pot.model.NotiResponse
 import com.chocobi.groot.view.pot.model.NotiService
