@@ -9,6 +9,7 @@ import styled from "styled-components";
 // import drawing3 from "/assets/img/drawing3.png";
 // import drawing4 from "/assets/img/drawing4.png";
 import AOS from "aos";
+import { color } from "@mui/system";
 
 const LandingComp3 = () => {
   useEffect(() => {
@@ -16,7 +17,7 @@ const LandingComp3 = () => {
   });
 
   return (
-    <Background style={{ textAlign: "center" }}>
+    <Background style={{ textAlign: "right" }}>
       <TitleDescriptionWrapper data-aos="fade-up">
         <ImgWrapper>
           <CustomedImage
@@ -49,14 +50,20 @@ const LandingComp3 = () => {
           ></CustomedImage>
         </ImgWrapper>
         <Content>
-          <StyledTitle>
-            주어진 영어단어를 보고
-            <br /> 그림을 그려보세요
-          </StyledTitle>
+          <StyledTitle>AR</StyledTitle>
+          <ContentTitle>
+            <ContentDescription>
+              화분에서 만나는
+              <br />
+              나만의 작은 친구
+            </ContentDescription>
+          </ContentTitle>
           <ContentScript>
-            <StyledDescription>영어 단어를 해석하고</StyledDescription>
-            <StyledDescription>제한시간 안에 그림을 그리며</StyledDescription>
-            <StyledDescription>단어공부를 할 수 있습니다.</StyledDescription>
+            <StyledDescription>
+              AR 기술을 황요하여 생동감있는 캐릭터를
+              <br />
+              식물과 함께 만날 수 있습니다.
+            </StyledDescription>
           </ContentScript>
         </Content>
       </TitleDescriptionWrapper>
@@ -84,10 +91,21 @@ const StyledTitle = styled.h2`
   padding-top: 3em;
   padding-bottom: 20px;
   margin-top: 20px;
+  color: #639a67;
+  font-size: xx-large;
 `;
+
+const ContentTitle = styled.h2`
+  font-family: "One-Mobile-POP";
+  font-size: x-large;
+`;
+
+const ContentDescription = styled.h2``;
+
 const StyledDescription = styled.h2`
   width: "10px";
   font-family: "ONE-Mobile-Regular";
+  color: #828282;
 `;
 
 const ImgWrapper = styled.div`
@@ -103,6 +121,7 @@ const CustomedImage = styled.img`
 `;
 
 const Content = styled.div`
+  margin-right: 10vw;
   padding-left: 20vw;
   padding-top: 15vh;
   margin-left: 25em;
