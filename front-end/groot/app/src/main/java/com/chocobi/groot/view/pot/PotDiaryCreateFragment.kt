@@ -119,6 +119,13 @@ class PotDiaryCreateFragment : Fragment() {
         }
 
 
+//        뒤로가기 버튼
+        val backBtn = rootView.findViewById<ImageView>(R.id.backBtn)
+        backBtn.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
+
 //        사진 첨부 취소 버튼
         val attachCancleBtn = rootView.findViewById<ImageButton>(R.id.attachCancleBtn)
 
