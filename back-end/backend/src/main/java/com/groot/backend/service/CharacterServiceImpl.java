@@ -109,7 +109,7 @@ public class CharacterServiceImpl implements CharacterService {
 
         for(int i=0; i<=charLevel; i ++) {
             logger.info("collected : {} lv.{} {}", grwType, charLevel, (PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + charLevel);
-            collected[(PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + charLevel] = true;
+            collected[(PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + i] = true;
         }
     }
 }
