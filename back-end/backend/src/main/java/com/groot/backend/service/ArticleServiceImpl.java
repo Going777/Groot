@@ -216,7 +216,7 @@ public class ArticleServiceImpl implements ArticleService{
                 .title(articleDTO.getTitle())
                 .content(articleDTO.getContent())
                 .views(0L)
-                .shareStatus(articleDTO.getShareStatus())
+                .shareStatus(true)
                 .shareRegion(articleDTO.getShareRegion())
                 .build();
 
