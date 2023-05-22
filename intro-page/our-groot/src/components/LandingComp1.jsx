@@ -2,8 +2,6 @@ import { useEffect } from "react";
 import styled from "styled-components";
 import AOS from "aos";
 
-
-
 const LandingComp1 = () => {
   useEffect(() => {
     AOS.init();
