@@ -26,6 +26,8 @@ interface ChatUserListService {
     fun getChatInfo(
         @Path("roomId") roomId: String
     ): Call<ChatInfoResponse>
+
+
 }
 
 interface AddChatRoomService {
