@@ -34,7 +34,10 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom{
         QArticleEntity qArticle = QArticleEntity.articleEntity;
         QTagEntity tag = QTagEntity.tagEntity;
         QArticleTagEntity articleTag = QArticleTagEntity.articleTagEntity;
-        if(shareStatus == false) shareStatus = null;
+        if(shareStatus != null){
+            if(shareStatus == false) shareStatus = null;
+        }
+
 
         List<ArticleEntity> articles = queryFactory
                 .selectFrom(qArticle)
