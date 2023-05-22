@@ -49,9 +49,14 @@ class ChatMessageAdapter(private val context: Context, private val messageList: 
     }
 
     private fun formatDate(dateString: String): String {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd a HH:mm", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("a HH:mm", Locale.getDefault())
+        Log.d("dateString", dateString)
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd a hh:mm", Locale.getDefault())
+        Log.d("dateStringInputFormat", inputFormat.toString())
+        val outputFormat = SimpleDateFormat("a hh:mm", Locale.getDefault())
+        Log.d("dateStringOutputFormat", outputFormat.toString())
         val date = inputFormat.parse(dateString)
+        Log.d("dateStringDate", date.toString())
+
         return outputFormat.format(date)
     }
 
