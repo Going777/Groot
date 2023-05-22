@@ -16,16 +16,21 @@ const LandingComp1 = () => {
   });
 
   return (
-    <Background style={{ textAlign: "center" }}>
+    <Background style={{ textAlign: "left" }}>
       <TitleDescriptionWrapper data-aos="fade-up">
         <Content>
-          <StyledTitle>
-            경험치와 레벨 보상으로 <br /> 다양한 프로필도 얻을 수 있습니다
-          </StyledTitle>
+          <StyledTitle>캐릭터 육성</StyledTitle>
+          <ContentTitle>
+            <ContentDescription>식물과 함께 성장하는 캐릭터</ContentDescription>
+          </ContentTitle>
           <ContentScript>
-            <StyledDescription>경험치를 통해 레벨을 올리고</StyledDescription>
-            <StyledDescription>다양한 시바 프로필을 획득해</StyledDescription>
-            <StyledDescription>자신의 프로필을 꾸며보세요</StyledDescription>
+            <StyledDescription>
+              11종의 생육 형태에 따라 부여되는
+              <br /> 3단계의 캐릭터를 만나보세요.
+              <br /> 물주기 등의 활동을 통해 경험치를
+              <br />
+              얻어 캐릭터를 육성할 수 있습니다.
+            </StyledDescription>
           </ContentScript>
         </Content>
         <ImgWrapper>
@@ -83,11 +88,20 @@ const StyledTitle = styled.h2`
   padding-top: 3em;
   padding-bottom: 20px;
   margin-top: 20px;
+  color: #639a67;
 `;
+
+const ContentTitle = styled.h2`
+  font-family: "One-Mobile-POP";
+  font-size: x-large;
+`;
+
+const ContentDescription = styled.h2``;
 
 const StyledDescription = styled.h2`
   width: "10px";
   font-family: "ONE-Mobile-Regular";
+  color: #828282;
 `;
 
 const ImgWrapper = styled.div`
