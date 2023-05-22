@@ -79,10 +79,9 @@ public class ChattingController {
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity deleteChatting(@PathVariable Long roomId, HttpServletRequest request){
-        Long userId = JwtTokenProvider.getIdByAccessToken(request);
+    public ResponseEntity deleteChatting(@PathVariable String roomId){
         Map resultMap = new HashMap<>();
-        if(!chattingService.deleteChatting(roomId, userId)){
+        if(!chattingService.deleteChatting(roomId)){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "채팅방 나가기를 실패했습니다.");
             return ResponseEntity.badRequest().body(resultMap);

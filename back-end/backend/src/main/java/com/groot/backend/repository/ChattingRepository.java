@@ -10,9 +10,9 @@ public interface ChattingRepository extends JpaRepository<ChattingEntity, Long> 
 
     List<ChattingEntity> findBySenderId(Long senderId);
 
-    void deleteByRoomIdAndSenderId(Long roomId, Long senderId);
+    void deleteByRoomId(String roomId);
 
-    Boolean existsByRoomIdAndSenderId(Long roomId, Long senderId);
+    Boolean existsByRoomId(String roomId);
 
     List<ChattingEntity> findBySenderIdOrderByCreatedDateDesc(Long senderId);
 }
