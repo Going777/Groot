@@ -26,6 +26,8 @@ public class NotificationResponseDTO {
 
     private LocalDateTime createDate;
 
+    private String chattingRoomId;
+
     public static NotificationResponseDTO toDTO (NotificationEntity notification, Long id){
         NotificationResponseDTO result = NotificationResponseDTO.builder()
                 .content(notification.getContent())
@@ -33,6 +35,7 @@ public class NotificationResponseDTO {
                 .contentId(notification.getContentId())
                 .receiver(notification.getReceiver().getId())
                 .isRead(notification.getIsRead())
+                .chattingRoomId(notification.getChattingRoomId())
                 .id(id)
                 .build();
         return result;
@@ -48,6 +51,7 @@ public class NotificationResponseDTO {
                         .contentId(a.getContentId())
                         .receiver(a.getReceiver().getId())
                         .createDate(a.getCreatedDate())
+                        .chattingRoomId(a.getChattingRoomId())
                         .build());
         return dtoList;
     }
