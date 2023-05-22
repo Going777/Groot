@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.chat.adapter
 
 import android.content.Context
+import android.icu.text.SimpleDateFormat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.model.ChatMessage
+import java.util.Locale
 
 class ChatMessageAdapter(private val context: Context, private val messageList: ArrayList<ChatMessage>):
     RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -37,13 +39,20 @@ class ChatMessageAdapter(private val context: Context, private val messageList: 
         if(holder.javaClass == SendViewHolder::class.java){
             val viewHolder = holder as SendViewHolder
             viewHolder.sendMessage.text = currentMessage.message
-            viewHolder.sendTime.text = currentMessage.saveTime
+            viewHolder.sendTime.text = formatDate(currentMessage.saveTime.toString())
 
         }else{//받는 데이터
             val viewHolder = holder as ReceiveViewHolder
             viewHolder.receiveMessage.text = currentMessage.message
-            viewHolder.receiveTime.text = currentMessage.saveTime
+            viewHolder.receiveTime.text = formatDate(currentMessage.saveTime.toString())
         }
+    }
+
+    private fun formatDate(dateString: String): String {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd a HH:mm", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("a HH:mm", Locale.getDefault())
+        val date = inputFormat.parse(dateString)
+        return outputFormat.format(date)
     }
 
     override fun getItemCount(): Int {

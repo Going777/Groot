@@ -24,6 +24,8 @@ import com.chocobi.groot.view.chat.model.ChatMessage
 import com.chocobi.groot.view.chat.model.ChatUserListResponse
 import com.google.firebase.firestore.FirebaseFirestore
 import java.lang.ref.WeakReference
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
 class ChatUserAdapter(private val recyclerView: RecyclerView, private val mActivity: MainActivity) :
@@ -61,24 +63,6 @@ class ChatUserAdapter(private val recyclerView: RecyclerView, private val mActiv
                 mActivity.setChatRoomId(chatUserListResponse.chatting[0].roomId)
 
                 mActivity.changeFragment("chat")
-
-
-//                val fragmentManager: FragmentManager =
-//                    (recyclerView.context as FragmentActivity).supportFragmentManager
-//                val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-//
-//                val chatFragment = ChatFragment()
-//                val bundle = Bundle()
-//                bundle.putString("userPK", chatUserListResponse.chatting[0].userPK.toString())
-//                bundle.putString("nickName", chatUserListResponse.chatting[0].nickName)
-//                bundle.putString("profile", chatUserListResponse.chatting[0].profile)
-//                bundle.putString("roomId", chatUserListResponse.chatting[0].roomId)
-//                Log.d("받아온 데이터", bundle.toString())
-//
-//                chatFragment.arguments = bundle
-//                fragmentTransaction.replace(R.id.fl_container, chatFragment).addToBackStack("chat")
-////                    .commit()
-//                    .commitAllowingStateLoss()
             }
         }
 
@@ -195,20 +179,29 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                     if (documentSnapshot != null && documentSnapshot.exists()) {
                         val data = documentSnapshot.data as HashMap<*, *>
                         val lastMessage = data["lastMessage"]
-                        val saveTime = data["saveTime"]
+                        var saveTime = data["saveTime"]
                         val receiverRoom = data["receiverRoom"]
 
                         Log.d("receiverRoom", receiverRoom.toString())
                         Log.d("lastMessage", lastMessage.toString())
-                        val messageIdMatch = Regex("""message=(\w+)""").find(lastMessage.toString())
-                        val messageIdValue = messageIdMatch?.groupValues?.get(1)
+                        val pattern = Regex("message=(.*?)(?=\\n|, sendId)")
+                        val matchResult = pattern.find(lastMessage.toString())
+                        val messageIdValue = matchResult?.groupValues?.get(1)
+
+
+
+                        Log.d("messageIdValue", lastMessage.toString())
+                        Log.d("messageIdValue", messageIdValue.toString())
+
+
 
                         val sendIdMatch = Regex("""sendId=(\d+)""").find(lastMessage.toString())
                         val sendIdValue = sendIdMatch?.groupValues?.get(1)
 
                         val saveTimeMatch =
-                            Regex("""saveTime=([\p{IsHangul}\s\d:]+)""").find(lastMessage.toString())
-                        val saveTimeValue = saveTimeMatch?.groupValues?.get(1)
+                            Regex("saveTime=(\\d{4}-\\d{2}-\\d{2} (?:오후|오전) \\d{2}:\\d{2})").find(lastMessage.toString())
+                        var saveTimeValue = saveTimeMatch?.groupValues?.get(1)
+                        val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
                         var receiverId: Int = 0
 
@@ -233,11 +226,32 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                                 Log.d("receiverRoomLast", messageIdValue.toString())
 
                                 if (saveTimeValue == null) {
-                                    dateText.text = saveTime.toString()
-                                    lastMessageText.text = lastMessage.toString()
-                                } else {
-                                    dateText.text = saveTimeValue
+                                    val saveTimeFormatted = saveTime.toString().let { value ->
+                                        val regex = Regex("(\\d{4}-\\d{2}-\\d{2}) (오전|오후) (\\d{1,2}:\\d{2})")
+                                        val matchResult = regex.find(value)
+                                        val (date, amPm, time) = matchResult?.destructured ?: return@let null
+
+                                        if (date == currentDate) "$amPm $time" else date
+                                    }
+                                    dateText.text = saveTimeFormatted.toString()
                                     lastMessageText.text = messageIdValue
+                                    Log.d("saveTime", saveTime.toString())
+
+
+                                } else {
+                                    val saveTimeFormatted = saveTimeValue?.let { value ->
+                                        val regex = Regex("(\\d{4}-\\d{2}-\\d{2}) (오전|오후) (\\d{1,2}:\\d{2})")
+                                        val matchResult = regex.find(value)
+                                        val (date, amPm, time) = matchResult?.destructured ?: return@let null
+
+                                        if (date == currentDate) "$amPm $time" else date
+                                    }
+
+
+                                    dateText.text = saveTimeFormatted
+                                    lastMessageText.text = messageIdValue
+                                    Log.d("saveTime", saveTimeValue.toString())
+
                                 }
                             }
 
