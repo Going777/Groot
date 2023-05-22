@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.pot.adapter
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
@@ -12,6 +13,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
@@ -25,7 +27,7 @@ import com.chocobi.groot.view.sensor.SensorActivity
 import com.chocobi.groot.view.user.adapter.UserTab1RVAdapter
 import java.lang.ref.WeakReference
 
-class NotificationRVAdapter(val items: List<NotiMessage>) :
+class NotificationRVAdapter(val context: Context, val items: List<NotiMessage>) :
     RecyclerView.Adapter<NotificationRVAdapter.ViewHolder>() {
     private val TAG = "NotificationRVAdapter"
     override fun onCreateViewHolder(
@@ -54,8 +56,6 @@ class NotificationRVAdapter(val items: List<NotiMessage>) :
         }
 
         holder.bindItems(items[position])
-
-        val postBtn = holder.itemView.findViewById<ImageButton>(R.id.potPostDiaryBtn)
     }
 
     //    전체 리사이클러뷰의 개수
@@ -72,6 +72,17 @@ class NotificationRVAdapter(val items: List<NotiMessage>) :
             val notiImg = itemView.findViewById<ImageButton>(R.id.notiImg)
             notiContentText.text = item.content
             notiTimeText.text = changeDateFormat(item.createDate)
+            if (item.isRead) {
+                notiContentText.setTextColor(ContextCompat.getColor(context, R.color.grey))
+            } else {
+                notiContentText.setTextColor(ContextCompat.getColor(context, R.color.black))
+            }
+
+            when (item.page) {
+                "article" -> {notiImg.setImageResource(R.drawable.ic_article)}
+                "main" -> {notiImg.setImageResource(R.drawable.ic_pot)}
+                else -> {notiImg.setImageResource(R.drawable.ic_chat)}
+            }
         }
     }
 
