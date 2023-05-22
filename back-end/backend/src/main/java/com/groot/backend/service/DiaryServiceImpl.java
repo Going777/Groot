@@ -40,6 +40,8 @@ public class DiaryServiceImpl implements DiaryService{
     private final PotRepository potRepository;
     private final DiaryCheckRepository diaryCheckRepository;
     private final S3Service s3Service;
+    private static int WATER_CODE = 0;
+    private static int NUTRIENTS_CODE = 1;
 
     private static int[] monthDate = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -102,11 +104,11 @@ public class DiaryServiceImpl implements DiaryService{
 
         // 물주기 일정 추가
         if(diary.getWater()) {
-            addDonePlan(user, pot, 0, diaryResult);
+            addDonePlan(user, pot, WATER_CODE, diaryResult);
         }
         //영양제 일정 추가
         if(diary.getNutrients()) {
-            addDonePlan(user, pot, 1, diaryResult);
+            addDonePlan(user, pot, NUTRIENTS_CODE, diaryResult);
         }
 
 
@@ -199,11 +201,11 @@ public class DiaryServiceImpl implements DiaryService{
 
         // 물주기 일정 추가
         if(diary.getWater()) {
-            addDonePlan(user, pot, 0, diaryResult);
+            addDonePlan(user, pot, WATER_CODE, diaryResult);
         }
         //영양제 일정 추가
         if(diary.getNutrients()) {
-            addDonePlan(user, pot, 1, diaryResult);
+            addDonePlan(user, pot, NUTRIENTS_CODE, diaryResult);
         }
 
         // 점수 계산
@@ -304,26 +306,26 @@ public class DiaryServiceImpl implements DiaryService{
         // 수행 했던 미션을 취소할 때
         if(diaryEntity.getWater() && !newDiary.getWater()) {
             // 작성된 plan 삭제
-            planRepository.updateByCodeAndDiaryId(0, diaryEntity.getId());
+            planRepository.updateByCodeAndDiaryId(WATER_CODE, diaryEntity.getId());
             // 실행 날짜 업데이트
-            LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
+            LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), WATER_CODE);
             log.info("plan에 미션 완료 표시");
             if(date==null){
                 date = pot.getCreatedDate();
             }
-            addPlan(diaryEntity.getUserEntity(), pot, 0, date);
+            addPlan(diaryEntity.getUserEntity(), pot, WATER_CODE, date);
         }
         //영양제 일정 추가
         if(diaryEntity.getNutrients() && !newDiary.getNutrients()) {
             // 작성된 plan 삭제
-            planRepository.updateByCodeAndDiaryId(1, diaryEntity.getId());
+            planRepository.updateByCodeAndDiaryId(NUTRIENTS_CODE, diaryEntity.getId());
             // 실행 날짜 업데이트
-            LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 1);
+            LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), NUTRIENTS_CODE);
             log.info("plan에 미션 완료 표시");
             if(date==null){
                 date = pot.getCreatedDate();
             }
-            addPlan(diaryEntity.getUserEntity(), pot, 1, date);
+            addPlan(diaryEntity.getUserEntity(), pot, NUTRIENTS_CODE, date);
         }
 
 
@@ -331,11 +333,11 @@ public class DiaryServiceImpl implements DiaryService{
         UserEntity user = diaryEntity.getUserEntity();
 
         if(!diaryEntity.getWater() && newDiary.getWater() && !diaryCheck.getWater()) {
-            addDonePlan(user, pot, 0, diaryEntity);
+            addDonePlan(user, pot, WATER_CODE, diaryEntity);
         }
         //영양제 일정 추가
         if(!diaryEntity.getNutrients() && newDiary.getNutrients() && !diaryCheck.getNutrients()) {
-            addDonePlan(user, pot, 1, diaryEntity);
+            addDonePlan(user, pot, NUTRIENTS_CODE, diaryEntity);
         }
 
 
@@ -383,7 +385,7 @@ public class DiaryServiceImpl implements DiaryService{
     public Boolean deleteDiary(Long diaryId) {
         if(diaryRepository.existsById(diaryId)){
             DiaryEntity diaryEntity = diaryRepository.findById(diaryId).orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "해당 다이어리를 찾을 수 없습니다."));
-            if(diaryEntity.getImgPath()!=null && s3Service.delete(diaryEntity.getImgPath())>0) return false;
+            if(diaryEntity.getImgPath()!=null && s3Service.delete(diaryEntity.getImgPath())<0) return false;
             PotEntity pot = diaryEntity.getPotEntity();
             // 다이어리 삭제
 
@@ -419,23 +421,39 @@ public class DiaryServiceImpl implements DiaryService{
 
             if(isWater) {
                 // 마지막으로 실행한 날짜 가져오기
-                LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 0);
+                LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), WATER_CODE);
                 log.info("plan done check water");
                 if(date==null){
                     date = pot.getCreatedDate();
                 }
-                addPlan(diaryEntity.getUserEntity(), pot, 0, date);
+                PlanEntity plan = PlanEntity.builder()
+                        .diaryEntity(diaryEntity)
+                        .done(false)
+                        .dateTime(date)
+                        .code(WATER_CODE)
+                        .potEntity(pot)
+                        .build();
+                planRepository.save(plan);
+                addPlan(diaryEntity.getUserEntity(), pot, WATER_CODE, date);
             }
 
             //영양제 일정 추가
             if(isNutrients) {
                 // 마지막으로 실행한 날짜 가져오기
-                LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), 1);
+                LocalDateTime date = planRepository.findLastDateTimeByDoneAndPotIdAndCode(true, pot.getId(), NUTRIENTS_CODE);
                 log.info("plan done check nutrients");
                 if(date==null){
                     date = pot.getCreatedDate();
                 }
-                addPlan(diaryEntity.getUserEntity(), pot, 1, date);
+                PlanEntity plan = PlanEntity.builder()
+                        .diaryEntity(diaryEntity)
+                        .done(false)
+                        .dateTime(date)
+                        .code(NUTRIENTS_CODE)
+                        .potEntity(pot)
+                        .build();
+                planRepository.save(plan);
+                addPlan(diaryEntity.getUserEntity(), pot, NUTRIENTS_CODE, date);
             }
 
             // 점수 갱신

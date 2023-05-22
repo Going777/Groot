@@ -29,15 +29,9 @@ public class NotificationController {
     public static Map<Long, SseEmitter> sseEmitterMap = new ConcurrentHashMap<>();
     private final NotificationService notificationService;
 
-    @PutMapping("/readCheck/{notificationId}/{userPK}")
-    public ResponseEntity checkRead(@PathVariable Long notificationId, @PathVariable Long userPK, HttpServletRequest request){
+    @PutMapping("/readCheck/{notificationId}")
+    public ResponseEntity checkRead(@PathVariable Long notificationId){
         Map resultMap = new HashMap();
-        Long userId = JwtTokenProvider.getIdByAccessToken(request);
-        if(!userId.equals(userPK)){
-            resultMap.put("result", FAIL);
-            resultMap.put("msg", "수정 권한이 없습니다.");
-            return ResponseEntity.badRequest().body(resultMap);
-        }
         Long result = notificationService.readCheck(notificationId);
         if(result<0){
             resultMap.put("result", FAIL);

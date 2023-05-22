@@ -49,19 +49,31 @@ fun Context.findActivity(): Activity {
 fun getWeekPageTitle(week: Week): String {
     val firstDate = week.days.first().date
     val lastDate = week.days.last().date
-    return when {
-        firstDate.yearMonth == lastDate.yearMonth -> {
-            firstDate.yearMonth.displayText()
-        }
-        firstDate.year == lastDate.year -> {
-            "${firstDate.month.displayText(short = false)} - ${lastDate.yearMonth.displayText()}"
-        }
-        else -> {
-            "${firstDate.yearMonth.displayText()} - ${lastDate.yearMonth.displayText()}"
-        }
-    }
+    val zero = if (firstDate.monthValue < 10) "0" else ""
+    return firstDate.yearMonth.year.toString() + "/" + zero + firstDate.monthValue
+//
+//    when {
+//        firstDate.yearMonth == lastDate.yearMonth -> {
+//            val zero = if (firstDate.monthValue < 10) "0" else ""
+//
+//            firstDate.yearMonth.year.toString() + "/" + zero + firstDate.monthValue
+//        }
+//
+//        firstDate.year == lastDate.year -> {
+////            "${firstDate.month.displayText(short = false)} - ${lastDate.yearMonth.displayText()}"
+//            val zero1 = if (firstDate.monthValue < 10) "0" else ""
+//            val zero2 = if (lastDate.monthValue < 10) "0" else ""
+//            firstDate.yearMonth.year.toString() + "/" + zero1 + firstDate.monthValue + "-" + zero2 + lastDate.monthValue
+//        }
+//
+//        else -> {
+////            "${firstDate.yearMonth.displayText()} - ${lastDate.yearMonth.displayText()}"
+//            val zero1 = if (firstDate.monthValue < 10) "0" else ""
+//            val zero2 = if (lastDate.monthValue < 10) "0" else ""
+//            firstDate.yearMonth.year.toString() + "/" + zero1 + firstDate.monthValue + "-" + lastDate.yearMonth.year.toString() + zero2 + lastDate.monthValue
+//        }
+//    }
 }
-
 
 
 fun View.makeVisible() {

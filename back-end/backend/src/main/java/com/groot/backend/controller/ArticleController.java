@@ -86,7 +86,7 @@ public class ArticleController {
         Long userPK = jwtTokenProvider.getIdByAccessToken(request);
         if(userPK != articleDTO.getUserPK()){
             resultMap.put("result", FAIL);
-            resultMap.put("msg","수정 권한이 없습니다.");
+            resultMap.put("msg","작성 권한이 없습니다.");
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resultMap);
         }
 

@@ -12,7 +12,7 @@ import java.util.concurrent.ExecutionException;
 public interface ChattingService {
     boolean insertChatting(ChatRequestDTO chatRequestDTO, Long userId) throws FirebaseAuthException;
 
-    ChatDetailDTO getDetail(Long roomNumber, Long userId);
+    ChatDetailDTO getDetail(String roomNumber, Long userId);
 
     List<ChatResponseDTO> getList(Long userId) throws ExecutionException, InterruptedException;
 

@@ -1,6 +1,5 @@
 package com.chocobi.groot.view.pot
 
-import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
@@ -124,7 +123,7 @@ class PotCollectionFragment : Fragment() {
         })
     }
 
-    fun setRecyclerView(potList:List<Pot>, mActivity:MainActivity) {
+    fun setRecyclerView(potList:List<Pot>, mActivity: MainActivity) {
 
         potRvAdapter = PotCollectionRVAdapter(potList)
         potCollectionRv.layoutManager =

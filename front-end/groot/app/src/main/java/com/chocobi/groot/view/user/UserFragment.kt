@@ -1,5 +1,6 @@
 package com.chocobi.groot.view.user
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,18 +11,14 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.community.CommunityTab1Fragment
-import com.chocobi.groot.view.community.CommunityTab2Fragment
-import com.chocobi.groot.view.community.CommunityTab3Fragment
-import com.chocobi.groot.view.community.CommunityTab4Fragment
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.user.model.UserService
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
@@ -34,6 +31,7 @@ class UserFragment : Fragment() {
 
 
     private val TAG = "UserFragment"
+    private lateinit var collectionBtn: FloatingActionButton
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +49,14 @@ class UserFragment : Fragment() {
     ): View? {
 
         val rootView = inflater.inflate(R.layout.fragment_user, container, false)
+
+        collectionBtn = rootView.findViewById(R.id.collectionBtn)
+        collectionBtn.setOnClickListener {
+            var intent = Intent(requireContext(), CollectionActivity::class.java)
+//            intent.putExtra("toPage", "search_detail")
+//            intent.putExtra("plant_id", plantId.toString())
+            startActivity(intent)
+        }
 
         //        초기 화면 설정
         var nicknameText = rootView.findViewById<TextView>(R.id.nickname)

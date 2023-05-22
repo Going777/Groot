@@ -24,6 +24,15 @@
             app:maxButtonHeight="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+        <TextView
+            android:id="@+id/monthText"
+            android:layout_marginLeft="18dp"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/main"/>
+
         <com.kizitonwose.calendar.view.WeekCalendarView
             android:id="@+id/exSevenCalendar"
             android:layout_width="match_parent"

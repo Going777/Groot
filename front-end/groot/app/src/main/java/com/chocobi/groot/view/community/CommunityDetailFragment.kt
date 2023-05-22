@@ -10,17 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Spinner
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -29,19 +25,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.ChatFragment
-import com.chocobi.groot.view.chat.model.ChatUserListResponse
 import com.chocobi.groot.view.community.adapter.ArticleTagAdapter
 import com.chocobi.groot.view.community.adapter.CommentAdapter
 import com.chocobi.groot.view.community.model.Article
@@ -50,9 +43,6 @@ import com.chocobi.groot.view.community.model.Comment
 import com.chocobi.groot.view.community.model.CommunityArticleDetailResponse
 import com.chocobi.groot.view.community.model.CommunityCommentPostResponse
 import com.chocobi.groot.view.community.model.CommunityCommentResponse
-import com.chocobi.groot.view.community.model.CommunityService
-import com.chocobi.groot.view.pot.adapter.PotDiaryListRVAdapter
-import com.chocobi.groot.view.weather.Main
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
@@ -75,7 +65,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     private lateinit var getCommentData: CommunityCommentResponse
     private var articleId: Int = 0
     private lateinit var frameLayoutComment: FrameLayout
-    private var shareStatus = false
+    private var shareStatus = true
     private var userPK: Int = 0
     private var bookmarkStatus = false
     private lateinit var shareStateText: TextView
@@ -451,32 +441,6 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
     }
 
 
-    private fun changeShareStatus(articleId: Int, userPK: Int) {
-        val retrofit = RetrofitClient.getClient()
-        val communityShareStatusService = retrofit?.create(CommunityShareStatusService::class.java)
-        communityShareStatusService?.requestCommunityShareStatus(
-            ShareStatusRequest(
-                articleId,
-                userPK
-            )
-        )
-            ?.enqueue(object : Callback<BasicResponse> {
-                override fun onResponse(
-                    call: Call<BasicResponse>,
-                    response: Response<BasicResponse>
-                ) {
-                    if (response.code() == 200) {
-                        shareStatus = !shareStatus
-
-                    }
-                }
-
-                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
-                    Log.d(TAG, "나눔상태 변경 실패")
-                }
-            })
-
-    }
 
     private fun getArticleComment() {
         // retrofit 객체 만들기
@@ -643,11 +607,11 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
         if (detailCategory.text == "나눔") {
             shareStatus = articleDetailData?.shareStatus!!
 
-            if (articleDetailData?.shareStatus == true) {
+            if (articleDetailData?.shareStatus == false) {
                 shareStateText.visibility = View.VISIBLE
                 shareStateText.text = "나눔 완료"
                 shareStateText.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey))
-            } else if (articleDetailData?.shareStatus == false) {
+            } else if (articleDetailData?.shareStatus == true) {
                 shareStateText.visibility = View.VISIBLE
                 shareStateText.text = "나눔 중"
                 shareStateText.setTextColor(ContextCompat.getColor(requireContext(), R.color.main))
@@ -683,7 +647,7 @@ class CommunityDetailFragment : Fragment(), ArticleBottomSheetListener {
                     requireContext(),
                     articleId,
                     isShareCategory,
-                    articleDetailData?.shareStatus == true,
+                    articleDetailData?.shareStatus == false,
                     this
                 )
                 articleBottomSheet.show(

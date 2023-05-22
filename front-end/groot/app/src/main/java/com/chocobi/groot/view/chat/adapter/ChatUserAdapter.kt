@@ -23,14 +23,12 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.chat.ChatFragment
-import com.chocobi.groot.view.chat.model.ChatMessage
 import com.chocobi.groot.view.chat.model.ChatUserListResponse
 import com.chocobi.groot.view.chat.model.DeleteRoomService
 import com.google.firebase.firestore.FirebaseFirestore

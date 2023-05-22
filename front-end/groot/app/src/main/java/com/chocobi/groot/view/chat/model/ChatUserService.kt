@@ -23,6 +23,13 @@ interface ChatUserListService {
     fun requestChatUserList(
 
     ): Call<ChatUserListResponse>
+
+    @GET("/api/chattings/detail/{roomId}")
+    fun getChatInfo(
+        @Path("roomId") roomId: String
+    ): Call<ChatInfoResponse>
+
+
 }
 
 interface AddChatRoomService {

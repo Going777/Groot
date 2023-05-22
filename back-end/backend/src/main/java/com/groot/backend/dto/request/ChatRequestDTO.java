@@ -7,5 +7,6 @@ import lombok.Getter;
 @Builder
 public class ChatRequestDTO {
     private Long userPK;
-    private String roomId;
+    private String senderRoomId;
+    private String receiverRoomId;
 }

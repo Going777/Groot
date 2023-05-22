@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.user.CollectionActivity">
+
+    <include
+        android:id="@+id/topCategoryNavbar"
+        layout="@layout/top_category_navbar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/collectionRV"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/topCategoryNavbar"/> <!-- 중앙 정렬을 위해 layout_centerInParent 속성 추가 -->
+
+</RelativeLayout>
