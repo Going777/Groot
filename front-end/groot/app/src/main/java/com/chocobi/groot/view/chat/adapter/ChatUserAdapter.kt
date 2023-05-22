@@ -148,31 +148,33 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 changeRoomNumber(UserData.getUserPK().toString(), findUserPK.toString())
             Log.d("findUserPK", findUserPK.toString())
             Log.d("findUserPKRoomId", roomId.toString())
-            profile.post {
-                view.get()?.let {
-                    ThreadUtil.startThread {
-                        val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
-                            .asBitmap()
-                            .load(chatUserListResponse.chatting.getOrNull(0)?.profile)
-                            .submit(profile.width, profile.height)
+            if (chatUserListResponse.chatting[0].profile != null) {
+                profile.post {
+                    view.get()?.let {
+                        ThreadUtil.startThread {
+                            val futureTarget: FutureTarget<Bitmap> = Glide.with(it.context)
+                                .asBitmap()
+                                .load(chatUserListResponse.chatting.getOrNull(0)?.profile)
+                                .submit(profile.width, profile.height)
 
-                        val bitmap = futureTarget.get()
+                            val bitmap = futureTarget.get()
 
-                        ThreadUtil.startUIThread(0) {
-                            profile.setImageBitmap(bitmap)
+                            ThreadUtil.startUIThread(0) {
+                                profile.setImageBitmap(bitmap)
+                            }
                         }
                     }
                 }
+            } else {
+                profile.setImageResource(R.drawable.basic_profile)
             }
+
             fireStore = FirebaseFirestore.getInstance()
             Log.d(
                 "lastmessage가져오는 중",
                 fireStore!!.collection("chats").document(roomId).get().toString()
             )
 
-            data class firebaseResponse(
-                val lastMessage: ChatMessage
-            )
 
             fireStore!!.collection("chats").document(roomId).get()
                 .addOnSuccessListener { documentSnapshot ->
@@ -182,18 +184,9 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                         var saveTime = data["saveTime"]
                         val receiverRoom = data["receiverRoom"]
 
-                        Log.d("receiverRoom", receiverRoom.toString())
-                        Log.d("lastMessage", lastMessage.toString())
                         val pattern = Regex("message=(.*?)(?=\\n|, sendId)")
                         val matchResult = pattern.find(lastMessage.toString())
                         val messageIdValue = matchResult?.groupValues?.get(1)
-
-
-
-                        Log.d("messageIdValue", lastMessage.toString())
-                        Log.d("messageIdValue", messageIdValue.toString())
-
-
 
                         val sendIdMatch = Regex("""sendId=(\d+)""").find(lastMessage.toString())
                         val sendIdValue = sendIdMatch?.groupValues?.get(1)
@@ -204,8 +197,6 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                         val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
                         var receiverId: Int = 0
-
-                            Log.d("receiverRoom", receiverRoom.toString())
 
                             if (receiverRoom.toString().takeLast(6)
                                     .toInt() != UserData.getUserPK()
@@ -234,8 +225,9 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                                         if (date == currentDate) "$amPm $time" else date
                                     }
                                     dateText.text = saveTimeFormatted.toString()
-                                    lastMessageText.text = messageIdValue
+                                    lastMessageText.text = lastMessage.toString()
                                     Log.d("saveTime", saveTime.toString())
+                                    Log.d("messageIdValue", lastMessage.toString())
 
 
                                 } else {
@@ -247,7 +239,7 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                                         if (date == currentDate) "$amPm $time" else date
                                     }
 
-
+                                    Log.d("messageIdValue", messageIdValue.toString())
                                     dateText.text = saveTimeFormatted
                                     lastMessageText.text = messageIdValue
                                     Log.d("saveTime", saveTimeValue.toString())
