@@ -33,6 +33,7 @@ public class CharacterServiceImpl implements CharacterService {
         List<CharacterImageDTO> ret = new ArrayList<>(characterEntities.size());
 
         characterEntities.forEach(characterEntity -> {
+            if(characterEntity.getType() > 11) return;
             ret.add(CharacterImageDTO.builder()
                             .grwType(PlantCodeUtil.characterName[characterEntity.getType().intValue()])
                             .level(characterEntity.getLevel())
