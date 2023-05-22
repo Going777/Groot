@@ -70,51 +70,10 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
 //        val rootView = super.onCreateView(inflater, container, savedInstanceState)
         mActivity = activity as MainActivity
         potFirstView = rootView.findViewById(R.id.firstView)
-        val items = mutableListOf<Diary>()
-        items.add(
-            Diary(
-                8,
-                8,
-                0,
-                "하하",
-                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/71ef8293-cb22-4caa-a9c5-62101a8dcb01-prefix3030049238896505837extension",
-                false
-            )
-        )
-        items.add(
-            Diary(
-                8,
-                8,
-                1,
-                "하하",
-                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/71ef8293-cb22-4caa-a9c5-62101a8dcb01-prefix3030049238896505837extension",
-                false
-            )
-        )
-        items.add(
-            Diary(
-                20,
-                8,
-                0,
-                "콜라",
-                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/b6da24a2-fc89-463d-985a-5173bc012a78-prefix4471020168240671346extension",
-                true
-            )
-        )
-        items.add(
-            Diary(
-                20,
-                8,
-                1,
-                "콜라",
-                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/b6da24a2-fc89-463d-985a-5173bc012a78-prefix4471020168240671346extension",
-                true
-            )
-        )
         rv = rootView.findViewById(R.id.potCalendarRecyclerView)
         val currentDate = LocalDate.now()
         getDateDiary(currentDate.toString())
-//        setRecyclerView(items)
+
 
         return rootView
     }

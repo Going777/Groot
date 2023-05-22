@@ -300,8 +300,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
 
         modelNode = ModelNode().apply {
             loadModelGlbAsync(
-                glbFileLocation = pot?.characterGLBPath
-                    ?: "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
+                glbFileLocation = pot?.characterGLBPath!!,
                 autoAnimate = false,
                 scaleToUnits = 0.8f,
                 centerOrigin = Position(x = 0f, y = 0f, z = 0f),

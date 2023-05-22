@@ -67,10 +67,6 @@ class SearchCameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_camera)
 
-//        growType = "다육형,직립형"
-//        mgmtLevel = "초보자"
-//        characterGlbPath = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/straight_0.glb"
-
         plantNameText = findViewById(R.id.plantNameText)
         plantSciText = findViewById(R.id.plantSciText)
         plantScoreText = findViewById(R.id.plantScoreText)
