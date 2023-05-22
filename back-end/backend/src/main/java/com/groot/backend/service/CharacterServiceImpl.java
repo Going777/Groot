@@ -1,5 +1,6 @@
 package com.groot.backend.service;
 
+import com.groot.backend.dto.response.CharacterCollectionDTO;
 import com.groot.backend.dto.response.CharacterImageDTO;
 import com.groot.backend.entity.CharacterEntity;
 import com.groot.backend.repository.CharacterRepository;
@@ -42,5 +43,10 @@ public class CharacterServiceImpl implements CharacterService {
         });
 
         return ret;
+    }
+
+    @Override
+    public List<CharacterCollectionDTO> getCollections(Long userPK) {
+        return null;
     }
 }
