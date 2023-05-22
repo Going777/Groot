@@ -150,7 +150,8 @@ public class PlanServiceImpl implements PlanService{
                     .build();
 
             if(user.isPresent() ) {
-                if (user.get().getFirebaseToken() != null) {
+                notificationRepository.save(noti);
+                if (user.get().getFirebaseToken() != null && user.get().getUserAlarmEntity().getWaterAlarm()) {
                     FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(user.get().getFirebaseToken());
                     String uid = decodedToken.getUid();
                     Notification notification = Notification.builder()
@@ -165,7 +166,6 @@ public class PlanServiceImpl implements PlanService{
 
                     try {
                         firebaseMessaging.send(message);
-                        notificationRepository.save(noti);
 //                    return "알림을 성공적으로 전송했습니다. targetUserId="+recieiver.getId();
                     } catch (FirebaseMessagingException e) {
                         e.printStackTrace();

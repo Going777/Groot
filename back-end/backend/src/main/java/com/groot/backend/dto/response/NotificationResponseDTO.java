@@ -6,6 +6,7 @@ import lombok.Getter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Builder
@@ -22,6 +23,8 @@ public class NotificationResponseDTO {
     private boolean isRead;
 
     private Long id;
+
+    private LocalDateTime createDate;
 
     public static NotificationResponseDTO toDTO (NotificationEntity notification, Long id){
         NotificationResponseDTO result = NotificationResponseDTO.builder()
@@ -44,6 +47,7 @@ public class NotificationResponseDTO {
                         .isRead(a.getIsRead())
                         .contentId(a.getContentId())
                         .receiver(a.getReceiver().getId())
+                        .createDate(a.getCreatedDate())
                         .build());
         return dtoList;
     }
