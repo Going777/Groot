@@ -1,4 +1,4 @@
-package com.chocobi.groot.view.intro
+package com.chocobi.groot.view.main
 
 import retrofit2.Call
 import retrofit2.http.GET
@@ -11,4 +11,7 @@ interface IntroDataService {
 
     @GET("/api/articles/regions/list")
     fun requestRegionNames(): Call<RegionNameResponse>
+
+    @GET("/api/characters/images")
+    fun requestCharacters(): Call<CharacterResponse>
 }

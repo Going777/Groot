@@ -8,6 +8,7 @@ import android.widget.Button
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.intro.IntroActivity
 import com.chocobi.groot.view.login.LoginActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.view.sensor.SensorActivity
 import com.chocobi.groot.view.signup.SignupActivity
 

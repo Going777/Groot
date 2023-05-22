@@ -2,9 +2,6 @@ package com.chocobi.groot
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.media.MediaScannerConnection
-import android.opengl.GLES20
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,34 +10,20 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.util.Log
 
-import android.view.Menu
-import android.view.MenuItem
 import android.view.PixelCopy
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
+import com.chocobi.groot.view.main.MainActivity
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.github.sceneview.ar.ArSceneView
-import io.github.sceneview.ar.getDescription
 import io.github.sceneview.ar.node.ArModelNode
 import io.github.sceneview.ar.node.PlacementMode
 import io.github.sceneview.math.Position
-import io.github.sceneview.math.Rotation
 import io.github.sceneview.utils.doOnApplyWindowInsets
 import io.github.sceneview.utils.setFullScreen
 import java.io.File
-import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

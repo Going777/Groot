@@ -1,8 +1,5 @@
 package com.chocobi.groot.view.pot
 
-import android.app.Activity
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -18,28 +15,22 @@ import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.NestedScrollView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.FutureTarget
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.pot.model.DiaryCheckStatusResponse
 import com.chocobi.groot.view.pot.model.DiaryRequest
 import com.chocobi.groot.view.pot.model.PotService
-import com.google.android.filament.ToneMapper.Linear
 import com.google.android.material.chip.Chip
-import okhttp3.Callback
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import java.io.File
-import java.io.FileOutputStream
 
 class PotDiaryEditFragment : Fragment() {
 

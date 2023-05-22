@@ -66,6 +66,9 @@ interface UserService {
     fun changeNotiStatus(
         @Body params: NotiStatusRequest
     ): Call<BasicResponse>
+
+    @GET("/api/characters/collections")
+    fun getCollections(): Call<CollectionResponse>
 }
 
 class RefreshRequest internal constructor(

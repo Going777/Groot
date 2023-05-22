@@ -92,7 +92,5 @@ class UserTab1RVAdapter(val items: List<Pot>) :
         val month = String.format("%02d", date.month)
         val day = String.format("%02d", date.day)
         return year + "-" + month + "-" + day
-
-
     }
 }

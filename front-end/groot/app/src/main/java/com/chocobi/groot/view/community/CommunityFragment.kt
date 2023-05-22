@@ -1,30 +1,20 @@
 package com.chocobi.groot.view.community
 
 import android.os.Bundle
-import android.provider.Settings.Global
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Button
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.data.RetrofitClient
-import com.chocobi.groot.view.community.model.CommunityArticleListResponse
-import com.chocobi.groot.view.community.model.CommunityService
-import com.chocobi.groot.view.community.model.PopularTagResponse
 import com.chocobi.groot.view.community.model.Tag
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Response
 
 
 class CommunityFragment : Fragment() {

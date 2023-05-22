@@ -11,12 +11,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.pot.PlantBottomSheet
-import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
 import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotListResponse
 import com.chocobi.groot.view.pot.model.PotService
@@ -127,7 +126,7 @@ class UserTab1Fragment : Fragment() {
         potFirstView.visibility = View.GONE
     }
 
-    fun setRecyclerView(potList:List<Pot>, mActivity:MainActivity) {
+    fun setRecyclerView(potList:List<Pot>, mActivity: MainActivity) {
         rvAdapter = UserTab1RVAdapter(potList)
         rv.layoutManager = LinearLayoutManager(activity)
         rv.adapter = rvAdapter
