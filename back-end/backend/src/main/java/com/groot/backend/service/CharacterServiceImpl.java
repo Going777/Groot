@@ -30,7 +30,7 @@ public class CharacterServiceImpl implements CharacterService {
 
     @Override
     public List<CharacterImageDTO> getImageList() {
-        List<CharacterEntity> characterEntities = characterRepository.findAll();
+        List<CharacterEntity> characterEntities = characterRepository.findAllByOrderByTypeAscLevelAsc();
 
         if(characterEntities == null || characterEntities.size() < 1) {
             logger.info("No characters found, check Database");
@@ -82,7 +82,7 @@ public class CharacterServiceImpl implements CharacterService {
         int charLevel = (potEntity.getLevel() / 5) > 2 ? 2 : potEntity.getLevel() / 5;
 
         for(int i=0; i<=charLevel; i ++) {
-            logger.info("collected : {}", (PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + charLevel);
+            logger.info("collected : {} lv.{} {}", grwType, charLevel, (PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + charLevel);
             collected[(PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + charLevel] = true;
         }
     }
