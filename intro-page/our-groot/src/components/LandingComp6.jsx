@@ -4,76 +4,77 @@ import styled from "styled-components";
 // import Button, { ButtonProps } from "@mui/material/Button";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-// import drawing1 from "/assets/img/drawing1.png";
-// import drawing2 from "/assets/img/drawing2.png";
-// import drawing3 from "/assets/img/drawing3.png";
-// import drawing4 from "/assets/img/drawing4.png";
+// import shiba1 from "/assets/img/shiba_landing.png";
+// import shiba2 from "/assets/img/shiba_landing2.png";
+// import shiba3 from "/assets/img/shiba_landing3.png";
+// import shiba4 from "/assets/img/shiba_profile.png";
 import AOS from "aos";
-import { color } from "@mui/system";
 
-const LandingComp3 = () => {
+const LandingComp6 = () => {
   useEffect(() => {
     AOS.init();
   });
 
   return (
-    <Background style={{ textAlign: "right" }}>
+    <Background style={{ textAlign: "left" }}>
       <TitleDescriptionWrapper data-aos="fade-up">
+        <Content>
+          <StyledTitle>식물 백과사전</StyledTitle>
+          <ContentTitle>
+            <ContentDescription>
+              관심있는 식물을
+              <br />
+              빠르게 검색해보세요
+            </ContentDescription>
+          </ContentTitle>
+          <ContentScript>
+            <StyledDescription>
+              필터링 검색 기능으로
+              <br /> 원하는 조건의 식물을 찾을 수 있습니다.
+              <br /> 식물 이름을 모른다면
+              <br />
+              이미지 검색으로 식별하여 식물을 찾아드려요.
+            </StyledDescription>
+          </ContentScript>
+        </Content>
         <ImgWrapper>
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="1500"
-            // src={drawing4}
-            style={{ width: "500px", top: "10vh", left: "10vw", zIndex: 2 }}
+            // src={shiba1}
+            style={{ width: "500px", top: "5vh", left: "10vw", zIndex: 2 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="500"
             data-aos-duration="1500"
-            // src={drawing2}
-            style={{ width: "500px", top: "20vh", left: "25vw", zIndex: 3 }}
+            // src={shiba2}
+            style={{ width: "500px", top: "25vh", left: "25vw", zIndex: 3 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1000"
             data-aos-duration="1500"
-            // src={drawing3}
-            style={{ width: "500px", top: "30vh", left: "15vw", zIndex: 4 }}
+            // src={shiba3}
+            style={{ width: "500px", top: "40vh", left: "15vw", zIndex: 4 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1500"
             data-aos-duration="1500"
-            // src={drawing1}
-            style={{ width: "500px", top: "45vh", left: "20vw", zIndex: 5 }}
+            // src={shiba4}
+            style={{ width: "300px", top: "47vh", left: "35vw", zIndex: 5 }}
           ></CustomedImage>
         </ImgWrapper>
-        <Content>
-          <StyledTitle>AR</StyledTitle>
-          <ContentTitle>
-            <ContentDescription>
-              화분에서 만나는
-              <br />
-              나만의 작은 친구
-            </ContentDescription>
-          </ContentTitle>
-          <ContentScript>
-            <StyledDescription>
-              AR 기술을 활용하여 생동감있는 캐릭터를
-              <br />
-              식물과 함께 만날 수 있습니다.
-            </StyledDescription>
-          </ContentScript>
-        </Content>
       </TitleDescriptionWrapper>
     </Background>
   );
 };
-export default LandingComp3;
+export default LandingComp6;
 
 const Background = styled.div`
-  background: #fbfbfb;
+  background: #f3f3f3;
   /* padding: 15vh 15vh 0px 15vh; */
   z-index: 0;
   height: 100vh;
@@ -103,6 +104,7 @@ const ContentTitle = styled.h2`
 const ContentDescription = styled.h2``;
 
 const StyledDescription = styled.h2`
+  width: "10px";
   font-family: "ONE-Mobile-Regular";
   color: #828282;
 `;
@@ -120,14 +122,13 @@ const CustomedImage = styled.img`
 `;
 
 const Content = styled.div`
-  margin-right: 10vw;
-  padding-left: 20vw;
-  padding-top: 15vh;
-  margin-left: 25em;
+  padding-left: 10vw;
+  padding-top: 20vh;
+  /* margin-left: 5em; */
 `;
 
 const ContentScript = styled.div`
-  width: 600px;
+  /* width: 400px; */
 `;
 
 // const Bounce = styled.div(

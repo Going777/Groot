@@ -9,6 +9,7 @@ import LandingComp2 from "./components/LandingComp2";
 import LandingComp3 from "./components/LandingComp3";
 import LandingComp4 from "./components/LandingComp4";
 import LandingComp5 from "./components/LandingComp5";
+import LandingComp6 from "./components/LandingComp6";
 import logo from "./assets/groot_logo.png";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
         <LandingComp3 />
         <LandingComp4 />
         <LandingComp5 />
+        <LandingComp6 />
         <Float>
           {/* <StyledButton onClick={() => navigate("/main")}>START</StyledButton> */}
         </Float>

@@ -130,7 +130,7 @@ const Content = styled.div`
 `;
 
 const ContentScript = styled.div`
-  /* width: 400px; */
+  width: 600px;
 `;
 
 // const Bounce = styled.div(
