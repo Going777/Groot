@@ -11,7 +11,9 @@ import LandingComp4 from "./components/LandingComp4";
 import LandingComp5 from "./components/LandingComp5";
 import LandingComp6 from "./components/LandingComp6";
 import LandingComp7 from "./components/LandingComp7";
-import logo from "./assets/groot_logo.png";
+import logo from "./assets/new_logo.png";
+import qr from "./assets/qrcode.png";
+import google_play from "./assets/google_play.png";
 
 function App() {
   // const navigate = useNavigate();
@@ -34,7 +36,16 @@ function App() {
         <LandingComp6 />
         <LandingComp7 />
         <Float>
-          {/* <StyledButton onClick={() => navigate("/main")}>START</StyledButton> */}
+        <a href="https://play.google.com/store/apps/details?id=com.chocobi.groot">
+        <CustomedImage
+            src={google_play}
+            style={{ width: "105px", zIndex: 2 }}
+          ></CustomedImage>
+          </a>
+        <CustomedImage
+            src={qr}
+            style={{ width: "100px",zIndex: 2 }}
+          ></CustomedImage>
         </Float>
         {/* </ExtraBox> */}
       </div>
@@ -66,7 +77,7 @@ const ExtraBox = styled.div`
 
 const Float = styled.div`
   position: fixed;
-  left: 43%;
+  left: 90vw;
   right: 50%;
   top: 80%;
   /* margin-left: 50vw;
@@ -84,4 +95,8 @@ const FloatLogo = styled.img`
   top: 1em;
   z-index: 999;
   /* width: 120px; */
+`;
+
+const CustomedImage = styled.img`
+  width: 500px;
 `;
