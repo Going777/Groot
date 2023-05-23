@@ -112,7 +112,7 @@ class SearchFragment : Fragment() {
         mActivity = activity as MainActivity
 
         findView(rootView)
-        recmmText.text = "\uD83D\uDCA1 ${UserData.getNickName()}님을 위한 AI 추천 식물"
+        recmmText.text = "\uD83D\uDCA1 ${UserData.getNickName()}님을 위한 맞춤형 추천 식물"
 //        추천 식물 받아오기
         if(isAllBlank()) {
             requestRecommendations()

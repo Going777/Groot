@@ -3,16 +3,20 @@ package com.chocobi.groot.view.user
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.main.Character
+import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.user.adapter.CollectionRVAdapter
+import com.chocobi.groot.view.user.model.CharacterGlbResponse
 import com.chocobi.groot.view.user.model.CollectionResponse
 import com.chocobi.groot.view.user.model.UserService
 import com.google.gson.JsonArray
@@ -27,10 +31,11 @@ import javax.security.auth.callback.Callback
 class CollectionActivity : AppCompatActivity() {
     private var characters = mutableListOf<Character>()
     private var positions = mutableListOf<Int>()
+    private var targetGlbPath: String? = null
+    private var targetGrwType: String? = null
 
     private lateinit var collectionRV: RecyclerView
     private lateinit var rvAdapter: CollectionRVAdapter
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,16 +58,26 @@ class CollectionActivity : AppCompatActivity() {
 //        ================================================================
 
         getCharacterData()
-        getCollectionData()
-
         findView()
-
+        getCollectionData()
     }
 
     private fun findView() {
         collectionRV = findViewById(R.id.collectionRV)
+        rvAdapter = CollectionRVAdapter(characters, positions)
+        rvAdapter.itemClick = object : CollectionRVAdapter.ItemClick {
+            override fun onClick(view: View, position: Int, grwType: String, isContain: Boolean) {
+                // 클릭 이벤트 처리 로직 작성
+                if (isContain) {
+                    getCharacterGlbPath(position, grwType)
+                } else {
+                    Toast.makeText(this@CollectionActivity, "보유하지 않은 캐릭터입니다.", Toast.LENGTH_SHORT).show()
+                }
+                Log.d("CollectionActivity","onClick() 캐릭터 $position")
+            }
+        }
         collectionRV.layoutManager = GridLayoutManager(this, 3)
-
+        collectionRV.adapter = rvAdapter
     }
 
     private fun getCharacterData() {
@@ -108,26 +123,58 @@ class CollectionActivity : AppCompatActivity() {
     private fun getCollectionData() {
         val retrofit = RetrofitClient.getClient()!!
         val userService = retrofit.create(UserService::class.java)
-
-        userService.getCollections().enqueue(object: retrofit2.Callback<CollectionResponse>{
+        userService.getCollections().enqueue(object : retrofit2.Callback<CollectionResponse> {
             override fun onResponse(
                 call: Call<CollectionResponse>,
                 response: Response<CollectionResponse>
             ) {
                 if (response.code() == 200) {
                     val body = response.body()
-                    if(body != null) {
+                    if (body != null) {
                         positions = body.positions
-                        rvAdapter = CollectionRVAdapter(characters, positions)
-                        collectionRV.adapter = rvAdapter
+                        rvAdapter.updatePositions(positions)
+                        rvAdapter.notifyDataSetChanged()
                     }
                 }
             }
 
             override fun onFailure(call: Call<CollectionResponse>, t: Throwable) {
+                // 오류 처리
             }
-
         })
+    }
+
+    private fun getCharacterGlbPath(position: Int, grwType: String) {
+        val retrofit = RetrofitClient.getClient()!!
+        val userService = retrofit.create(UserService::class.java)
+        userService.getCharacterGlbPath(position)
+            .enqueue(object :retrofit2.Callback<CharacterGlbResponse> {
+                override fun onResponse(
+                    call: Call<CharacterGlbResponse>,
+                    response: Response<CharacterGlbResponse>
+                ) {
+                    if(response.code() == 200) {
+                        val body = response.body()
+                        if (body != null) {
+                            targetGlbPath = body.glbPath
+                            targetGrwType = grwType
+
+                            val characterCollectionBottomSheet = CharacterCollectionBottomSheet(this@CollectionActivity)
+                            characterCollectionBottomSheet.setData(targetGrwType!!, targetGlbPath!!)
+                            characterCollectionBottomSheet.show(
+                                supportFragmentManager,
+                                characterCollectionBottomSheet.tag
+                            )
+                            Log.d("CollectionActivity","onResponse() 캐릭터 ${targetGlbPath} ${targetGrwType}")
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<CharacterGlbResponse>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
+            })
     }
 }
 
