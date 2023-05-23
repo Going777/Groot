@@ -60,7 +60,7 @@ const LandingComp3 = () => {
           </ContentTitle>
           <ContentScript>
             <StyledDescription>
-              AR 기술을 황요하여 생동감있는 캐릭터를
+              AR 기술을 활용하여 생동감있는 캐릭터를
               <br />
               식물과 함께 만날 수 있습니다.
             </StyledDescription>

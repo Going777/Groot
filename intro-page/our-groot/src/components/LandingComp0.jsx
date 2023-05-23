@@ -175,6 +175,7 @@ const TitleDescriptionWrapper = styled.div`
   padding-top: 10vh;
   margin-bottom: 30em;
   display: flex;
+  justify-content: center;
 `;
 
 const StyledTitle = styled.h2`
@@ -184,7 +185,7 @@ const StyledTitle = styled.h2`
   margin-top: 20px;
 `;
 
-const StyledDescription = styled.h2`
+const StyledDescription = styled.h1`
   width: "100vw";
   font-family: "ONE-Mobile-Regular";
   /* top: "5vh";
@@ -193,7 +194,7 @@ const StyledDescription = styled.h2`
 
 const ImgWrapper = styled.div`
   /* position: relative; */
-  width: 500px;
+  width: 100vw;
   text-align: center;
 `;
 
