@@ -13,8 +13,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // import landing1 
 // import five from "../assets/sprout_0.png";
 // import two from "../assets/tree_0.png";
 import group from "../assets/Group 243.png";
-import qr from "../assets/qrcode.png";
-import google_play from "../assets/google_play.png";
+// import qr from "../assets/qrcode.png";
+// import google_play from "../assets/google_play.png";
 
 import AOS from "aos";
 
@@ -127,7 +127,7 @@ const LandingComp1 = () => {
               zIndex: 5,
             }}
           ></CustomedImage> */}
-          <CustomedImage
+          {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1500"
             data-aos-duration="1500"
@@ -152,7 +152,7 @@ const LandingComp1 = () => {
               left: "70vw",
               zIndex: 5,
             }}
-          ></CustomedImage>
+          ></CustomedImage> */}
         </ImgWrapper>
       </TitleDescriptionWrapper>
       <Bounce>
