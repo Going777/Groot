@@ -2,12 +2,14 @@ package com.chocobi.groot.view.user
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.transition.Scene
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
@@ -21,6 +23,10 @@ import com.chocobi.groot.view.user.model.CollectionResponse
 import com.chocobi.groot.view.user.model.UserService
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
+import io.github.sceneview.SceneView
+import io.github.sceneview.math.Position
+import io.github.sceneview.node.ModelNode
+import io.github.sceneview.utils.Color
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -33,6 +39,7 @@ class CollectionActivity : AppCompatActivity() {
     private var positions = mutableListOf<Int>()
     private var targetGlbPath: String? = null
     private var targetGrwType: String? = null
+    private var modelNode: ModelNode? = null
 
     private lateinit var collectionRV: RecyclerView
     private lateinit var rvAdapter: CollectionRVAdapter
@@ -44,7 +51,7 @@ class CollectionActivity : AppCompatActivity() {
 
         val categoryNameTextView = findViewById<TextView>(R.id.categoryName)
         val categoryIcon = findViewById<ImageView>(R.id.categoryIcon)
-        categoryNameTextView.text = "콜렉션북"
+        categoryNameTextView.text = "컬렉션북"
         categoryIcon.setImageResource(R.drawable.ic_collection)
 
 //        ================================================================
@@ -66,10 +73,10 @@ class CollectionActivity : AppCompatActivity() {
         collectionRV = findViewById(R.id.collectionRV)
         rvAdapter = CollectionRVAdapter(characters, positions)
         rvAdapter.itemClick = object : CollectionRVAdapter.ItemClick {
-            override fun onClick(view: View, position: Int, grwType: String, isContain: Boolean) {
+            override fun onClick(view: View, position: Int, grwType: String, level: Int, isContain: Boolean) {
                 // 클릭 이벤트 처리 로직 작성
                 if (isContain) {
-                    getCharacterGlbPath(position, grwType)
+                    getCharacterGlbPath(position, grwType, level)
                 } else {
                     Toast.makeText(this@CollectionActivity, "보유하지 않은 캐릭터입니다.", Toast.LENGTH_SHORT).show()
                 }
@@ -144,7 +151,7 @@ class CollectionActivity : AppCompatActivity() {
         })
     }
 
-    private fun getCharacterGlbPath(position: Int, grwType: String) {
+    private fun getCharacterGlbPath(position: Int, grwType: String, level: Int) {
         val retrofit = RetrofitClient.getClient()!!
         val userService = retrofit.create(UserService::class.java)
         userService.getCharacterGlbPath(position)
@@ -159,8 +166,22 @@ class CollectionActivity : AppCompatActivity() {
                             targetGlbPath = body.glbPath
                             targetGrwType = grwType
 
+//                            val builder = AlertDialog.Builder(this@CollectionActivity)
+//                            val dialogView = layoutInflater.inflate(R.layout.character_dialog, null)
+//
+//                            val dialogTitle = dialogView.findViewById<TextView>(R.id.dialogTitle)
+//                            val characterSceneView = dialogView.findViewById<SceneView>(R.id.characterSceneView)
+//                            dialogTitle.text = targetGrwType
+//
+//                            builder.setView(dialogView)
+//                                .setPositiveButton("확인") { dialogInterface, i ->
+//                                    dialogInterface.dismiss()
+//                                }
+//                                .show()
+//
+//                            setCharacterSceneView(characterSceneView, targetGlbPath!!)
                             val characterCollectionBottomSheet = CharacterCollectionBottomSheet(this@CollectionActivity)
-                            characterCollectionBottomSheet.setData(targetGrwType!!, targetGlbPath!!)
+                            characterCollectionBottomSheet.setData(targetGrwType!!, targetGlbPath!!, level)
                             characterCollectionBottomSheet.show(
                                 supportFragmentManager,
                                 characterCollectionBottomSheet.tag
@@ -175,6 +196,33 @@ class CollectionActivity : AppCompatActivity() {
                 }
 
             })
+    }
+    private fun setCharacterSceneView(characterSceneView: SceneView, glbPath: String) {
+        if (modelNode != null) {
+            characterSceneView.removeChild(modelNode!!)
+        }
+
+        Log.d("CollectionActivity", "setCharacterSceneView() 캐릭터 $glbPath")
+
+        characterSceneView.backgroundColor = Color(255.0f, 255.0f, 255.0f, 0.0f)
+
+        modelNode = ModelNode().apply {
+            loadModelGlbAsync(
+                glbFileLocation = glbPath,
+                autoAnimate = false,
+                scaleToUnits = 1f,
+                centerOrigin = Position(x = 0f, y = 0f, z = 0f),
+            ) {
+                isScaleEditable = false
+                isRotationEditable = false
+
+                // 로드 완료 후 SceneView에 캐릭터 추가
+                if (modelNode != null) {
+                    Log.d("CollectionActivity", "setCharacterSceneView() 캐릭터 $modelNode")
+                    characterSceneView.addChild(modelNode!!)
+                }
+            }
+        }
     }
 }
 

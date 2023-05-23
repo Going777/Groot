@@ -10,12 +10,22 @@
         android:id="@+id/topCategoryNavbar"
         layout="@layout/top_category_navbar" />
 
+    <TextView
+        android:id="@+id/mainText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/topCategoryNavbar"
+        android:layout_centerHorizontal="true"
+        android:layout_centerInParent="true"
+        android:text="화분 속 작은 친구, 루티를 수집해 보세요♪"
+        android:layout_marginBottom="10dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/collectionRV"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/topCategoryNavbar"/> <!-- 중앙 정렬을 위해 layout_centerInParent 속성 추가 -->
+        android:layout_below="@id/mainText"/> <!-- 중앙 정렬을 위해 layout_centerInParent 속성 추가 -->
 
 </RelativeLayout>

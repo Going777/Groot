@@ -44,7 +44,7 @@
         android:id="@+id/grwTypeText"
         style="@style/BASIC_CHIP"
         android:layout_width="wrap_content"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:backgroundTint="@color/sub"
         android:text="군생형"
         android:textColor="@color/white"
@@ -61,5 +61,6 @@
         android:text="0"
         android:textColor="@color/point"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/grwTypeText" />
+        app:layout_constraintTop_toBottomOf="@id/grwTypeText"
+        android:visibility="gone"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
