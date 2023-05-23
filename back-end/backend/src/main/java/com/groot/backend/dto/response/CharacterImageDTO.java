@@ -14,4 +14,6 @@ public class CharacterImageDTO {
     private Integer level;
 
     private String pngPath;
+
+    private String greyPath;
 }
