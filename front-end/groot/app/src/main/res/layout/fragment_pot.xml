@@ -37,8 +37,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_margin="10dp"
-                    android:background="@drawable/circle_button_background"
-                    android:backgroundTint="@color/white"
+                    android:background="@drawable/circle_button_black_transparent"
                     android:clickable="true"
                     android:focusable="true"
                     android:foreground="?android:attr/actionBarItemBackground"
@@ -46,7 +45,8 @@
                     android:translationZ="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/main" />
+                    app:tint="@color/white" />
+
 
 
 
