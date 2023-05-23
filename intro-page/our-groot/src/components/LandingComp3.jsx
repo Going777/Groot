@@ -9,7 +9,7 @@ import styled from "styled-components";
 // import drawing3 from "/assets/img/drawing3.png";
 // import drawing4 from "/assets/img/drawing4.png";
 import AOS from "aos";
-import { color } from "@mui/system";
+import comp3 from "../assets/comp3.png";
 
 const LandingComp3 = () => {
   useEffect(() => {
@@ -24,8 +24,8 @@ const LandingComp3 = () => {
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="1500"
-            // src={drawing4}
-            style={{ width: "500px", top: "10vh", left: "10vw", zIndex: 2 }}
+            src={comp3}
+            style={{ width: "300px", top: "10vh", left: "25vw", zIndex: 2 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
@@ -45,8 +45,8 @@ const LandingComp3 = () => {
             data-aos="fade-up"
             data-aos-delay="1500"
             data-aos-duration="1500"
-            // src={drawing1}
-            style={{ width: "500px", top: "45vh", left: "20vw", zIndex: 5 }}
+            // src={comp3}
+            style={{ width: "300px", top: "45vh", left: "20vw", zIndex: 5 }}
           ></CustomedImage>
         </ImgWrapper>
         <Content>
@@ -120,7 +120,7 @@ const CustomedImage = styled.img`
 `;
 
 const Content = styled.div`
-  margin-right: 10vw;
+  margin-right: 22vw;
   padding-left: 20vw;
   padding-top: 15vh;
   margin-left: 25em;
