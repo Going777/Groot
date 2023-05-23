@@ -13,7 +13,7 @@ const LandingComp1 = () => {
         <Content>
           <StyledTitle>
             사진을 찍어 식물을 식별하고, <br></br> 화분을 등록해보세요.
-            <br></br> 총 <Highlight>36종</Highlight>의 캐릭터가 여러분을
+            <br></br> 총 <Highlight>34종</Highlight>의 캐릭터가 여러분을
             기다리고 있습니다.
           </StyledTitle>
         </Content>
