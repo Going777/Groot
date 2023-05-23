@@ -26,7 +26,10 @@ const LandingComp1 = () => {
 
   return (
     <div>
-    <Background src={backgroundImg} style={{width:"100%"}}/>
+    <Background src={backgroundImg} style={{width:"100%"}}
+    data-aos="fade-up"
+    data-aos-delay="200"
+    data-aos-duration="1500"/>
       {/* <TitleDescriptionWrapper data-aos="fade-up"> */}
         {/* <Content>
           <StyledTitle>
