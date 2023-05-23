@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.chocobi.groot.R
 import io.github.sceneview.SceneView
@@ -20,10 +21,13 @@ import io.github.sceneview.utils.Color
 class CharacterCollectionBottomSheet(context: Context): BottomSheetDialogFragment() {
     private var grwType: String? = null
     private var glbPath: String? = null
+    private var level: String? = null
     private var modelNode: ModelNode? = null
 
     private lateinit var grwTypeText: TextView
+    private lateinit var levelText: TextView
     private lateinit var characterSceneView: SceneView
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +43,13 @@ class CharacterCollectionBottomSheet(context: Context): BottomSheetDialogFragmen
         val view = inflater.inflate(R.layout.bottom_sheet_character_collection, container, false)
 
         grwTypeText = view.findViewById(R.id.grwTypeText)
+        levelText = view.findViewById(R.id.levelText)
         characterSceneView = view.findViewById(R.id.characterSceneView)
+        progressBar = view.findViewById(R.id.progressBar)
+        progressBar.visibility = View.VISIBLE
 
         grwTypeText.text = grwType
+        levelText.text = level
 
         setCharacterSceneView()
         Log.d("CharacterCollectionBottomSheet","onCreateView() $grwType")
@@ -49,10 +57,15 @@ class CharacterCollectionBottomSheet(context: Context): BottomSheetDialogFragmen
         return view
     }
 
-    fun setData(grwType: String, glbPath: String) {
+    fun setData(grwType: String, glbPath: String, level: Int) {
         // 데이터 처리 로직 작성
         this.grwType = grwType
         this.glbPath = glbPath
+        when (level) {
+            0 -> this.level = "Lv 1~4"
+            1 -> this.level = "Lv 5~9"
+            2 -> this.level = "Lv 10~"
+        }
     }
 
     private fun setCharacterSceneView() {
@@ -73,6 +86,10 @@ class CharacterCollectionBottomSheet(context: Context): BottomSheetDialogFragmen
                 isRotationEditable = false
             }
         }
+
+        // 로드 완료 후 ProgressBar 숨김 처리
+        progressBar.visibility = View.GONE
+
         if (modelNode != null) {
             characterSceneView.addChild(modelNode!!)
         }

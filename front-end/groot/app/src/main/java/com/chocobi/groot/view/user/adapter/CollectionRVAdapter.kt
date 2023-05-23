@@ -40,7 +40,7 @@ class CollectionRVAdapter(
     }
 
     interface ItemClick {
-        fun onClick(view: View, position: Int, grwType: String, isContain: Boolean)
+        fun onClick(view: View, position: Int, grwType: String, level: Int, isContain: Boolean)
     }
 
     var itemClick: ItemClick? = null
@@ -53,7 +53,7 @@ class CollectionRVAdapter(
         val isContain = isContain(position)
         if (itemClick != null) {
             holder.itemView.setOnClickListener { v ->
-                itemClick?.onClick(v, position, items[position].grwType, isContain)
+                itemClick?.onClick(v, position, items[position].grwType, items[position].level, isContain)
             }
         }
         holder.bindItems(items[position], position, positions)
