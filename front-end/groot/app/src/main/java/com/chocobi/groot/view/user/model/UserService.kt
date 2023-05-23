@@ -13,6 +13,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -66,6 +67,14 @@ interface UserService {
     fun changeNotiStatus(
         @Body params: NotiStatusRequest
     ): Call<BasicResponse>
+
+    @GET("/api/characters/collections")
+    fun getCollections(): Call<CollectionResponse>
+
+    @GET("/api/characters/{position}/glb")
+    fun getCharacterGlbPath(
+        @Path("position") position: Int
+    ): Call<CharacterGlbResponse>
 }
 
 class RefreshRequest internal constructor(

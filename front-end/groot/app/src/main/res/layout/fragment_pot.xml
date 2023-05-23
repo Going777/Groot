@@ -32,6 +32,24 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
 
+                <ImageButton
+                    android:id="@+id/notiListBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/circle_button_black_transparent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/actionBarItemBackground"
+                    android:src="@drawable/ic_notification"
+                    android:translationZ="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tint="@color/white" />
+
+
+
+
                 <LinearLayout
                     android:id="@+id/collectionContainer"
                     android:layout_width="match_parent"

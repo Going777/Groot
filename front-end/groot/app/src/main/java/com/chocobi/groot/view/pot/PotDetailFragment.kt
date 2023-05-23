@@ -1,7 +1,6 @@
 package com.chocobi.groot.view.pot
 
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +16,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
@@ -300,8 +299,7 @@ class PotDetailFragment : Fragment(), PotBottomSheetListener {
 
         modelNode = ModelNode().apply {
             loadModelGlbAsync(
-                glbFileLocation = pot?.characterGLBPath
-                    ?: "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/unicorn_2.glb",
+                glbFileLocation = pot?.characterGLBPath!!,
                 autoAnimate = false,
                 scaleToUnits = 0.8f,
                 centerOrigin = Position(x = 0f, y = 0f, z = 0f),

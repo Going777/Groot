@@ -1,6 +1,5 @@
 package com.chocobi.groot.view.search
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -11,7 +10,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -21,16 +19,14 @@ import androidx.cardview.widget.CardView
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.addpot.Pot1Activity
 import com.chocobi.groot.view.search.model.PlantIdentifyResponse
 import com.chocobi.groot.view.search.model.SearchService
-import io.github.sceneview.SceneView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -66,10 +62,6 @@ class SearchCameraActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_camera)
-
-//        growType = "다육형,직립형"
-//        mgmtLevel = "초보자"
-//        characterGlbPath = "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/assets/straight_0.glb"
 
         plantNameText = findViewById(R.id.plantNameText)
         plantSciText = findViewById(R.id.plantSciText)
@@ -224,6 +216,10 @@ class SearchCameraActivity : AppCompatActivity() {
             "돌아가기",
             DialogInterface.OnClickListener { dialog, which ->
                 val intent = Intent(context, MainActivity::class.java)
+                if (cameraStatus == "searchPlant") {
+                    intent.putExtra("toPage", "search")
+                }
+
                 startActivity(intent)
                 dialog.dismiss()
             })

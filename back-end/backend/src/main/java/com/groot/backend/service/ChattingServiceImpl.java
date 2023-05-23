@@ -22,6 +22,7 @@ import com.groot.backend.entity.ChattingEntityPK;
 import com.groot.backend.entity.NotificationEntity;
 import com.groot.backend.entity.UserEntity;
 import com.groot.backend.repository.ChattingRepository;
+import com.groot.backend.repository.NotificationRepository;
 import com.groot.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,7 @@ public class ChattingServiceImpl implements ChattingService{
     private final UserRepository userRepository;
     private final FirebaseMessaging firebaseMessaging;
     public static final String COLLECTION_NAME = "chats";
+    private final NotificationRepository notificationRepository;
 
     @Override
     public boolean insertChatting(ChatRequestDTO chatRequestDTO, Long userId) throws FirebaseAuthException {
@@ -47,22 +49,22 @@ public class ChattingServiceImpl implements ChattingService{
         ChattingEntity chatting1 = ChattingEntity.builder()
                 .sender(user1)
                 .receiver(user2)
-                .roomId(chatRequestDTO.getRoomId())
+                .roomId(chatRequestDTO.getSenderRoomId())
                 .build();
         ChattingEntity chatting2 = ChattingEntity.builder()
                 .sender(user2)
                 .receiver(user1)
-                .roomId(chatRequestDTO.getRoomId())
+                .roomId(chatRequestDTO.getReceiverRoomId())
                 .build();
         if(chattingRepository.save(chatting1)==null || chattingRepository.save(chatting2)==null) return false;
 
         // 채팅방 생성 알림
         String title = "채팅 알림";
-        String body = user1.getNickName()+"님이 나눔 채팅을 시작하였습니다.";
+        String body = user1.getNickName()+"님이 채팅을 시작하였습니다.";
 
         Optional<UserEntity> user = userRepository.findById(user2.getId());
         NotificationEntity noti = NotificationEntity.builder()
-                .chattingRoomId(chatRequestDTO.getRoomId())
+                .chattingRoomId(chatRequestDTO.getReceiverRoomId())
                 .page("chatting")
                 .isRead(false)
                 .content(body)
@@ -70,8 +72,9 @@ public class ChattingServiceImpl implements ChattingService{
                 .receiver(user.get())
                 .build();
 
-        if(user.isPresent() && user.get().getUserAlarmEntity().getChattingAlarm()) {
-            if (user.get().getFirebaseToken() != null) {
+        if(user.isPresent()) {
+            notificationRepository.save(noti);
+            if (user.get().getFirebaseToken() != null && user.get().getUserAlarmEntity().getChattingAlarm()) {
                 FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(user.get().getFirebaseToken());
                 String uid = decodedToken.getUid();
                 Notification notification = Notification.builder()
@@ -95,7 +98,7 @@ public class ChattingServiceImpl implements ChattingService{
     }
 
     @Override
-    public ChatDetailDTO getDetail(Long roomId, Long userId) {
+    public ChatDetailDTO getDetail(String roomId, Long userId) {
         ChattingEntity chatting = chattingRepository.findByRoomIdAndSenderId(roomId, userId);
         UserEntity user = userRepository.findById(chatting.getReceiverId()).orElseThrow(()->new CustomException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
         ChattingEntity receiverChatting = chattingRepository.findByRoomIdAndSenderId(roomId, user.getId());
@@ -131,11 +134,11 @@ public class ChattingServiceImpl implements ChattingService{
 
     @Override
     @Transactional
-    public boolean deleteChatting(Long roomId, Long userPK) {
-        if(!chattingRepository.existsByRoomIdAndSenderId(roomId, userPK)){
+    public boolean deleteChatting(String roomId) {
+        if(!chattingRepository.existsByRoomId(roomId)){
             return false;
         }
-        chattingRepository.deleteByRoomIdAndSenderId(roomId, userPK);
+        chattingRepository.deleteByRoomId(roomId);
         return true;
     }
 

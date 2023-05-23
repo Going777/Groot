@@ -1,6 +1,7 @@
 def springboot = false
 def flask = false
 def android = false
+def react = false
 
 pipeline {
   agent any
@@ -28,6 +29,7 @@ pipeline {
             springboot = true
             flask = true
             android = true
+            react = true
           }
           else {
             def changedFiles = sh(returnStdout: true, script: 'git diff --name-only --diff-filter=ACMRT HEAD^ HEAD').trim().split('\n')
@@ -48,9 +50,10 @@ pipeline {
             springboot = changedDirs.contains('back-end')
             flask = changedDirs.contains('domain')
             android = changedDirs.contains('front-end')
+            react = changedDirs.contains('intro-page')
           }
         }
-        echo "spring : ${springboot}, flask : ${flask}, android : ${android}"
+        echo "spring : ${springboot}, flask : ${flask}, android : ${android}, react : ${react}"
       }
     }
     stage('cofing') {
@@ -96,6 +99,20 @@ pipeline {
         updateGitlabCommitStatus name: 'build-flask', state: 'success'
       }
     }
+    stage('build-react') {
+      when {
+        expression { react }
+      }
+      steps {
+        updateGitlabCommitStatus name: 'build-react', state: 'pending'
+        echo 'move directory'
+        dir('./intro-page/our-groot/') {
+          echo 'start build'
+          sh 'docker build -t react .'
+        }
+        updateGitlabCommitStatus name: 'build-react', state: 'success'
+      }
+    }
     stage('unload') {
       parallel {
         stage('down-spring') {
@@ -139,6 +156,25 @@ pipeline {
             }
           }
         }
+        stage('down-react') {
+          environment {
+            REACT_CONTAINER_ID = sh(returnStdout: true, script: 'docker ps -a | grep react | awk \'{print $1\'}').trim()
+          }
+          when {
+            expression { react }
+          }
+          steps {
+            script {
+              if(env.REACT_CONTAINER_ID != null) {
+                echo 'unload react container'
+                echo "${env.REACT_CONTAINER_ID}"
+                sh "docker stop ${env.REACT_CONTAINER_ID}"
+                echo 'remove docker container'
+                sh "docker rm ${env.REACT_CONTAINER_ID}"
+              }
+            }
+          }
+        }
       }
     }
     stage('deploy') {
@@ -148,7 +184,7 @@ pipeline {
             expression { springboot }
           }
           steps {
-            updateGitlabCommitStatus name: 'deploy', state: 'pending'
+            updateGitlabCommitStatus name: 'deploy-spring', state: 'pending'
             sh 'pwd'
             dir('./back-end/backend/') {
               echo 'build docker image'
@@ -156,7 +192,7 @@ pipeline {
               echo 'run docker image'
               sh 'docker run --name spring -d -p 8080:8080 springboot'
             }
-            updateGitlabCommitStatus name: 'deploy', state: 'success'
+            updateGitlabCommitStatus name: 'deploy-spring', state: 'success'
           }
         }
         stage('deploy-flask') {
@@ -164,10 +200,25 @@ pipeline {
             expression { flask }
           }
           steps {
+            updateGitlabCommitStatus name: 'deploy-flask', state: 'pending'
             dir('./domain/') {
               echo 'run docker container'
               sh 'docker run -d -v /tmp/flask:/tmp --name flask flask'
             }
+            updateGitlabCommitStatus name: 'deploy-flask', state: 'success'
+          }
+        }
+        stage('deploy-react') {
+          when {
+            expression { react }
+          }
+          steps {
+            updateGitlabCommitStatus name: 'deploy-react', state: 'pending'
+            dir('./intro-page/our-groot/') {
+              echo 'run docker container'
+              sh 'docker run --name react -d -p 3000:3000 react'
+            }
+            updateGitlabCommitStatus name: 'deploy-react', state: 'success'
           }
         }
       }

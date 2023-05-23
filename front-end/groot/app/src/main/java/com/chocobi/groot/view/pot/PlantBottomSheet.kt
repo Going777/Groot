@@ -10,16 +10,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
+import com.chocobi.groot.data.CustomAutoCompleteAdapter
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.view.search.SearchDetailFragment
@@ -27,12 +25,10 @@ import com.chocobi.groot.view.search.adapter.DictRVAdapter
 import com.chocobi.groot.view.search.model.PlantMetaData
 import com.chocobi.groot.view.search.model.PlantSearchResponse
 import com.chocobi.groot.view.search.model.SearchService
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
 
 
 class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: String? = null) :
@@ -76,7 +72,7 @@ class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: 
         dictRecyclerView = view.findViewById(R.id.dictRecyclerView)
         searchPlantBtn = view.findViewById(R.id.searchPlantBtn)
 
-        rvAdapter = DictRVAdapter(emptyArray())
+        rvAdapter = DictRVAdapter(ArrayList())
         dictRecyclerView.layoutManager = GridLayoutManager(activity, 3)
         dictRecyclerView.adapter = rvAdapter
     }
@@ -84,14 +80,10 @@ class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: 
     private fun setAutocompltete() {
         val plantNames =
             GlobalVariables.prefs.getString("plant_names", "")?.split(", ") ?: emptyList()
-        val items = plantNames.toTypedArray() // 괄호 제거하고 쉼표로 분리
+        val items = plantNames // 괄호 제거하고 쉼표로 분리
 
         Log.d("PlantBottomSheet", "setAutocompltete() 자동완성 $plantNames")
-        var adapter = ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            items
-        )
+        var adapter = CustomAutoCompleteAdapter(requireContext(), items)
         autoCompleteTextView.setAdapter(adapter)
     }
 
@@ -157,7 +149,7 @@ class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: 
                     Log.d("SearchFragment", "requestSearchPlant() api 성공 $searchBody")
                     if (searchBody != null) {
                         plants = searchBody.plants
-                        rvAdapter.setData(plants)
+                        rvAdapter.setData(ArrayList(plants.toList()))
                     }
 
                 } else {
@@ -211,9 +203,10 @@ class PlantBottomSheet(context: Context, requestPage: String? = null, imageUri: 
 
     private fun search(targetText: String?) {
         if (targetText == "") {
-//            Toast.makeText(requireContext(), "전체 식물 데이터를 조회합니다", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "검색어를 입력해주세요", Toast.LENGTH_SHORT).show()
+        }else {
+            requestSearchPlant(targetText)
         }
-        requestSearchPlant(targetText)
 
 //        // 키보드 닫기
         GlobalVariables.hideKeyboard(requireActivity())

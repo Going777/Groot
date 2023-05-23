@@ -1,6 +1,7 @@
 package com.chocobi.groot.view.chat
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,24 +10,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
-import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.model.Chat
 import com.chocobi.groot.view.chat.model.ChatUserListResponse
 import com.chocobi.groot.view.chat.model.ChatUserListService
-import com.chocobi.groot.view.community.CommunityShareItemService
 import com.chocobi.groot.view.community.adapter.ChatUserAdapter
 import com.chocobi.groot.view.community.adapter.ShareItemAdapter
 import com.chocobi.groot.view.community.model.CommunityShareItemResponse
 import com.chocobi.groot.view.community.model.ShareArticles
+import com.navercorp.nid.NaverIdLoginSDK.applicationContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,15 +45,19 @@ class ChatUserListFragment : Fragment() {
     private lateinit var getData: ChatUserListResponse
 
     private lateinit var mActivity: MainActivity
+    private lateinit var noChat: LinearLayout
 
+    private lateinit var applicationContext: Context
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        applicationContext = context.applicationContext
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Log.d(TAG, "와우와우와")
-
     }
 
-    @SuppressLint("MissingInflatedId")
+    @SuppressLint("MissingInflatedId", "ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -76,7 +82,7 @@ class ChatUserListFragment : Fragment() {
 
         findViews(view)
         setListeners()
-        initList()
+//        initList()
         showProgress()
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
@@ -85,39 +91,40 @@ class ChatUserListFragment : Fragment() {
 
         recyclerView.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        noChat = view.findViewById(R.id.noChat)
 
+        val swipeHelperCallback = SwipeHelperCallback().apply{
+            setClamp(200f)
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHelperCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
 
-        var retrofit = RetrofitClient.getClient()!!
-        var chatUserListService = retrofit.create(ChatUserListService::class.java)
-        chatUserListService.requestChatUserList().enqueue(object :
-            Callback<ChatUserListResponse> {
-            override fun onResponse(
-                call: Call<ChatUserListResponse>,
-                response: Response<ChatUserListResponse>
-            ) {
-                if (response.code() == 200) {
-                    getData = response.body()!!
-                    Log.d("chatUserList", getData.chatting.toString())
-                    val list = createDummyData()
-                    ThreadUtil.startUIThread(100) {
-                        adapter.reload(list)
-                        hideProgress()
-                    }
-                } else {
-                    Log.d("ChatUserListFragment", "실패 1")
-                }
-            }
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(applicationContext)
 
-            override fun onFailure(call: Call<ChatUserListResponse>, t: Throwable) {
-                Log.d("ChatUserListFragment", "실패2")
-
+            setOnTouchListener { _, _ ->
+                swipeHelperCallback.removePreviousClamp(this)
+                false
             }
         }
 
-        )
+//        val cancelSwipeHelperCallback = SwipeHelperCallback().apply{
+//            setClamp(-210f)
+//        }
+//        val cancelItemTouchHelper = ItemTouchHelper(cancelSwipeHelperCallback)
+//        cancelItemTouchHelper.attachToRecyclerView(recyclerView)
+//        recyclerView.apply {
+//            layoutManager = LinearLayoutManager(applicationContext)
+//            setOnTouchListener { _, event ->
+//                cancelSwipeHelperCallback.removeCurrentClamp(this)
+//                false
+//            }
+//        }
 
+        adapter = ChatUserAdapter(recyclerView, mActivity)
+        recyclerView.adapter = adapter
 
-
+        getChatUser()
         return view
     }
 
@@ -131,23 +138,23 @@ class ChatUserListFragment : Fragment() {
 
     private fun setListeners() {
         swipeRefreshLayout.setOnRefreshListener {
-            swipeRefreshLayout.isRefreshing = false
+            ThreadUtil.startUIThread(100) {
+                val list = createDummyData()
+                adapter.reload(list)
+                swipeRefreshLayout.isRefreshing = false
+            }
         }
     }
 
     private fun initList() {
-        adapter = ChatUserAdapter(recyclerView, mActivity)
-
-        recyclerView.adapter = adapter // RecyclerView에 Adapter 설정
+//        adapter = ChatUserAdapter(recyclerView, mActivity)
+//
+//        recyclerView.adapter = adapter // RecyclerView에 Adapter 설정
         val size = adapter.itemCount
 //        recyclerView.scrollToPosition(size - 1)
 
         adapter.delegate = object : ChatUserAdapter.RecyclerViewAdapterDelegate {
             override fun onLoadMore() {
-            }
-
-            override fun onItemViewClick(chatUserListResponse: ChatUserListResponse) {
-                TODO("Not yet implemented")
             }
 
             fun reload(mutableList: MutableList<ChatUserListResponse>) {
@@ -160,6 +167,11 @@ class ChatUserListFragment : Fragment() {
         }
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
+        adapter.setItemClickListener(object : ChatUserAdapter.ItemClickListener {
+            override fun onDeleteBtnClick(view: View, position: Int) {
+                getChatUser()
+            }
+        })
     }
 
 
@@ -192,6 +204,54 @@ class ChatUserListFragment : Fragment() {
             list.add(chatUserListResponse)
         }
         return list
+    }
+
+    private fun getChatUser() {
+
+        var retrofit = RetrofitClient.getClient()!!
+        var chatUserListService = retrofit.create(ChatUserListService::class.java)
+        chatUserListService.requestChatUserList().enqueue(object :
+            Callback<ChatUserListResponse> {
+            override fun onResponse(
+                call: Call<ChatUserListResponse>,
+                response: Response<ChatUserListResponse>
+            ) {
+                if (response.code() == 200) {
+                    getData = response.body()!!
+                    Log.d("chatUserList", getData.chatting.toString())
+                    if (getData.chatting.size != 0) {
+                        val list = createDummyData()
+                        ThreadUtil.startUIThread(100) {
+                            adapter.reload(list)
+                            hideProgress()
+                        }
+                        Log.d("chattingList", getData.chatting.toString())
+
+                        noChat.visibility = View.GONE
+                        swipeRefreshLayout.visibility = View.VISIBLE
+                    } else {
+                        Log.d("chattingList", getData.chatting.toString())
+                        noChat.visibility = View.VISIBLE
+                        swipeRefreshLayout.visibility = View.GONE
+
+
+                    }
+
+                } else {
+                    Log.d("ChatUserListFragment", "실패 1")
+                }
+            }
+
+            override fun onFailure(call: Call<ChatUserListResponse>, t: Throwable) {
+                Log.d("ChatUserListFragment", "실패2")
+
+            }
+        }
+
+        )
+
+
+
     }
 
 }

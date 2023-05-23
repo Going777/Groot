@@ -46,7 +46,7 @@ public class ChattingController {
 
     // 채팅방 클릭 시 상대방 정보 가져오기
     @GetMapping("/detail/{roomId}")
-    public ResponseEntity getChattingDetail(@PathVariable Long roomId, HttpServletRequest request){
+    public ResponseEntity getChattingDetail(@PathVariable String roomId, HttpServletRequest request){
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         ChatDetailDTO result = chattingService.getDetail(roomId, userId);
@@ -67,11 +67,11 @@ public class ChattingController {
         Map resultMap = new HashMap();
         Long userId = JwtTokenProvider.getIdByAccessToken(request);
         List<ChatResponseDTO> result = chattingService.getList(userId);
-        if(result.isEmpty()){
-            resultMap.put("result", FAIL);
-            resultMap.put("msg", "채팅방 리스트 불러오기를 실패했습니다.");
-            return ResponseEntity.badRequest().body(resultMap);
-        }
+//        if(result.isEmpty()){
+//            resultMap.put("result", FAIL);
+//            resultMap.put("msg", "채팅방 리스트 불러오기를 실패했습니다.");
+//            return ResponseEntity.badRequest().body(resultMap);
+//        }
         resultMap.put("result", SUCCESS);
         resultMap.put("msg", "채팅방 리스트 불러오기를 성공했습니다.");
         resultMap.put("chatting", result);
@@ -79,10 +79,9 @@ public class ChattingController {
     }
 
     @DeleteMapping("/{roomId}")
-    public ResponseEntity deleteChatting(@PathVariable Long roomId, HttpServletRequest request){
-        Long userId = JwtTokenProvider.getIdByAccessToken(request);
+    public ResponseEntity deleteChatting(@PathVariable String roomId){
         Map resultMap = new HashMap<>();
-        if(!chattingService.deleteChatting(roomId, userId)){
+        if(!chattingService.deleteChatting(roomId)){
             resultMap.put("result", FAIL);
             resultMap.put("msg", "채팅방 나가기를 실패했습니다.");
             return ResponseEntity.badRequest().body(resultMap);

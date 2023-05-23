@@ -1,6 +1,5 @@
 package com.chocobi.groot.view.signup
 
-import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,9 +11,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
@@ -23,7 +21,6 @@ import com.chocobi.groot.view.login.LoginService
 import com.chocobi.groot.view.login.SocialLoginRequest
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.kakao.sdk.common.util.Utility
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -65,7 +62,7 @@ class SocialSignupActivity : AppCompatActivity() {
                 GlobalVariables.defaultAlertDialog(
                     this,
                     title = "닉네임 중복 체크",
-                    message = "닉네임을 입력해주세요."
+                    message = "닉네임을 입력해주세요"
                 )
             }
         }
@@ -77,7 +74,7 @@ class SocialSignupActivity : AppCompatActivity() {
                     GlobalVariables.defaultAlertDialog(
                         context = this,
                         title = "닉네임 중복 체크",
-                        message = "닉네임 중복 여부를 확인해주세요."
+                        message = "닉네임 중복 여부를 확인해주세요"
                     )
                 }
 
@@ -230,7 +227,7 @@ class SocialSignupActivity : AppCompatActivity() {
                             }
                         } catch (e: JSONException) {
                             // 예외 처리: msg 속성이 존재하지 않는 경우
-                            checkDupNameMsg = "닉네임을 입력해주세요."
+                            checkDupNameMsg = "닉네임을 입력해주세요"
                             e.printStackTrace()
                         }
                     } else {

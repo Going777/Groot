@@ -26,8 +26,8 @@ android {
         applicationId "com.chocobi.groot"
         minSdk 28
         targetSdk 33
-        versionCode 13
-        versionName "1.8"
+        versionCode 19
+        versionName "1.14"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -190,6 +190,7 @@ dependencies {
     implementation 'com.google.http-client:google-http-client-android:1.38.1'
     implementation 'com.google.api-client:google-api-client-android:1.31.2'
     implementation 'com.google.api-client:google-api-client-gson:1.31.2'
+
 }
 
 

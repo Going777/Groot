@@ -2,40 +2,32 @@ package com.chocobi.groot.view.pot
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.databinding.CalendarDayBinding
 import com.chocobi.groot.databinding.FragmentPotCalendarBinding
 import com.chocobi.groot.view.pot.adapter.PotCalendarRVAdapter
 import com.chocobi.groot.view.pot.model.DateDiaryResponse
 import com.chocobi.groot.view.pot.model.Diary
-import com.chocobi.groot.view.pot.model.DiaryRequest
 import com.chocobi.groot.view.pot.model.PotService
 import com.kizitonwose.calendar.core.WeekDay
 import com.kizitonwose.calendar.core.atStartOfMonth
 import com.kizitonwose.calendar.core.firstDayOfWeekFromLocale
 import com.kizitonwose.calendar.view.ViewContainer
 import com.kizitonwose.calendar.view.WeekDayBinder
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.create
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
@@ -59,6 +51,7 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
     private var selectedDate = LocalDate.now()
     private val dateFormatter = DateTimeFormatter.ofPattern("dd")
     private lateinit var binding: FragmentPotCalendarBinding
+    private lateinit var monthText: TextView
 
 
     override fun onCreateView(
@@ -70,51 +63,12 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
 //        val rootView = super.onCreateView(inflater, container, savedInstanceState)
         mActivity = activity as MainActivity
         potFirstView = rootView.findViewById(R.id.firstView)
-        val items = mutableListOf<Diary>()
-        items.add(
-            Diary(
-                8,
-                8,
-                0,
-                "하하",
-                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/71ef8293-cb22-4caa-a9c5-62101a8dcb01-prefix3030049238896505837extension",
-                false
-            )
-        )
-        items.add(
-            Diary(
-                8,
-                8,
-                1,
-                "하하",
-                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/71ef8293-cb22-4caa-a9c5-62101a8dcb01-prefix3030049238896505837extension",
-                false
-            )
-        )
-        items.add(
-            Diary(
-                20,
-                8,
-                0,
-                "콜라",
-                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/b6da24a2-fc89-463d-985a-5173bc012a78-prefix4471020168240671346extension",
-                true
-            )
-        )
-        items.add(
-            Diary(
-                20,
-                8,
-                1,
-                "콜라",
-                "https://groot-a303-s3.s3.ap-northeast-2.amazonaws.com/pot/b6da24a2-fc89-463d-985a-5173bc012a78-prefix4471020168240671346extension",
-                true
-            )
-        )
         rv = rootView.findViewById(R.id.potCalendarRecyclerView)
+        monthText = rootView.findViewById(R.id.monthText)
+
         val currentDate = LocalDate.now()
         getDateDiary(currentDate.toString())
-//        setRecyclerView(items)
+
 
         return rootView
     }
@@ -161,7 +115,9 @@ class PotCalendarFragment : PotCalendarBaseFragment(R.layout.fragment_pot_calend
         }
 
         binding.exSevenCalendar.weekScrollListener = { weekDays ->
-            binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
+//            binding.exSevenToolbar.title = getWeekPageTitle(weekDays)
+            monthText.text = getWeekPageTitle(weekDays)
+//            Log.d(TAG, getWeekPageTitle(weekDays))
         }
 
         val currentMonth = YearMonth.now()

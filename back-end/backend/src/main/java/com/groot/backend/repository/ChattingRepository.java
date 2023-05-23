@@ -6,13 +6,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ChattingRepository extends JpaRepository<ChattingEntity, Long> {
-    ChattingEntity findByRoomIdAndSenderId(Long roomId, Long senderId);
+    ChattingEntity findByRoomIdAndSenderId(String roomId, Long senderId);
 
     List<ChattingEntity> findBySenderId(Long senderId);
 
-    void deleteByRoomIdAndSenderId(Long roomId, Long senderId);
+    void deleteByRoomId(String roomId);
 
-    Boolean existsByRoomIdAndSenderId(Long roomId, Long senderId);
+    Boolean existsByRoomId(String roomId);
 
     List<ChattingEntity> findBySenderIdOrderByCreatedDateDesc(Long senderId);
 }

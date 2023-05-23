@@ -13,6 +13,7 @@ import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
@@ -84,13 +85,17 @@ class ChatFragment : Fragment() {
         val chatUserPK = arguments?.getString("userPK")
         val chatNickName = arguments?.getString("nickName")
         val chatProfile = arguments?.getString("profile")
-        val roomId = arguments?.getString("roomId")
+        val senderRoomId = arguments?.getString("senderRoomId")
+        val receiverRoomId = arguments?.getString("receiverRoomId")
+
         inputLayout = view.findViewById(R.id.inputLayout)
 
         Log.d("받아온 데이터", chatUserPK.toString())
         Log.d("받아온 데이터", chatNickName.toString())
         Log.d("받아온 데이터", chatProfile.toString())
-        Log.d("받아온 데이터", roomId.toString())
+        Log.d("받아온 데이터", senderRoomId.toString())
+        Log.d("받아온 데이터", receiverRoomId.toString())
+
         messageList = ArrayList()
         val chatMessageAdapter: ChatMessageAdapter =
             ChatMessageAdapter(requireContext(), messageList)
@@ -107,7 +112,6 @@ class ChatFragment : Fragment() {
         categoryIcon.visibility = View.GONE
         categoryProfileImg.visibility = View.VISIBLE
         if (!chatProfile.isNullOrBlank()) {
-
             categoryProfileImg.post {
                 ThreadUtil.startThread {
                     val futureTarget: FutureTarget<Bitmap> = Glide.with(requireContext())
@@ -144,9 +148,9 @@ class ChatFragment : Fragment() {
         var receiverUid = changeRoomNumber(chatUserPK)
 
 //        보낸이방
-        senderRoom = receiverUid + senderUid
+        senderRoom = senderUid + receiverUid
 //        받는이방
-        receiverRoom = senderUid + receiverUid
+        receiverRoom = receiverUid + senderUid
 
         val messageEdit = view.findViewById<EditText>(R.id.messageEdit)
 
@@ -154,8 +158,9 @@ class ChatFragment : Fragment() {
         val sendBtn = view.findViewById<AppCompatButton>(R.id.sendBtn)
         sendBtn.setOnClickListener {
             val createdTime: LocalDateTime = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("a h:mm")
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd a h:mm")
             val saveTime = createdTime.format(formatter)
+            Log.d("createdTime", saveTime.toString())
 
             val message = messageEdit.text.toString()
             val messageObject = ChatMessage(message, senderUid, saveTime)
@@ -172,7 +177,8 @@ class ChatFragment : Fragment() {
                 addChatRoomService.requestAddChatRoom(
                     ChatRoomRequest(
                         userPK = chatUserPK,
-                        roomId = receiverRoom
+                        senderRoomId = senderRoom,
+                        receiverRoomId = receiverRoom
 
                     )
                 ).enqueue(object : Callback<BasicResponse> {
@@ -341,4 +347,6 @@ class ChatFragment : Fragment() {
         val density = context.resources.displayMetrics.density
         return (dp * density).toInt()
     }
+
+
 }

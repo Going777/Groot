@@ -112,6 +112,31 @@ public class ArticleServiceImpl implements ArticleService{
         return result;
     }
 
+    // 인기 태그 조회 테스트
+    @Override
+    public List<TagRankDTO> readTagRankingTest(String category){
+//        String key = "ranking";
+        String key = keyMap.get(category);
+
+        List<TagCountEntity> list = tagCountRepository.findbyCategory(category);
+        List<TagRankDTO> result = new ArrayList<>();
+        for(TagCountEntity entity : list){
+            TagRankDTO dto = TagRankDTO.builder()
+                    .tag(entity.getTag())
+                    .count(entity.getCount())
+                    .build();
+            result.add(dto);
+        }
+
+        if(result.size() >= 5){
+            result = result.subList(0, 4);  //score순으로 5개 보여줌
+        }else {
+            result = result.subList(0, result.size());
+        }
+
+        return result;
+    }
+
     // tag count 집계
     @Scheduled(cron = "0 0 1 * * *", zone = "Asia/Seoul") // 오전 1시에 리셋
     @Override
@@ -136,6 +161,8 @@ public class ArticleServiceImpl implements ArticleService{
 
         log.info("Updated TagCount Table, reset Redis");
     }
+
+
 
     // 나눔 상태 변경
     @Override
@@ -189,7 +216,7 @@ public class ArticleServiceImpl implements ArticleService{
                 .title(articleDTO.getTitle())
                 .content(articleDTO.getContent())
                 .views(0L)
-                .shareStatus(articleDTO.getShareStatus())
+                .shareStatus(true)
                 .shareRegion(articleDTO.getShareRegion())
                 .build();
 
