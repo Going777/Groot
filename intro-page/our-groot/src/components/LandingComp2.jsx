@@ -2,6 +2,8 @@
 import styled from "styled-components";
 import { useEffect } from "react";
 import AOS from "aos";
+import comp2_1 from "../assets/comp2_1.png";
+import comp2_2 from "../assets/comp2_2.png";
 // import { styled as muistyled } from "@mui/material/styles";
 // import Button, { ButtonProps } from "@mui/material/Button";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -37,17 +39,17 @@ const LandingComp2 = () => {
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="1500"
-            // src={shiba1}
-            style={{ width: "500px", top: "5vh", left: "10vw", zIndex: 2 }}
+            src={comp2_1}
+            style={{ width: "300px", top: "5vh", left: "10vw", zIndex: 2 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="500"
             data-aos-duration="1500"
-            // src={shiba2}
-            style={{ width: "500px", top: "25vh", left: "25vw", zIndex: 3 }}
+            src={comp2_2}
+            style={{ width: "300px", top: "20vh", left: "25vw", zIndex: 3 }}
           ></CustomedImage>
-          <CustomedImage
+          {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1000"
             data-aos-duration="1500"
@@ -60,7 +62,7 @@ const LandingComp2 = () => {
             data-aos-duration="1500"
             // src={shiba4}
             style={{ width: "300px", top: "47vh", left: "35vw", zIndex: 5 }}
-          ></CustomedImage>
+          ></CustomedImage> */}
         </ImgWrapper>
       </TitleDescriptionWrapper>
     </Background>
@@ -79,6 +81,7 @@ const TitleDescriptionWrapper = styled.div`
   top: 10em;
   padding-top: 10vh;
   margin-bottom: 30em;
+  padding-left: 17vb;
   display: flex;
 `;
 
@@ -88,6 +91,7 @@ const StyledTitle = styled.h2`
   padding-bottom: 20px;
   margin-top: 20px;
   color: #639a67;
+  font-size: xx-large;
 `;
 
 const ContentTitle = styled.h2`
