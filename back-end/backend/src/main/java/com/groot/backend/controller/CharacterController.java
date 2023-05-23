@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -102,6 +103,27 @@ public class CharacterController {
             List<CharacterCollectionDTO> list = characterService.getAll(userPK);
             result.put("msg", "도감 조회에 성공했습니다.");
             result.put("characters", list);
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            status = HttpStatus.NO_CONTENT;
+        } catch (Exception e) {
+            logger.info("error : {}", e.getStackTrace());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @GetMapping("/{position}/glb")
+    public ResponseEntity<Map<String, Object>> getGlb(HttpServletRequest request, @PathVariable("position") int position) {
+        logger.info("Get GLB : {}", position);
+        HttpStatus status;
+        Map<String, Object> result = new HashMap<>();
+
+        try {
+            String glbURL = characterService.getGlb(position);
+            result.put("msg", "GLB 죄회에 성공했습니다.");
+            result.put("glbPath", glbURL);
             status = HttpStatus.OK;
         } catch (NoSuchElementException e) {
             status = HttpStatus.NO_CONTENT;
