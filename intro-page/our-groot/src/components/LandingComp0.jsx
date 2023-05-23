@@ -13,7 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // import landing1 
 // import five from "../assets/sprout_0.png";
 // import two from "../assets/tree_0.png";
 import group from "../assets/Group 243.png";
-import backgroundImg from "../assets/backgroundImg2.png";
+import backgroundImg from "../assets/backgroundImg3.png";
 // import qr from "../assets/qrcode.png";
 // import google_play from "../assets/google_play.png";
 
