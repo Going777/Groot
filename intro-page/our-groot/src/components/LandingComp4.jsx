@@ -10,7 +10,7 @@ import styled from "styled-components";
 // import shiba4 from "/assets/img/shiba_profile.png";
 import AOS from "aos";
 
-const LandingComp1 = () => {
+const LandingComp4 = () => {
   useEffect(() => {
     AOS.init();
   });
@@ -67,7 +67,7 @@ const LandingComp1 = () => {
     </Background>
   );
 };
-export default LandingComp1;
+export default LandingComp4;
 
 const Background = styled.div`
   background: #f3f3f3;
