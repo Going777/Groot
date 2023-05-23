@@ -13,6 +13,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore"; // import landing1 
 // import five from "../assets/sprout_0.png";
 // import two from "../assets/tree_0.png";
 import group from "../assets/Group 243.png";
+import backgroundImg from "../assets/backgroundImg2.png";
 // import qr from "../assets/qrcode.png";
 // import google_play from "../assets/google_play.png";
 
@@ -24,8 +25,9 @@ const LandingComp1 = () => {
   });
 
   return (
-    <Background style={{ textAlign: "center" }}>
-      <TitleDescriptionWrapper data-aos="fade-up">
+    <div>
+    <Background src={backgroundImg} style={{width:"100%"}}/>
+      {/* <TitleDescriptionWrapper data-aos="fade-up"> */}
         {/* <Content>
           <StyledTitle>
             애니메이션 속 주인공이 되어<br></br> 캐릭터들과 영어로 대화해보세요
@@ -50,7 +52,7 @@ const LandingComp1 = () => {
           }}
         ></CustomedImage> */}
 
-        <ImgWrapper>
+        {/* <ImgWrapper>
           <StyledDescription
             style={{
               // width: "300px",
@@ -61,7 +63,7 @@ const LandingComp1 = () => {
           >
             화분 속 작은 친구<br></br>
             GROOT에서 만나보세요
-          </StyledDescription>
+          </StyledDescription> */}
           {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="300"
@@ -88,7 +90,7 @@ const LandingComp1 = () => {
               zIndex: 3,
             }}
           ></CustomedImage> */}
-          <CustomedImage
+          {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1000"
             data-aos-duration="1500"
@@ -100,7 +102,7 @@ const LandingComp1 = () => {
               left: "23vw",
               zIndex: 4,
             }}
-          ></CustomedImage>
+          ></CustomedImage> */}
           {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1500"
@@ -153,29 +155,40 @@ const LandingComp1 = () => {
               zIndex: 5,
             }}
           ></CustomedImage> */}
-        </ImgWrapper>
-      </TitleDescriptionWrapper>
-      <Bounce>
+        {/* </ImgWrapper>
+      </TitleDescriptionWrapper> */}
+      {/* <Bounce>
         <ExpandMoreIcon sx={IconStyle} />
-      </Bounce>
-    </Background>
+      </Bounce> */}
+    {/* </Background> */}
+    </div>
   );
 };
 export default LandingComp1;
 
-const Background = styled.div`
-  background: #fbfbfb;
-  /* padding: 15vh 15vh 0px 15vh; */
-  /* z-index: 0; */
-  height: 100vh;
+
+const Background = styled.img`
+  object-fit: cover;
 `;
+
+// const Background = styled.Main`
+
+//   background: #fbfbfb;
+//   src: backgroundImg;
+//   /* padding: 15vh 15vh 0px 15vh; */
+//   /* z-index: 0; */
+//   /* object-fit: cover; */
+//   /* height: 100vh; */
+
+// `;
 
 const TitleDescriptionWrapper = styled.div`
   top: 10vh;
-  padding-top: 10vh;
-  margin-bottom: 30em;
-  display: flex;
+  /* padding-top: 10vh;
+  margin-bottom: 30em; */
+  /* display: flex; */
   justify-content: center;
+  z-index: 999;
 `;
 
 const StyledTitle = styled.h2`
