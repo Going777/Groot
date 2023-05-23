@@ -18,7 +18,7 @@ const LandingComp3 = () => {
 
   return (
     <Background style={{ textAlign: "right" }}>
-      <TitleDescriptionWrapper data-aos="fade-up">
+      <TitleDescriptionWrapper>
         <ImgWrapper>
           <CustomedImage
             data-aos="fade-up"
@@ -49,7 +49,8 @@ const LandingComp3 = () => {
             style={{ width: "300px", top: "45vh", left: "20vw", zIndex: 5 }}
           ></CustomedImage>
         </ImgWrapper>
-        <Content>
+        <Content data-aos="fade-left"
+        data-aos-duration="1500">
           <StyledTitle>AR</StyledTitle>
           <ContentTitle>
             <ContentDescription>

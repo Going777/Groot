@@ -53,7 +53,7 @@ const LandingComp6 = () => {
             data-aos-delay="500"
             data-aos-duration="1500"
             src={comp6_2}
-            style={{ width: "300px", top: "15vh", left: "25vw", zIndex: 3 }}
+            style={{ width: "300px", top: "15vh", left: "27vw", zIndex: 3 }}
           ></CustomedImage>
         </ImgWrapper>
       </TitleDescriptionWrapper>

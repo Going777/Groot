@@ -17,8 +17,9 @@ const LandingComp2 = () => {
 
   return (
     <Background style={{ textAlign: "left" }}>
-      <TitleDescriptionWrapper data-aos="fade-up">
-        <Content>
+      <TitleDescriptionWrapper>
+        <Content data-aos="fade-right"
+        data-aos-duration="1500">
           <StyledTitle>AI 식물 식별</StyledTitle>
           <ContentTitle>
             <ContentDescription>
@@ -47,7 +48,7 @@ const LandingComp2 = () => {
             data-aos-delay="500"
             data-aos-duration="1500"
             src={comp2_2}
-            style={{ width: "300px", top: "20vh", left: "25vw", zIndex: 3 }}
+            style={{ width: "300px", top: "15vh", left: "26vw", zIndex: 3 }}
           ></CustomedImage>
           {/* <CustomedImage
             data-aos="fade-up"
