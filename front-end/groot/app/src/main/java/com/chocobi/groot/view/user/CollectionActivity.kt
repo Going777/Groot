@@ -68,17 +68,19 @@ class CollectionActivity : AppCompatActivity() {
     private fun getCharacterData() {
         val charactersString = GlobalVariables.prefs.getString("characters", "")
         val jsonArray = JSONArray()
-        val regex = Regex("Character\\(grwType=(.*?), level=(.*?), pngPath=(.*?)\\)")
+        val regex = Regex("Character\\(grwType=(.*?), level=(.*?), pngPath=(.*?), greyPath=(.*?)\\)")
         val matches = regex.findAll(charactersString)
         for (match in matches) {
             val grwType = match.groupValues[1]
             val level = match.groupValues[2].toInt()
             val pngPath = match.groupValues[3]
+            val greyPath = match.groupValues[4]
 
             val characterObject = JSONObject()
             characterObject.put("grwType", grwType)
             characterObject.put("level", level)
             characterObject.put("pngPath", pngPath)
+            characterObject.put("greyPath", greyPath)
             jsonArray.put(characterObject)
         }
 
@@ -94,8 +96,8 @@ class CollectionActivity : AppCompatActivity() {
                 val grwType = characterObject.getString("grwType")
                 val level = characterObject.getInt("level")
                 val pngPath = characterObject.getString("pngPath")
-
-                val character = Character(grwType, level, pngPath)
+                val greyPath = characterObject.getString("greyPath")
+                val character = Character(grwType, level, pngPath, greyPath)
                 characters.add(character)
             }
         } catch (e: JSONException) {
