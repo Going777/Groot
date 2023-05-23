@@ -1,5 +1,6 @@
 package com.groot.backend.service;
 
+import com.google.api.gax.rpc.InvalidArgumentException;
 import com.groot.backend.dto.response.CharacterCollectionDTO;
 import com.groot.backend.dto.response.CharacterDTO;
 import com.groot.backend.dto.response.CharacterImageDTO;
@@ -46,6 +47,7 @@ public class CharacterServiceImpl implements CharacterService {
                             .grwType(PlantCodeUtil.characterName[characterEntity.getType().intValue()])
                             .level(characterEntity.getLevel())
                             .pngPath(characterEntity.getPngPath())
+                            .greyPath(toGreyPath(characterEntity.getPngPath()))
                             .build());
         });
 
@@ -125,5 +127,18 @@ public class CharacterServiceImpl implements CharacterService {
             logger.info("collected : {} lv.{} {}", grwType, charLevel, (PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + charLevel);
             collected[(PlantCodeUtil.characterCode.get(grwType) - 1) * 3 + i] = true;
         }
+    }
+
+    /**
+     * Add grey path
+     * @param pngPath
+     * @return
+     */
+    private String toGreyPath(String pngPath) {
+        String url = pngPath.split(".png")[0];
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(url).append("_grey.png");
+        return sb.toString();
     }
 }
