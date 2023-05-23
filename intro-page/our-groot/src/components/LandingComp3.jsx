@@ -103,7 +103,6 @@ const ContentTitle = styled.h2`
 const ContentDescription = styled.h2``;
 
 const StyledDescription = styled.h2`
-  width: "10px";
   font-family: "ONE-Mobile-Regular";
   color: #828282;
 `;
@@ -128,7 +127,7 @@ const Content = styled.div`
 `;
 
 const ContentScript = styled.div`
-  /* width: 400px; */
+  width: 600px;
 `;
 
 // const Bounce = styled.div(
