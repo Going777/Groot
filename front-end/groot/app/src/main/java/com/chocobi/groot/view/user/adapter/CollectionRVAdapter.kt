@@ -29,7 +29,7 @@ import java.net.URL
 
 class CollectionRVAdapter(
     private val items: MutableList<Character>,
-    private val positions: MutableList<Int>
+    private var positions: MutableList<Int>
 
 ) : RecyclerView.Adapter<CollectionRVAdapter.ViewHolder>() {
 
@@ -39,12 +39,36 @@ class CollectionRVAdapter(
         return ViewHolder(view, parent.context)
     }
 
+    interface ItemClick {
+        fun onClick(view: View, position: Int, grwType: String, isContain: Boolean)
+    }
+
+    var itemClick: ItemClick? = null
+
     override fun getItemCount(): Int {
         return items.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val isContain = isContain(position)
+        if (itemClick != null) {
+            holder.itemView.setOnClickListener { v ->
+                itemClick?.onClick(v, position, items[position].grwType, isContain)
+            }
+        }
         holder.bindItems(items[position], position, positions)
+    }
+
+    fun isContain(position: Int): Boolean {
+        if (position in positions) {
+            return true
+        }
+        return false
+    }
+
+    // positions 업데이트 메서드 추가
+    fun updatePositions(newPositions: MutableList<Int>) {
+        positions = newPositions
     }
 
     inner class ViewHolder(itemView: View, private val context: Context) :
@@ -79,20 +103,17 @@ class CollectionRVAdapter(
             if (position in positions) {
                 GlobalVariables.changeImgView(characterImage, item.pngPath, context)
                 // 이미지 로딩이 완료되면 ProgressBar 감추기
+//                progressBar.visibility = View.GONE
             } else {
                 GlobalVariables.changeImgView(characterImage, item.greyPath, context)
-//                val downloadTask = DownloadAndConvertImageTask(characterImage, progressBar)
-//                downloadTask.execute(item.pngPath)
-                // 이미지 로딩이 완료되면 ProgressBar 감추기
-//                progressBar.visibility = View.GONE
             }
 
             grwTypeText.text = item.grwType
 
             var levelString = ""
-            if(item.level == 0) {
+            if (item.level == 0) {
                 levelString = "Lv 1~4"
-            } else if(item.level == 1) {
+            } else if (item.level == 1) {
                 levelString = "Lv 5~9"
             } else {
                 levelString = "Lv 10~"
@@ -100,61 +121,5 @@ class CollectionRVAdapter(
             levelText.text = levelString
         }
     }
-
-//    private inner class DownloadAndConvertImageTask(private val imageView: ImageView, private val progressBar: ProgressBar) :
-//        AsyncTask<String, Void, Bitmap>() {
-//        override fun doInBackground(vararg params: String?): Bitmap? {
-//            val imageUrl = params[0]
-//            return if (imageUrl != null) {
-//                val inputStream = URL(imageUrl).openStream()
-//                val originalBitmap = BitmapFactory.decodeStream(inputStream)
-//                inputStream.close()
-//
-//                convertToDarkGrayWithOpacity(originalBitmap)
-//            } else {
-//                null
-//            }
-//        }
-//
-//        override fun onPostExecute(result: Bitmap?) {
-//            if (result != null) {
-//                imageView.setImageBitmap(result)
-//                // 이미지 로딩이 완료되면 ProgressBar 감추기
-//                progressBar.visibility = View.GONE
-//            }
-//        }
-//    }
-//
-//    private fun convertToDarkGrayWithOpacity(originalBitmap: Bitmap): Bitmap {
-//        val darkGrayBitmap = Bitmap.createBitmap(
-//            originalBitmap.width,
-//            originalBitmap.height,
-//            Bitmap.Config.ARGB_8888
-//        )
-//
-//        val canvas = Canvas(darkGrayBitmap)
-//
-//        val paint = Paint().apply {
-//            colorFilter = ColorMatrixColorFilter(
-//                ColorMatrix().apply {
-//                    setSaturation(0f)
-//                    setScale(0.2f, 0.2f, 0.2f, 1f)
-//                }
-//            )
-//        }
-//
-//        canvas.drawBitmap(originalBitmap, 0f, 0f, paint)
-//
-//        for (y in 0 until darkGrayBitmap.height) {
-//            for (x in 0 until darkGrayBitmap.width) {
-//                val pixel = darkGrayBitmap.getPixel(x, y)
-//                val alpha = Color.alpha(pixel)
-//                val darkGrayPixel = Color.argb(alpha, 0x33, 0x33, 0x33)
-//                darkGrayBitmap.setPixel(x, y, darkGrayPixel)
-//            }
-//        }
-//
-//        return darkGrayBitmap
-//    }
 }
 
