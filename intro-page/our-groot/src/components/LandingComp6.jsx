@@ -9,6 +9,8 @@ import styled from "styled-components";
 // import shiba3 from "/assets/img/shiba_landing3.png";
 // import shiba4 from "/assets/img/shiba_profile.png";
 import AOS from "aos";
+import comp6_1 from "../assets/comp6_1.png";
+import comp6_2 from "../assets/comp6_2.png";
 
 const LandingComp6 = () => {
   useEffect(() => {
@@ -42,15 +44,15 @@ const LandingComp6 = () => {
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="1500"
-            // src={shiba1}
-            style={{ width: "500px", top: "5vh", left: "10vw", zIndex: 2 }}
+            src={comp6_1}
+            style={{ width: "300px", top: "5vh", left: "10vw", zIndex: 2 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="500"
             data-aos-duration="1500"
-            // src={shiba2}
-            style={{ width: "500px", top: "25vh", left: "25vw", zIndex: 3 }}
+            src={comp6_2}
+            style={{ width: "300px", top: "15vh", left: "28vw", zIndex: 3 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
@@ -64,7 +66,7 @@ const LandingComp6 = () => {
             data-aos-delay="1500"
             data-aos-duration="1500"
             // src={shiba4}
-            style={{ width: "300px", top: "47vh", left: "35vw", zIndex: 5 }}
+            style={{ width: "300px", top: "45vh", left: "30vw", zIndex: 5 }}
           ></CustomedImage>
         </ImgWrapper>
       </TitleDescriptionWrapper>
@@ -122,8 +124,8 @@ const CustomedImage = styled.img`
 `;
 
 const Content = styled.div`
-  padding-left: 10vw;
-  padding-top: 20vh;
+  padding-left: 13vw;
+  padding-top: 5vh;
   /* margin-left: 5em; */
 `;
 
