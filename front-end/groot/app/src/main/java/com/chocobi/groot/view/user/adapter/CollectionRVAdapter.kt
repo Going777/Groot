@@ -89,7 +89,16 @@ class CollectionRVAdapter(
             }
 
             grwTypeText.text = item.grwType
-            levelText.text = item.level.toString()
+
+            var levelString = ""
+            if(item.level == 0) {
+                levelString = "Lv 1~4"
+            } else if(item.level == 1) {
+                levelString = "Lv 5~9"
+            } else {
+                levelString = "Lv 10~"
+            }
+            levelText.text = levelString
         }
     }
 
