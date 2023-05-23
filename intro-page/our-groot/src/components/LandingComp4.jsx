@@ -18,8 +18,9 @@ const LandingComp4 = () => {
 
   return (
     <Background style={{ textAlign: "left" }}>
-      <TitleDescriptionWrapper data-aos="fade-up">
-        <Content>
+      <TitleDescriptionWrapper>
+      <Content data-aos="fade-right"
+        data-aos-duration="1500">
           <StyledTitle>캐릭터 육성</StyledTitle>
           <ContentTitle>
             <ContentDescription>식물과 함께 성장하는 캐릭터</ContentDescription>
@@ -35,7 +36,7 @@ const LandingComp4 = () => {
           </ContentScript>
         </Content>
         <ImgWrapper>
-          <CustomedImage
+          {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="1500"
@@ -48,21 +49,21 @@ const LandingComp4 = () => {
             data-aos-duration="1500"
             // src={shiba2}
             style={{ width: "500px", top: "25vh", left: "25vw", zIndex: 3 }}
-          ></CustomedImage>
+          ></CustomedImage> */}
           <CustomedImage
             data-aos="fade-up"
-            data-aos-delay="1000"
+            data-aos-delay="100"
             data-aos-duration="1500"
             src={comp4}
             style={{ width: "500px", top: "40vh", left: "15vw", zIndex: 4 }}
           ></CustomedImage>
-          <CustomedImage
+          {/* <CustomedImage
             data-aos="fade-up"
             data-aos-delay="1500"
             data-aos-duration="1500"
             // src={shiba4}
             style={{ width: "300px", top: "47vh", left: "35vw", zIndex: 5 }}
-          ></CustomedImage>
+          ></CustomedImage> */}
         </ImgWrapper>
       </TitleDescriptionWrapper>
     </Background>

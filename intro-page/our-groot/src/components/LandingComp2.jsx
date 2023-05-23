@@ -17,8 +17,9 @@ const LandingComp2 = () => {
 
   return (
     <Background style={{ textAlign: "left" }}>
-      <TitleDescriptionWrapper data-aos="fade-up">
-        <Content>
+      <TitleDescriptionWrapper>
+        <Content data-aos="fade-right"
+        data-aos-duration="1500">
           <StyledTitle>AI 식물 식별</StyledTitle>
           <ContentTitle>
             <ContentDescription>
