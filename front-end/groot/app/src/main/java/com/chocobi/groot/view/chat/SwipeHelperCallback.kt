@@ -130,7 +130,8 @@ class SwipeHelperCallback : ItemTouchHelper.Callback() {
     fun removeCurrentClamp(recyclerView: RecyclerView) {
         currentPosition?.let {
             val viewHolder = recyclerView.findViewHolderForAdapterPosition(it) ?: return
-            getView(viewHolder).translationX = 0f
+            getView(viewHolder).translationX = -200f
+            currentDx = 0f
             setTag(viewHolder, false)
             currentPosition = null
         }

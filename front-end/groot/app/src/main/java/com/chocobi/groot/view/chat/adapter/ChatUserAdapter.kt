@@ -31,6 +31,8 @@ import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.model.ChatUserListResponse
 import com.chocobi.groot.view.chat.model.DeleteRoomService
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import io.github.sceneview.utils.TAG
 import retrofit2.Call
@@ -60,6 +62,8 @@ class ChatUserAdapter(
 
     var delegate: RecyclerViewAdapterDelegate? = null
     private lateinit var context: Context
+    lateinit var mDatabase: FirebaseDatabase
+    lateinit var dataRef: DatabaseReference
 
     fun setItemClickListener(itemClickListener: ItemClickListener) {
         this.deleteBtnClickListner = itemClickListener
@@ -69,9 +73,39 @@ class ChatUserAdapter(
         context = parent.context
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.fragment_chat_user_list_item, parent, false)
+        mDatabase = FirebaseDatabase.getInstance()
         return ChatUserViewHolder(view)
     }
+    private fun deleteChatUser(position: Int) {
+        val roomId = mutableList[position].chatting[0].roomId
 
+        val retrofit = RetrofitClient.getClient()!!
+        val deleteRoomService = retrofit.create(DeleteRoomService::class.java)
+        deleteRoomService.requestDeleteRoom(roomId)
+            .enqueue(object : Callback<BasicResponse> {
+                override fun onResponse(
+                    call: Call<BasicResponse>,
+                    response: Response<BasicResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "채팅방 삭제 성공")
+
+                        mutableList.removeAt(position)
+                        notifyItemRemoved(position)
+                        notifyItemRangeChanged(position, mutableList.size)
+
+                        val databaseReference = mDatabase.reference
+                        val chatsReference = databaseReference.child("chats")
+                        val roomReference = chatsReference.child(roomId)
+                        roomReference.removeValue()
+                    }
+                }
+
+                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
+                    Log.d(TAG, "채팅방 삭제 실패")
+                }
+            })
+    }
     override fun onBindViewHolder(holder: ChatUserViewHolder, position: Int) {
         val item = mutableList[holder.adapterPosition]
         holder.chatUserListResponse = item
@@ -113,11 +147,7 @@ class ChatUserAdapter(
             dialog.setPositiveButton(
                 "확인",
                 DialogInterface.OnClickListener { dialog, which ->
-                    holder.deleteRoom(holder.chatUserListResponse.chatting[0].roomId)
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        deleteBtnClickListner?.onDeleteBtnClick(it, position) // null 체크
-                    }, 500)
-                    dialog.dismiss()
+                    deleteChatUser(holder.adapterPosition)
                 })
             dialog.show()
         }
@@ -265,7 +295,7 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                                 Log.d("receiverRoomSaveTime", saveTimeValue.toString())
                                 Log.d("receiverRoomLast", messageIdValue.toString())
 
-                                if (saveTimeValue == null) {
+                                if (messageIdValue != null) {
                                     val saveTimeFormatted = saveTime.toString().let { value ->
                                         val regex = Regex("(\\d{4}-\\d{2}-\\d{2}) (오전|오후) (\\d{1,2}:\\d{2})")
                                         val matchResult = regex.find(value)
@@ -274,13 +304,13 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                                         if (date == currentDate) "$amPm $time" else date
                                     }
                                     dateText.text = saveTimeFormatted.toString()
-                                    lastMessageText.text = lastMessage.toString()
+                                    lastMessageText.text = messageIdValue
                                     Log.d("saveTime", saveTime.toString())
                                     Log.d("messageIdValue", lastMessage.toString())
 
 
                                 } else {
-                                    val saveTimeFormatted = saveTimeValue?.let { value ->
+                                    val saveTimeFormatted = saveTime.toString().let { value ->
                                         val regex = Regex("(\\d{4}-\\d{2}-\\d{2}) (오전|오후) (\\d{1,2}:\\d{2})")
                                         val matchResult = regex.find(value)
                                         val (date, amPm, time) = matchResult?.destructured ?: return@let null
@@ -290,7 +320,7 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
                                     Log.d("messageIdValue", messageIdValue.toString())
                                     dateText.text = saveTimeFormatted
-                                    lastMessageText.text = messageIdValue
+                                    lastMessageText.text = lastMessage.toString()
                                     Log.d("saveTime", saveTimeValue.toString())
 
                                 }
@@ -315,25 +345,5 @@ class ChatUserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 
 
-    fun deleteRoom(senderRoomId: String) {
-        
-        val retrofit = RetrofitClient.getClient()!!
-        val deleteRoomService = retrofit.create(DeleteRoomService::class.java)
-        deleteRoomService.requestDeleteRoom(senderRoomId)
-            .enqueue(object: Callback<BasicResponse> {
-                override fun onResponse(
-                    call: Call<BasicResponse>,
-                    response: Response<BasicResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        Log.d(TAG, "채팅방 삭제 성공")
-                    }
-                }
 
-                override fun onFailure(call: Call<BasicResponse>, t: Throwable) {
-                    Log.d(TAG, "채팅방 삭제 실패")
-
-                }
-            })
-    }
 }
