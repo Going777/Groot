@@ -105,7 +105,7 @@ const CustomedImage = styled.img`
 `;
 
 const Content = styled.div`
-  margin-right: 10vw;
+  margin-right: 20vw;
   padding-left: 20vw;
   padding-top: 15vh;
   margin-left: 25em;
