@@ -16,5 +16,5 @@ public interface ChattingService {
 
     List<ChatResponseDTO> getList(Long userId) throws ExecutionException, InterruptedException;
 
-    boolean deleteChatting(Long roomNumber, Long userPK);
+    boolean deleteChatting(String roomNumber);
 }

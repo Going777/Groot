@@ -56,11 +56,11 @@ const LandingComp1 = () => {
               // width: "300px",
               // height: "150px",
               top: "5vh",
-              left: "40vw",
-              zIndex: 2,
+              left: "0vw",
             }}
           >
-            화분 속 작은 친구
+            화분 속 작은 친구<br></br>
+            GROOT에서 만나보세요
           </StyledDescription>
           {/* <CustomedImage
             data-aos="fade-up"
@@ -96,7 +96,7 @@ const LandingComp1 = () => {
             style={{
               width: "900px",
               height: "500px",
-              top: "40vh",
+              top: "35vh",
               left: "23vw",
               zIndex: 4,
             }}
@@ -137,7 +137,7 @@ const LandingComp1 = () => {
               height: "100px",
               top: "80vh",
               left: "90vw",
-              zIndex: 5,
+              zIndex: 6,
             }}
           ></CustomedImage>
           <CustomedImage
@@ -185,10 +185,10 @@ const StyledTitle = styled.h2`
 `;
 
 const StyledDescription = styled.h2`
-  width: "10px";
+  width: "100vw";
   font-family: "ONE-Mobile-Regular";
-  top: "5vh";
-  left: "35vw";
+  /* top: "5vh";
+  left: "35vw"; */
 `;
 
 const ImgWrapper = styled.div`
@@ -201,7 +201,7 @@ const CustomedImage = styled.img`
   position: absolute;
   top: 15em;
   left: 15em;
-  width: 500px;
+  width: 100vw;
 `;
 
 const Content = styled.div`
@@ -215,6 +215,7 @@ const IconStyle = {
   // marginLeft: "0.7em",
   // right: "50px",
   // textAlign: "center",
+  top: "95vh",
   fontSize: "70px",
   color: "#C4C4C4",
 };

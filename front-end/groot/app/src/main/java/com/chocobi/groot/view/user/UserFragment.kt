@@ -11,16 +11,11 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
-import com.chocobi.groot.view.community.CommunityTab1Fragment
-import com.chocobi.groot.view.community.CommunityTab2Fragment
-import com.chocobi.groot.view.community.CommunityTab3Fragment
-import com.chocobi.groot.view.community.CommunityTab4Fragment
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.floatingactionbutton.FloatingActionButton

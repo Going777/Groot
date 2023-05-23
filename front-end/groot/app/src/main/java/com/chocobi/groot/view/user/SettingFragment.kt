@@ -17,16 +17,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.chocobi.groot.view.intro.IntroActivity
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.user.model.NotiStatusRequest
-import com.chocobi.groot.view.user.model.PasswordRequest
-import com.chocobi.groot.view.user.model.User
 import com.chocobi.groot.view.user.model.UserService
 import com.kakao.sdk.user.UserApiClient
 import com.navercorp.nid.NaverIdLoginSDK

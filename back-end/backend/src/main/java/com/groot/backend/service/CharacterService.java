@@ -1,6 +1,7 @@
 package com.groot.backend.service;
 
 import com.groot.backend.dto.response.CharacterCollectionDTO;
+import com.groot.backend.dto.response.CharacterDTO;
 import com.groot.backend.dto.response.CharacterImageDTO;
 
 import java.util.List;
@@ -18,5 +19,13 @@ public interface CharacterService {
      * @param userPK user pk
      * @return list of collections
      */
-    public List<CharacterCollectionDTO> getCollections(Long userPK);
+    public List<Integer> getCollections(Long userPK);
+
+    /**
+     * return list of characters with status(collected or not)
+     * hope this method is never used...
+     * @param userPK
+     * @return
+     */
+    public List<CharacterCollectionDTO> getAll(Long userPK);
 }

@@ -1,4 +1,4 @@
-package com.chocobi.groot
+package com.chocobi.groot.view.main
 
 import android.app.NotificationManager
 import android.content.ContentValues
@@ -23,8 +23,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.youtube.CallYoutube
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_CAMERA
 import com.chocobi.groot.data.PERMISSION_GALLERY
@@ -42,9 +42,6 @@ import com.chocobi.groot.view.community.CommunityShareFragment
 import com.chocobi.groot.view.community.model.CommunityService
 import com.chocobi.groot.view.community.model.PopularTagResponse
 import com.chocobi.groot.view.intro.IntroActivity
-import com.chocobi.groot.view.intro.IntroDataService
-import com.chocobi.groot.view.intro.PlantNamesResponse
-import com.chocobi.groot.view.intro.RegionNameResponse
 import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.pot.NotificationFragment
 import com.chocobi.groot.view.pot.PotDetailFragment
@@ -60,16 +57,12 @@ import com.chocobi.groot.view.user.UserFragment
 import com.chocobi.groot.view.user.model.NotiStatusRequest
 import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.kakao.sdk.common.util.Utility
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import java.text.SimpleDateFormat
 
 @Suppress("DEPRECATION")
@@ -555,18 +548,20 @@ class MainActivity : AppCompatActivity() {
         }
 
 //        인기태그 가져오기
-        val isExistPopularTagData = GlobalVariables.prefs.getString("popular_tags_share", "")
-        if (isExistPopularTagData == "") {
-            getPopularTag("나눔")
-            getPopularTag("자유")
-            getPopularTag("QnA")
-            getPopularTag("Tip")
-        } else {
-            getPopularTag("나눔")
-            getPopularTag("자유")
-            getPopularTag("QnA")
-            getPopularTag("Tip")
-        }
+//        val isExistPopularTagData = GlobalVariables.prefs.getString("popular_tags_share", "")
+//        if (isExistPopularTagData == "") {
+//            getPopularTag("나눔")
+//            getPopularTag("자유")
+//            getPopularTag("QnA")
+//            getPopularTag("Tip")
+//        } else {
+        getPopularTag("나눔")
+        getPopularTag("자유")
+        getPopularTag("QnA")
+        getPopularTag("Tip")
+//        }
+
+        getCharacters()
 
         potId = intent.getIntExtra("potId", 0)
         potName = intent.getStringExtra("potName").toString()
@@ -707,6 +702,32 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun getCharacters() {
+        val retrofit = RetrofitClient.getClient()!!
+        val introService = retrofit.create(IntroDataService::class.java)
+
+        introService.requestCharacters()
+            .enqueue(object : Callback<CharacterResponse> {
+                override fun onResponse(
+                    call: Call<CharacterResponse>,
+                    response: Response<CharacterResponse>
+                ) {
+                    if (response.code() == 200) {
+                        val body = response.body()
+                        if(body != null) {
+                            Log.d("MainActivity", "onResponse() 캐릭터 ${body.msg}")
+                            Log.d("MainActivity", "onResponse() 캐릭터 ${body.characters}")
+                            GlobalVariables.prefs.setString("characters", body.characters.toString())
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<CharacterResponse>, t: Throwable) {
+                    TODO("Not yet implemented")
+                }
+
+            })
+    }
 
     private fun updateBottomMenu(navigation: BottomNavigationView) {
         val tag1: Fragment? = supportFragmentManager.findFragmentByTag("pot")

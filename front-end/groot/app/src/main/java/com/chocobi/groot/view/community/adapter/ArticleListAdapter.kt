@@ -1,16 +1,12 @@
 package com.chocobi.groot.view.community.adapter
 
-import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.adapter.item.ItemViewHolder
-import com.chocobi.groot.view.community.CommunityDetailFragment
 
 
 class RecyclerViewAdapter(private val mActivity: MainActivity): RecyclerView.Adapter<ItemViewHolder>() {

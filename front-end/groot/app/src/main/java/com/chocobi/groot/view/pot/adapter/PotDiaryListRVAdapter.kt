@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
-import com.chocobi.groot.MainActivity
+import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.RetrofitClient

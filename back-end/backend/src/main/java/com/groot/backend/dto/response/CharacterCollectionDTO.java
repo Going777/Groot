@@ -15,7 +15,9 @@ public class CharacterCollectionDTO {
 
     private String pngPath;
 
-    private String glbPath;
-
     private Boolean collected;
+
+    public void updateCollected(boolean status) {
+        this.collected = status;
+    }
 }
