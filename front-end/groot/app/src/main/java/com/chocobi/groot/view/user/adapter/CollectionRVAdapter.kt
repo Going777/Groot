@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -29,6 +30,7 @@ import java.net.URL
 class CollectionRVAdapter(
     private val items: MutableList<Character>,
     private val positions: MutableList<Int>
+
 ) : RecyclerView.Adapter<CollectionRVAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -55,6 +57,10 @@ class CollectionRVAdapter(
             Log.d("ViewHolder", "bindItems() $positions")
             val characterImage: ImageView = itemView.findViewById(R.id.characterImage)
             val level = item.level
+            val progressBar: ProgressBar = itemView.findViewById(R.id.loadingProgressBar)
+
+            // 이미지 로딩 전에 ProgressBar 표시
+            progressBar.visibility = View.VISIBLE
 
             val layoutParams = characterImage.layoutParams as ViewGroup.LayoutParams
             if (level == 0) {
@@ -69,12 +75,17 @@ class CollectionRVAdapter(
             }
             characterImage.layoutParams = layoutParams
 
+            characterImage.setImageDrawable(null)
 
             if (position in positions) {
                 GlobalVariables.changeImgView(characterImage, item.pngPath, context)
+                // 이미지 로딩이 완료되면 ProgressBar 감추기
+                progressBar.visibility = View.GONE
             } else {
-                val downloadTask = DownloadAndConvertImageTask(characterImage)
+                val downloadTask = DownloadAndConvertImageTask(characterImage, progressBar)
                 downloadTask.execute(item.pngPath)
+                // 이미지 로딩이 완료되면 ProgressBar 감추기
+//                progressBar.visibility = View.GONE
             }
 
             grwTypeText.text = item.grwType
@@ -82,7 +93,7 @@ class CollectionRVAdapter(
         }
     }
 
-    private inner class DownloadAndConvertImageTask(private val imageView: ImageView) :
+    private inner class DownloadAndConvertImageTask(private val imageView: ImageView, private val progressBar: ProgressBar) :
         AsyncTask<String, Void, Bitmap>() {
         override fun doInBackground(vararg params: String?): Bitmap? {
             val imageUrl = params[0]
@@ -100,6 +111,8 @@ class CollectionRVAdapter(
         override fun onPostExecute(result: Bitmap?) {
             if (result != null) {
                 imageView.setImageBitmap(result)
+                // 이미지 로딩이 완료되면 ProgressBar 감추기
+                progressBar.visibility = View.GONE
             }
         }
     }
