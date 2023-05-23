@@ -19,5 +19,6 @@ data class CharacterResponse(
 data class Character(
     val grwType: String,
     val level: Int,
-    val pngPath: String
+    val pngPath: String,
+    val greyPath: String,
 )

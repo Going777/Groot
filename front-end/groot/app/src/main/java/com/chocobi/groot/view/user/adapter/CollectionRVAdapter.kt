@@ -57,10 +57,9 @@ class CollectionRVAdapter(
             Log.d("ViewHolder", "bindItems() $positions")
             val characterImage: ImageView = itemView.findViewById(R.id.characterImage)
             val level = item.level
-            val progressBar: ProgressBar = itemView.findViewById(R.id.loadingProgressBar)
+//            val progressBar: ProgressBar = itemView.findViewById(R.id.loadingProgressBar)
 
             // 이미지 로딩 전에 ProgressBar 표시
-            progressBar.visibility = View.VISIBLE
 
             val layoutParams = characterImage.layoutParams as ViewGroup.LayoutParams
             if (level == 0) {
@@ -80,10 +79,10 @@ class CollectionRVAdapter(
             if (position in positions) {
                 GlobalVariables.changeImgView(characterImage, item.pngPath, context)
                 // 이미지 로딩이 완료되면 ProgressBar 감추기
-                progressBar.visibility = View.GONE
             } else {
-                val downloadTask = DownloadAndConvertImageTask(characterImage, progressBar)
-                downloadTask.execute(item.pngPath)
+                GlobalVariables.changeImgView(characterImage, item.greyPath, context)
+//                val downloadTask = DownloadAndConvertImageTask(characterImage, progressBar)
+//                downloadTask.execute(item.pngPath)
                 // 이미지 로딩이 완료되면 ProgressBar 감추기
 //                progressBar.visibility = View.GONE
             }
@@ -102,60 +101,60 @@ class CollectionRVAdapter(
         }
     }
 
-    private inner class DownloadAndConvertImageTask(private val imageView: ImageView, private val progressBar: ProgressBar) :
-        AsyncTask<String, Void, Bitmap>() {
-        override fun doInBackground(vararg params: String?): Bitmap? {
-            val imageUrl = params[0]
-            return if (imageUrl != null) {
-                val inputStream = URL(imageUrl).openStream()
-                val originalBitmap = BitmapFactory.decodeStream(inputStream)
-                inputStream.close()
-
-                convertToDarkGrayWithOpacity(originalBitmap)
-            } else {
-                null
-            }
-        }
-
-        override fun onPostExecute(result: Bitmap?) {
-            if (result != null) {
-                imageView.setImageBitmap(result)
-                // 이미지 로딩이 완료되면 ProgressBar 감추기
-                progressBar.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun convertToDarkGrayWithOpacity(originalBitmap: Bitmap): Bitmap {
-        val darkGrayBitmap = Bitmap.createBitmap(
-            originalBitmap.width,
-            originalBitmap.height,
-            Bitmap.Config.ARGB_8888
-        )
-
-        val canvas = Canvas(darkGrayBitmap)
-
-        val paint = Paint().apply {
-            colorFilter = ColorMatrixColorFilter(
-                ColorMatrix().apply {
-                    setSaturation(0f)
-                    setScale(0.2f, 0.2f, 0.2f, 1f)
-                }
-            )
-        }
-
-        canvas.drawBitmap(originalBitmap, 0f, 0f, paint)
-
-        for (y in 0 until darkGrayBitmap.height) {
-            for (x in 0 until darkGrayBitmap.width) {
-                val pixel = darkGrayBitmap.getPixel(x, y)
-                val alpha = Color.alpha(pixel)
-                val darkGrayPixel = Color.argb(alpha, 0x33, 0x33, 0x33)
-                darkGrayBitmap.setPixel(x, y, darkGrayPixel)
-            }
-        }
-
-        return darkGrayBitmap
-    }
+//    private inner class DownloadAndConvertImageTask(private val imageView: ImageView, private val progressBar: ProgressBar) :
+//        AsyncTask<String, Void, Bitmap>() {
+//        override fun doInBackground(vararg params: String?): Bitmap? {
+//            val imageUrl = params[0]
+//            return if (imageUrl != null) {
+//                val inputStream = URL(imageUrl).openStream()
+//                val originalBitmap = BitmapFactory.decodeStream(inputStream)
+//                inputStream.close()
+//
+//                convertToDarkGrayWithOpacity(originalBitmap)
+//            } else {
+//                null
+//            }
+//        }
+//
+//        override fun onPostExecute(result: Bitmap?) {
+//            if (result != null) {
+//                imageView.setImageBitmap(result)
+//                // 이미지 로딩이 완료되면 ProgressBar 감추기
+//                progressBar.visibility = View.GONE
+//            }
+//        }
+//    }
+//
+//    private fun convertToDarkGrayWithOpacity(originalBitmap: Bitmap): Bitmap {
+//        val darkGrayBitmap = Bitmap.createBitmap(
+//            originalBitmap.width,
+//            originalBitmap.height,
+//            Bitmap.Config.ARGB_8888
+//        )
+//
+//        val canvas = Canvas(darkGrayBitmap)
+//
+//        val paint = Paint().apply {
+//            colorFilter = ColorMatrixColorFilter(
+//                ColorMatrix().apply {
+//                    setSaturation(0f)
+//                    setScale(0.2f, 0.2f, 0.2f, 1f)
+//                }
+//            )
+//        }
+//
+//        canvas.drawBitmap(originalBitmap, 0f, 0f, paint)
+//
+//        for (y in 0 until darkGrayBitmap.height) {
+//            for (x in 0 until darkGrayBitmap.width) {
+//                val pixel = darkGrayBitmap.getPixel(x, y)
+//                val alpha = Color.alpha(pixel)
+//                val darkGrayPixel = Color.argb(alpha, 0x33, 0x33, 0x33)
+//                darkGrayBitmap.setPixel(x, y, darkGrayPixel)
+//            }
+//        }
+//
+//        return darkGrayBitmap
+//    }
 }
 
