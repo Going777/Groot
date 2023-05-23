@@ -98,6 +98,20 @@ public class CharacterServiceImpl implements CharacterService {
         return ret;
     }
 
+    @Override
+    public String getGlb(int position) {
+        long grwTypeCode = position / 3 + 1;
+        int level = position % 3;
+        logger.info("Get character : {} Lv.{}", grwTypeCode, level);
+
+        CharacterEntity characterEntity = characterRepository.findByTypeAndLevel(grwTypeCode, level);
+
+        if(characterEntity == null)
+            throw new NoSuchElementException();
+
+        return characterEntity.getGlbPath();
+    }
+
     /**
      * Add collection index to list
      * @param potEntity

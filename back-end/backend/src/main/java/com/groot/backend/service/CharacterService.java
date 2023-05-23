@@ -28,4 +28,11 @@ public interface CharacterService {
      * @return
      */
     public List<CharacterCollectionDTO> getAll(Long userPK);
+
+    /**
+     * return URL of glb file
+     * @param position
+     * @return
+     */
+    public String getGlb(int position);
 }
