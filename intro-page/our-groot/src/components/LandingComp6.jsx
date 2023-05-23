@@ -8,8 +8,6 @@ import comp6_1 from "../assets/comp6_1.png";
 import comp6_2 from "../assets/comp6_2.png";
 
 import AOS from "aos";
-import comp6_1 from "../assets/comp6_1.png";
-import comp6_2 from "../assets/comp6_2.png";
 
 const LandingComp6 = () => {
   useEffect(() => {
