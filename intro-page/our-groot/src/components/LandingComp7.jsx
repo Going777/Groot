@@ -21,16 +21,16 @@ const LandingComp7 = () => {
         <ImgWrapper>
           <CustomedImage
             data-aos="fade-up"
-            data-aos-delay="300"
-            data-aos-duration="1500"
+            data-aos-delay="500"
+            data-aos-duration="2500"
             src={comp7}
             style={{ width: "300px", top: "5vh", left: "25vw", zIndex: 2 }}
           ></CustomedImage>
         </ImgWrapper>
         <Content
           data-aos="fade-left"
-          data-aos-delay="300"
-          data-aos-duration="1500"
+          data-aos-delay="500"
+          data-aos-duration="2500"
         >
           <StyledTitle>커뮤니티</StyledTitle>
           <ContentTitle>

@@ -24,35 +24,20 @@ const LandingComp5 = () => {
         <ImgWrapper>
           <CustomedImage
             data-aos="fade-up"
-            data-aos-delay="200"
-            data-aos-duration="1500"
+            data-aos-delay="500"
+            data-aos-duration="2500"
             src={comp5_1}
             style={{ width: "500px", top: "20vh", left: "20vw", zIndex: 2 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
-            data-aos-delay="300"
-            data-aos-duration="1500"
+            data-aos-delay="500"
+            data-aos-duration="2500"
             src={comp5_2}
             style={{ width: "500px", top: "35vh", left: "20vw", zIndex: 3 }}
           ></CustomedImage>
-          {/* <CustomedImage
-            data-aos="fade-up"
-            data-aos-delay="1000"
-            data-aos-duration="1500"
-            // src={drawing3}
-            style={{ width: "500px", top: "30vh", left: "15vw", zIndex: 4 }}
-          ></CustomedImage>
-          <CustomedImage
-            data-aos="fade-up"
-            data-aos-delay="1500"
-            data-aos-duration="1500"
-            // src={drawing1}
-            style={{ width: "500px", top: "45vh", left: "20vw", zIndex: 5 }}
-          ></CustomedImage> */}
         </ImgWrapper>
-        <Content data-aos="fade-left"
-        data-aos-duration="1500">
+        <Content data-aos="fade-left" data-aos-duration="2500">
           <StyledTitle>일정 관리</StyledTitle>
           <ContentTitle>
             <ContentDescription>

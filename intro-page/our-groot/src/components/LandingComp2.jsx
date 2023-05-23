@@ -18,19 +18,22 @@ const LandingComp2 = () => {
   return (
     <Background style={{ textAlign: "left" }}>
       <TitleDescriptionWrapper>
-        <Content data-aos="fade-right"
-        data-aos-duration="1500">
+        <Content
+          data-aos="fade-right"
+          data-aos-delay="500"
+          data-aos-duration="2500"
+        >
           <StyledTitle>AI 식물 식별</StyledTitle>
           <ContentTitle>
             <ContentDescription>
               사진으로 간단하게
-              <br/>
+              <br />
               화분 등록
             </ContentDescription>
           </ContentTitle>
           <ContentScript>
             <StyledDescription>
-            식물을 촬영하면 식물 식별부터  
+              식물을 촬영하면 식물 식별부터
               <br /> 관련 정보까지 한번에
             </StyledDescription>
           </ContentScript>
@@ -38,8 +41,8 @@ const LandingComp2 = () => {
         <ImgWrapper>
           <CustomedImage
             data-aos="fade-up"
-            data-aos-delay="300"
-            data-aos-duration="1500"
+            data-aos-delay="500"
+            data-aos-duration="2500"
             src={comp2_1}
             style={{ width: "300px", top: "5vh", left: "10vw", zIndex: 2 }}
           ></CustomedImage>
@@ -125,5 +128,4 @@ const Content = styled.div`
   padding-top: 20vh;
 `;
 
-const ContentScript = styled.div`
-`;
+const ContentScript = styled.div``;

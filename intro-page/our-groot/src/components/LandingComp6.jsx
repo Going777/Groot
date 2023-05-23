@@ -19,8 +19,8 @@ const LandingComp6 = () => {
       <TitleDescriptionWrapper data-aos="fade-up">
         <Content
           data-aos="fade-right"
-          data-aos-delay="300"
-          data-aos-duration="1500"
+          data-aos-delay="500"
+          data-aos-duration="2500"
         >
           <StyledTitle>식물 백과사전</StyledTitle>
           <ContentTitle>
@@ -43,15 +43,15 @@ const LandingComp6 = () => {
         <ImgWrapper>
           <CustomedImage
             data-aos="fade-up"
-            data-aos-delay="300"
-            data-aos-duration="1500"
+            data-aos-delay="500"
+            data-aos-duration="2500"
             src={comp6_1}
             style={{ width: "300px", top: "5vh", left: "10vw", zIndex: 2 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="500"
-            data-aos-duration="1500"
+            data-aos-duration="2500"
             src={comp6_2}
             style={{ width: "300px", top: "15vh", left: "27vw", zIndex: 3 }}
           ></CustomedImage>
