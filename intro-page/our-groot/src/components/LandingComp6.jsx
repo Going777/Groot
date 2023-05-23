@@ -10,7 +10,7 @@ import styled from "styled-components";
 // import shiba4 from "/assets/img/shiba_profile.png";
 import AOS from "aos";
 
-const LandingComp4 = () => {
+const LandingComp6 = () => {
   useEffect(() => {
     AOS.init();
   });
@@ -19,17 +19,21 @@ const LandingComp4 = () => {
     <Background style={{ textAlign: "left" }}>
       <TitleDescriptionWrapper data-aos="fade-up">
         <Content>
-          <StyledTitle>캐릭터 육성</StyledTitle>
+          <StyledTitle>식물 백과사전</StyledTitle>
           <ContentTitle>
-            <ContentDescription>식물과 함께 성장하는 캐릭터</ContentDescription>
+            <ContentDescription>
+              관심있는 식물을
+              <br />
+              빠르게 검색해보세요
+            </ContentDescription>
           </ContentTitle>
           <ContentScript>
             <StyledDescription>
-              11종의 생육 형태에 따라 부여되는
-              <br /> 3단계의 캐릭터를 만나보세요.
-              <br /> 물주기 등의 활동을 통해 경험치를
+              필터링 검색 기능으로
+              <br /> 원하는 조건의 식물을 찾을 수 있습니다.
+              <br /> 식물 이름을 모른다면
               <br />
-              얻어 캐릭터를 육성할 수 있습니다.
+              이미지 검색으로 식별하여 식물을 찾아드려요.
             </StyledDescription>
           </ContentScript>
         </Content>
@@ -67,7 +71,7 @@ const LandingComp4 = () => {
     </Background>
   );
 };
-export default LandingComp4;
+export default LandingComp6;
 
 const Background = styled.div`
   background: #f3f3f3;
