@@ -4,10 +4,9 @@ import styled from "styled-components";
 // import Button, { ButtonProps } from "@mui/material/Button";
 // import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
-// import shiba1 from "/assets/img/shiba_landing.png";
-// import shiba2 from "/assets/img/shiba_landing2.png";
-// import shiba3 from "/assets/img/shiba_landing3.png";
-// import shiba4 from "/assets/img/shiba_profile.png";
+import comp6_1 from "../assets/comp6_1.png";
+import comp6_2 from "../assets/comp6_2.png";
+
 import AOS from "aos";
 
 const LandingComp6 = () => {
@@ -18,7 +17,11 @@ const LandingComp6 = () => {
   return (
     <Background style={{ textAlign: "left" }}>
       <TitleDescriptionWrapper data-aos="fade-up">
-        <Content>
+        <Content
+          data-aos="fade-right"
+          data-aos-delay="300"
+          data-aos-duration="1500"
+        >
           <StyledTitle>식물 백과사전</StyledTitle>
           <ContentTitle>
             <ContentDescription>
@@ -42,29 +45,15 @@ const LandingComp6 = () => {
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="1500"
-            // src={shiba1}
-            style={{ width: "500px", top: "5vh", left: "10vw", zIndex: 2 }}
+            src={comp6_1}
+            style={{ width: "300px", top: "5vh", left: "10vw", zIndex: 2 }}
           ></CustomedImage>
           <CustomedImage
             data-aos="fade-up"
             data-aos-delay="500"
             data-aos-duration="1500"
-            // src={shiba2}
-            style={{ width: "500px", top: "25vh", left: "25vw", zIndex: 3 }}
-          ></CustomedImage>
-          <CustomedImage
-            data-aos="fade-up"
-            data-aos-delay="1000"
-            data-aos-duration="1500"
-            // src={shiba3}
-            style={{ width: "500px", top: "40vh", left: "15vw", zIndex: 4 }}
-          ></CustomedImage>
-          <CustomedImage
-            data-aos="fade-up"
-            data-aos-delay="1500"
-            data-aos-duration="1500"
-            // src={shiba4}
-            style={{ width: "300px", top: "47vh", left: "35vw", zIndex: 5 }}
+            src={comp6_2}
+            style={{ width: "300px", top: "15vh", left: "25vw", zIndex: 3 }}
           ></CustomedImage>
         </ImgWrapper>
       </TitleDescriptionWrapper>
