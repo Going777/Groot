@@ -9,6 +9,7 @@ import styled from "styled-components";
 // import shiba3 from "/assets/img/shiba_landing3.png";
 // import shiba4 from "/assets/img/shiba_profile.png";
 import AOS from "aos";
+import comp4 from "../assets/comp4.png";
 
 const LandingComp4 = () => {
   useEffect(() => {
@@ -38,7 +39,7 @@ const LandingComp4 = () => {
             data-aos="fade-up"
             data-aos-delay="300"
             data-aos-duration="1500"
-            // src={shiba1}
+            // src={comp4}
             style={{ width: "500px", top: "5vh", left: "10vw", zIndex: 2 }}
           ></CustomedImage>
           <CustomedImage
@@ -52,7 +53,7 @@ const LandingComp4 = () => {
             data-aos="fade-up"
             data-aos-delay="1000"
             data-aos-duration="1500"
-            // src={shiba3}
+            src={comp4}
             style={{ width: "500px", top: "40vh", left: "15vw", zIndex: 4 }}
           ></CustomedImage>
           <CustomedImage
@@ -118,7 +119,7 @@ const CustomedImage = styled.img`
 `;
 
 const Content = styled.div`
-  padding-left: 10vw;
+  padding-left: 17vw;
   padding-top: 20vh;
   /* margin-left: 5em; */
 `;
