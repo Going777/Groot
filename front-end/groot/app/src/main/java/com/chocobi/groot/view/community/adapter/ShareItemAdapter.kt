@@ -16,9 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.view.chat.ChatFragment
-import com.chocobi.groot.view.chat.model.ChatUserListResponse
+import com.chocobi.groot.util.ThreadUtil
 import com.chocobi.groot.view.community.CommunityDetailFragment
 import com.chocobi.groot.view.community.model.CommunityShareItemResponse
 import java.lang.ref.WeakReference

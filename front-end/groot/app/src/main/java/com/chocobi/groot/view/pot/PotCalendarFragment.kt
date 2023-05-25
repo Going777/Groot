@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.databinding.CalendarDayBinding
 import com.chocobi.groot.databinding.FragmentPotCalendarBinding
 import com.chocobi.groot.view.pot.adapter.PotCalendarRVAdapter

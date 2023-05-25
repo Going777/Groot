@@ -2,27 +2,21 @@ package com.chocobi.groot.view.user
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.transition.Scene
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.main.Character
-import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.user.adapter.CollectionRVAdapter
 import com.chocobi.groot.view.user.model.CharacterGlbResponse
 import com.chocobi.groot.view.user.model.CollectionResponse
 import com.chocobi.groot.view.user.model.UserService
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import io.github.sceneview.SceneView
 import io.github.sceneview.math.Position
 import io.github.sceneview.node.ModelNode
@@ -32,7 +26,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Response
-import javax.security.auth.callback.Callback
 
 class CollectionActivity : AppCompatActivity() {
     private var characters = mutableListOf<Character>()

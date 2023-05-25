@@ -121,7 +121,7 @@
             android:name="com.google.ar.core"
             android:value="optional" /> <!-- firebase messaging -->
         <service
-            android:name=".message.MyFirebaseMessagingService"
+            android:name=".util.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

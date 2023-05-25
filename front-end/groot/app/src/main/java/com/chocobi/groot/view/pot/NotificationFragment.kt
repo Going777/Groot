@@ -1,7 +1,6 @@
 package com.chocobi.groot.view.pot
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -12,19 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
 import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.data.RetrofitClient
-import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.chat.model.ChatInfoResponse
 import com.chocobi.groot.view.chat.model.ChatUserListService
-import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.pot.adapter.NotificationRVAdapter
 import com.chocobi.groot.view.pot.model.NotiMessage
 import com.chocobi.groot.view.pot.model.NotiResponse
 import com.chocobi.groot.view.pot.model.NotiService
 import com.chocobi.groot.view.user.adapter.UserTab1RVAdapter
-import com.chocobi.groot.view.user.model.UserService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

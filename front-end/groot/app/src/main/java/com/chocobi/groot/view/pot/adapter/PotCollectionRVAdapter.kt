@@ -1,6 +1,5 @@
 package com.chocobi.groot.view.pot.adapter
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,15 +10,12 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.GlobalVariables
+import com.chocobi.groot.util.ThreadUtil
 import com.chocobi.groot.view.pot.model.Pot
-import com.chocobi.groot.view.sensor.SensorActivity
 import java.lang.ref.WeakReference
 
 class PotCollectionRVAdapter(val items: List<Pot>) :

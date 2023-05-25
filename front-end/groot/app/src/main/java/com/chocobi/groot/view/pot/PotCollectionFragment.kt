@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_CAMERA
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.mlkit.kotlin.ml.ArActivity
 import com.chocobi.groot.view.pot.adapter.PotCollectionRVAdapter
 import com.chocobi.groot.view.pot.model.Pot

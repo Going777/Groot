@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.ThreadUtil
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.community.adapter.ShareItemAdapter
 import com.chocobi.groot.view.community.model.CommunityShareItemResponse
 import com.chocobi.groot.view.community.model.ShareArticles

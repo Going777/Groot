@@ -1,29 +1,17 @@
 package com.chocobi.groot.view.pot.adapter
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.view.pot.model.DateTime
 import com.chocobi.groot.view.pot.model.NotiMessage
-import com.chocobi.groot.view.pot.model.Pot
-import com.chocobi.groot.view.sensor.SensorActivity
 import com.chocobi.groot.view.user.adapter.UserTab1RVAdapter
 import java.lang.ref.WeakReference
 

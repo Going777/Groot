@@ -1,6 +1,5 @@
 package com.chocobi.groot.view.community
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,8 +10,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import java.lang.ref.WeakReference
+import com.chocobi.groot.util.ThreadUtil
 
 class CommunityDetailImg3Fragment(private val image: String) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {

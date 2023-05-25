@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.model.CommunityService
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

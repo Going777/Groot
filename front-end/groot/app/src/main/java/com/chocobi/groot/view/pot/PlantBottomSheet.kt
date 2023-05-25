@@ -19,7 +19,7 @@ import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.CustomAutoCompleteAdapter
 import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.search.SearchDetailFragment
 import com.chocobi.groot.view.search.adapter.DictRVAdapter
 import com.chocobi.groot.view.search.model.PlantMetaData

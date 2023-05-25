@@ -24,13 +24,13 @@ import androidx.core.content.ContextCompat
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.addpot.Pot1Activity
 import com.chocobi.groot.view.search.model.PlantDetailData
 import com.chocobi.groot.view.search.model.PlantDetailResponse
 import com.chocobi.groot.view.search.model.PlantIdentifyResponse
 import com.chocobi.groot.view.search.model.SearchService
-import com.chocobi.groot.youtube.CallYoutube
+import com.chocobi.groot.util.CallYoutube
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView

@@ -1,4 +1,4 @@
-package com.chocobi.groot.message
+package com.chocobi.groot.util
 
 
 import android.app.Notification
@@ -19,11 +19,11 @@ import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.google.firebase.messaging.FirebaseMessaging
 
-private const val CHANNEL_ID = "channel_id"
-private const val CHANNEL_NAME = "channel_name"
-private val TAG = "FirebaseService"
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
+    private val TAG = "FirebaseService"
+    private val CHANNEL_ID = "channel_id"
+    private val CHANNEL_NAME = "channel_name"
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         //token을 서버로 전송
@@ -86,12 +86,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "Message data : ${remoteMessage.data}")
         Log.d(TAG, "Message noti : ${remoteMessage.notification}")
 
-        if(remoteMessage.data.isNotEmpty()){
+        if (remoteMessage.data.isNotEmpty()) {
             //알림생성
             sendNotification(remoteMessage)
 //            Log.d(TAG, remoteMessage.data["title"].toString())
 //            Log.d(TAG, remoteMessage.data["body"].toString())
-        }else {
+        } else {
             Log.e(TAG, "data가 비어있습니다. 메시지를 수신하지 못했습니다.")
         }
 
@@ -104,7 +104,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         // 일회용 PendingIntent : Intent 의 실행 권한을 외부의 어플리케이션에게 위임
         val intent = Intent(this, MainActivity::class.java)
         //각 key, value 추가
-        for(key in remoteMessage.data.keys){
+        for (key in remoteMessage.data.keys) {
             intent.putExtra(key, remoteMessage.data.getValue(key))
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP) // Activity Stack 을 경로만 남김(A-B-C-D-B => A-B)
@@ -127,17 +127,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setSound(soundUri)  // 알림 소리
             .setContentIntent(pendingIntent) // 알림 실행 시 Intent
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // 오레오 버전 이후에는 채널이 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, "Notice", NotificationManager.IMPORTANCE_DEFAULT)
+            val channel =
+                NotificationChannel(CHANNEL_ID, "Notice", NotificationManager.IMPORTANCE_DEFAULT)
             notificationManager.createNotificationChannel(channel)
         }
 
         // 알림 생성
         notificationManager.notify(uniId, notificationBuilder.build())
     }
+
     fun getFirebaseToken() {
         //비동기 방식
         FirebaseMessaging.getInstance().token.addOnSuccessListener {

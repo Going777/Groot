@@ -1,6 +1,7 @@
-package com.chocobi.groot.data
+package com.chocobi.groot.util
 
 import android.util.Log
+import com.chocobi.groot.data.GlobalVariables
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
