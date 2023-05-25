@@ -55,16 +55,11 @@ class CommunityPostFragment(private val postCategory: String) :
     private lateinit var postImageAdapter: PostImageAdapter
     private val imageList: ArrayList<File?> = ArrayList()
     private val maxImageCnt = 3
-    private lateinit var articleImg: ImageView
     private var imgFile: File? = null
-    private var imageFiles: ArrayList<File> = ArrayList()
-    private var imageArray: Array<File?>? = null
     private var thelist: MutableList<MultipartBody.Part?> = mutableListOf(null, null, null)
     private lateinit var tagRecyclerView: RecyclerView
     private lateinit var tagInput: EditText
 
-
-    private val tagList = mutableListOf<String>()
 
 
     override fun onCreateView(
@@ -87,14 +82,13 @@ class CommunityPostFragment(private val postCategory: String) :
         categoryNameTextView.text = postCategory
         categoryIcon.setImageResource(R.drawable.ic_post)
 
+
 //        ================================================================
-//        ================================================================
-//        뒤로 가기 버튼 처리해야 하는 곳
+//        뒤로 가기 버튼
         val backBtn = view.findViewById<ImageView>(R.id.backBtn)
         backBtn.setOnClickListener {
             requireActivity().onBackPressed()
         }
-//        ================================================================
 //        ================================================================
 
 
@@ -107,7 +101,6 @@ class CommunityPostFragment(private val postCategory: String) :
         tagInput = view.findViewById(R.id.tagInput)
 
         // RecyclerView에 사용할 레이아웃 매니저와 어댑터 생성
-//        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         val tagAdapter = TagAdapter()
 
         // RecyclerView에 레이아웃 매니저와 어댑터 설정
@@ -176,31 +169,8 @@ class CommunityPostFragment(private val postCategory: String) :
 
         postCameraBtn.setOnClickListener {
             GlobalVariables.defaultAlertDialog(requireContext(), message = "사진 첨부는 최대 3장까지 가능합니다.", positiveFtn = ::requestPermissions)
-//            val intent = Intent(Intent.ACTION_PICK)
-//            intent.type = "image/*"
-//            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-//
-//            activityResult.launch(intent)
         }
 
-
-//        var retrofit = RetrofitClient.getClient()!!
-//        var communityPostService = retrofit.create(CommunityPostService::class.java)
-//        val userPK = UserData.getUserPK()
-
-//        var filePart: MultipartBody.Part? = null
-//
-//        if (file != null) {
-//            val mediaType = "image/*".toMediaTypeOrNull()
-//            val requestFile = RequestBody.create(mediaType, file!!)
-//            filePart = MultipartBody.Part.createFormData("image", file!!.name, requestFile)
-//        }
-//
-//        val imageParts = arrayOfNulls<MultipartBody.Part>(imageFiles.size)
-//        for ((i, imageFile) in imageFiles.withIndex()) {
-//            val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), imageFile)
-//            imageParts[i] = MultipartBody.Part.createFormData("image[]", imageFile.name, requestFile)
-//        }
 
         val toPostListBtn = view.findViewById<Button>(R.id.toPostListBtn)
         var titleInput = view.findViewById<EditText>(R.id.titleInput)
@@ -251,11 +221,6 @@ class CommunityPostFragment(private val postCategory: String) :
                         Toast.makeText(requireContext(), "제목은 30자까지 입력 가능합니다.", Toast.LENGTH_LONG)
                             .show()
                     }
-//                    Alert 코드
-//                    if (titleInput.text.length >= 30) {
-//                        val builder = AlertDialog.Builder(requireContext())
-//                        builder.setMessage("30자 이내로 입력해주세요.").setPositiveButton("확인", null).show()
-//                    }
                 }
 
                 override fun beforeTextChanged(
@@ -281,11 +246,6 @@ class CommunityPostFragment(private val postCategory: String) :
                         Toast.makeText(requireContext(), "내용은 1500자까지 입력 가능합니다.", Toast.LENGTH_LONG)
                             .show()
                     }
-//                    Alert 코드
-//                    if (titleInput.text.length >= 30) {
-//                        val builder = AlertDialog.Builder(requireContext())
-//                        builder.setMessage("30자 이내로 입력해주세요.").setPositiveButton("확인", null).show()
-//                    }
                 }
 
                 override fun beforeTextChanged(
@@ -318,15 +278,9 @@ class CommunityPostFragment(private val postCategory: String) :
                     android.Manifest.permission.READ_EXTERNAL_STORAGE,
                     android.Manifest.permission.READ_MEDIA_IMAGES
                 ),
-//                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
                 PERMISSION_GALLERY
             )
-//            requestPermissions(
-////                권한 설정 수정
-////                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-//                arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES),
-//                PERMISSION_GALLERY
-//            )
+
         }
     }
 
@@ -375,18 +329,6 @@ class CommunityPostFragment(private val postCategory: String) :
             Log.d("CommunityPostFragmentData", "$dataCheck")
             data.let { data ->
 
-//                val imageUri = data.data
-//                if (imageUri != null) {
-//                    articleImg.setImageURI(imageUri)
-//                    imgFile = uriToFile(imageUri)
-//                    Log.d("CommunityPostFragmentImgFile", "$imgFile")
-//
-//                }
-//                imgFile?.let { imageFiles.add(it) }
-//
-//                Log.d("CommunityPostFragmentImageFiles", "$imageFiles")
-
-
                 val clipData = data.clipData
 
                 if (clipData != null) {
@@ -405,9 +347,6 @@ class CommunityPostFragment(private val postCategory: String) :
                             imgFile = uriToFile(imageUri)
                         }
                         imageList.add(imgFile)
-
-                        Log.d("CommunityPostFragmentImageList", "$imageList")
-
                     }
                     Toast.makeText(
                         requireContext(),
@@ -482,42 +421,6 @@ class CommunityPostFragment(private val postCategory: String) :
         val communityPostService = retrofit.create(CommunityPostService::class.java)
         val userPK = UserData.getUserPK()
 
-        var filePart: MultipartBody.Part? = null
-        var file: File?
-        val mediaType = "image/*".toMediaTypeOrNull()
-
-//        val imageParts = mutableListOf<MultipartBody.Part>()
-//
-//        Log.d("CommunityPostFragmentFiles", "$imageList")
-//        if (imageList.size >= 1) {
-//            if (imageList?.get(0) != null) {
-//                val requestFile = imageList[0]?.let { RequestBody.create(mediaType, it) }
-//                filePart =
-//                    MultipartBody.Part.createFormData("image", imageList[0]!!.name, requestFile!!)
-//                Log.d("CommunityPostFragmentFilePart", "$filePart")
-//
-//                imageParts.add(filePart)
-//            }
-//        }
-//        if (imageList.size >= 2) {
-//            if (imageList?.get(1) != null) {
-//                val requestFile = imageList[1]?.let { RequestBody.create(mediaType, it) }
-//                filePart =
-//                    MultipartBody.Part.createFormData("image", imageList[1]!!.name, requestFile!!)
-//                imageParts.add(filePart)
-//            }
-//        }
-//        if (imageList.size == 3) {
-//            if (imageList?.get(2) != null) {
-//                val requestFile = imageList[2]?.let { RequestBody.create(mediaType, it) }
-//                filePart =
-//                    MultipartBody.Part.createFormData("image", imageList[2]!!.name, requestFile!!)
-//                imageParts.add(filePart)
-//            }
-//        }
-//
-//        Log.d("CommunityPostFragmentImageParts", "$imageParts")
-
 
 //        파일 첨부
         val imageParts = MultipartBody.Builder().setType(MultipartBody.FORM)
@@ -537,9 +440,6 @@ class CommunityPostFragment(private val postCategory: String) :
                 }
             }
         }
-
-
-
 
 
         communityPostService.requestCommunityPost(
@@ -573,6 +473,4 @@ class CommunityPostFragment(private val postCategory: String) :
                 }
             })
     }
-
-
 }

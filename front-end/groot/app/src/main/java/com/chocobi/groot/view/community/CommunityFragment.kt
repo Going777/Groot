@@ -24,12 +24,6 @@ class CommunityFragment : Fragment() {
     private var regionList: ArrayList<String>? = null
     private var regionFullList: ArrayList<String>? = null
 
-    private lateinit var popularTags: ArrayList<Tag>
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onPause() {
         super.onPause()
@@ -42,7 +36,6 @@ class CommunityFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("CommunityFragment", "onCreateView()")
         // 소프트 인풋 모드를 재설정
         requireActivity().window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
@@ -102,8 +95,6 @@ class CommunityFragment : Fragment() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {
                 }
             })
-
-
     }
 
     private inner class CommunityTabAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
