@@ -38,22 +38,33 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var signupNameInputImg: ImageView
     private lateinit var signupPwInputImg: ImageView
     private lateinit var signupConfPwInputImg: ImageView
+    private lateinit var dupIdBtn: Button
+    private lateinit var dupNameBtn: Button
+    private lateinit var basicSignupBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-//        ================================================================
-//        ================================================================
-//        뒤로 가기 버튼 처리해야 하는 곳
+//        뒤로 가기 버튼
         val backBtn = findViewById<ImageView>(R.id.backBtn)
         backBtn.setOnClickListener {
             this.onBackPressed()
         }
-//        ================================================================
-//        ================================================================
 
+//        화면 연결
+        findViews()
 
+        checkEditText(signupIdInput, signupIdInputImg)
+        checkEditText(signupNameInput, signupNameInputImg)
+        checkEditText(signupPwInput, signupPwInputImg)
+        checkEditText(signupConfPwInput, signupConfPwInputImg)
+
+//        이벤트리스너 등록
+        setListeners()
+    }
+
+    private fun findViews() {
         signupIdInput = findViewById(R.id.signupIdInput)
         signupNameInput = findViewById(R.id.signupNameInput)
         signupPwInput = findViewById(R.id.signupPwInput)
@@ -62,15 +73,12 @@ class SignupActivity : AppCompatActivity() {
         signupNameInputImg = findViewById(R.id.signupNameInputImg)
         signupPwInputImg = findViewById(R.id.signupPwInputImg)
         signupConfPwInputImg = findViewById(R.id.signupConfPwInputImg)
-        val dupIdBtn = findViewById<Button>(R.id.dupIdBtn)
-        val dupNameBtn = findViewById<Button>(R.id.dupNameBtn)
-        val basicSignupBtn = findViewById<Button>(R.id.basicSignupBtn)
+        dupIdBtn = findViewById(R.id.dupIdBtn)
+        dupNameBtn = findViewById(R.id.dupNameBtn)
+        basicSignupBtn = findViewById(R.id.basicSignupBtn)
+    }
 
-        checkEditText(signupIdInput, signupIdInputImg)
-        checkEditText(signupNameInput, signupNameInputImg)
-        checkEditText(signupPwInput, signupPwInputImg)
-        checkEditText(signupConfPwInput, signupConfPwInputImg)
-
+    private fun setListeners() {
         dupIdBtn.setOnClickListener {
             GlobalVariables.hideKeyboard(this)
             var textId = signupIdInput.text.toString()
@@ -89,7 +97,6 @@ class SignupActivity : AppCompatActivity() {
             var textName = signupNameInput.text.toString()
             var textPw = signupPwInput.text.toString()
             var textConfPw = signupConfPwInput.text.toString()
-            var textProfile = ""
 
             when {
                 !isCheckedDupId -> {
@@ -115,6 +122,7 @@ class SignupActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
 
     private fun checkEditText(editText: EditText, imageView: ImageView) {

@@ -10,18 +10,9 @@ import retrofit2.http.Query
 
 interface SignupService {
 
-    //    @FormUrlEncoded
     @POST("/api/users")
     fun requestSignup(
-
-//        raw data json으로 보낼 때
         @Body params: SignupRequest,
-
-//        form data로 보낼 때
-//    @Field("userId") textId:String,
-//    @Field("nickName") textName:String,
-//    @Field("password") textPw:String,
-//    @Field("profile") textProfile:String,
     ): Call<SignupResponse>
 }
 

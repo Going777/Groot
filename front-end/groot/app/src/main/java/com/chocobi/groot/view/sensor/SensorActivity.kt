@@ -45,7 +45,9 @@ class SensorActivity : AppCompatActivity(), SensorEventListener {
             this.onBackPressed()
         }
 
+//        화면 연결
         findViews()
+
         plantId = intent.getIntExtra("plantId", 0)
         val plantName = intent.getStringExtra("plantName")
         val plantNameText = findViewById<TextView>(R.id.plantName)
