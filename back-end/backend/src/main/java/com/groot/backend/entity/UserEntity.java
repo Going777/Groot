@@ -72,6 +72,10 @@ public class UserEntity extends BaseEntity{
     @JsonManagedReference
     private List<ChattingEntity> receivers;
 
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<ArticleBookmarkEntity> articleBookmarkEntities;
+
 
     public UserDTO toUserDTO(){
         Long date = Duration.between(this.getCreatedDate(), LocalDateTime.now()).toDays() +1;
