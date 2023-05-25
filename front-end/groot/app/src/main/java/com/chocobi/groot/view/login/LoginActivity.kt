@@ -44,6 +44,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginPwInputImg: ImageView
     private lateinit var naverLoginBtn: LinearLayout
     private lateinit var kakaoLoginBtn: LinearLayout
+    private lateinit var basicLoginBtn: Button
+    private lateinit var toSignupText: TextView
 
     private var nickname: String? = null
     private var profileImg: String? = null
@@ -56,21 +58,35 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+//        화면 연결
+        findViews()
+
 //        소셜 로그인 처리
-        kakaoLoginBtn = findViewById(R.id.kakaoLoginBtn)
-        naverLoginBtn = findViewById(R.id.naverLoginBtn)
         handleKakaoLogin()
         handleNaverLogin()
 
-        val basicLoginBtn = findViewById<Button>(R.id.basicLoginBtn)
-        val toSignupText = findViewById<TextView>(R.id.toSignupText)
+
+        checkEditText(loginIdInput, loginIdInputImg)
+        checkEditText(loginPwInput, loginPwInputImg)
+
+//        이벤트 리스너 등록
+        setListeners()
+    }
+
+    private fun findViews(){
+        kakaoLoginBtn = findViewById(R.id.kakaoLoginBtn)
+        naverLoginBtn = findViewById(R.id.naverLoginBtn)
+
         loginIdInput = findViewById(R.id.loginIdInput)
         loginPwInput = findViewById(R.id.loginPwInput)
         loginIdInputImg = findViewById(R.id.loginIdInputImg)
         loginPwInputImg = findViewById(R.id.loginPwInputImg)
 
-        checkEditText(loginIdInput, loginIdInputImg)
-        checkEditText(loginPwInput, loginPwInputImg)
+        basicLoginBtn = findViewById(R.id.basicLoginBtn)
+        toSignupText = findViewById(R.id.toSignupText)
+    }
+
+    private fun setListeners() {
 
 //        로그인 버튼 클릭시
         basicLoginBtn.setOnClickListener {
@@ -99,6 +115,7 @@ class LoginActivity : AppCompatActivity() {
             var intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
+
     }
 
     private fun handleKakaoLogin() {
