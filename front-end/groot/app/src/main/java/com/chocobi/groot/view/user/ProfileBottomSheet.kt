@@ -26,7 +26,7 @@ import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.GlobalVariables.Companion.changeImgView
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_STORAGE
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.signup.DupNameResponse
 import com.chocobi.groot.view.signup.DupNameService

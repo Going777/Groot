@@ -1,23 +1,17 @@
 package com.chocobi.groot.view.search.adapter
 
 import android.graphics.Bitmap
-import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.view.search.SearchDetailFragment
-import com.chocobi.groot.view.search.SearchItemViewHolder
+import com.chocobi.groot.util.ThreadUtil
 import com.chocobi.groot.view.search.model.PlantMetaData
-import com.chocobi.groot.view.search.model.PlantSearchResponse
 import java.lang.ref.WeakReference
 
 class DictRVAdapter(var items: ArrayList<PlantMetaData>) :

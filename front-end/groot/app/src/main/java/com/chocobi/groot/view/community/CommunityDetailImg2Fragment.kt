@@ -10,7 +10,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.util.ThreadUtil
 
 class CommunityDetailImg2Fragment(private val image: String) : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {

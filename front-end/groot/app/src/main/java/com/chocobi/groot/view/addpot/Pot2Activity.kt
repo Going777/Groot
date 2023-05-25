@@ -16,7 +16,7 @@ import androidx.core.net.toUri
 import com.airbnb.lottie.LottieAnimationView
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.addpot.model.AddPotRequest
 import com.chocobi.groot.view.addpot.model.AddPotResponse
 import com.chocobi.groot.view.addpot.model.AddPotService

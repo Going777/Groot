@@ -1,4 +1,4 @@
-package com.chocobi.groot.Thread
+package com.chocobi.groot.util
 
 import android.os.Handler
 import android.os.Looper

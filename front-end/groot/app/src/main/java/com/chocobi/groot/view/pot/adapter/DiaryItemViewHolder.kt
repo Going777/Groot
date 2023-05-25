@@ -1,18 +1,16 @@
 package com.chocobi.groot.view.pot.adapter
 
 import android.graphics.Bitmap
-import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.doOnLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.util.ThreadUtil
 import com.chocobi.groot.view.pot.model.DiaryListResponse
 import java.lang.ref.WeakReference
 
