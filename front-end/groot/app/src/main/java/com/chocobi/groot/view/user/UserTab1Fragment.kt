@@ -32,13 +32,6 @@ class UserTab1Fragment : Fragment() {
     private lateinit var rv: RecyclerView
     private var rvAdapter : UserTab1RVAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -96,8 +89,6 @@ class UserTab1Fragment : Fragment() {
             ) {
                 val body = response.body()
                 if (body != null && response.code() == 200) {
-                    Log.d(TAG, "$body")
-                    Log.d(TAG, "body: $body")
                     potList = body.pots
                     setRecyclerView(potList!!, mActivity)
 
@@ -107,13 +98,11 @@ class UserTab1Fragment : Fragment() {
                         hideFirstView()
                     }
                 } else {
-                    Log.d(TAG, "실패1")
                     showFirstView()
                 }
             }
 
             override fun onFailure(call: Call<PotListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
             }
         })
 
@@ -138,6 +127,4 @@ class UserTab1Fragment : Fragment() {
             }
         }
     }
-
-
 }
