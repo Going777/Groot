@@ -49,6 +49,7 @@ class NotificationFragment : Fragment() {
         getNotiList()
 
 
+//        뒤로가기 버튼
         val backBtn = view.findViewById<ImageView>(R.id.backBtn)
         backBtn.setOnClickListener {
             requireActivity().onBackPressed()
