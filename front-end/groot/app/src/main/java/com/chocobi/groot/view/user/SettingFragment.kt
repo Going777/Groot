@@ -21,7 +21,7 @@ import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.user.model.NotiStatusRequest
 import com.chocobi.groot.view.user.model.UserService
@@ -71,14 +71,13 @@ class SettingFragment : Fragment() {
         categoryIcon.setImageResource(R.drawable.ic_setting)
 
 //        ================================================================
-//        ================================================================
-//        뒤로 가기 버튼 처리해야 하는 곳
+//        뒤로 가기 버튼
         val backBtn = rootView.findViewById<ImageView>(R.id.backBtn)
         backBtn.setOnClickListener {
             requireActivity().onBackPressed()
         }
 //        ================================================================
-//        ================================================================
+
 
         val infoText = rootView.findViewById<ConstraintLayout>(R.id.infoText)
         val infoSection = rootView.findViewById<LinearLayout>(R.id.infoSection)

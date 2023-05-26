@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.ThreadUtil
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
@@ -54,9 +54,10 @@ class UserTab3Fragment : Fragment() {
 
         requestUserBookmarkList("load")
 
-        return view    }
+        return view
+    }
 
-    private fun requestUserBookmarkList(usage:String) {
+    private fun requestUserBookmarkList(usage: String) {
         if (usage == "loadMore") {
             communityArticlePage++
         } else {
@@ -66,9 +67,12 @@ class UserTab3Fragment : Fragment() {
         var retrofit = RetrofitClient.getClient()!!
         var userService = retrofit.create(UserService::class.java)
 
-        userService.requestUserBookmarkList(communityArticlePage,REQUESTPAGESIZE).enqueue(object :
+        userService.requestUserBookmarkList(communityArticlePage, REQUESTPAGESIZE).enqueue(object :
             Callback<CommunityArticleListResponse> {
-            override fun onResponse(call: Call<CommunityArticleListResponse>, response: Response<CommunityArticleListResponse>) {
+            override fun onResponse(
+                call: Call<CommunityArticleListResponse>,
+                response: Response<CommunityArticleListResponse>
+            ) {
                 if (response.code() == 200) {
                     Log.d(TAG, "성공")
                     getData = response.body()!!
@@ -77,6 +81,8 @@ class UserTab3Fragment : Fragment() {
                         val totalElements = getData.articles.total // 전체 데이터 수
                         if (totalElements == 0) {
                             showFirstView()
+                        } else {
+                            hideFirstView()
                         }
                         val currentPage = communityArticlePage // 현재 페이지 번호
                         val isLast =
@@ -98,12 +104,10 @@ class UserTab3Fragment : Fragment() {
                     }
                 } else {
                     showFirstView()
-                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
                 showFirstView()
             }
         })
@@ -157,7 +161,10 @@ class UserTab3Fragment : Fragment() {
         frameLayoutProgress.visibility = View.GONE
     }
 
-    private fun createDummyData(offset: Int, limit: Int): MutableList<CommunityArticleListResponse> {
+    private fun createDummyData(
+        offset: Int,
+        limit: Int
+    ): MutableList<CommunityArticleListResponse> {
         val list: MutableList<CommunityArticleListResponse> = mutableListOf()
 
         // API response를 이용하여 데이터 생성
@@ -200,6 +207,7 @@ class UserTab3Fragment : Fragment() {
         }
         return list
     }
+
     private fun showFirstView() {
         potFirstView.visibility = View.VISIBLE
     }

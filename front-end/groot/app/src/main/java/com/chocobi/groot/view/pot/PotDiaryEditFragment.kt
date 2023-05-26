@@ -20,7 +20,7 @@ import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
 import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.data.PERMISSION_GALLERY
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.pot.model.DiaryCheckStatusResponse
 import com.chocobi.groot.view.pot.model.DiaryRequest
 import com.chocobi.groot.view.pot.model.PotService

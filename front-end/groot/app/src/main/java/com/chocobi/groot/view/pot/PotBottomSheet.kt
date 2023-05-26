@@ -27,7 +27,7 @@ import com.chocobi.groot.R
 import com.chocobi.groot.data.MsgResponse
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_STORAGE
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.pot.model.PotImgResponse
 import com.chocobi.groot.view.pot.model.PotNameRequest
 import com.chocobi.groot.view.pot.model.PotService

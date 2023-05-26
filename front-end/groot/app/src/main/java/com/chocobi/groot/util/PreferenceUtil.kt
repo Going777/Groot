@@ -1,4 +1,4 @@
-package com.chocobi.groot.data
+package com.chocobi.groot.util
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -1,6 +1,5 @@
 package com.chocobi.groot.view.signup
 
-// output을 만든다 : response
 
 data class SignupResponse(
     var result : String,

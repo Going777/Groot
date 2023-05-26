@@ -1,4 +1,4 @@
-package com.chocobi.groot.youtube
+package com.chocobi.groot.util
 
 import android.app.Application
 import android.util.Log

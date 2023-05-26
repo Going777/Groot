@@ -30,14 +30,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_GALLERY
 import com.chocobi.groot.data.REQUEST_STORAGE
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.adapter.TagAdapter
 import com.chocobi.groot.view.community.model.Article
-import com.chocobi.groot.view.user.model.User
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import kotlinx.coroutines.NonDisposableHandle.parent
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

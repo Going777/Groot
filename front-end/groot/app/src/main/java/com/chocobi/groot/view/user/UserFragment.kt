@@ -8,14 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.GlobalVariables
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
 import com.chocobi.groot.view.user.model.UserService
@@ -30,19 +29,8 @@ import retrofit2.Response
 
 class UserFragment : Fragment() {
 
-
     private val TAG = "UserFragment"
     private lateinit var collectionBtn: FloatingActionButton
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,8 +42,6 @@ class UserFragment : Fragment() {
         collectionBtn = rootView.findViewById(R.id.collectionBtn)
         collectionBtn.setOnClickListener {
             var intent = Intent(requireContext(), CollectionActivity::class.java)
-//            intent.putExtra("toPage", "search_detail")
-//            intent.putExtra("plant_id", plantId.toString())
             startActivity(intent)
         }
 
@@ -125,7 +111,6 @@ class UserFragment : Fragment() {
     }
 
 
-
     private fun getUserArticle(totalArticleText: TextView) {
 
         var retrofit = RetrofitClient.getClient()!!
@@ -138,19 +123,15 @@ class UserFragment : Fragment() {
                 response: Response<CommunityArticleListResponse>
             ) {
                 if (response.code() == 200) {
-                    Log.d(TAG, "성공")
 
                     val checkTotal = response.body()?.articles?.total
                     totalArticleText.text = checkTotal.toString()
                     Log.d(TAG, "$checkTotal")
 
-                } else {
-                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
             }
         })
     }
@@ -167,19 +148,15 @@ class UserFragment : Fragment() {
                 response: Response<CommunityArticleListResponse>
             ) {
                 if (response.code() == 200) {
-                    Log.d(TAG, "성공")
 
                     val checkTotal = response.body()?.articles?.total
                     totalBookmarkText.text = checkTotal.toString()
-                    Log.d(TAG, "$checkTotal")
 
-                } else {
-                    Log.d(TAG, "실패1")
                 }
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
+
             }
         })
     }

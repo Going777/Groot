@@ -64,6 +64,19 @@ public class UserEntity extends BaseEntity{
     @OneToOne(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
     private UserAlarmEntity userAlarmEntity;
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<ChattingEntity> senders;
+
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<ChattingEntity> receivers;
+
+    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    private List<ArticleBookmarkEntity> articleBookmarkEntities;
+
+
     public UserDTO toUserDTO(){
         Long date = Duration.between(this.getCreatedDate(), LocalDateTime.now()).toDays() +1;
         UserDTO userDTO = UserDTO.builder()

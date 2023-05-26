@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.pot.PotDiaryBottomSheet
 import com.chocobi.groot.view.pot.model.DiaryListResponse

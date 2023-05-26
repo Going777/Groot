@@ -2,7 +2,6 @@ package com.chocobi.groot.view.user
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
 import com.chocobi.groot.data.PERMISSION_CAMERA
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.pot.model.Pot
 import com.chocobi.groot.view.pot.model.PotListResponse
@@ -31,13 +30,6 @@ class UserTab1Fragment : Fragment() {
     private lateinit var potFirstView: ConstraintLayout
     private lateinit var rv: RecyclerView
     private var rvAdapter : UserTab1RVAdapter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,8 +88,6 @@ class UserTab1Fragment : Fragment() {
             ) {
                 val body = response.body()
                 if (body != null && response.code() == 200) {
-                    Log.d(TAG, "$body")
-                    Log.d(TAG, "body: $body")
                     potList = body.pots
                     setRecyclerView(potList!!, mActivity)
 
@@ -107,13 +97,11 @@ class UserTab1Fragment : Fragment() {
                         hideFirstView()
                     }
                 } else {
-                    Log.d(TAG, "실패1")
                     showFirstView()
                 }
             }
 
             override fun onFailure(call: Call<PotListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
             }
         })
 
@@ -138,6 +126,4 @@ class UserTab1Fragment : Fragment() {
             }
         }
     }
-
-
 }

@@ -21,8 +21,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.ThreadUtil
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.pot.PlantBottomSheet
 import com.chocobi.groot.view.addpot.Pot1Activity
 import com.chocobi.groot.view.search.model.PlantIdentifyResponse

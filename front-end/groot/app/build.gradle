@@ -26,8 +26,8 @@ android {
         applicationId "com.chocobi.groot"
         minSdk 28
         targetSdk 33
-        versionCode 19
-        versionName "1.14"
+        versionCode 20
+        versionName "1.15"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

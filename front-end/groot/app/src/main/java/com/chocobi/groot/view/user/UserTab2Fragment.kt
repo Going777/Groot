@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.chocobi.groot.view.main.MainActivity
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.ThreadUtil
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.view.community.adapter.RecyclerViewAdapter
 import com.chocobi.groot.view.community.model.Articles
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
@@ -49,7 +49,6 @@ class UserTab2Fragment : Fragment() {
         findViews(view)
         setListeners()
         initList()
-//        reload()
 
         showProgress()
 
@@ -75,13 +74,14 @@ class UserTab2Fragment : Fragment() {
                 response: Response<CommunityArticleListResponse>
             ) {
                 if (response.code() == 200) {
-                    Log.d(TAG, "성공")
                     getData = response.body()!!
                     val list = createDummyData(0, REQUESTPAGESIZE)
                     if (usage != "reload") {
                         val totalElements = getData.articles.total // 전체 데이터 수
                         if (totalElements == 0) {
                             showFirstView()
+                        } else {
+                            hideFirstView()
                         }
                         val currentPage = communityArticlePage // 현재 페이지 번호
                         val isLast =
@@ -110,7 +110,6 @@ class UserTab2Fragment : Fragment() {
             }
 
             override fun onFailure(call: Call<CommunityArticleListResponse>, t: Throwable) {
-                Log.d(TAG, "실패2")
                 showFirstView()
             }
         })

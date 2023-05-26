@@ -7,13 +7,10 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatButton
@@ -25,9 +22,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.FutureTarget
 import com.chocobi.groot.R
-import com.chocobi.groot.Thread.ThreadUtil
+import com.chocobi.groot.util.ThreadUtil
 import com.chocobi.groot.data.BasicResponse
-import com.chocobi.groot.data.RetrofitClient
+import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.chat.adapter.ChatMessageAdapter
 import com.chocobi.groot.view.chat.model.AddChatRoomService
