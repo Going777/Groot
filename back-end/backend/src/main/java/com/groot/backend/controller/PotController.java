@@ -248,7 +248,7 @@ public class PotController {
         return new ResponseEntity<>(result, status);
     }
 
-    @PostMapping("/transfer")
+    @PostMapping("/transfers")
     @Operation(summary = "create transfer request", description = "pot expires from current user")
     public ResponseEntity<Map<String, Object>> createTransfer(
             HttpServletRequest request,
@@ -284,7 +284,7 @@ public class PotController {
         return new ResponseEntity<>(result, status);
     }
 
-    @GetMapping("/transfer")
+    @GetMapping("/transfers")
     @Operation(summary = "get list of received transfer requests")
     public ResponseEntity<Map<String, Object>> getTransfers(HttpServletRequest request) {
         Long userPK;
