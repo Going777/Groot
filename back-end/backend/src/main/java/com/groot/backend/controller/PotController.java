@@ -1,12 +1,14 @@
 package com.groot.backend.controller;
 
 
+import com.google.api.Http;
 import com.groot.backend.controller.exception.WrongArticleException;
 import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
 import com.groot.backend.dto.request.PotTransferDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
+import com.groot.backend.dto.response.PotTransferInfoDTO;
 import com.groot.backend.service.PotService;
 import com.groot.backend.util.JwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
@@ -247,6 +249,7 @@ public class PotController {
     }
 
     @PostMapping("/transfer")
+    @Operation(summary = "create transfer request", description = "pot expires from current user")
     public ResponseEntity<Map<String, Object>> createTransfer(
             HttpServletRequest request,
             @Valid @RequestBody PotTransferDTO potTransferDTO)
@@ -273,6 +276,35 @@ public class PotController {
             status = HttpStatus.CONFLICT;
         } catch (AccessDeniedException e) {
             status = HttpStatus.FORBIDDEN;
+        } catch (Exception e) {
+            logger.info("Error : {}", e.getStackTrace());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @GetMapping("/transfer")
+    @Operation(summary = "get list of received transfer requests")
+    public ResponseEntity<Map<String, Object>> getTransfers(HttpServletRequest request) {
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            logger.info("failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Get received list");
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+        try {
+            List<PotTransferInfoDTO> list = potService.getTransferList(userPK);
+            result.put("list", list);
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            logger.info("No transfers found for : {}", userPK);
+            status = HttpStatus.NOT_FOUND;
         } catch (Exception e) {
             logger.info("Error : {}", e.getStackTrace());
             status = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -6,6 +6,7 @@ import com.groot.backend.dto.request.PotRegisterDTO;
 import com.groot.backend.dto.request.PotTransferDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
+import com.groot.backend.dto.response.PotTransferInfoDTO;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -88,4 +89,13 @@ public interface PotService {
      * @throws AccessDeniedException the pot does not belong to requested user
      */
     public Long createTransfer(Long fromUserPK, PotTransferDTO potTransferDTO) throws Exception;
+
+    /**
+     * Return list of received transfer requests
+     * @param userPK
+     * @return list of recieved transfer
+     * @throws NoSuchElementException not found
+     * @throws Exception
+     */
+    public List<PotTransferInfoDTO> getTransferList(Long userPK) throws Exception;
 }

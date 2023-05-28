@@ -316,6 +316,37 @@ public class PotServiceImpl implements PotService{
         return potTransferId;
     }
 
+    @Override
+    public List<PotTransferInfoDTO> getTransferList(Long userPK) throws Exception {
+        List<PotTransferEntity> potTransferEntities = potTransferRepository.findByToUserEntityId(userPK);
+        logger.info("found : {}", potTransferEntities.size());
+
+        if(potTransferEntities.size() < 1)
+            throw new NoSuchElementException();
+
+        List<PotTransferInfoDTO> ret = new ArrayList<>(potTransferEntities.size());
+
+        potTransferEntities.forEach(potTransferEntity -> {
+            ArticleEntity article = potTransferEntity.getArticleEntity();
+            UserEntity fromUser = potTransferEntity.getFronUserEntity();
+            PotEntity pot = potTransferEntity.getPotEntity();
+
+            ret.add(PotTransferInfoDTO.builder()
+                            .articleId(article.getId())
+                            .articleTitle(article.getTitle())
+                            .articleImage(article.getArticleImageEntityList().size() > 0 ?
+                                    article.getArticleImageEntityList().get(0).getImg() : null)
+                            .userPK(fromUser.getId())
+                            .userNickname(fromUser.getNickName())
+                            .userImage(fromUser.getProfile())
+                            .potName(pot.getName())
+                            .plantName(pot.getPlantKrName())
+                            .createdTime(potTransferEntity.getCreatedDate())
+                        .build());
+        });
+        return ret;
+    }
+
     /**
      * calculate days
      * @param from
