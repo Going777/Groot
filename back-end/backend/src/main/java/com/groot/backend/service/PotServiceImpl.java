@@ -344,12 +344,12 @@ public class PotServiceImpl implements PotService{
      * returns character png and glb url
      * @param grwType
      * @param exp
-     * @param survival
+     * @param isAlive alive or ghost
      * @return [png url, glb url]
      */
-    private String[] getAssets(String grwType, int exp, int level, boolean survival) {
+    private String[] getAssets(String grwType, int exp, int level, boolean isAlive) {
         CharacterEntity characterEntity;
-        if(!survival) {
+        if(!isAlive) {
             characterEntity =
                 characterRepository.findByType(PlantCodeUtil.characterCode("gone"));
         }
@@ -366,7 +366,9 @@ public class PotServiceImpl implements PotService{
      * @return PotListDTO
      */
     public PotListDTO buildListDTO(PotEntity potEntity) {
-        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getLevel(), potEntity.getSurvival());
+        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(),
+                potEntity.getExperience(), potEntity.getLevel(),
+                potEntity.getSurvival() | potEntity.getShare());
         return PotListDTO.builder()
                 .potId(potEntity.getId())
                 .plantId(potEntity.getPlantId())
