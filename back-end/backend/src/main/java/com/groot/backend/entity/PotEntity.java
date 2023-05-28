@@ -111,4 +111,9 @@ public class PotEntity extends BaseEntity{
         this.survival = !this.survival;
         return this.survival;
     }
+
+    public boolean toggleShare() {
+        this.share = !this.share;
+        return this.share;
+    }
 }

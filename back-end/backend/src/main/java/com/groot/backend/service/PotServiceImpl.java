@@ -1,7 +1,9 @@
 package com.groot.backend.service;
 
+import com.groot.backend.controller.exception.WrongArticleException;
 import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.request.PotTransferDTO;
 import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
@@ -33,6 +35,8 @@ public class PotServiceImpl implements PotService{
     private final UserRepository userRepository;
     private final PlanRepository planRepository;
     private final CharacterRepository characterRepository;
+    private final PotTransferRepository potTransferRepository;
+    private final ArticleRepository articleRepository;
     private final S3Service s3Service;
     private final Logger logger = LoggerFactory.getLogger(PotServiceImpl.class);
     @Override
@@ -274,6 +278,40 @@ public class PotServiceImpl implements PotService{
 //            return true;
             throw new NotYetImplementedException();
         }
+    }
+
+    @Override
+    public Long createTransfer(Long fromUserPK, PotTransferDTO potTransferDTO) throws Exception {
+        logger.info("create transfer request of pot : {}", potTransferDTO.getPotId());
+
+        ArticleEntity articleEntity = articleRepository.findById(potTransferDTO.getArticleId()).get();
+        if((!articleEntity.getCategory().equals("나눔")) || (!articleEntity.getShareStatus())) {
+            logger.info("Article is Not for share or already shared");
+            throw new WrongArticleException(potTransferDTO.getArticleId().toString());
+        }
+        PotEntity potEntity = potRepository.findById(potTransferDTO.getPotId()).get();
+        if(potEntity.getShare() || !potEntity.getSurvival()) {
+            logger.info("pot is already gone");
+            throw new IllegalStateException();
+        }
+        if(potEntity.getUserId() != fromUserPK || articleEntity.getUserPK() != fromUserPK) {
+            logger.info("Pot or article does not belong to user : {}", fromUserPK);
+            throw new AccessDeniedException("Unauthorized");
+        }
+
+        PotTransferEntity potTransferEntity = PotTransferEntity.builder()
+                    .potEntity(potEntity)
+                    .fronUserEntity(userRepository.getReferenceById(fromUserPK))
+                    .toUserEntity(userRepository.getReferenceById(potTransferDTO.getUserPK()))
+                    .articleEntity(articleEntity)
+                    .build();
+
+        Long potTransferId = potTransferRepository.save(potTransferEntity).getId();
+
+        potEntity.toggleShare();
+        potRepository.save(potEntity);
+
+        return potTransferId;
     }
 
     /**

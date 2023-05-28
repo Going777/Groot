@@ -1,8 +1,10 @@
 package com.groot.backend.controller;
 
 
+import com.groot.backend.controller.exception.WrongArticleException;
 import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.request.PotTransferDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
 import com.groot.backend.service.PotService;
@@ -238,6 +240,41 @@ public class PotController {
         } catch (Exception e) {
             logger.info("ERROR : {}", e.getCause());
             result.put("msg", e.getCause());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<Map<String, Object>> createTransfer(
+            HttpServletRequest request,
+            @Valid @RequestBody PotTransferDTO potTransferDTO)
+    {
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Create Pot Transfer : {} to {}, {}", userPK, potTransferDTO.getUserPK(), potTransferDTO.getPotId());
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            Long potTransferId = potService.createTransfer(userPK, potTransferDTO);
+            result.put("msg", "나눔 요청 생성에 성공했습니다.");
+            status = HttpStatus.CREATED;
+        } catch (NoSuchElementException e) {
+            status = HttpStatus.NOT_FOUND;
+        } catch (WrongArticleException | IllegalStateException e) {
+            status = HttpStatus.CONFLICT;
+        } catch (AccessDeniedException e) {
+            status = HttpStatus.FORBIDDEN;
+        } catch (Exception e) {
+            logger.info("Error : {}", e.getStackTrace());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 

@@ -1,7 +1,9 @@
 package com.groot.backend.service;
 
+import com.groot.backend.controller.exception.WrongArticleException;
 import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.request.PotTransferDTO;
 import com.groot.backend.dto.response.PotDetailDTO;
 import com.groot.backend.dto.response.PotListDTO;
 import org.springframework.security.access.AccessDeniedException;
@@ -74,4 +76,16 @@ public interface PotService {
      * @throws AccessDeniedException for unauthorized access
      */
     public boolean toggleStatus(Long userPK, Long potId) throws Exception;
+
+    /**
+     * Create pot transfer request. Pot Expires at previous user, not copied until accepted
+     * @param fromUserPK user PK
+     * @param potTransferDTO
+     * @return PK of pot transfer
+     * @throws NoSuchElementException one or more missing : pot, to user, article
+     * @throws WrongArticleException article is not for share, or already transferred
+     * @throws IllegalStateException pot status is not adequate, might be gone or shared already
+     * @throws AccessDeniedException the pot does not belong to requested user
+     */
+    public Long createTransfer(Long fromUserPK, PotTransferDTO potTransferDTO) throws Exception;
 }
