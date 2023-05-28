@@ -308,7 +308,7 @@ public class PotServiceImpl implements PotService{
 
         Long potTransferId = potTransferRepository.save(potTransferEntity).getId();
 
-        potEntity.toggleShare();
+        potEntity.setShare();
         potRepository.save(potEntity);
 
         return potTransferId;

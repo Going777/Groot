@@ -112,8 +112,11 @@ public class PotEntity extends BaseEntity{
         return this.survival;
     }
 
-    public boolean toggleShare() {
-        this.share = !this.share;
-        return this.share;
+    /**
+     * can never be reverted once created as share
+     */
+    public void setShare() {
+        this.survival = false;
+        this.share = true;
     }
 }
