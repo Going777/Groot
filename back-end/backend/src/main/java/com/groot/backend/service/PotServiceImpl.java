@@ -308,6 +308,8 @@ public class PotServiceImpl implements PotService{
 
         Long potTransferId = potTransferRepository.save(potTransferEntity).getId();
 
+        // shared pot will be also marked as gone for simplification
+        // asset will be managed also by shared status
         potEntity.setShare();
         potRepository.save(potEntity);
 
@@ -375,6 +377,7 @@ public class PotServiceImpl implements PotService{
                 .potName(potEntity.getName())
                 .imgPath(potEntity.getImgPath())
                 .plantKrName(potEntity.getPlantKrName())
+                // shared one will be also marked as not survival
                 .dates(calcPeriod(potEntity.getCreatedDate(),
                                 (potEntity.getSurvival()) ? LocalDateTime.now() : potEntity.getLastModifiedDate())
                 )

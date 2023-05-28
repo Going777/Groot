@@ -107,13 +107,19 @@ public class PotEntity extends BaseEntity{
         this.humidity = humidity == 0? this.humidity : humidity;
     }
 
-    public boolean toggleSurvival() {
-        this.survival = !this.survival;
-        return this.survival;
+    /**
+     * resurrection should be never enabled. before fixing share status
+     */
+    public void toggleSurvival() {
+//        this.survival = !this.survival;
+//        return this.survival;
+        this.survival = false;
     }
 
     /**
      * can never be reverted once created as share
+     * also marked as gone, it is just for simplification
+     * managing character assets as alive will be managed by using share status together
      */
     public void setShare() {
         this.survival = false;
