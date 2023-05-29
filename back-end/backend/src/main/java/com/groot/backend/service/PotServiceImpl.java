@@ -71,42 +71,7 @@ public class PotServiceImpl implements PotService{
             );
             potRepository.save(potEntity);
 
-            List<PlanEntity> plans = new ArrayList<>();
-            plans.add(PlanEntity.builder()
-                    .potEntity(potEntity)
-                    .userEntity(userEntity)
-                    .code(0)
-                    .dateTime(LocalDateTime.now()
-//                            .plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000])
-                            .withHour(9).withMinute(0).withSecond(0)
-                    )
-                    .done(false)
-                    .build()
-            );
-
-            plans.add(PlanEntity.builder()
-                    .potEntity(potEntity)
-                    .userEntity(userEntity)
-                    .code(1)
-                    .dateTime(LocalDateTime.now()
-                            .plusMonths(6)
-                            .withHour(9).withMinute(0).withSecond(0)
-                    )
-                    .done(false)
-                    .build()
-            );
-
-            plans.add(PlanEntity.builder()
-                    .potEntity(potEntity)
-                    .userEntity(userEntity)
-                    .code(2)
-                    .dateTime(LocalDateTime.now()
-                            .plusMonths(12)
-                            .withHour(9).withMinute(0).withSecond(0)
-                    )
-                    .done(false)
-                    .build()
-            );
+            List<PlanEntity> plans = createNewPlans(potEntity, userPK);
 
             planRepository.saveAll(plans);
 
