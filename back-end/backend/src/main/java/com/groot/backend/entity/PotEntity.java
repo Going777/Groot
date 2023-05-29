@@ -108,6 +108,24 @@ public class PotEntity extends BaseEntity{
     }
 
     /**
+     * generate builder with fields copied
+     * @return PotEntityBuilder with required fields copied
+     */
+    public PotEntity.PotEntityBuilder createCopyBuilder() {
+        return this.builder()
+                .plantEntity(this.plantEntity)
+                .plantKrName(this.plantKrName)
+                .name(this.name)
+                .temperature(this.temperature)
+                .illuminance(this.illuminance)
+                .humidity(this.humidity)
+                .level(this.level)
+                .nutrientsDate(this.nutrientsDate)
+                .pruningDate(this.pruningDate)
+                .waterDate(this.waterDate);
+    }
+
+    /**
      * resurrection should be never enabled. before fixing share status
      */
     public void toggleSurvival() {

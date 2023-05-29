@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Null;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -305,6 +306,33 @@ public class PotController {
         } catch (NoSuchElementException e) {
             logger.info("No transfers found for : {}", userPK);
             status = HttpStatus.NOT_FOUND;
+        } catch (Exception e) {
+            logger.info("Error : {}", e.getStackTrace());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(result, status);
+    }
+
+    @PostMapping("/transfers/{transferId}")
+    @Operation(summary = "Accept pot transfer", description = "")
+    public ResponseEntity<Map<String, Object>> acceptTransfer(HttpServletRequest request,
+                                                              @PathVariable("transferId") Long transferId) {
+        Long userPk;
+        try {
+            userPk = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Accept : {}", transferId);
+        Map<String, Object> result = new HashMap<>();
+        HttpStatus status;
+
+        try {
+            potService.acceptTransfer(userPk, transferId);
+            status = HttpStatus.OK;
         } catch (Exception e) {
             logger.info("Error : {}", e.getStackTrace());
             status = HttpStatus.INTERNAL_SERVER_ERROR;

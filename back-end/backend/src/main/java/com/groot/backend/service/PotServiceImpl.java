@@ -347,6 +347,39 @@ public class PotServiceImpl implements PotService{
         return ret;
     }
 
+    @Override
+    public Long acceptTransfer(Long userPK, Long transferId) throws Exception {
+        PotTransferEntity potTransferEntity = potTransferRepository.findById(transferId).get();
+
+        if(potTransferEntity.getToUserEntity().getId() != userPK) {
+            logger.info("invalid action");
+            throw new AccessDeniedException("Unauthorized");
+        }
+
+        PotEntity srcPotEntity = potTransferEntity.getPotEntity();
+
+        PotEntity.PotEntityBuilder newPotEntityBuilder = srcPotEntity.createCopyBuilder();
+
+        // create new image and save
+        String newFileName = userPK.toString() + transferId.toString();
+        String newURL = s3Service.copyFile(srcPotEntity.getImgPath(), newFileName);
+
+        PotEntity newPotEntity = potRepository.save(
+                                newPotEntityBuilder
+                                .userEntity(potTransferEntity.getToUserEntity())
+                                .imgPath(newURL)
+                                .build()
+        );
+
+        // create new plans
+        List<PlanEntity> plans = createNewPlans(newPotEntity, userPK);
+        planRepository.saveAll(plans);
+
+        // delete transfer
+        potTransferRepository.deleteById(transferId);
+        return newPotEntity.getId();
+    }
+
     /**
      * calculate days
      * @param from
@@ -464,5 +497,28 @@ public class PotServiceImpl implements PotService{
      */
     public int inRange(double target, double min, double max) {
         return (min < target) ? ((target < max) ? 0 : 1) : -1;
+    }
+
+    private List<PlanEntity> createNewPlans(PotEntity potEntity, Long userPK) {
+        LocalDateTime[] srcTimes = new LocalDateTime[3];
+        List<PlanEntity> ret = new ArrayList<>(3);
+
+        srcTimes[0] = (potEntity.getWaterDate() == null) ?
+                LocalDateTime.now() : potEntity.getWaterDate().plusDays(PlantCodeUtil.waterCycle[potEntity.getPlantEntity().getWaterCycle() % 53000]);
+        srcTimes[1] = (potEntity.getNutrientsDate() == null) ?
+                LocalDateTime.now() : potEntity.getNutrientsDate().plusMonths(6);
+        srcTimes[2] = (potEntity.getPruningDate() == null) ?
+                LocalDateTime.now() : potEntity.getPruningDate().plusMonths(9);
+
+        for(int i=0; i<3; i++) {
+            ret.add(PlanEntity.builder()
+                            .potEntity(potEntity)
+                            .userEntity(userRepository.getReferenceById(userPK))
+                            .code(i)
+                            .dateTime(srcTimes[i].withHour(9).withMinute(0).withSecond(0))
+                            .done(false)
+                            .build());
+        }
+        return ret;
     }
 }

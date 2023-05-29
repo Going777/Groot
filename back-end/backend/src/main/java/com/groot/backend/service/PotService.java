@@ -98,4 +98,13 @@ public interface PotService {
      * @throws Exception
      */
     public List<PotTransferInfoDTO> getTransferList(Long userPK) throws Exception;
+
+    /**
+     * Accept pot transfer
+     * @param userPK
+     * @param transferId
+     * @return Pot Id
+     * @throws Exception
+     */
+    public Long acceptTransfer(Long userPK, Long transferId) throws Exception;
 }
