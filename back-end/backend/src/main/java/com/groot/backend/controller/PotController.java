@@ -263,14 +263,22 @@ public class PotController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
+
         logger.info("Create Pot Transfer : {} to {}, {}", userPK, potTransferDTO.getUserPK(), potTransferDTO.getPotId());
         Map<String, Object> result = new HashMap<>();
         HttpStatus status;
 
         try {
-            Long potTransferId = potService.createTransfer(userPK, potTransferDTO);
-            result.put("msg", "나눔 요청 생성에 성공했습니다.");
-            status = HttpStatus.CREATED;
+            if(userPK != potTransferDTO.getUserPK()) {
+                Long potTransferId = potService.createTransfer(userPK, potTransferDTO);
+                result.put("msg", "나눔 요청 생성에 성공했습니다.");
+                status = HttpStatus.CREATED;
+            }
+            else {
+                logger.info("Cannot transfer pot to self");
+                result.put("msg", "Cannot transfer to self");
+                status = HttpStatus.BAD_REQUEST;
+            }
         } catch (NoSuchElementException e) {
             status = HttpStatus.NOT_FOUND;
         } catch (WrongArticleException | IllegalStateException e) {
