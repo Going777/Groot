@@ -1,7 +1,9 @@
 package com.groot.backend.service;
 
+import com.groot.backend.controller.exception.WrongArticleException;
 import com.groot.backend.dto.request.PotModifyDTO;
 import com.groot.backend.dto.request.PotRegisterDTO;
+import com.groot.backend.dto.request.PotTransferDTO;
 import com.groot.backend.dto.response.*;
 import com.groot.backend.entity.*;
 import com.groot.backend.repository.*;
@@ -33,6 +35,8 @@ public class PotServiceImpl implements PotService{
     private final UserRepository userRepository;
     private final PlanRepository planRepository;
     private final CharacterRepository characterRepository;
+    private final PotTransferRepository potTransferRepository;
+    private final ArticleRepository articleRepository;
     private final S3Service s3Service;
     private final Logger logger = LoggerFactory.getLogger(PotServiceImpl.class);
     @Override
@@ -67,42 +71,7 @@ public class PotServiceImpl implements PotService{
             );
             potRepository.save(potEntity);
 
-            List<PlanEntity> plans = new ArrayList<>();
-            plans.add(PlanEntity.builder()
-                    .potEntity(potEntity)
-                    .userEntity(userEntity)
-                    .code(0)
-                    .dateTime(LocalDateTime.now()
-//                            .plusDays(PlantCodeUtil.waterCycle[plantEntity.getWaterCycle()%53000])
-                            .withHour(9).withMinute(0).withSecond(0)
-                    )
-                    .done(false)
-                    .build()
-            );
-
-            plans.add(PlanEntity.builder()
-                    .potEntity(potEntity)
-                    .userEntity(userEntity)
-                    .code(1)
-                    .dateTime(LocalDateTime.now()
-                            .plusMonths(6)
-                            .withHour(9).withMinute(0).withSecond(0)
-                    )
-                    .done(false)
-                    .build()
-            );
-
-            plans.add(PlanEntity.builder()
-                    .potEntity(potEntity)
-                    .userEntity(userEntity)
-                    .code(2)
-                    .dateTime(LocalDateTime.now()
-                            .plusMonths(12)
-                            .withHour(9).withMinute(0).withSecond(0)
-                    )
-                    .done(false)
-                    .build()
-            );
+            List<PlanEntity> plans = createNewPlans(potEntity, userPK);
 
             planRepository.saveAll(plans);
 
@@ -276,6 +245,119 @@ public class PotServiceImpl implements PotService{
         }
     }
 
+    @Override
+    public Long createTransfer(Long fromUserPK, PotTransferDTO potTransferDTO) throws Exception {
+        logger.info("create transfer request of pot : {}", potTransferDTO.getPotId());
+
+        ArticleEntity articleEntity = articleRepository.findById(potTransferDTO.getArticleId()).get();
+        if((!articleEntity.getCategory().equals("나눔")) || (!articleEntity.getShareStatus())) {
+            logger.info("Article is Not for share or already shared");
+            throw new WrongArticleException(potTransferDTO.getArticleId().toString());
+        }
+        PotEntity potEntity = potRepository.findById(potTransferDTO.getPotId()).get();
+        if(potEntity.getShare() || !potEntity.getSurvival()) {
+            logger.info("pot is already gone");
+            throw new IllegalStateException();
+        }
+        if(potEntity.getUserId() != fromUserPK || articleEntity.getUserPK() != fromUserPK) {
+            logger.info("Pot or article does not belong to user : {}", fromUserPK);
+            throw new AccessDeniedException("Unauthorized");
+        }
+
+        PotTransferEntity potTransferEntity = PotTransferEntity.builder()
+                    .potEntity(potEntity)
+                    .fronUserEntity(userRepository.getReferenceById(fromUserPK))
+                    .toUserEntity(userRepository.getReferenceById(potTransferDTO.getUserPK()))
+                    .articleEntity(articleEntity)
+                    .build();
+
+        Long potTransferId = potTransferRepository.save(potTransferEntity).getId();
+
+        // shared pot will be also marked as gone for simplification
+        // asset will be managed also by shared status
+        potEntity.setShare();
+        potRepository.save(potEntity);
+
+        return potTransferId;
+    }
+
+    @Override
+    public List<PotTransferInfoDTO> getTransferList(Long userPK) throws Exception {
+        List<PotTransferEntity> potTransferEntities = potTransferRepository.findByToUserEntityId(userPK);
+        logger.info("found : {}", potTransferEntities.size());
+
+        if(potTransferEntities.size() < 1)
+            throw new NoSuchElementException();
+
+        List<PotTransferInfoDTO> ret = new ArrayList<>(potTransferEntities.size());
+
+        potTransferEntities.forEach(potTransferEntity -> {
+            ArticleEntity article = potTransferEntity.getArticleEntity();
+            UserEntity fromUser = potTransferEntity.getFronUserEntity();
+            PotEntity pot = potTransferEntity.getPotEntity();
+
+            ret.add(PotTransferInfoDTO.builder()
+                            .transferId(potTransferEntity.getId())
+                            .articleId(article.getId())
+                            .articleTitle(article.getTitle())
+                            .articleImage(article.getArticleImageEntityList().size() > 0 ?
+                                    article.getArticleImageEntityList().get(0).getImg() : null)
+                            .userPK(fromUser.getId())
+                            .userNickname(fromUser.getNickName())
+                            .userImage(fromUser.getProfile())
+                            .potName(pot.getName())
+                            .plantName(pot.getPlantKrName())
+                            .createdTime(potTransferEntity.getCreatedDate())
+                        .build());
+        });
+        return ret;
+    }
+
+    @Override
+    public Long acceptTransfer(Long userPK, Long transferId) throws Exception {
+        PotTransferEntity potTransferEntity = potTransferRepository.findById(transferId).get();
+
+        if(potTransferEntity.getToUserEntity().getId() != userPK) {
+            logger.info("invalid action");
+            throw new AccessDeniedException("Unauthorized");
+        }
+
+        PotEntity srcPotEntity = potTransferEntity.getPotEntity();
+
+        PotEntity.PotEntityBuilder newPotEntityBuilder = srcPotEntity.createCopyBuilder();
+
+        // create new image and save
+        String newFileName = userPK.toString() + transferId.toString();
+        String newURL = s3Service.copyFile(srcPotEntity.getImgPath(), newFileName);
+
+        PotEntity newPotEntity = potRepository.save(
+                                newPotEntityBuilder
+                                .userEntity(potTransferEntity.getToUserEntity())
+                                .imgPath(newURL)
+                                .build()
+        );
+
+        // create new plans
+        List<PlanEntity> plans = createNewPlans(newPotEntity, userPK);
+        planRepository.saveAll(plans);
+
+        // delete transfer
+        potTransferRepository.deleteById(transferId);
+        return newPotEntity.getId();
+    }
+
+    @Override
+    public void rejectTransfer(Long userPK, Long transferId) throws Exception {
+        PotTransferEntity potTransferEntity = potTransferRepository.findById(transferId).get();
+
+        if(potTransferEntity.getToUserEntity().getId() != userPK) {
+            logger.info("Unauthorized access to : {}", transferId);
+            throw new AccessDeniedException("Unauthorized");
+        }
+
+        potTransferRepository.delete(potTransferEntity);
+    }
+
     /**
      * calculate days
      * @param from
@@ -306,12 +388,12 @@ public class PotServiceImpl implements PotService{
      * returns character png and glb url
      * @param grwType
      * @param exp
-     * @param survival
+     * @param isAlive alive or ghost
      * @return [png url, glb url]
      */
-    private String[] getAssets(String grwType, int exp, int level, boolean survival) {
+    private String[] getAssets(String grwType, int exp, int level, boolean isAlive) {
         CharacterEntity characterEntity;
-        if(!survival) {
+        if(!isAlive) {
             characterEntity =
                 characterRepository.findByType(PlantCodeUtil.characterCode("gone"));
         }
@@ -328,13 +410,16 @@ public class PotServiceImpl implements PotService{
      * @return PotListDTO
      */
     public PotListDTO buildListDTO(PotEntity potEntity) {
-        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(), potEntity.getExperience(), potEntity.getLevel(), potEntity.getSurvival());
+        String[] urls = getAssets(potEntity.getPlantEntity().getGrwType(),
+                potEntity.getExperience(), potEntity.getLevel(),
+                potEntity.getSurvival() | potEntity.getShare());
         return PotListDTO.builder()
                 .potId(potEntity.getId())
                 .plantId(potEntity.getPlantId())
                 .potName(potEntity.getName())
                 .imgPath(potEntity.getImgPath())
                 .plantKrName(potEntity.getPlantKrName())
+                // shared one will be also marked as not survival
                 .dates(calcPeriod(potEntity.getCreatedDate(),
                                 (potEntity.getSurvival()) ? LocalDateTime.now() : potEntity.getLastModifiedDate())
                 )
@@ -390,5 +475,28 @@ public class PotServiceImpl implements PotService{
      */
     public int inRange(double target, double min, double max) {
         return (min < target) ? ((target < max) ? 0 : 1) : -1;
+    }
+
+    private List<PlanEntity> createNewPlans(PotEntity potEntity, Long userPK) {
+        LocalDateTime[] srcTimes = new LocalDateTime[3];
+        List<PlanEntity> ret = new ArrayList<>(3);
+
+        srcTimes[0] = (potEntity.getWaterDate() == null) ?
+                LocalDateTime.now() : potEntity.getWaterDate().plusDays(PlantCodeUtil.waterCycle[potEntity.getPlantEntity().getWaterCycle() % 53000]);
+        srcTimes[1] = (potEntity.getNutrientsDate() == null) ?
+                LocalDateTime.now() : potEntity.getNutrientsDate().plusMonths(6);
+        srcTimes[2] = (potEntity.getPruningDate() == null) ?
+                LocalDateTime.now() : potEntity.getPruningDate().plusMonths(9);
+
+        for(int i=0; i<3; i++) {
+            ret.add(PlanEntity.builder()
+                            .potEntity(potEntity)
+                            .userEntity(userRepository.getReferenceById(userPK))
+                            .code(i)
+                            .dateTime(srcTimes[i].withHour(9).withMinute(0).withSecond(0))
+                            .done(false)
+                            .build());
+        }
+        return ret;
     }
 }
