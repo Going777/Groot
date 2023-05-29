@@ -333,6 +333,10 @@ public class PotController {
         try {
             potService.acceptTransfer(userPk, transferId);
             status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            status = HttpStatus.NOT_FOUND;
+        } catch (AccessDeniedException e) {
+            status = HttpStatus.FORBIDDEN;
         } catch (Exception e) {
             logger.info("Error : {}", e.getStackTrace());
             status = HttpStatus.INTERNAL_SERVER_ERROR;

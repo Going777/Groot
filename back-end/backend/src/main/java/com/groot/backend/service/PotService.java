@@ -104,7 +104,8 @@ public interface PotService {
      * @param userPK
      * @param transferId
      * @return Pot Id
-     * @throws Exception
+     * @throws NoSuchElementException transfer Not found
+     * @throws AccessDeniedException unauthorized access
      */
     public Long acceptTransfer(Long userPK, Long transferId) throws Exception;
 }
