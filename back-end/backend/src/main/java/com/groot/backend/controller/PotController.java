@@ -345,6 +345,36 @@ public class PotController {
         return new ResponseEntity<>(result, status);
     }
 
+    @DeleteMapping("/transfers/{transferId}")
+    @Operation(summary = "reject pot transfer", description = "")
+    public ResponseEntity<Map<String, Object>> rejectTransfer(HttpServletRequest request,
+                                                              @PathVariable("transferId") Long transferId) {
+        Long userPK;
+        try {
+            userPK = JwtTokenProvider.getIdByAccessToken(request);
+        } catch (NullPointerException | IndexOutOfBoundsException e) {
+            logger.info("Failed to parse token : {}", request.getHeader("Authorization"));
+            return  new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        logger.info("Reject transfer : {}", transferId);
+        HttpStatus status;
+
+        try {
+            potService.rejectTransfer(userPK, transferId);
+            status = HttpStatus.OK;
+        } catch (NoSuchElementException e) {
+            status = HttpStatus.NOT_FOUND;
+        } catch (AccessDeniedException e) {
+            status = HttpStatus.FORBIDDEN;
+        } catch (Exception e) {
+            logger.info("Error : {}", e.getStackTrace());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+
+        return new ResponseEntity<>(status);
+    }
+
     /**
      * used for both active list and archive
      * @param request

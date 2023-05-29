@@ -345,6 +345,18 @@ public class PotServiceImpl implements PotService{
         return newPotEntity.getId();
     }
 
+    @Override
+    public void rejectTransfer(Long userPK, Long transferId) throws Exception {
+        PotTransferEntity potTransferEntity = potTransferRepository.findById(transferId).get();
+
+        if(potTransferEntity.getToUserEntity().getId() != userPK) {
+            logger.info("Unauthorized access to : {}", transferId);
+            throw new AccessDeniedException("Unauthorized");
+        }
+
+        potTransferRepository.delete(potTransferEntity);
+    }
+
     /**
      * calculate days
      * @param from

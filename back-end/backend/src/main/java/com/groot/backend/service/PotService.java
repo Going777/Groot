@@ -108,4 +108,13 @@ public interface PotService {
      * @throws AccessDeniedException unauthorized access
      */
     public Long acceptTransfer(Long userPK, Long transferId) throws Exception;
+
+    /**
+     * Reject pot transfer
+     * @param userPK
+     * @param transferId
+     * @throws NoSuchElementException not found
+     * @throws AccessDeniedException UNAUTHORIZED ACCESS
+     */
+    public void rejectTransfer(Long userPK, Long transferId) throws Exception;
 }
