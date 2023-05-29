@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PotTransferInfoDTO {
 
+    private Long transferId;
+
     private Long articleId;
 
     private String articleTitle;

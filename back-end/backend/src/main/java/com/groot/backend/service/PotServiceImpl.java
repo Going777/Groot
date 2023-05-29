@@ -297,6 +297,7 @@ public class PotServiceImpl implements PotService{
             PotEntity pot = potTransferEntity.getPotEntity();
 
             ret.add(PotTransferInfoDTO.builder()
+                            .transferId(potTransferEntity.getId())
                             .articleId(article.getId())
                             .articleTitle(article.getTitle())
                             .articleImage(article.getArticleImageEntityList().size() > 0 ?
