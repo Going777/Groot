@@ -107,8 +107,40 @@ public class PotEntity extends BaseEntity{
         this.humidity = humidity == 0? this.humidity : humidity;
     }
 
-    public boolean toggleSurvival() {
-        this.survival = !this.survival;
-        return this.survival;
+    /**
+     * generate builder with fields copied
+     * @return PotEntityBuilder with required fields copied
+     */
+    public PotEntity.PotEntityBuilder createCopyBuilder() {
+        return this.builder()
+                .plantEntity(this.plantEntity)
+                .plantKrName(this.plantKrName)
+                .name(this.name)
+                .temperature(this.temperature)
+                .illuminance(this.illuminance)
+                .humidity(this.humidity)
+                .level(this.level)
+                .nutrientsDate(this.nutrientsDate)
+                .pruningDate(this.pruningDate)
+                .waterDate(this.waterDate);
+    }
+
+    /**
+     * resurrection should be never enabled. before fixing share status
+     */
+    public void toggleSurvival() {
+//        this.survival = !this.survival;
+//        return this.survival;
+        this.survival = false;
+    }
+
+    /**
+     * can never be reverted once created as share
+     * also marked as gone, it is just for simplification
+     * managing character assets as alive will be managed by using share status together
+     */
+    public void setShare() {
+        this.survival = false;
+        this.share = true;
     }
 }

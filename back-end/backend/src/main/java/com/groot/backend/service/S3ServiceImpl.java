@@ -127,4 +127,28 @@ public class S3ServiceImpl implements S3Service {
         DeleteObjectRequest request = new DeleteObjectRequest(bucketName, objKey);
         amazonS3.deleteObject(request);
     }
+
+    @Override
+    public String copyFile(String fileURL, String dstFileName) {
+        String srcFile = fileURL.split("/", 4)[3].trim();
+        try {
+            if(amazonS3.doesObjectExist(bucketName, srcFile)) {
+                logger.info("Image found from bucket, copy object to name : {}", dstFileName);
+                String[] parts = fileURL.split(".");
+                String fileExtension = parts[parts.length - 1].trim();
+
+                String dstFile = dstFileName + "." + fileExtension;
+                CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucketName, srcFile, bucketName, dstFile);
+
+                return amazonS3.getUrl(bucketName, dstFile).toString();
+            }
+            else {
+                logger.info("image is not in S3 bucket, cannot copy file : {}", fileURL);
+                return fileURL;
+            }
+        } catch (AmazonS3Exception e) {
+            logger.info("image URL is not from S3, cannot copy file : {}", fileURL);
+            return fileURL;
+        }
+    }
 }

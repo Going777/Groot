@@ -66,4 +66,12 @@ public interface S3Service {
      * @throws ArrayIndexOutOfBoundsException wrong input
      */
     public void deleteFile(String fileURL) throws UnsupportedEncodingException, ArrayIndexOutOfBoundsException;
+
+    /**
+     * Copy existing file to same bucket with new name
+     * @param fileURL src file URL
+     * @param dstFileName dst file name
+     * @return return full URL with bucket name
+     */
+    public String copyFile(String fileURL, String dstFileName);
 }
