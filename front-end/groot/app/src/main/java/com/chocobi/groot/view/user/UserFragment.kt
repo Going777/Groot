@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.chocobi.groot.view.main.MainActivity
@@ -17,6 +18,7 @@ import com.chocobi.groot.data.GlobalVariables
 import com.chocobi.groot.util.RetrofitClient
 import com.chocobi.groot.data.UserData
 import com.chocobi.groot.view.community.model.CommunityArticleListResponse
+import com.chocobi.groot.view.login.LoginActivity
 import com.chocobi.groot.view.user.model.UserService
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
@@ -42,6 +44,14 @@ class UserFragment : Fragment() {
         collectionBtn = rootView.findViewById(R.id.collectionBtn)
         collectionBtn.setOnClickListener {
             var intent = Intent(requireContext(), CollectionActivity::class.java)
+            startActivity(intent)
+        }
+
+//        유저 데이터 없다면 로그인 페이지로
+        if (UserData.getNickName() == "User Nickname") {
+            Toast.makeText(requireContext(), "로그인 정보가 만료되었습니다. 다시 로그인해주세요.", Toast.LENGTH_LONG)
+                .show()
+            var intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
         }
 
