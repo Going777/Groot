@@ -49,12 +49,7 @@ class GlobalVariables : Application() {
         }
 
 
-
-        fun fetchUserData() {
-            val fetchGetUser = CoroutineScope(Dispatchers.Main).async {
-                getUser()
-            }
-        }
+        
 
         fun getUser() {
             var retrofit = RetrofitClient.getClient()!!
